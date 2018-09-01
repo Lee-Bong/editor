@@ -1,14 +1,15 @@
 <template>
     <vue-drag-resize
-      :isActive="isActive"
+      :isActive="dragForm.isActive"
       :w="dragForm.size.w"
       :h="dragForm.size.h"
+      :aspectRatio="true"
       :sticks="['tl','tr','br','bl']"
       :x="dragForm.location.x"
       :y="dragForm.location.y"
-      :z="locationZ"
+      :z="dragForm.zIndex"
       :index="dragForm.dragIndex"
-      listIndex="listIndex"
+      :listIndex="listIndex"
       :parentLimitation="true"
 
       @clicked="dragTextClick(listIndex)"
@@ -19,7 +20,7 @@
       class="drag-item"
       >
       <i class="el-icon-circle-close-outline drag-del drag-del-bottom"
-      v-if="isActive"
+      v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
       <div class="drag-img">
@@ -44,28 +45,8 @@ export default {
     'vue-drag-resize': VueDragResize,
   },
   props: {
+    listIndex: Number,
     dragForm: Object,
-    isShow: Boolean,
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-    locationX: {
-      type: Number,
-      default: 0,
-    },
-    locationY: {
-      type: Number,
-      default: 0,
-    },
-    locationZ: {
-      type: Number,
-      default: 0,
-    },
-    tWidth: Number,
-    tHeight: Number,
-    listIndex: Number,
-    listIndex: Number,
   },
   data() {
     return {
@@ -85,11 +66,7 @@ export default {
 
   methods: {
     dragTextClick(index) {
-      const newEditor = this.deActiveArr(index);
-      const layerActive = this.updateLayer(index, 5);
-      this.$store.commit('editor_update', Object.assign(newEditor, {
-        layerActive,
-      }));
+      this.$emit('dragTextClick', index, 5);
     },
     onResezing(obj) {
       this.drag.width = newRect.width;
@@ -105,7 +82,7 @@ export default {
     },
     // 删除组件
     dragDel(index) {
-      this.$emit('getDelLayer', 5, index);
+      this.$emit('dragDel', 5, index, this.dragForm.dragIndex);
     },
     dragDeactivated(index) { // 点击组件外区域
     },
@@ -114,36 +91,6 @@ export default {
     },
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
-    },
-    // tools
-    deActiveArr(index) {
-      const updateEditor = {};
-      for (const item in this.$store.state.editor.typeCat) {
-        const form = this.$store.state.editor.typeCat[item];
-        const lists = this.$store.state.editor[form[0]];
-
-        if (lists.length) {
-          if (this.dragName === form[0]) {
-            updateEditor[form[0]] = _.textActiveOff(lists, { index });
-            updateEditor[form[2]] = true;
-            updateEditor[form[3]] = index;
-          } else {
-            updateEditor[form[0]] = _.textActiveOff(lists, { index: 0, isAll: true });
-            updateEditor[form[2]] = false;
-          }
-        }
-      }
-      return updateEditor;
-    },
-    updateLayer(index) {
-      const layers = this.$store.state.editor.layerLists;
-      let i;
-      layers.map((item, key) => {
-        if (item.sort === 1 && item.num === index) {
-          i = key;
-        }
-      });
-      return i;
     },
   },
 };
@@ -169,9 +116,7 @@ export default {
   right: -10px;
   top: -10px;
   cursor: pointer;
-}
-.drag-del-bottom {
-  top: 10px !important;
+  z-index: 1090;
 }
 .drag-del-bottom {
   top: 10px !important;

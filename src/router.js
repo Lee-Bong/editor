@@ -9,5 +9,15 @@ export default new Router({
     path: '/',
     name: 'editor',
     component: Editor,
+  },
+  {
+    name: 'preview',
+    path: '/preview',
+    component: () => import('./views/preview/Index.vue'),
+  },
+  {
+    name: 'real',
+    path: '/real',
+    component: () => import('./views/real/Index.vue'),
   }],
 });

@@ -90,18 +90,6 @@ export default {
   padding: 10px 0;
 }
 
-.fixed-right {
-  position: fixed;
-  right: 0;
-  top: 56px;
-  bottom: 0;
-  width: 260px;
-  z-index: 98;
-  background-color: #fafafa;
-  border-left: 1px solid #ccd5db;
-  box-sizing: content-box;
-}
-
 .layer-item {
   position: relative;
   display: flex;
@@ -140,28 +128,5 @@ export default {
   align-content: center;
   justify-content: center;
 }
-.phone-container {
-  position: relative;
-  /* background: url('../../static/images/phone.svg') no-repeat; */
-  width: 385px;
-  height: 731px;
-  height: 631px;
-  /* top: 50%; */
-  top: 10px;
-  /* margin-top: -334px; */
-  /* background-size: contain; */
-  background-color: #ddd;
-  border-radius: 20px;
-}
 
-.phone-content {
-  position: absolute;
-  /* top: 52px; */
-  top: 30px;
-  left: 5px;
-  width: 366px;
-  /* height: 667px; */
-  height: 567px;
-  background-color: #fff;
-}
 </style>

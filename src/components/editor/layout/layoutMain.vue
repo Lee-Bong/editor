@@ -1,21 +1,39 @@
 <template>
-  <div class="phone-content" ref="phoneContent"
-    :style="{width: $store.state.editor.phoneWidth+'px', height: $store.state.editor.phoneHeight+'px'}">
+<vue-drag-resize class="phone-content" ref="phoneContent"
+  :sticks="['bm']"
+  :h="$store.state.editor.phoneHeight"
+  :isActive="true"
+  :isDraggable="false"
+  :isResizable="true"
+  :parentLimitation="false"
+  :y="64"
+  @resizestop="resizestop"
+  :style="{
+    width: $store.state.editor.phoneWidth+'px',
+    backgroundColor:  $store.state.page.backgroundColor,
+  }">
+     <div class="phone-resize">
+              <i class="el-icon-back resize-icon resize-up"></i>
+              拖动调节页面高度
+              <i class="el-icon-back resize-icon resize-down"></i>
+            </div>
+  <!-- <div class="phone-content" ref="phoneContent"
+    :style="{
+      width: $store.state.editor.phoneWidth+'px',
+      height: $store.state.editor.phoneHeight+'px',
+      backgroundColor:  $store.state.page.backgroundColor,
+    }"
+  > -->
     <drag-text
       v-for="(drag, index) in $store.state.editor.dragTexts"
       v-if="drag.isShow"
       :key="drag.zIndex"
       :list-index="index"
-      :location-x="textForm.location.x"
-      :location-y="textForm.location.y ? textForm.location.y : drag.y"
-      :location-z="drag.zIndex"
-      :t-width="dragText.width"
-      :t-height="dragText.height"
-      :is-active="drag.isActive"
       :dragForm="drag"
       @inputChange="inputChange"
       @dragStop="inputDragStop"
       @dragDel="dragDel"
+      @dragTextClick="dragTextClick"
     />
 
     <drag-img
@@ -25,7 +43,9 @@
       :is-active="drag.isActive"
       v-if="drag.isShow"
       :dragForm="drag"
+      @dragStop="inputDragStop"
       @dragDel="dragDel"
+      @dragTextClick="dragTextClick"
     />
 
     <drag-link
@@ -33,15 +53,10 @@
       v-if="drag.isShow"
       :key="drag.zIndex"
       :list-index="index"
-      :location-x="0"
-      :location-y="drag.y"
-      :location-z="drag.zIndex"
-      :t-width="dragLink.width"
-      :t-height="dragLink.height"
-      :is-active="drag.isActive"
       :dragForm="drag"
       @dragStop="inputDragStop"
       @dragDel="dragDel"
+      @dragTextClick="dragTextClick"
     />
 
     <drag-image-lists
@@ -49,13 +64,9 @@
       v-if="drag.isShow"
       :key="drag.zIndex"
       :list-index="index"
-      :location-x="0"
-      :location-y="drag.y"
-      :location-z="drag.zIndex"
-      :t-width="dragImg.width"
-      :t-height="dragImg.height"
-      :is-active="drag.isActive"
+      :dragForm="drag"
       @dragDel="dragDel"
+      @dragTextClick="dragTextClick"
     />
 
     <drag-video
@@ -63,15 +74,10 @@
       v-if="drag.isShow"
       :key="drag.zIndex"
       :list-index="index"
-      :location-x="0"
-      :location-y="drag.y"
-      :location-z="drag.zIndex"
-      :t-width="dragVideo.width"
-      :t-height="dragVideo.height"
-      :is-active="drag.isActive"
       :dragForm="drag"
       @dragStop="inputDragStop"
       @dragDel="dragDel"
+      @dragTextClick="dragTextClick"
     />
 
     <drag-audio
@@ -79,66 +85,13 @@
       v-if="drag.isShow"
       :key="drag.zIndex"
       :list-index="index"
-      :location-x="0"
-      :location-y="drag.y"
-      :location-z="drag.zIndex"
-      :t-width="dragAudio.width"
-      :t-height="dragAudio.height"
-      :is-active="drag.isActive"
       :dragForm="drag"
       @dragStop="inputDragStop"
       @dragDel="dragDel"
+      @dragTextClick="dragTextClick"
     />
 
-    <!-- setting  -->
-
-    <drag-text-setting
-      v-if="$store.state.editor.textSet"
-      :dragForm="this.$store.state.editor.dragTexts[this.$store.state.editor.textActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-img-setting
-      v-if="$store.state.editor.imgSet"
-      :dragForm="this.$store.state.editor.dragImages[this.$store.state.editor.imgActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-video-setting
-      v-if="$store.state.editor.videoSet"
-      :dragForm="this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @videoSourceChange="sourceChange"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-audio-setting
-      v-if="$store.state.editor.audioSet"
-      :dragForm="this.$store.state.editor.dragAudios[this.$store.state.editor.audioActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @audioSourceChange="sourceChange"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-link-setting
-      v-if="$store.state.editor.linkSet"
-      :dragForm="this.$store.state.editor.dragLinks[this.$store.state.editor.linkActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-  </div>
+  </vue-drag-resize>
 </template>
 
 <script>
@@ -148,14 +101,11 @@ import dragLink from '@/components/editor/dragItem/dragLink';
 import dragImageLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
-
-import dragTextSetting from '@/components/editor/dragSetting/dragTextSetting';
-import dragImgSetting from '@/components/editor/dragSetting/dragImgSetting';
-import dragLinkSetting from '@/components/editor/dragSetting/dragLinkSetting';
-import dragVideoSetting from '@/components/editor/dragSetting/dragVideoSetting';
-import dragAudioSetting from '@/components/editor/dragSetting/dragAudioSetting';
+import dragMxi from '@/util/dragMxi';
+import _ from '@/util/tools';
 
 export default {
+  mixins: [dragMxi.dragCom()],
   name: 'layoutMain',
   props: {
   },
@@ -166,11 +116,6 @@ export default {
     dragImageLists,
     dragVideo,
     dragAudio,
-    dragTextSetting,
-    dragImgSetting,
-    dragLinkSetting,
-    dragVideoSetting,
-    dragAudioSetting,
   },
   data() {
     return {
@@ -254,40 +199,12 @@ export default {
           h: 65,
         },
       },
-      settingForm: {
-        location: {
-          x: 700,
-          y: 65,
-        },
-      },
     };
   },
   methods: {
-    sourceChange(type, form, active) {
-      this.$store.state.editor[form][this.$store.state.editor[active]].sourceType = type;
-    },
     inputChange(text) { // 组件-文本值改变
-      this.textForm.content = text;
     },
-    inputLocationChange(form, val, active) { // 设置-文本组件位置变化
-      // if (type === 1) {
-      //   this[from].location.x = val;
-      // } else {
-      //   this[from].location.y = val;
-      // }
-      const dragItems = this.$store.state.editor[form];
-      dragItems[this.$store.state.editor[active]].location = val;
-      this.$store.commit('editor_update', {
-        [form]: dragItems,
-      });
-    },
-    inputSizeChange(form, val, active) {
-      const dragItems = this.$store.state.editor[form];
-      dragItems[this.$store.state.editor[active]].size = val;
-      this.$store.commit('editor_update', {
-        [form]: dragItems,
-      });
-    },
+
     inputDragStop(form, ev, index) { // 拖动组件同步设置
       const dragItems = this.$store.state.editor[form];
       const dragItem = dragItems[index];
@@ -300,26 +217,66 @@ export default {
         [form]: dragItems,
       });
     },
-    settingFixed() { // 锁定设置
-      this.settingForm.location.x = 600;
-      this.settingForm.location.y = 66;
+    dragTextClick(index, type) { // 点击组件
+      this.dragClick(index, type);
     },
-    dragDel(s, n) { // 删除当前编辑组件
+
+    dragDel(s, n, dragIndex) { // 删除当前编辑组件
       const { editor } = this.$store.state;
-      let { layerActive, layerLists, typeCat } = editor;
+      const { layerActive, layerLists, typeCat } = editor;
+      const lActive = layerActive === -1 ? this.getLayerActive(s, n) : layerActive;
       if (layerLists.length) {
-        const sort = s || layerLists[layerActive].sort;
-        const num = n || layerLists[layerActive].num;
+        const sort = s !== undefined ? s : layerLists[lActive].type;
+        const num = n !== undefined ? n : layerLists[lActive].num;
+        for (const k in typeCat) {
+          if (editor[typeCat[k][0]].length) {
+            editor[typeCat[k][0]].map((item) => {
+              if (item.dragIndex > dragIndex) {
+                item.dragIndex = item.zIndex = item.dragIndex - 1;
+              }
+            });
+          }
+        }
+
         const cat = typeCat[sort];
-        editor[cat[0]] = editor[cat[0]].filter((item, key) => key !== num);
+        editor[cat[0]] = editor[cat[0]].filter((item, key) => {
+          if (key !== num) {
+            // if(key>num){
+            //   item.dragIndex= item.dragIndex-1;
+            //   item.zIndex = item.zIndex-1;
+            // }
+            return item;
+          }
+        });
+
         editor[cat[2]] = false;
         if (!editor[cat[0]].length) {
           editor[cat[1]] = false;
         }
-        layerLists = editor[cat[0]].filter((item, key) => key !== layerActive);
-        editor.layerLists = layerLists;
+        editor.layerLists = layerLists.filter((item, key) => {
+          if (key !== lActive) {
+            if (item.type === sort && item.num > num) {
+              item.num -= 1;
+            }
+            return item;
+          }
+        });
+        editor.layerActive = -1;
+        editor.layoutKey -= 1;
         this.$store.commit('editor_update', editor);
       }
+    },
+    resizestop(ev) {
+      this.$store.commit('editor_update', {
+        phoneHeight: ev.height,
+      });
+    },
+    getLayerActive(sort, num) {
+      this.$store.state.editor.layerLists.map((item, key) => {
+        if (item.type === sort && item.num === num) {
+          return key;
+        }
+      });
     },
   },
   created() {
@@ -327,23 +284,55 @@ export default {
 };
 </script>
 
-<style>
-.setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 10px;
-  right: 266px;
-  width: 260px;
-  z-index: 1001;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
-  visibility: hidden;
-}
-.setting-show{
-  visibility: visible;
-}
+<style >
 .drag-item {
   position:absolute;
+}
+.phone-content {
+  position: absolute;
+  top: 64px;
+  /* padding-top: 1px;  */
+  left: 0;
+  width: 366px;
+  background-color: #fff;
+
+}
+ .phone-content>.vdr-stick.vdr-stick-bm{
+    height: 35px!important;
+    width: 375px!important;
+    z-index: 2001!important;
+    bottom: -35px!important;
+    left: 0;
+    margin-left: 0!important;
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid #e4e4e4;
+    box-shadow: none;
+  }
+  .phone-resize {
+  height: 35px;
+  width: 375px;
+  position: absolute;
+  bottom: -35px;
+  left: 0;
+  background-color: #fff;
+  /* border: 1px solid #e4e4e4; */
+  font-size: 16px;
+  line-height: 35px;
+  color: #323232;
+      cursor: ns-resize;
+      z-index: 2000;
+      text-align: center;
+}
+.resize-icon{
+  color: #EB5648;
+}
+.resize-up {
+      transform: rotate(90deg);
+}
+.resize-down {
+  transform: rotate(-90deg);
+}
+.phone-content.vdr.active:before {
+  outline: none;
 }
 </style>

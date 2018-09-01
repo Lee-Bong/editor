@@ -3,7 +3,7 @@ import md5 from 'js-md5';
 
 const STS_API = '/api/oss-sts';
 
-export default async function upload(f /* Blob[]? */) /* Promise<any>[] */ {
+export default async function upload(f) {
   const files = Array.isArray(f) ? f : [f];
   const response = await OSS.urllib.request(STS_API);
   const { data } = JSON.parse(response);
@@ -12,17 +12,17 @@ export default async function upload(f /* Blob[]? */) /* Promise<any>[] */ {
     accessKeySecret: data.AccessKeySecret,
     stsToken: data.SecurityToken,
   });
-
   const result = [];
-  for (let file of files) {
+  for (const file of files) {
     try {
       const ok = await getObjectMd5(file);
       const up = await client.put(ok, file);
       result.push(up);
-    } catch(ex) {
+    } catch (ex) {
       console.error(ex);
     }
   }
+  alert(JSON.stringify(result));
   return result;
 }
 

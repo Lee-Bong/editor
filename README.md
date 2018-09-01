@@ -19,16 +19,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Vue cli 开发框架
-
-https://cli.vuejs.org/zh/
-
-
-### Vue ui 可视化配置
-
-```
-vue ui
-```
-
-https://cli.vuejs.org/dev-guide/ui-api.html#project-local-plugins

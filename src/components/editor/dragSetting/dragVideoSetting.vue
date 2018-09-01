@@ -1,8 +1,7 @@
 <template>
   <div
-    :class="['setting-content', $store.state.editor.isVideoSet ? 'setting-show' : '']"
-    :style="{width: 280+'px', height: sHeight+'px',
-    left: setForm.location.x+'px', top: setForm.location.y+'px'}"
+    :class="['setting-content', $store.state.editor.isVideoSet ? 'setting-show' : '', 'video-setting']"
+    :style="{width: setForm.width+'px'}"
   >
   <!-- <vue-drag-resize
     class="setting-content"
@@ -26,23 +25,23 @@
           <el-radio v-model="dragForm.sourceType" @change="sourceChange('1')" label="1">本地上传</el-radio>
           <el-radio v-model="dragForm.sourceType" @change="sourceChange('2')" label="2">在线视频</el-radio>
         </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '1'"  label="选择视频：" size="mini">
+        <el-form-item v-if="dragForm.sourceType === '1'"  label="选择视频：" size="mini" class="video-el">
           <el-input :span="16" type="text" v-model="dragForm.textColor"></el-input>
         </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接：" size="mini">
+        <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接：" size="mini" class="video-el">
           <el-input type="text" v-model="dragForm.textColor"></el-input>
         </el-form-item>
-        <el-form-item label="视频封面：" size="mini">
+        <el-form-item label="视频封面：" size="mini" class="video-el">
           <el-input type="text" v-model="dragForm.textColor"></el-input>
         </el-form-item>
         <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange" :min="location.xmin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange" :min="location.ymin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
+          <el-input-number v-model="dragForm.location.x" @blur="locationChange" :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.y" @blur="locationChange" :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange" :min="size.wmin" :max="size.wmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange" :min="size.hmin" :max="size.hmax" label="描述文字" controls-position="right"></el-input-number>
+          <el-input-number v-model="dragForm.size.w" @blur="sizeChange" :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x" label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.size.h" @blur="sizeChange" :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y" label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         </el-form>
@@ -116,103 +115,8 @@ export default {
 </script>
 
 <style>
-.setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 10px;
-  right: 266px;
-  width: 260px;
-  z-index: 1001;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
-}
-.setting-title {
-  height: 31px;
-  padding-left: 15px;
-  padding-right: 15px;
-  line-height: 31px;
-  background-color: #f6f7f8;
-  border-bottom: 1px solid #d9d9d9;
-  text-align: left;
-  color: #8d9ea7;
-}
-.header-btn {
-  float: right;
-}
-.header-btn i {
-  cursor: pointer;
-  margin-left: 5px;
-}
-.header-btn i:hover {
-  color: #323232;
-}
-.setting {
-  padding: 5px;
-  background-color: #f5f5f5;
-  text-align: left;
-}
-.el-form-item__label {
-  padding-right: 0;
-}
-.el-form-item {
-  margin-bottom: 8px;
-}
-.el-radio + .el-radio,
-.el-form-item--mini.el-form-item {
-  margin-left: 5px;
-}
-.el-radio__label {
-  padding-left: 2px;
-}
-.el-input-number--mini {
-  width: 100px;
-  margin-left: 5px;
-}
-.el-input-number--mini .el-input__inner {
-  padding-left: 5px;
-  padding-right: 26px;
-}
-.el-input-number--mini .el-input-number__decrease,
-.el-input-number--mini .el-input-number__increase {
-  width: 20px;
-}
-.el-select.el-select--mini {
-  width: 100px;
-}
-
-.dec-label {
-  padding-left: 80px;
-  height: 30px;
-  line-height: 30px;
-  color: #323232;
-  font-size: 14px;
-  margin-top: -18px;
-}
-
-.dec-label label {
-  display: inline-block;
-  width: 80px;
-  text-align: center;
-  margin-top: -20px;
-}
-
-.dec-label label:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: auto;
-}
-.dec-label label:last-child {
-  margin-left: 50px;
-}
-.el-input-number--mini {
-  width: 100px!important;
-}
-.el-input-number.is-controls-right .el-input__inner {
-  padding-left: 5px!important;
-  padding-right: 34px!important;
-}
-.el-form-item__label {
-  padding-right: 5px!important;
+.video-el.el-form-item--mini .el-form-item__content {
+    display: inline-block;
+    width: 255px;
 }
 </style>

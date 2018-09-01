@@ -16,8 +16,10 @@
           <el-col :span="14">
             <el-button
               @click="saveEditor">保存草稿</el-button>
-            <el-button>预览</el-button>
-            <el-button type="primary" class="publish-btn">发布</el-button>
+            <el-button
+              @click="reviewEditor">预览</el-button>
+            <el-button type="primary" class="publish-btn"
+              @click="publishEditor">发布</el-button>
             <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
           </el-col>
         </el-row>
@@ -25,10 +27,24 @@
       <layout-left />
       <el-main>
         <div class="flxed-main" @click="onMainClick">
-          <div class="phone-container"
-          :style="{width: phoneWidth+'px', height: phoneHeight+'px'}">
-           <layoutMain />
+          <div class="phone-wrap"
+            :style="{height: wrapHeight+'px'}">
+            <div class="phone-container"
+              ref="phoneContainer"
+              :style="{width: phoneWidth+'px',
+                height: ($store.state.editor.phoneHeight+64)+'px'}">
+              <div class="top-banner"
+                @click="topBannerClick">
+                <div class="web-title">{{$store.state.page.title}}</div>
+              </div>
+              <layout-main />
+
+            </div>
+            <div class="phone-hidden"
+            :style="{width: phoneWidth+'px',
+                top: ($store.state.editor.phoneHeight + 64+ 37)+'px'}"></div>
           </div>
+          <layout-setting />
         </div>
         <div class="fixed-right">
         <layer />
@@ -41,6 +57,7 @@
 import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
+import layoutSetting from '@/components/editor/layout/layoutSetting';
 import _ from '@/util/tools';
 
 export default {
@@ -49,11 +66,12 @@ export default {
     layoutMain,
     layer,
     layoutLeft,
+    layoutSetting,
   },
   data() {
     return {
-      phoneWidth: 385, // 可视区宽高
-      phoneHeight: 750,
+      phoneWidth: 375, // 可视区宽高
+      phoneHeight: 667 + 65,
       dragText: {
         width: 375,
         height: 90,
@@ -66,6 +84,13 @@ export default {
         width: 100,
         height: 30,
       },
+      drag: {
+        width: 0,
+        height: 0,
+        top: 0,
+        left: 0,
+      },
+      wrapHeight: 667,
     };
   },
 
@@ -84,7 +109,7 @@ export default {
       const { typeCat, layerActive } = editor;
       let { layerLists } = editor;
       if (layerLists.length) {
-        const sort = s || layerLists[layerActive].sort;
+        const sort = s || layerLists[layerActive].type;
         const num = n || layerLists[layerActive].num;
         const cat = typeCat[sort];
         editor[cat[0]] = editor[cat[0]].filter((item, key) => key !== num);
@@ -97,19 +122,175 @@ export default {
         this.$store.commit('editor_update', editor);
       }
     },
+    topBannerClick() { // 点击页面顶部，显示页面设置
+      const { pageSet } = this.$store.state.page;
+      if (!pageSet) {
+        this.$store.dispatch('setting_tap', { pageSet: true });
+      }
+    },
+    resize(newRect) {
+      this.drag.width = newRect.width;
+      this.drag.height = newRect.height;
+      this.drag.top = newRect.top;
+      this.drag.left = newRect.left;
+    },
+    reviewEditor() { // 预览
+      this.getEditorJson();
+    },
+    publishEditor() { // 发布
+      this.getEditorJson();
+    },
+    getEditorJson() { // 生成预览与发布的json
+      const eJson = { editor: {} };
+      const { editor, page } = this.$store.state;
+      eJson.editor.page = {
+        title: page.title,
+        phoneWidth: page.phoneWidth,
+        phoneHeight: page.phoneHeight, // 可视区高度
+        shareTitle: page.shareTitle,
+        shareDec: page.shareDec,
+        shareImg: page.shareImg,
+        'background-color': page.backgroundColor,
+      };
+      const dragArr = [];
+      // todo 多图组件未添加
+      const {
+        dragTexts, dragImages, dragLinks, dragImageLists, dragVideos, dragAudios,
+      } = editor;
+      if (dragTexts.length) {
+        dragTexts.map((item, i) => {
+          dragArr.push({
+            type: 1,
+            content: item.content,
+            location: {
+              x: item.location.x,
+              y: item.location.y,
+            },
+            size: {
+              w: item.size.w,
+              h: item.size.h,
+            },
+            style: {
+              'font-size': parseInt(item.fontSize, 10),
+              'text-align': item.textAlign,
+              'text-color': item.textColor,
+              'z-index': item.zIndex,
+            },
+          });
+        });
+      }
+      if (dragImages.length) {
+        dragImages.map((item, i) => {
+          dragArr.push({
+            type: 2,
+            url: item.img,
+            location: {
+              x: item.loaction.x,
+              y: item.loaction.y,
+            },
+            size: {
+              w: item.size.w,
+              h: item.size.h,
+            },
+            style: {
+              'z-index': item.zIndex,
+            },
+          });
+        });
+      }
+      if (dragLinks.length) {
+        dragLinks.map((item, i) => {
+          dragArr.push({
+            type: 3,
+            appLink: item.appLink,
+            outLink: item.outLink,
+            location: {
+              x: item.location.x,
+              y: item.location.y,
+            },
+            size: {
+              w: item.size.w,
+              h: item.size.h,
+            },
+            style: {
+              'z-index': item.zIndex,
+            },
+            sourceType: item.sourceType, // 1.普通跳转 2. 唤起下载app
+            awakeLink: item.awakeLink,
+            iosLink: item.iosLink,
+            andLink: item.andLink,
+            yybLink: item.yybLink,
+          });
+        });
+      }
+      if (dragVideos.length) {
+        dragVideos.map((item, i) => {
+          dragArr.push({
+            type: 5,
+            source: item.source,
+            title: item.videoTitle,
+            loop: item.loop,
+            location: {
+              x: item.location.x,
+              y: item.location.y,
+            },
+            size: {
+              w: item.size.w,
+              h: item.size.h,
+            },
+            style: {
+              'z-index': item.zIndex,
+            },
+          });
+        });
+      }
+      if (dragAudios.length) {
+        dragAudios.map((item, i) => {
+          dragArr.push({
+            type: 6,
+            source: item.source,
+            title: item.audioTitle,
+            location: {
+              x: item.location.x,
+              y: item.location.y,
+            },
+            size: {
+              w: item.size.w,
+              h: item.size.h,
+            },
+            style: {
+              'z-index': item.zIndex,
+            },
+          });
+        });
+      }
+      eJson.editor.components = dragArr;
+
+      return eJson;
+    },
   },
   mounted() {
     // 读取保存数据
-    const ss = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":318.5,"isActive":true,"dragIndex":0,"content":"哈哈哈哈","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":318.5},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":true,"isTextSet":true,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"图层1","id":0,"sort":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
-    const saveData = JSON.parse(ss);
-    this.$store.commit('editor_update', saveData);
+    const editorData = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":100,"isActive":true,"dragIndex":0,"content":"哈哈哈哈","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":100},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":true,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"文本","id":0,"type":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
+    this.$store.commit('editor_update', JSON.parse(editorData));
+    const pageData = '';
+    this.$store.commit('page_update', JSON.parse(editorData));
+    this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
     const editor = this;
     window.onkeydown = (e) => {
       const evt = (e) || window.event;
       if (evt.keyCode && evt.keyCode === 8) {
-        editor.dragDel();
+        // editor.dragDel();
       }
     };
+    setInterval(() => {
+      _.now_time();
+    }, 1000);
+  },
+  updated() {
+    if (this.$store.state.editor.phoneHeight > this.wrapHeight) {
+      this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
+    }
   },
 
 };
@@ -118,6 +299,11 @@ export default {
 
 
 <style>
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
 .el-header {
   position: fixed;
   top: 0;
@@ -140,12 +326,6 @@ export default {
   border-right: 1px solid #ccd5db;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   z-index: 98;
-}
-
-.el-main {
-}
-
-.el-breadcrumb {
 }
 
 .help-icon {
@@ -216,12 +396,15 @@ export default {
 }
 
 .fixed-right {
-  position: fixed;
-  right: 0;
-  top: 56px;
-  bottom: 0;
+  position: relative;
+  float: right;
+  /* right: 0; */
+  /* top: 56px; */
+  /* bottom: 0; */
   width: 260px;
   z-index: 98;
+      margin-top: 40px;
+    margin-right: -19px;
   background-color: #fafafa;
   border-left: 1px solid #ccd5db;
   box-sizing: content-box;
@@ -275,7 +458,7 @@ export default {
   position: absolute;
   top: 56px;
   height: auto;
-  padding-bottom: 40px;
+  padding-bottom: 60px;
   left: 200px;
   right: 260px;
   display: flex;
@@ -284,28 +467,18 @@ export default {
 }
 .phone-container {
   position: relative;
-  /* background: url('../../static/images/phone.svg') no-repeat; */
-  width: 385px;
+  width: 375px;
   height: 731px;
   height: 631px;
-  /* top: 50%; */
-  top: 10px;
-  /* margin-top: -334px; */
-  /* background-size: contain; */
-  background-color: #ddd;
-  border-radius: 20px;
+  top: 0;
+  background-color: #fff;
+  border: 1px solid #e5e5d5;
+}
+.phone-container.active {
+  border: 1px solid #59c7f9;
 }
 
-.phone-content {
-  position: absolute;
-  /* top: 52px; */
-  top: 30px;
-  left: 5px;
-  width: 366px;
-  /* height: 667px; */
-  height: 567px;
-  background-color: #fff;
-}
+
 .el-button.el-button--text {
   color: #606266;
 }
@@ -355,5 +528,43 @@ body{
 .el-card.is-always-shadow {
   margin-top: 0;
 }
+
+.top-banner {
+  cursor: pointer;
+  background: url('../assets/images/page_banner.png') no-repeat center center;
+  background-size: 375px auto;
+  z-index: 10;
+  position: absolute;
+  width: 375px;
+  height: 64px;
+}
+
+.web-title{
+    height: 42px;
+    color: #fff;
+    font-size: 16px;
+    margin-top: 23px;
+    line-height: 42px;
+    padding-left: 60px;
+    padding-right: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.phone-wrap {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.phone-hidden {
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom:0;
+  z-index: 1050;
+}
+
 
 </style>

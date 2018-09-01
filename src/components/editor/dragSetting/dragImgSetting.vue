@@ -1,9 +1,8 @@
 <template>
-<div
-    :class="['setting-content', $store.state.editor.isImgSet ? 'setting-show' : '']"
-:style="{width: 280+'px', height: sHeight+'px',
-          left: setForm.location.x+'px', top: setForm.location.y+'px'}">
-
+  <div
+  :class="['setting-content', $store.state.editor.isImgSet ? 'setting-show' : '']"
+  :style="{width: setForm.width+'px',
+  }">
    <div class="setting-box">
      <div class="setting-title">
         <span>组件设置</span>
@@ -13,15 +12,57 @@
         </span>
       </div>
        <div class="setting">
-        <file-upload class="file-upload">+ 点击上传图片</file-upload>
-       </div>
+         <el-form ref="form">
+          <div class="upload-wrap" v-if="!this.fileSuccess">
+            <el-upload
+              :disabled="fileAble"
+              class="upload-demo"
+              drag
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :file-list="dragForm.imglist"
+              :on-success="onFileSuccess"
+              :on-error="onFileError"
+              :on-change="onFileChange"
+              list-type="picture"
+              :limit="limit"
+              :auto-upload="false"
+              accept=".png,.gif,.jpeg, .jpg">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
+              <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
+            </el-upload>
+          </div>
+          <div class="file-info" v-if="this.fileSuccess">
+            <img-review-item :imgObj='dragForm.img'/>
+            <el-form-item label="位置：" size="mini">
+              <el-input-number v-model="dragForm.location.x" @blur="locationChange"
+                :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+                label="描述文字" controls-position="right" class="num-input"></el-input-number>
+              <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+                :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+                label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <div class="dec-label"> <label>X</label> <label> Y</label></div>
+            <el-form-item label="尺寸：" size="mini">
+              <el-input-number v-model="dragForm.size.w" @blur="sizeChange(1)"
+                :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+                 label="描述文字" controls-position="right" class="num-input"></el-input-number>
+              <el-input-number v-model="dragForm.size.h" @blur="sizeChange(2)"
+                :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+                 label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <div class="dec-label"> <label>宽</label> <label>高</label></div>
+          </div>
+         </el-form>
+      </div>
     </div>
-   </div>
+  </div>
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
 import imgUpload from 'vue-core-image-upload';
+import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
+import oss from '@/util/oss';
 
 export default {
   name: 'DragImgSetting',
@@ -31,11 +72,28 @@ export default {
   },
   components: {
     FileUpload: imgUpload,
+    imgReviewItem,
   },
   data() {
     return {
+      // imgObj: {
+      //   source: 'http://pic30.photophoto.cn/20140310/0008020974539766_b.jpg',
+      //   alt: '这是图片标题',
+      // },
+      fileSuccess: false,
+      fileAble: false,
+      fileFail: false,
       files: [],
       sHeight: 500,
+      limit: 1,
+      location: {
+        xmin: 0,
+        ymin: 0,
+      },
+      size: {
+        wmin: 0,
+        hmin: 0,
+      },
     };
   },
   computed: {
@@ -48,99 +106,65 @@ export default {
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isImgSet: false });
     },
-    textInputFocus() {
+    locationChange() { // 位置值发生改变
+      this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
     },
-    textInputChange() {
+    sizeChange(opt) { // 大小值发生改变
+      if (opt === 1) {
+        // todo 300为图片的在375下自适应的真实高度
+        this.dragForm.size.h = (this.dragForm.size.w * 300) / 375;
+      } else {
+        this.dragForm.size.w = (this.dragForm.size.w * 375) / 300;
+      }
+      this.$emit('input-sizeChange', 'dragImages', this.dragForm.size, 'imgActive');
+      this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
     },
-    handleChange() {
-
+    onFileSuccess(rep, file) {
+      this.fileSuccess = true;
+      this.fileAble = true;
+      this.$message({
+        message: '图片上传成功～',
+        type: 'success',
+        duration: 2000,
+      });
+      const drags = this.$store.state.editor.dragImages[this.$store.state.editor.imgActive];
+      drags.img = {
+        title: file.name,
+        url: file.url,
+      };
+      this.$store.commit('editor_update', { dragImages: drags });
+    },
+    onFileError(err, file, fileList) { // 图片上传失败
+      // this.fileFail = true;
+      // this.fileAble = false;
+      // this.$message({
+      //   message: '图片上传失败，请重试～',
+      //   type: 'error',
+      //   duration: 2000,
+      // });
+      const { dragImages, imgActive } = this.$store.state.editor;
+      const drags = dragImages[imgActive];
+      drags.img = {
+        title: 'sss',
+        url: 'http://pic30.photophoto.cn/20140310/0008020974539766_b.jpg',
+      };
+      dragImages[imgActive] = drags;
+      this.$store.commit('editor_update', { dragImages });
+      this.fileSuccess = true;
+    },
+    onFileChange(file) {
+      // if (!this.fileFail) {
+      //   this.fileAble = true;
+      //   return;
+      // }
+      this.fileFail = false;
+      oss.upload();
     },
   },
 };
 </script>
 
 <style>
-.setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 400px;
-  right: 266px;
-  width: 260px;
-  z-index: 1000;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
-  overflow: hidden;
-}
-.setting-title {
-  height: 31px;
-  padding-left: 15px;
-  padding-right: 5px;
-  line-height: 31px;
-  background-color: #f6f7f8;
-  border-bottom: 1px solid #d9d9d9;
-  border-bottom: 1px solid #d9d9d9;
-  text-align: left;
-}
-.setting {
-  padding: 5px;
-  background-color: #fff;
-  text-align: left;
-}
-.el-form-item__label {
-  padding-right: 0;
-}
-.el-form-item {
-  margin-bottom: 8px;
-}
-.el-radio + .el-radio,
-.el-form-item--mini.el-form-item {
-  margin-left: 5px;
-}
-.el-radio__label {
-  padding-left: 2px;
-}
-.el-input-number--mini {
-  width: 100px;
-  margin-left: 5px;
-}
-.el-input-number--mini .el-input__inner {
-  padding-left: 5px;
-  padding-right: 26px;
-}
-.el-input-number--mini .el-input-number__decrease,
-.el-input-number--mini .el-input-number__increase {
-  width: 20px;
-}
-.el-select.el-select--mini {
-  width: 100px;
-}
-
-.dec-label {
-  padding-left: 80px;
-  height: 30px;
-  line-height: 30px;
-  color: #323232;
-  font-size: 14px;
-  margin-top: -18px;
-}
-
-.dec-label label {
-  display: inline-block;
-  width: 80px;
-  text-align: center;
-  margin-top: -20px;
-}
-
-.dec-label label:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: auto;
-}
-.dec-label label:last-child {
-  margin-left: 50px;
-}
-
 .file-upload {
   width: 220px;
   height: 100px;
@@ -163,5 +187,37 @@ export default {
 .file-upload:active {
   color: #fff;
   background-color: #409eff;
+}
+.upload-wrap {
+  position: relative;
+}
+.upload-wrap .el-upload-dragger {
+  height: 160px;
+  width: 320px;
+  color: #409eff;
+  margin-left: 15px;
+}
+.upload-dec {
+  font-size: 12px;
+    position: absolute;
+    color: #999;
+    left: 130px;
+    bottom: 10px;
+}
+.file-upload:active .upload-dec {
+  color: #fff;
+}
+.upload-wrap .el-upload__tip  {
+    position: absolute;
+    top: 120px;
+    /* left: 100px; */
+    width: 100%;
+    text-align: center;
+}
+.upload-wrap .el-upload-list {
+  margin: 16px;
+}
+.upload-wrap .el-upload-list__item {
+  outline: none;
 }
 </style>

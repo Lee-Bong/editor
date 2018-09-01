@@ -28,7 +28,7 @@ export default {
     linkSet: false, // 是否显示热区设置
     isLinkSet: false, // 是否显示文本设置
     layerLists: [], // 图层管理,
-    layerActive: 0,
+    layerActive: 0, // 值为-1表示当前没有任何激活图层
     typeCat: {
       1: ['dragTexts', 'textSet', 'isTextSet', 'textActive'],
       2: ['dragImages', 'imgSet', 'isImgSet', 'imgActive'],
@@ -37,5 +37,6 @@ export default {
       5: ['dragVideos', 'videoSet', 'isVideoSet', 'videoActive'],
       6: ['dragAudios', 'audioSet', 'isAudioSet', 'audioActive'],
     },
+    pageSet: true,
   },
 };

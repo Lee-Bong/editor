@@ -1,14 +1,13 @@
 <template>
-<el-aside width="200px">
+<el-aside width="200px" class="left-btns">
  <el-card v-for="(com, index) in edComponets" :key="index">
     <div slot="header">
     {{com.kind}}
     </div>
     <el-button v-for="(list, i) in com.list" :key="i" type="text" class="ed-com"
-        @click="dragItemClick(list.type)"
-        >
-        <icon :name="list.icon"></icon>
-        <span class="el-com-text">{{list.text}}</span>
+      @click="dragItemClick(list.type)">
+      <icon :name="list.icon"></icon>
+      <span class="el-com-text">{{list.text}}</span>
     </el-button>
 </el-card>
 </el-aside>
@@ -46,7 +45,7 @@ export default {
   methods: {
     dragItemClick(type) { // 添加组件
       const zIndex = this.$store.state.editor.layoutKey;
-      const sort = type; // 组件类型
+      let layerName;
       let num = 0; // 组件类型索引
       const updateEditor = {
         isTextSet: false,
@@ -68,10 +67,11 @@ export default {
           const textTop = this.$store.state.editor.phoneHeight / 2 - 30 / 2;
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
+          layerName = `文本${!num ? '' : num + 1}`;
           drag = _.textActiveOff(drag, { index: 0, isAll: true });
           drag.push({
             isShow: true,
-            zIndex,
+            zIndex: 1000,
             y: textTop,
             isActive: true,
             dragIndex: zIndex,
@@ -101,13 +101,22 @@ export default {
           const zIndex2 = this.$store.state.editor.dragImages.length;
           const drag2 = this.$store.state.editor.dragImages;
           num = drag2.length;
+          layerName = `图片${!num ? '' : num + 1}`;
           drag2.push({
             isShow: true,
-            zIndex,
+            zIndex: 1000,
             y: textTop2,
             isActive: true,
             dragIndex: zIndex,
-            img: '',
+            img: {},
+            location: {
+              x: 0,
+              y: 0,
+            },
+            size: {
+              w: 375,
+              h: 300,
+            },
           });
           newEditor = {
             imgSet: true,
@@ -122,10 +131,11 @@ export default {
           const zIndex3 = this.$store.state.editor.dragLinks.length;
           let drag3 = this.$store.state.editor.dragLinks;
           num = drag3.length;
+          layerName = `热区${!num ? '' : num + 1}`;
           drag3 = _.textActiveOff(drag3, { index: 0, isAll: true });
           drag3.push({
             isShow: true,
-            zIndex,
+            zIndex: 1000,
             y: textTop3,
             isActive: true,
             dragIndex: zIndex,
@@ -139,11 +149,17 @@ export default {
               w: 100,
               h: 30,
             },
+            sourceType: '1', // 1.跳转 2.唤起
+            awakeLink: '',
+            iosLink: '',
+            andLink: '',
+            yybLink: '',
+
           });
           newEditor = {
             linkSet: true,
             isLinkSet: true,
-            dragLInks: drag3,
+            dragLinks: drag3,
             linkActive: num,
             layoutKey: zIndex + 1,
           };
@@ -153,19 +169,29 @@ export default {
           // const zIndex4 = this.$store.state.editor.dragImageLists.length;
           const drag4 = this.$store.state.editor.dragImageLists;
           num = drag4.length;
+          layerName = `多图拼接${!num ? '' : num + 1}`;
           drag4.push({
             isShow: true,
-            zIndex,
+            zIndex: 1000,
             y: textTop4,
             isActive: true,
             dragIndex: zIndex,
+            location: {
+              x: 0,
+              y: 0,
+            },
+            size: {
+              w: 375,
+              h: 300,
+            },
+            imglist: [],
           });
           newEditor = {
             imgListSet: true,
-            dragTexts: drag4,
+            isImgListSet: true,
+            dragImageLists: drag4,
             imgListActive: num,
             layoutKey: zIndex + 1,
-            isImgListSet: true,
           };
           break;
         case 5:
@@ -173,10 +199,11 @@ export default {
           // const zIndex5 = this.$store.state.editor.dragVideos.length;
           let drag5 = this.$store.state.editor.dragVideos;
           num = drag5.length;
+          layerName = `视频${!num ? '' : num + 1}`;
           drag5 = _.textActiveOff(drag5, { index: 0, isAll: true });
           drag5.push({
             isShow: true,
-            zIndex,
+            zIndex: 1000,
             y: textTop5,
             isActive: true,
             dragIndex: zIndex,
@@ -206,10 +233,11 @@ export default {
           // const zIndex6 = this.$store.state.editor.dragAudios.length;
           let drag6 = this.$store.state.editor.dragAudios;
           num = drag6.length;
+          layerName = `音频${!num ? '' : num + 1}`;
           drag6 = _.textActiveOff(drag6, { index: 0, isAll: true });
           drag6.push({
             isShow: true,
-            zIndex,
+            zIndex: 1000,
             y: textTop6,
             isActive: true,
             dragIndex: zIndex + 1,
@@ -240,16 +268,20 @@ export default {
       layerLists.unshift({
         display: true, // 是否显示
         lock: true, // 是否可以编辑
-        name: `图层${zIndex + 1}`, // 图层名
+        name: `${layerName}`, // 图层名
         id: num,
-        sort,
+        type,
         num,
+        zIndex,
         editing: false,
       });
       this.$store.commit('editor_update', Object.assign({}, updateEditor, newEditor, {
         layerLists,
         layerActive: 0,
       }));
+      if (this.$store.state.page.pageSet) {
+        this.$store.commit('page_update', { pageSet: false });
+      }
     },
   },
 };

@@ -8,6 +8,7 @@
         <div
         v-for="(layer, index) in $store.state.editor.layerLists"
         :key="index"
+        :index="layer.zIndex"
         :class="['dargDiv', {active: $store.state.editor.layerActive==index},'layer-item']"
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
@@ -27,9 +28,11 @@
 import VueDragResize from 'vue-drag-resize';
 import VueDraggable from 'vuedraggable';
 import Sortable from 'sortable';
+import dragMxi from '@/util/dragMxi';
 import _ from '@/util/tools';
 
 export default {
+  mixins: [dragMxi.dragCom()],
   name: 'DragSetting',
   props: {},
   components: {
@@ -71,16 +74,9 @@ export default {
       this.$store.dispatch('layerMove', { layerLists, newIndex });
     },
     layerclick(drag, index) { // 单击图层
-      const dragTag = this.$store.state.editor.typeCat[drag.sort];
-      let drags = this.$store.state.editor[dragTag[0]];
-      drags = _.textActiveOff(drags, { index: drag.num });
-      this.$store.commit('editor_update', {
-        [dragTag[0]]: drags,
-        layerActive: index,
-        [dragTag[1]]: true,
-        [dragTag[2]]: true,
-        [dragTag[3]]: drag.num,
-      });
+      if (this.$store.state.editor.layerActive == index) return false;
+      const { type, num } = drag;
+      this.dragClick(num, type);
     },
     layerDbclick(index) { // 双击图层
       const layouts = this.$store.state.editor.layerLists;
@@ -104,19 +100,18 @@ export default {
   updated() {
   },
 
-
 };
 </script>
 
 <style>
 .layer-drag {
-  position: absolute;
+  /* position: absolute;
   top: 51px;
   right: 0px;
-  left: 0;
+  left: 0; */
   z-index: 99999;
 }
-.setting-content {
+/* .setting-content {
   position: fixed;
   top: 66px;
   bottom: 10px;
@@ -126,7 +121,7 @@ export default {
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
-}
+} */
 .setting-title {
   height: 31px;
   padding-left: 15px;
@@ -149,7 +144,7 @@ export default {
 }
 .setting {
   padding: 5px;
-  background-color: #f5f5f5;
+  background-color: #fff;
   text-align: left;
 }
 .el-form-item__label {

@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from '../util/tools';
-import editor from './editor.js';
+import editor from './editor';
+import page from './page';
 
 Vue.use(Vuex);
 export default new Vuex.Store({
@@ -10,6 +11,7 @@ export default new Vuex.Store({
   },
   modules: {
     editor,
+    page,
   },
   mutations: {
     inactive_drags(state, payload) {
@@ -44,10 +46,27 @@ export default new Vuex.Store({
     editor_update(state, payload) {
       state.editor = $.extend(state.editor, payload);
     },
+    page_update(state, payload) { // 页面信息更新
+      state.page = $.extend(state.page, payload);
+    },
   },
   actions: {
     layerMove({ commit }, payload) {
       commit('layer_move', payload);
+    },
+    setting_tap({ commit, state }, payload) {
+      const update = {};
+      const { typeCat } = state.editor;
+      for (const k in typeCat) {
+        const tag = typeCat[k][2];
+        if (state.editor[tag]) {
+          update[tag] = false;
+        }
+      }
+      if (JSON.stringify(update) !== '{}') {
+        commit('editor_update', update);
+      }
+      commit('page_update', payload);
     },
   },
 });

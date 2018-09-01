@@ -1,6 +1,6 @@
 <template>
     <vue-drag-resize
-      :isActive="isActive"
+      :isActive="dragForm.isActive"
       :w="dragForm.size.w"
       :h="dragForm.size.h"
       :sticks="['tm','bm','ml','mr']"
@@ -21,7 +21,7 @@
       >
 
       <i class="el-icon-circle-close-outline drag-del"
-      v-if="isActive"
+      v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
       <textarea class="drag-text"
@@ -50,28 +50,8 @@ export default {
     'vue-drag-resize': VueDragResize,
   },
   props: {
-    dragForm: Object,
-    dragIndex: Number,
-    isShow: Boolean,
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-    locationX: {
-      type: Number,
-      default: 0,
-    },
-    locationY: {
-      type: Number,
-      default: 0,
-    },
-    locationZ: {
-      type: Number,
-      default: 0,
-    },
-    tWidth: Number,
-    tHeight: Number,
     listIndex: Number,
+    dragForm: Object,
   },
   data() {
     return {
@@ -91,12 +71,7 @@ export default {
 
   methods: {
     dragTextClick(index) {
-      const newEditor = this.deActiveArr(index);
-      const layerActive = this.updateLayer(index, 1);
-      this.$store.commit('editor_update', Object.assign(newEditor, {
-        layerActive,
-      }));
-      this.$refs.inputCont.focus();
+      this.$emit('dragTextClick', index, 1);
     },
     onResezing(obj) {
       this.drag.width = newRect.width;
@@ -122,7 +97,7 @@ export default {
     },
     // 删除组件
     dragDel(index) {
-      this.$emit('getDelLayer', 1, index);
+      this.$emit('dragDel', 1, index, this.dragForm.dragIndex);
       // this.$store.commit('del_drag', {index, arr: this.dragName, active: 'isTextSet'});
     },
     dragDeactivated(index) { // 点击组件外区域
@@ -138,36 +113,7 @@ export default {
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
-    // tools
-    deActiveArr(index) {
-      const updateEditor = {};
-      for (const item in this.$store.state.editor.typeCat) {
-        const form = this.$store.state.editor.typeCat[item];
-        const lists = this.$store.state.editor[form[0]];
 
-        if (lists.length) {
-          if (this.dragName === form[0]) {
-            updateEditor[form[0]] = _.textActiveOff(lists, { index });
-            updateEditor[form[2]] = true;
-            updateEditor[form[3]] = index;
-          } else {
-            updateEditor[form[0]] = _.textActiveOff(lists, { index: 0, isAll: true });
-            updateEditor[form[2]] = false;
-          }
-        }
-      }
-      return updateEditor;
-    },
-    updateLayer(index) {
-      const layers = this.$store.state.editor.layerLists;
-      let i;
-      layers.map((item, key) => {
-        if (item.sort === 1 && item.num === index) {
-          i = key;
-        }
-      });
-      return i;
-    },
   },
 
   mounted() {
@@ -175,13 +121,13 @@ export default {
 
   updated() {
     // 修复点击删除的时候，
-    if (this.listIndex !== this.$store.state.editor.textActive) {
-      const lists = this.$store.state.editor.dragTexts;
-      lists[this.listIndex].isActive = false;
-      this.$store.commit('editor_update', {
-        dragTexts: lists,
-      });
-    }
+    // if (this.listIndex !== this.$store.state.editor.textActive) {
+    //   const lists = this.$store.state.editor.dragTexts;
+    //   lists[this.listIndex].isActive = false;
+    //   this.$store.commit('editor_update', {
+    //     dragTexts: lists,
+    //   });
+    // }
   },
 };
 </script>
