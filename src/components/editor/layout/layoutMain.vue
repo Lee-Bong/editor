@@ -229,10 +229,13 @@ export default {
         const num = n !== undefined ? n : layerLists[lActive].num;
         for (const k in typeCat) {
           if (editor[typeCat[k][0]].length) {
-            editor[typeCat[k][0]].map((item) => {
+            editor[typeCat[k][0]].map((item, i) => {
               if (item.dragIndex > dragIndex) {
-                item.dragIndex = item.zIndex = item.dragIndex - 1;
+                const ke = editor[typeCat[k][0]][i].dragIndex - 1;
+                editor[typeCat[k][0]][i].dragIndex = ke;
+                editor[typeCat[k][0]][i].zIndex = ke;
               }
+              return true;
             });
           }
         }
@@ -246,6 +249,7 @@ export default {
             // }
             return item;
           }
+          return true;
         });
 
         editor[cat[2]] = false;
@@ -255,7 +259,7 @@ export default {
         editor.layerLists = layerLists.filter((item, key) => {
           if (key !== lActive) {
             if (item.type === sort && item.num > num) {
-              item.num -= 1;
+              layerLists[key].num -= 1;
             }
             return item;
           }

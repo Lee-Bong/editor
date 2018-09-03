@@ -21,7 +21,7 @@ export default async function upload(f) {
       const up = await client.put(ok, file);
       result.push(up);
     } catch (ex) {
-      console.error(ex);
+      // console.error(ex);
     }
   }
   alert(JSON.stringify(result));

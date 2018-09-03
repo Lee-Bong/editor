@@ -228,7 +228,7 @@ export default {
       const dragArr = [];
       // todo 多图组件未添加
       const {
-        dragTexts, dragImages, dragLinks, dragImageLists, dragVideos, dragAudios,
+        dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
       } = editor;
       if (dragTexts.length) {
         dragTexts.map((item) => {
