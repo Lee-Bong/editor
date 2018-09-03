@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-box">
+  <div class="editor-box" @click="hidePanel">
     <el-container>
       <el-header>
         <el-row class="header-flex">
@@ -26,7 +26,7 @@
       </el-header>
       <layout-left />
       <el-main>
-        <div class="flxed-main" @click="onMainClick">
+        <div class="flxed-main">
           <div class="phone-wrap"
             :style="{height: wrapHeight+'px'}">
             <div class="phone-container"
@@ -58,9 +58,11 @@ import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
+import dragMxi from '@/util/dragMxi';
 import _ from '@/util/tools';
 
 export default {
+  mixins: [dragMxi.dragCom()],
   name: 'editor',
   components: {
     layoutMain,
@@ -95,9 +97,77 @@ export default {
   },
 
   methods: {
-    onMainClick(e) {
-      console.log('e', e);
-      console.log('e.offsetX+e.offsetY', e);
+    hidePanel(event) { // todo 跟添加图层选中冲突
+      const dragItems = document.getElementsByClassName('drag-item');
+      const layerItems = document.getElementsByClassName('layer-item');
+      const layerAdd = document.getElementsByClassName('ed-com');
+      const dragDel = document.getElementsByClassName('drag-del');
+      const settingWrap = document.getElementsByClassName('setting-wrap');
+      const topBanner = document.getElementsByClassName('top-banner');
+      let isEnd = false;
+      if (topBanner[0].contains(event.target)) {
+        isEnd = true;
+        return false;
+      }
+      if (!isEnd && settingWrap.length) {
+        if (settingWrap[0].contains(event.target)) {
+          isEnd = true;
+          return false;
+        }
+      }
+      if (!isEnd && dragItems.length) {
+        const len = dragItems.length;
+        for (let i = 0; i < len; i++) {
+          if (dragItems[i].contains(event.target)) {
+            isEnd = true;
+            break;
+          }
+        }
+      }
+      if (!isEnd && layerItems.length) {
+        const len1 = layerItems.length;
+        for (let i = 0; i < len1; i++) {
+          if (layerItems[i].contains(event.target)) {
+            isEnd = true;
+            break;
+          }
+        }
+      }
+      if (!isEnd && dragDel.length) {
+        const len3 = dragDel.length;
+        for (let i = 0; i < len3; i++) {
+          if (dragDel[i].contains(event.target)) {
+            isEnd = true;
+            break;
+          }
+        }
+      }
+      if (!isEnd && layerAdd.length) {
+        const len2 = layerAdd.length;
+        for (let i = 0; i < len2; i++) {
+          if (layerAdd[i].contains(event.target)) {
+            isEnd = true;
+            break;
+          }
+        }
+      }
+      // alert(isEnd);
+      if (!isEnd) { // 点击区域外，组件激活状态消失
+        const layerCur = document.getElementsByClassName('layer-item active');
+        if (layerCur.length) {
+          layerCur[0].classList.remove('active');
+        }
+        // 移除组件的激活状态
+        const { editor, page } = this.$store.state;
+        const { layerActive } = editor;
+        if (page.pageSet) {
+          this.$store.commit('page_update', { pageSet: false });
+        }
+
+        if (layerActive !== -1) {
+          this.dragClick(-1);
+        }
+      }
     },
     saveEditor() { // 保存草稿
       // const editor = this.$store.state.editor;
@@ -126,6 +196,9 @@ export default {
       const { pageSet } = this.$store.state.page;
       if (!pageSet) {
         this.$store.dispatch('setting_tap', { pageSet: true });
+      }
+      if (this.$store.state.editor.layerActive !== -1) {
+        this.dragClick(-2);
       }
     },
     resize(newRect) {
@@ -158,7 +231,7 @@ export default {
         dragTexts, dragImages, dragLinks, dragImageLists, dragVideos, dragAudios,
       } = editor;
       if (dragTexts.length) {
-        dragTexts.map((item, i) => {
+        dragTexts.map((item) => {
           dragArr.push({
             type: 1,
             content: item.content,
@@ -177,10 +250,11 @@ export default {
               'z-index': item.zIndex,
             },
           });
+          return true;
         });
       }
       if (dragImages.length) {
-        dragImages.map((item, i) => {
+        dragImages.map((item) => {
           dragArr.push({
             type: 2,
             url: item.img,
@@ -196,10 +270,11 @@ export default {
               'z-index': item.zIndex,
             },
           });
+          return true;
         });
       }
       if (dragLinks.length) {
-        dragLinks.map((item, i) => {
+        dragLinks.map((item) => {
           dragArr.push({
             type: 3,
             appLink: item.appLink,
@@ -221,10 +296,11 @@ export default {
             andLink: item.andLink,
             yybLink: item.yybLink,
           });
+          return true;
         });
       }
       if (dragVideos.length) {
-        dragVideos.map((item, i) => {
+        dragVideos.map((item) => {
           dragArr.push({
             type: 5,
             source: item.source,
@@ -242,10 +318,11 @@ export default {
               'z-index': item.zIndex,
             },
           });
+          return true;
         });
       }
       if (dragAudios.length) {
-        dragAudios.map((item, i) => {
+        dragAudios.map((item) => {
           dragArr.push({
             type: 6,
             source: item.source,
@@ -262,6 +339,7 @@ export default {
               'z-index': item.zIndex,
             },
           });
+          return true;
         });
       }
       eJson.editor.components = dragArr;
@@ -273,16 +351,9 @@ export default {
     // 读取保存数据
     const editorData = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":100,"isActive":true,"dragIndex":0,"content":"哈哈哈哈","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":100},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":true,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"文本","id":0,"type":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
     this.$store.commit('editor_update', JSON.parse(editorData));
-    const pageData = '';
+    // const pageData = '';
     this.$store.commit('page_update', JSON.parse(editorData));
     this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
-    const editor = this;
-    window.onkeydown = (e) => {
-      const evt = (e) || window.event;
-      if (evt.keyCode && evt.keyCode === 8) {
-        // editor.dragDel();
-      }
-    };
     setInterval(() => {
       _.now_time();
     }, 1000);
@@ -313,7 +384,7 @@ body {
   width: 100%;
   overflow: hidden;
   border-bottom: 1px solid #ccd5db;
-  z-index: 100;
+  z-index: 1020;
 }
 
 .el-aside {

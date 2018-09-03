@@ -17,10 +17,12 @@
           <el-input type="text" v-model="dragForm.title" placeholder="H5标题，最多输入10个字"></el-input>
         </el-form-item>
         <el-form-item label="分享标题：" size="mini">
-          <el-input type="text" v-model="dragForm.shareTitle" placeholder="微信分享标题，最多输入15个字"></el-input>
+          <el-input type="text" v-model="dragForm.shareTitle"
+            placeholder="微信分享标题，最多输入15个字"></el-input>
         </el-form-item>
         <el-form-item label="分享描述：" size="mini">
-          <el-input type="text" v-model="dragForm.shareDec" placeholder="微信分享描述，最多输入40个字"></el-input>
+          <el-input type="text" v-model="dragForm.shareDec"
+            placeholder="微信分享描述，最多输入40个字"></el-input>
         </el-form-item>
         <el-form-item label="分享缩略图：" size="mini">
           <el-input type="text" v-model="dragForm.shareImg"></el-input>
@@ -37,8 +39,6 @@
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
-
 export default {
   name: 'DragSetting',
   props: {

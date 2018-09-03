@@ -23,7 +23,6 @@
 
 </template>
 <script>
-import $ from 'jquery';
 import VueDragResize from 'vue-drag-resize';
 
 export default {
@@ -74,7 +73,7 @@ export default {
       if (index !== 1000) this.beforeZ = index;
       this.$store.commit('inactive_drags', { index, arr: this.dragName });
     },
-    onResezing(obj) {
+    onResezing(newRect) {
       this.drag.width = newRect.width;
       this.drag.height = newRect.height;
       this.drag.top = newRect.top;

@@ -1,6 +1,6 @@
 <template>
-  <div
-    :class="['setting-content', $store.state.editor.isImgListSet ? 'setting-show' : '', 'link-setting']"
+  <div :class="['setting-content', $store.state.editor.isImgListSet
+    ? 'setting-show' : '', 'link-setting']"
     :style="{width: setForm.width+'px'}"
   >
 
@@ -23,8 +23,12 @@
     <div class="setting">
       <el-form ref="form">
         <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange" :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange" :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
+            :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+            :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+            label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <div class="upload-wrap">
@@ -61,8 +65,6 @@
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
-import imgUpload from 'vue-core-image-upload';
 
 export default {
   name: 'DragSetting',
@@ -71,7 +73,6 @@ export default {
     setForm: Object,
   },
   components: {
-    FileUpload: imgUpload,
   },
   data() {
     return {
@@ -108,20 +109,22 @@ export default {
     onFileSuccess(rep, file, fileList) {
       this.fileSet(fileList);
     },
-    onFileError(err, file, fileList) { // 图片上传失败
-      alert('图片上传失败');
+    onFileError() { // err, file, fileList图片上传失败
     },
     onFileRemove(file, fileList) {
       this.fileSet(fileList);
     },
     fileSet(fileList) {
       const { dragImageLists, imgListActive } = this.$store.state.editor;
-      fileList.length && fileList.map((item) => {
-        dragImageLists[imgListActive].imglist.push({
-          name: item.name, // todo 需要图片原本名
-          url: URL.createObjectURL(item.raw),
+      if (fileList.length) {
+        fileList.map((item) => {
+          dragImageLists[imgListActive].imglist.push({
+            name: item.name, // todo 需要图片原本名
+            url: URL.createObjectURL(item.raw),
+          });
+          return true;
         });
-      });
+      }
       this.$store.commit('editor_update', { dragImageLists });
     },
     settingFixed() { // 锁定设置
@@ -134,17 +137,15 @@ export default {
       this.$emit('input-locationChange', 'dragImageLists', this.dragForm.location, 'imgListActive');
     },
 
-    imageUploading(res) {
+    imageUploading() {
 
     },
-    errorHandle(res) { // 图片上传异常
+    errorHandle() { // 图片上传异常
 
     },
 
   },
-  mounted() {
-    console.log('update');
-  },
+
 };
 </script>
 <style>

@@ -64,7 +64,8 @@ export default {
       let newEditor = {};
       switch (type) {
         case 1:
-          const textTop = this.$store.state.editor.phoneHeight / 2 - 30 / 2;
+        {
+          const textTop = (this.$store.state.editor.phoneHeight / 2) - (30 / 2);
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
@@ -81,7 +82,7 @@ export default {
             textColor: 'rgba(19, 206, 102, 0.8)',
             location: {
               x: 0,
-              y: this.$store.state.editor.phoneHeight / 2 - 30 / 2,
+              y: (this.$store.state.editor.phoneHeight / 2) - (30 / 2),
             },
             size: {
               w: 375,
@@ -96,9 +97,10 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
         case 2:
+        {
           const textTop2 = 0;
-          const zIndex2 = this.$store.state.editor.dragImages.length;
           const drag2 = this.$store.state.editor.dragImages;
           num = drag2.length;
           layerName = `图片${!num ? '' : num + 1}`;
@@ -126,9 +128,10 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
         case 3:
+        {
           const textTop3 = 0;
-          const zIndex3 = this.$store.state.editor.dragLinks.length;
           let drag3 = this.$store.state.editor.dragLinks;
           num = drag3.length;
           layerName = `热区${!num ? '' : num + 1}`;
@@ -164,7 +167,9 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
         case 4:
+        {
           const textTop4 = 0;
           // const zIndex4 = this.$store.state.editor.dragImageLists.length;
           const drag4 = this.$store.state.editor.dragImageLists;
@@ -194,7 +199,9 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
         case 5:
+        {
           const textTop5 = 0;
           // const zIndex5 = this.$store.state.editor.dragVideos.length;
           let drag5 = this.$store.state.editor.dragVideos;
@@ -228,7 +235,9 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
-        case 6:
+        }
+        default:
+        {
           const textTop6 = 0;
           // const zIndex6 = this.$store.state.editor.dragAudios.length;
           let drag6 = this.$store.state.editor.dragAudios;
@@ -262,9 +271,10 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
       }
 
-      const layerLists = this.$store.state.editor.layerLists;
+      const { layerLists } = this.$store.state.editor;
       layerLists.unshift({
         display: true, // 是否显示
         lock: true, // 是否可以编辑
@@ -288,5 +298,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.ed-com.el-button.el-button--text {
+  margin-left: 10px;
+}
 </style>

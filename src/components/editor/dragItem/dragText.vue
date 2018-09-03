@@ -42,7 +42,6 @@
 <script>
 import $ from 'jquery';
 import VueDragResize from 'vue-drag-resize';
-import _ from '@/util/tools';
 
 export default {
   name: 'dragItem',
@@ -73,7 +72,7 @@ export default {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
     },
-    onResezing(obj) {
+    onResezing(newRect) {
       this.drag.width = newRect.width;
       this.drag.height = newRect.height;
       this.drag.top = newRect.top;
@@ -85,7 +84,7 @@ export default {
       this.drag.top = newRect.top;
       this.drag.left = newRect.left;
     },
-    inputChange(text) {
+    inputChange() {
       const textHeight = $('.input-record').outerHeight();
       if (textHeight > $('.drag-text').outerHeight() && textHeight < this.drag.height) {
         $('.drag-text').height($('.input-record').height());
@@ -99,13 +98,6 @@ export default {
     dragDel(index) {
       this.$emit('dragDel', 1, index, this.dragForm.dragIndex);
       // this.$store.commit('del_drag', {index, arr: this.dragName, active: 'isTextSet'});
-    },
-    dragDeactivated(index) { // 点击组件外区域
-    // console.log('sss');
-    //   this.$store.commit('inactive_drags', {index, arr: 'dragTexts', isAll: true});
-    //   this.$store.commit('editor_update', {
-    //     'isTextSet': false
-    //   });
     },
     dragstop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);

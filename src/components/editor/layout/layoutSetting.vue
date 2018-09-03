@@ -135,6 +135,7 @@ export default {
     overflow: hidden;
     z-index: 80;
 }
+
 .setting-content {
   width: 260px;
   background-color: #fff;

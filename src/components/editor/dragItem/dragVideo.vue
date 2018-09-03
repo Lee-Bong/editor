@@ -36,7 +36,6 @@
 
 </template>
 <script>
-import $ from 'jquery';
 import VueDragResize from 'vue-drag-resize';
 
 export default {
@@ -68,7 +67,7 @@ export default {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 5);
     },
-    onResezing(obj) {
+    onResezing(newRect) {
       this.drag.width = newRect.width;
       this.drag.height = newRect.height;
       this.drag.top = newRect.top;
@@ -84,7 +83,7 @@ export default {
     dragDel(index) {
       this.$emit('dragDel', 5, index, this.dragForm.dragIndex);
     },
-    dragDeactivated(index) { // 点击组件外区域
+    dragDeactivated() { // 点击组件外区域
     },
     dragstop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);

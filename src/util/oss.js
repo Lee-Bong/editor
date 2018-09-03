@@ -5,6 +5,8 @@ const STS_API = '/api/oss-sts';
 
 export default async function upload(f) {
   const files = Array.isArray(f) ? f : [f];
+
+
   const response = await OSS.urllib.request(STS_API);
   const { data } = JSON.parse(response);
   const client = new OSS({

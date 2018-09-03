@@ -102,7 +102,6 @@ import dragImageLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
 import dragMxi from '@/util/dragMxi';
-import _ from '@/util/tools';
 
 export default {
   mixins: [dragMxi.dragCom()],
@@ -149,7 +148,7 @@ export default {
         textColor: 'rgba(19, 206, 102, 0.8)',
         location: {
           x: 0,
-          y: this.$store.state.editor.phoneHeight / 2 - 30 / 2,
+          y: (this.$store.state.editor.phoneHeight / 2) - (30 / 2),
         },
         size: {
           w: 375,
@@ -202,7 +201,7 @@ export default {
     };
   },
   methods: {
-    inputChange(text) { // 组件-文本值改变
+    inputChange() { // 组件-文本值改变
     },
 
     inputDragStop(form, ev, index) { // 拖动组件同步设置

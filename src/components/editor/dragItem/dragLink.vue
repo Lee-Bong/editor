@@ -26,9 +26,7 @@
 
 </template>
 <script>
-import $ from 'jquery';
 import VueDragResize from 'vue-drag-resize';
-import _ from '@/util/tools';
 
 export default {
   name: 'dragItem',
@@ -58,7 +56,7 @@ export default {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 3);
     },
-    onResezing(obj) {
+    onResezing(newRect) {
       this.drag.width = newRect.width;
       this.drag.height = newRect.height;
       this.drag.top = newRect.top;

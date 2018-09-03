@@ -25,11 +25,9 @@
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
 import VueDraggable from 'vuedraggable';
 import Sortable from 'sortable';
 import dragMxi from '@/util/dragMxi';
-import _ from '@/util/tools';
 
 export default {
   mixins: [dragMxi.dragCom()],
@@ -61,12 +59,12 @@ export default {
     handleChange() {
 
     },
-    getdata(evt) {
-      console.log(evt.draggedContext.element.id);
+    getdata() {
+      // console.log(evt.draggedContext.element.id);
     },
     datadragEnd(evt) {
       const { oldIndex, newIndex } = evt;
-      const layerLists = this.$store.state.editor.layerLists;
+      const { layerLists } = this.$store.state.editor;
       const drag = layerLists[oldIndex];
       const drop = layerLists[newIndex];
       layerLists[oldIndex] = drop;
@@ -74,7 +72,7 @@ export default {
       this.$store.dispatch('layerMove', { layerLists, newIndex });
     },
     layerclick(drag, index) { // 单击图层
-      if (this.$store.state.editor.layerActive == index) return false;
+      if (this.$store.state.editor.layerActive === index) return false;
       const { type, num } = drag;
       this.dragClick(num, type);
     },
@@ -85,9 +83,9 @@ export default {
         layerLists: layouts,
       });
 
-      this.$nextTick(function () {
-            			this.$refs.nameEditor[0].focus();
-            		});
+      this.$nextTick(() => {
+        this.$refs.nameEditor[0].focus();
+      });
     },
     layoutNameBlur(index) {
       const layouts = this.$store.state.editor.layerLists;

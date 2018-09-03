@@ -56,7 +56,6 @@ export default {
 
     },
     onFileChange() {
-      alert('sss');
     },
   },
 };

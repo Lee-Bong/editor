@@ -1,29 +1,41 @@
 exports.dragCom = () => {
   const drag = {
     methods: {
-      dragClick(index, type) { // 点击组件
-        const newEditor = this.deActiveArr(index, type);
-        const layerActive = this.updateLayer(index, type);
+      dragClick(index, type) { // 点击组件  index=-1表示全部都取消，index=-2表示点击了网页标题
+        let newEditor,
+          layerActive;
+        if (type !== undefined) {
+          newEditor = this.deActiveArr(index, type);
+          layerActive = this.updateLayer(index, type);
+        } else {
+          newEditor = this.deActiveArr(index, type, true);
+        }
+
         newEditor.layerActive = layerActive;
         this.$store.commit('editor_update', newEditor);
-        if (this.$store.state.page.pageSet) {
+        if (this.$store.state.page.pageSet && index !== -2) {
           this.$store.commit('page_update', { pageSet: false });
         }
       },
-      deActiveArr(index, type) {
+      deActiveArr(index, type, otherClick) {
         const updateEditor = {};
-        const dragName = this.$store.state.editor.typeCat[type][0];
         for (const item in this.$store.state.editor.typeCat) {
           const form = this.$store.state.editor.typeCat[item];
           const lists = this.$store.state.editor[form[0]];
-          if (lists.length) {
-            if (dragName === form[0]) {
-              updateEditor[form[0]] = this.textActiveOff(lists, { index });
-              updateEditor[form[2]] = true;
-              updateEditor[form[3]] = index;
-            } else {
-              updateEditor[form[0]] = this.textActiveOff(lists, { index: 0, isAll: true });
-              updateEditor[form[2]] = false;
+          if (otherClick) {
+            updateEditor[form[0]] = this.textActiveOff(lists, { index: 0, isAll: true });
+            updateEditor[form[2]] = false;
+          } else {
+            const dragName = this.$store.state.editor.typeCat[type][0];
+            if (lists.length) {
+              if (dragName === form[0]) {
+                updateEditor[form[0]] = this.textActiveOff(lists, { index });
+                updateEditor[form[2]] = true;
+                updateEditor[form[3]] = index;
+              } else {
+                updateEditor[form[0]] = this.textActiveOff(lists, { index: 0, isAll: true });
+                updateEditor[form[2]] = false;
+              }
             }
           }
         }

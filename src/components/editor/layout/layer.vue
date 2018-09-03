@@ -105,6 +105,7 @@ export default {
   cursor: pointer;
 }
 .el-card__header {
+  text-align: center;
   padding: 5px 10px;
   line-height: 34px;
 }

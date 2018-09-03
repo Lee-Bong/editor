@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import imgUpload from 'vue-core-image-upload';
 import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
 import oss from '@/util/oss';
 
@@ -71,7 +70,6 @@ export default {
     setForm: Object,
   },
   components: {
-    FileUpload: imgUpload,
     imgReviewItem,
   },
   data() {
@@ -134,7 +132,7 @@ export default {
       };
       this.$store.commit('editor_update', { dragImages: drags });
     },
-    onFileError(err, file, fileList) { // 图片上传失败
+    onFileError() { // 图片上传失败 err, file, fileList
       // this.fileFail = true;
       // this.fileAble = false;
       // this.$message({
@@ -158,7 +156,7 @@ export default {
       //   return;
       // }
       this.fileFail = false;
-      oss.upload();
+      oss(file);
     },
   },
 };

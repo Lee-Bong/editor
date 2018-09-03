@@ -1,6 +1,6 @@
 <template>
-  <div
-    :class="['setting-content', $store.state.editor.isVideoSet ? 'setting-show' : '', 'video-setting']"
+  <div :class="['setting-content', $store.state.editor.isVideoSet
+    ? 'setting-show' : '', 'video-setting']"
     :style="{width: setForm.width+'px'}"
   >
   <!-- <vue-drag-resize
@@ -22,10 +22,13 @@
     <div class="setting">
       <el-form ref="form" >
         <el-form-item label="类型：" size="mini">
-          <el-radio v-model="dragForm.sourceType" @change="sourceChange('1')" label="1">本地上传</el-radio>
-          <el-radio v-model="dragForm.sourceType" @change="sourceChange('2')" label="2">在线视频</el-radio>
+          <el-radio v-model="dragForm.sourceType"
+            @change="sourceChange('1')" label="1">本地上传</el-radio>
+          <el-radio v-model="dragForm.sourceType"
+            @change="sourceChange('2')" label="2">在线视频</el-radio>
         </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '1'"  label="选择视频：" size="mini" class="video-el">
+        <el-form-item v-if="dragForm.sourceType === '1'"
+          label="选择视频：" size="mini" class="video-el">
           <el-input :span="16" type="text" v-model="dragForm.textColor"></el-input>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接：" size="mini" class="video-el">
@@ -35,13 +38,21 @@
           <el-input type="text" v-model="dragForm.textColor"></el-input>
         </el-form-item>
         <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange" :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange" :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
+            :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+            :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+            label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange" :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x" label="描述文字" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange" :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y" label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
+            :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
+            :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+            label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         </el-form>
@@ -52,7 +63,6 @@
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
 
 export default {
   name: 'DragSetting',
