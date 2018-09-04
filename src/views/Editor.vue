@@ -5,7 +5,7 @@
         <el-row class="header-flex">
           <el-col :span="10" type="flex" >
           <el-breadcrumb separator="/" type="flex">
-            <el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/manage' }">
               微页面
             </el-breadcrumb-item>
             <el-breadcrumb-item>

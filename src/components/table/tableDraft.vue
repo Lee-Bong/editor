@@ -9,13 +9,13 @@
     <el-table-column
       prop="num"
       label="编号"
-      width="90"
+      min-width="90"
     >
     </el-table-column>
     <el-table-column
       prop="title"
       label="标题"
-      width="150"
+      min-width="280"
       max-height=50
     >
     </el-table-column>
@@ -23,8 +23,7 @@
       prop="date"
       label="创建时间"
       sortable
-      width="180">
-    </el-table-column>
+      min-width="220">
     </el-table-column>
     <el-table-column label="操作" min-width="200">
       <template slot-scope="scope">
@@ -103,7 +102,10 @@ export default {
 
     },
     handleEdit(index, row) {
-
+      this.$router.push({
+        path: '/editor',
+        name: 'editor'
+      });
     },
     handlePublish(index, row) {
 

@@ -23,8 +23,10 @@
                     </button>
                 </div>
                 <div>
-                    <table-list v-if="showList" />
-                    <table-draft v-if="!showList" />
+                    <keep-alive>
+                        <table-list v-if="showList" />
+                        <table-draft v-if="!showList" />
+                    </keep-alive>
                 </div>
             </div>
         </div>

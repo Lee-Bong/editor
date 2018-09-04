@@ -2,9 +2,9 @@
     <div class="tip-wrap">
     <el-input v-model="tipUrl" class="tip-url" readonly
     size='mini' placeholder="请输入内容"></el-input>
-    <el-button type="primary" size="mini">复制</el-button>
+    <el-button type="primary" size="mini" class="copy-btn">复制</el-button>
     <div class="qrcode" ref="qrCode"></div>
-    <a class="qrcode-download">下载二维码</a>
+    <a class="qrcode-download" download="二维码">下载二维码</a>
     </div>
 </template>
 
@@ -32,6 +32,15 @@ export default {
         colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H,
+      });
+      this.$nextTick(function () {
+          const _this = this;
+          setTimeout(()=> {
+            var url = _this.$refs.qrCode.children[1].getAttribute("src");
+            document.getElementsByClassName('qrcode-download')[0].setAttribute('href', url);
+            
+          }, 1000);
+        
       });
       return qr;
     },
