@@ -2,7 +2,7 @@
  * 组件选中，其他为不触发状态
  * @return []
  */
-export function textActiveOff(arrs, payload) {
+exports.textActiveOff = (arrs, payload) => {
     let arr = arrs;
     const { index, isAll } = payload;
     if (arr && arr.length) {
@@ -25,9 +25,9 @@ export function textActiveOff(arrs, payload) {
     return arr;
 };
 
-export function del_drag(arr, index) { arr.filter((item, key) => key !== index); }
+exports.del_drag = (arr, index) => arr.filter((item, key) => key !== index);
 
-export function now_time() {
+exports.now_time = () => {
     const myDate = new Date();
     const hours = myDate.getHours();
     const minutes = myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}` : myDate.getMinutes();
