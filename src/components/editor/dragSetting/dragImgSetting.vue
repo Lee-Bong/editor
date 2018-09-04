@@ -31,6 +31,8 @@
               <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
               <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
             </el-upload>
+            <input id="fileArea" class="file-up" type="file" name="fileName"
+            @change="fileChange">
           </div>
           <div class="file-info" v-if="this.fileSuccess">
             <img-review-item :imgObj='dragForm.img'/>
@@ -155,9 +157,15 @@ export default {
       //   this.fileAble = true;
       //   return;
       // }
-      this.fileFail = false;
+
+      // this.fileFail = false;
       oss(file);
     },
+    fileChange(file) {
+      const settingWrap =  document.getElementsByClassName('file-up')[0].files[0];
+
+      oss(settingWrap);
+    }
   },
 };
 </script>
