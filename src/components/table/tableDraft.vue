@@ -25,39 +25,17 @@
       sortable
       width="180">
     </el-table-column>
-    <el-table-column
-      prop="visit"
-      label="浏览量"
-      sortable
-      width="180">
     </el-table-column>
     <el-table-column label="操作" min-width="200">
       <template slot-scope="scope">
-          <el-button
-          size="mini"
-          type="primary" plain
-          @click="handleAdd(scope.$index, scope.row)">复制</el-button>
         <el-button
           size="mini"
           type="primary" plain
           @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-popover
-          placement="bottom"
-          width="220"
-          trigger="click"
-          @show="popverShow(scope.$index, scope.row)"
-        >
-          <div class="spread" v-if="scope.$index === showTipNum"><tip :tip-url="tipUrl"/></div>
-          <el-button
-          size="mini"
-          type="primary" plain
-          slot="reference"
-          >推广</el-button>
-        </el-popover>
         <el-button
           size="mini"
           type="info" plain disabled
-          @click="handlePublish(scope.$index, scope.row)">下线</el-button>
+          @click="handlePublish(scope.$index, scope.row)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>

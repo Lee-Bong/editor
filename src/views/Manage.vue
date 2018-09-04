@@ -23,7 +23,8 @@
                     </button>
                 </div>
                 <div>
-                    <table-view />
+                    <table-list v-if="showList" />
+                    <table-draft v-if="!showList" />
                 </div>
             </div>
         </div>
@@ -31,23 +32,30 @@
 </template>
 
 <script>
-import tableView from '@/components/table/table';
+import tableList from '@/components/table/table';
+import tableDraft from '@/components/table/tableDraft';
 
 export default {
   name: 'manage',
   props: {
   },
   components: {
-    tableView,
+    tableList,
+    tableDraft,
   },
   data() {
     return {
-
+      showList: true,
     };
   },
   methods: {
     tabChange(tab, event) {
-
+      const tarId = event.currentTarget.getAttribute('id');
+      if (tarId === 'tab-1') { // 草稿tabs
+        this.showList = false;
+      } else {
+        this.showList = true;
+      }
     },
 
   },
