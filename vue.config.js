@@ -3,7 +3,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://test-bfe.meiyou.com',
+        target: 'http://47.94.138.247:9040',
         changeOrigin: true,
       },
     },

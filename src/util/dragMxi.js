@@ -48,6 +48,7 @@ exports.dragCom = () => {
           if (item.type === type && item.num === index) { // todo 导致报错
             i = key;
           }
+          return true;
         });
         return i;
       },

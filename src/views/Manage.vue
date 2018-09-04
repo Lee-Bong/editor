@@ -17,7 +17,7 @@
                     <el-input class="table-search"
                         placeholder="请输入内容"
                         prefix-icon="el-icon-search"
-                        v-model="input21">
+                        >
                     </el-input>
                     <button class="search-submit">搜索
                     </button>

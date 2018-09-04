@@ -36,26 +36,28 @@
           <el-button
           size="mini"
           type="primary" plain
-          @click="handleEdit(scope.$index, scope.row)">复制</el-button>
+          @click="handleAdd(scope.$index, scope.row)">复制</el-button>
         <el-button
           size="mini"
           type="primary" plain
-          @click="handleDelete(scope.$index, scope.row)">编辑</el-button>
+          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
         <el-popover
           placement="bottom"
-          width="300"
+          width="220"
           trigger="click"
+          @show="popverShow"
         >
-          <div class="spread"></div>
+          <div class="spread" v-if="show"><tip :tip-url="tipUrl"/></div>
           <el-button
           size="mini"
           type="primary" plain
-          slot="reference">推广</el-button>
+          slot="reference"
+          >推广</el-button>
         </el-popover>
         <el-button
           size="mini"
           type="info" plain disabled
-          @click="handleDelete(scope.$index, scope.row)">下线</el-button>
+          @click="handlePublish(scope.$index, scope.row)">下线</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -63,7 +65,7 @@
   class="table-page"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
+      :current-page="currentPage"
       :page-sizes="[100, 200, 300, 400]"
       :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
@@ -73,9 +75,17 @@
 </template>
 
 <script>
+import tip from '@/components/table/tip';
+
 export default {
+  components: {
+    tip,
+  },
   data() {
     return {
+      show: false,
+      currentPage: 1,
+      tipUrl: 'www.baidu.com',
       tipTitle: '',
       tableData: [{
         num: 1,
@@ -104,6 +114,22 @@ export default {
     formatter(row, column) {
       return row.address;
     },
+    handleSizeChange() {
+
+    },
+    handleCurrentChange() {},
+    popverShow() {
+      this.show = true;
+    },
+    handleAdd(index, row) {
+
+    },
+    handleEdit(index, row) {
+
+    },
+    handlePublish(index, row) {
+
+    },
   },
 };
 </script>
@@ -123,8 +149,7 @@ export default {
     text-align: right;
 }
 .spread{
-height: 200px;
-width: 300px;
-background-color: red;
+height: auto;
+width: 225px;
 }
 </style>

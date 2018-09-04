@@ -31,8 +31,6 @@
               <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
               <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
             </el-upload>
-            <input id="fileArea" class="file-up" type="file" name="fileName"
-            @change="fileChange">
           </div>
           <div class="file-info" v-if="this.fileSuccess">
             <img-review-item :imgObj='dragForm.img'/>
@@ -119,9 +117,7 @@ export default {
       this.$emit('input-sizeChange', 'dragImages', this.dragForm.size, 'imgActive');
       this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
     },
-    onFileSuccess(rep, file) {
-      this.fileSuccess = true;
-      this.fileAble = true;
+    onFileSuccess(file) {
       this.$message({
         message: '图片上传成功～',
         type: 'success',
@@ -133,38 +129,31 @@ export default {
         url: file.url,
       };
       this.$store.commit('editor_update', { dragImages: drags });
-    },
-    onFileError() { // 图片上传失败 err, file, fileList
-      // this.fileFail = true;
-      // this.fileAble = false;
-      // this.$message({
-      //   message: '图片上传失败，请重试～',
-      //   type: 'error',
-      //   duration: 2000,
-      // });
-      const { dragImages, imgActive } = this.$store.state.editor;
-      const drags = dragImages[imgActive];
-      drags.img = {
-        title: 'sss',
-        url: 'http://pic30.photophoto.cn/20140310/0008020974539766_b.jpg',
-      };
-      dragImages[imgActive] = drags;
-      this.$store.commit('editor_update', { dragImages });
       this.fileSuccess = true;
+      this.fileAble = true;
     },
-    onFileChange(file) {
+    onFileError() { // 图片上传失败
+      this.fileFail = true;
+      this.fileAble = false;
+      this.$message({
+        message: '图片上传失败，请重试～',
+        type: 'error',
+        duration: 2000,
+      });
+    },
+    async onFileChange(file) {
       // if (!this.fileFail) {
       //   this.fileAble = true;
       //   return;
       // }
+      this.fileFail = false;
 
-      // this.fileFail = false;
-      oss(file);
-    },
-    fileChange(file) {
-      const settingWrap = document.getElementsByClassName('file-up')[0].files[0];
-
-      oss(settingWrap);
+      const up = await oss(file.raw);
+      if (up && up.url) {
+        this.onFileSuccess(up);
+      } else {
+        this.onFileError();
+      }
     },
   },
 };

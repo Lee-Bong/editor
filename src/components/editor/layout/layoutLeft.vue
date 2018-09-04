@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import _ from '@/util/tools';
+import { textActiveOff } from '@/util/tools';
 
 export default {
   name: 'HelloWorld',
@@ -58,7 +58,7 @@ export default {
       for (const item in this.$store.state.editor.typeCat) {
         const lists = this.$store.state.editor[this.$store.state.editor.typeCat[item][0]];
         if (lists.length) {
-          updateEditor[item[0]] = _.textActiveOff(lists, { index: 0, isAll: true });
+          updateEditor[item[0]] = textActiveOff(lists, { index: 0, isAll: true });
         }
       }
       let newEditor = {};
@@ -69,7 +69,7 @@ export default {
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
-          drag = _.textActiveOff(drag, { index: 0, isAll: true });
+          drag = textActiveOff(drag, { index: 0, isAll: true });
           drag.push({
             isShow: true,
             zIndex: 1000,
@@ -135,7 +135,7 @@ export default {
           let drag3 = this.$store.state.editor.dragLinks;
           num = drag3.length;
           layerName = `热区${!num ? '' : num + 1}`;
-          drag3 = _.textActiveOff(drag3, { index: 0, isAll: true });
+          drag3 = textActiveOff(drag3, { index: 0, isAll: true });
           drag3.push({
             isShow: true,
             zIndex: 1000,
@@ -207,7 +207,7 @@ export default {
           let drag5 = this.$store.state.editor.dragVideos;
           num = drag5.length;
           layerName = `视频${!num ? '' : num + 1}`;
-          drag5 = _.textActiveOff(drag5, { index: 0, isAll: true });
+          drag5 = textActiveOff(drag5, { index: 0, isAll: true });
           drag5.push({
             isShow: true,
             zIndex: 1000,
@@ -243,7 +243,7 @@ export default {
           let drag6 = this.$store.state.editor.dragAudios;
           num = drag6.length;
           layerName = `音频${!num ? '' : num + 1}`;
-          drag6 = _.textActiveOff(drag6, { index: 0, isAll: true });
+          drag6 = textActiveOff(drag6, { index: 0, isAll: true });
           drag6.push({
             isShow: true,
             zIndex: 1000,

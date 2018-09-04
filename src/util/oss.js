@@ -1,43 +1,16 @@
-import OSS from 'ali-oss';
-import md5 from 'js-md5';
+const UP_API = '/api/oss-up';
 
-const STS_API = `${window.location.protocol}://${window.location.hostname}:${window.location.port}/api/oss-sts`;
-export default async function upload(f) {
-  const files = Array.isArray(f) ? f : [f];
-  const response = await OSS.urllib.request(STS_API);
-  const { data } = response;
-  const client = new OSS({
-    accessKeyId: data.AccessKeyId,
-    accessKeySecret: data.AccessKeySecret,
-    stsToken: data.SecurityToken,
+export default async function upload(file) {
+  const fd = new FormData();
+  fd.append('upimg', file);
+
+  const req = await fetch(UP_API, {
+    method: 'POST',
+    body: fd,
   });
-  const result = [];
-  for (const file of files) {
-    try {
-      const ok = await getObjectMd5(file);
-      const up = await client.put(ok, file);
-      result.push(up);
-    } catch (ex) {
-      // console.error(ex);
-    }
-  }
-  return result;
-}
 
-function getObjectMd5(file) {
-  const ext = getExt(file.name);
+  const res = await req.json();
+  res.url = `https://sc.seeyouyima.com/${res.name}`;
 
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = event => resolve(md5(event.target.result) + ext);
-    reader.readAsArrayBuffer(file);
-  });
-}
-
-function getExt(name) {
-  const dotIndex = name.lastIndexOf('.');
-  if (dotIndex === -1) {
-    return '';
-  }
-  return name.slice(dotIndex);
+  return res;
 }
