@@ -150,13 +150,15 @@ export default {
       this.$store.commit('editor_update', { dragImages });
       this.fileSuccess = true;
     },
-    onFileChange(file) {
+    async onFileChange(file) {
       // if (!this.fileFail) {
       //   this.fileAble = true;
       //   return;
       // }
       this.fileFail = false;
-      oss(file);
+
+      const up = await oss(file.raw);
+      console.log(up);
     },
   },
 };
