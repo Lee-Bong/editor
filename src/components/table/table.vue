@@ -103,9 +103,9 @@ export default {
   methods: {
     formatter(row, column) {
       return row.address;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style>
 .table-box {

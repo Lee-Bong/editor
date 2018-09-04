@@ -32,12 +32,13 @@
 
 <script>
 import tableView from '@/components/table/table';
+
 export default {
   name: 'manage',
   props: {
   },
   components: {
-    tableView  
+    tableView,
   },
   data() {
     return {
@@ -48,7 +49,7 @@ export default {
     tabChange(tab, event) {
 
     },
-    
+
   },
 };
 </script>

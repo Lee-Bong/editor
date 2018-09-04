@@ -162,10 +162,10 @@ export default {
       oss(file);
     },
     fileChange(file) {
-      const settingWrap =  document.getElementsByClassName('file-up')[0].files[0];
+      const settingWrap = document.getElementsByClassName('file-up')[0].files[0];
 
       oss(settingWrap);
-    }
+    },
   },
 };
 </script>

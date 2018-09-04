@@ -1,7 +1,7 @@
 <template>
     <div class="tip-wrap">
     <el-input v-model="tip.url" placeholder="请输入内容">http://www.baidu.com</el-input>
-    
+
     </div>
 </template>
 
