@@ -120,10 +120,10 @@ export default {
       this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
     },
     onFileSuccess(file) {
-      var dragImg =new Image();
+      const dragImg = new Image();
       dragImg.src = file.url;
       dragImg.onload = () => {
-        console.info(dragImg.height + 'sss'+dragImg.width);
+        console.info(`${dragImg.height}sss${dragImg.width}`);
         this.$message({
           message: '图片上传成功～',
           type: 'success',
@@ -131,40 +131,40 @@ export default {
         });
         const images = this.$store.state.editor.dragImages;
         const drags = images[this.$store.state.editor.imgActive];
-        const newH = dragImg.height*this.$store.state.editor.phoneWidth/dragImg.width;
-        
+        const newH = dragImg.height * this.$store.state.editor.phoneWidth / dragImg.width;
+
         drags.img = {
           // isUpload: true,
           title: file.name,
           url: file.url,
           w: this.$store.state.editor.phoneWidth,
-          h: newH
+          h: newH,
         };
         if (this.isFirst) {
-          drags.location ={
+          drags.location = {
             x: 0,
-            y: 0
+            y: 0,
           };
         }
         drags.size = {
           h: newH,
           w: this.$store.state.editor.phoneWidth,
         };
-        
+
         drags.isUpload = false;
         images[this.$store.state.editor.imgActive] = drags;
         this.$store.commit('editor_update', { dragImages: images });
         this.fileSuccess = true;
         this.fileAble = true;
         // todo 解决aspectRatio只根据初始值设定比例
-        setTimeout(()=> {
+        setTimeout(() => {
           drags.isUpload = true;
           images[this.$store.state.editor.imgActive] = drags;
           this.$store.commit('editor_update', { dragImages: images });
         }, 100);
       };
-      dragImg.onerror = function(){
-          this.onFileError();
+      dragImg.onerror = function () {
+        this.onFileError();
       };
     },
     onFileError() { // 图片上传失败
@@ -193,7 +193,7 @@ export default {
     fileModify(file) { // 更换图片
       this.isFirst = true;
       this.onFileChange(file);
-    }
+    },
   },
 };
 </script>

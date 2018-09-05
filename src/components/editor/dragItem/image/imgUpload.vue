@@ -6,6 +6,7 @@
 
 <script>
 import oss from '@/util/oss';
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -18,16 +19,15 @@ export default {
   },
   methods: {
     async fileChange(val) {
-        var file = val.currentTarget.files[0];
-        const up = await oss(file);
-        up.beforeName = file.name;
-        debugger;
-        if (up && up.url) {
+      const file = val.currentTarget.files[0];
+      const up = await oss(file);
+      up.beforeName = file.name;
+
+      if (up && up.url) {
         this.$emit('upload-done', up);
       } else {
         // this.onFileError();
       }
-      
     },
   },
 };

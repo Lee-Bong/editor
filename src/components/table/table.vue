@@ -126,7 +126,7 @@ export default {
     handleEdit(index, row) {
       this.$router.push({
         path: '/editor',
-        name: 'editor'
+        name: 'editor',
       });
     },
     handlePublish(index, row) {

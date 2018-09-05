@@ -67,13 +67,14 @@
 
 <script>
 import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
+
 export default {
   name: 'DragSetting',
   props: {
     dragForm: Object,
     setForm: Object,
   },
-   components: {
+  components: {
     imgUplaod,
   },
   data() {
@@ -130,33 +131,32 @@ export default {
       this.onFileSuccess(file, 'dragAudios', 'videoActive');
     },
     onFileSuccess(file, dragList, active) {
-      this.$refs.audioLoad.setAttribute('src', file.url)
-      var _this = this;
-      this.$refs.audioLoad.addEventListener("loadedmetadata", function(){
-        const lists = _this.$store.state.editor[dragList];
-        const drags = lists[_this.$store.state.editor[active]];
-        let paly = {
+      this.$refs.audioLoad.setAttribute('src', file.url);
+      const ele = this;
+      this.$refs.audioLoad.addEventListener('loadedmetadata', () => {
+        const lists = ele.$store.state.editor[dragList];
+        const drags = lists[ele.$store.state.editor[active]];
+        const paly = {
           title: file.beforeName ? file.beforeName : file.name,
           url: file.url,
           second: this.duration,
-          duration: parseInt(this.duration / 60) + ':' + parseInt(this.duration % 60)
+          duration: `${parseInt(this.duration / 60, 10)}:${parseInt(this.duration % 60, 10)}`,
         };
         drags.play = paly;
-        drags.location ={
+        drags.location = {
           x: 0,
-          y: 0
+          y: 0,
         };
         drags.isUpload = false;
-        lists[_this.$store.state.editor[active]] = drags;
-        _this.$store.commit('editor_update', { [dragList]: lists });
+        lists[ele.$store.state.editor[active]] = drags;
+        ele.$store.commit('editor_update', { [dragList]: lists });
         // todo 解决aspectRatio只根据初始值设定比例
-        setTimeout(()=> {
+        setTimeout(() => {
           drags.isUpload = true;
-          lists[_this.$store.state.editor[active]] = drags;
-          _this.$store.commit('editor_update', { [dragList]: lists });
+          lists[ele.$store.state.editor[active]] = drags;
+          ele.$store.commit('editor_update', { [dragList]: lists });
         }, 100);
       });
-       
     },
     onFileError() { // 图片上传失败
       this.fileFail = true;

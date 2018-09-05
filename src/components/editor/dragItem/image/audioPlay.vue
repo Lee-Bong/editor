@@ -3,7 +3,8 @@
   <span class="audio-title" >{{play.title}}</span>
   <div class="paly-control">
     <div class="icons">
-        <el-button class="paly-icon paly" v-if="!isPlay" type="primary" icon="el-icon-caret-right" circle
+        <el-button class="paly-icon paly" v-if="!isPlay" type="primary"
+         icon="el-icon-caret-right" circle
         @click="audioPlay"></el-button>
         </div>
         <el-button class="paly-icon" v-if="isPlay" type="primary" icon="el-icon-message" circle
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -33,8 +34,8 @@ export default {
   },
   data() {
     return {
-isPlay: true,
-playPrecent: 1
+      isPlay: true,
+      playPrecent: 1,
     };
   },
   mounted() {
@@ -51,18 +52,18 @@ playPrecent: 1
       this.$refs.aduioObj.pause();
     },
     audioUpdate() {
-      var _this = this;
-      this.$refs.aduioObj.addEventListener('timeupdate',function() {
-        if (!_this.isPlay || parseInt(_this.playPrecent) === 100) return false;
-        let palyTime = _this.$refs.aduioObj.currentTime;
-        let totalTime = _this.play.second;
-        let precent = (Math.floor(palyTime) / Math.floor(totalTime)) * 100;
-        _this.playPrecent = precent;
-        _this.showPre = parseInt(palyTime / 60) + ':' + parseInt(palyTime % 60) + '/'+_this.play.duration
-        if (parseInt(_this.playPrecent) === 100) {
+      const ele = this;
+      this.$refs.aduioObj.addEventListener('timeupdate', () => {
+        if (!ele.isPlay || parseInt(ele.playPrecent, 10) === 100) return false;
+        const palyTime = ele.$refs.aduioObj.currentTime;
+        const totalTime = ele.play.second;
+        const precent = (Math.floor(palyTime) / Math.floor(totalTime)) * 100;
+        ele.playPrecent = precent;
+        ele.showPre = `${parseInt(palyTime / 60, 10)}:${parseInt(palyTime % 60, 10)}/${ele.play.duration}`;
+        if (parseInt(ele.playPrecent, 10) === 100) {
           // this.
         }
-      },false);
+      }, false);
     },
   },
 };
@@ -86,7 +87,7 @@ playPrecent: 1
 .paly-icon {
   position: absolute;
   z-index: 12;
-  
+
 }
   .paly-control {
     /* height: 50px; */
@@ -104,7 +105,7 @@ playPrecent: 1
   }
   .paly-precent .el-slider__bar, .paly-precent .el-slider__runway {
     height: 4px;
-  } 
+  }
   .paly-precent .el-slider__button {
     height: 10px;
     width: 10px;

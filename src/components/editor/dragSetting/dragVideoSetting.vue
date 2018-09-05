@@ -29,7 +29,8 @@
             :auto-upload="false"
             :on-change="onFileChange"
             :file-list="fileList">
-            <el-button size="small" type="primary"><i class="el-icon-upload el-icon--right"></i>选择视频</el-button>
+            <el-button size="small" type="primary">
+              <i class="el-icon-upload el-icon--right"></i>选择视频</el-button>
             <div slot="tip" class="el-upload__tip">仅支持MP4格式</div>
           </el-upload>
         </el-form-item>
@@ -58,7 +59,7 @@
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         </el-form>
-      
+
       </div>
     </div>
      <video ref="videoLoad" controls v-show="false">
@@ -134,27 +135,23 @@ export default {
       const up = await oss(file.raw);
       if (up && up.url) {
         this.onFileSuccess(up);
-      } else {
-        debugger;
       }
     },
     onFileSuccess(file) {
-      debugger;
-      console.log(this.$refs.videoLoad);
-      this.$refs.videoLoad.setAttribute('src', file.url)
-      var _this = this;
-      this.$refs.videoLoad.addEventListener("loadedmetadata", function(){
-        _this.$message({
+      this.$refs.videoLoad.setAttribute('src', file.url);
+      const ele = this;
+      this.$refs.videoLoad.addEventListener('loadedmetadata', () => {
+        ele.$message({
           message: '视频上传成功～',
           type: 'success',
           duration: 2000,
         });
-        
+
         // var tol = this.duration;
-        const videos = _this.$store.state.editor.dragVideos;
-        const drags = videos[_this.$store.state.editor.videoActive];
-        const newH = this.videoHeight*_this.$store.state.editor.phoneWidth/this.videoWidth;
-        let video = {
+        const videos = ele.$store.state.editor.dragVideos;
+        const drags = videos[ele.$store.state.editor.videoActive];
+        const newH = (this.videoHeight * ele.$store.state.editor.phoneWidth) / this.videoWidth;
+        const video = {
           w: this.videoWidth,
           h: this.videoHeight,
           title: file.name,
@@ -162,23 +159,23 @@ export default {
           poster: drags.video.poster ? drags.video.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
         };
         drags.video = video;
-        drags.location ={
+        drags.location = {
           x: 0,
-          y: 0
+          y: 0,
         };
         drags.size = {
           h: newH,
-          w: _this.$store.state.editor.phoneWidth,
+          w: ele.$store.state.editor.phoneWidth,
         };
-        
+
         drags.isUpload = false;
-        videos[_this.$store.state.editor.videoActive] = drags;
-        _this.$store.commit('editor_update', { dragVideos: videos });
+        videos[ele.$store.state.editor.videoActive] = drags;
+        ele.$store.commit('editor_update', { dragVideos: videos });
         // todo 解决aspectRatio只根据初始值设定比例
-        setTimeout(()=> {
+        setTimeout(() => {
           drags.isUpload = true;
-          videos[_this.$store.state.editor.videoActive] = drags;
-          _this.$store.commit('editor_update', { dragVideos: videos });
+          videos[ele.$store.state.editor.videoActive] = drags;
+          ele.$store.commit('editor_update', { dragVideos: videos });
         }, 100);
       });
     },
@@ -192,15 +189,15 @@ export default {
       });
     },
     uploadDone(file) { // 封面上传成功
-        const videos = this.$store.state.editor.dragVideos;
-        const drags = videos[this.$store.state.editor.videoActive];
-        drags.video = Object.assign({}, drags.video, {
-          poster: file.url,
-          posterTitle: file.name
-        });
-        videos[this.$store.state.editor.videoActive] = drags;
-        this.$store.commit('editor_update', { dragVideos: videos });
-    }
+      const videos = this.$store.state.editor.dragVideos;
+      const drags = videos[this.$store.state.editor.videoActive];
+      drags.video = Object.assign({}, drags.video, {
+        poster: file.url,
+        posterTitle: file.name,
+      });
+      videos[this.$store.state.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragVideos: videos });
+    },
   },
 };
 </script>

@@ -25,7 +25,7 @@
       </i>
       <div>
         <audio-play v-if="!!dragForm.play && !!dragForm.play.url" :play="dragForm.play"/>
-        
+
         <!-- <audio autoplay="autoplay"
           controls="controls"
           ref="aduioObj"

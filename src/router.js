@@ -6,40 +6,40 @@ import Login from './views/Login.vue';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
-    routes: [{
-            path: '/we',
-            name: 'login',
-            component: Login,
+  mode: 'history',
+  routes: [{
+    path: '/we',
+    name: 'login',
+    component: Login,
 
-        },
-        {
-            name: 'editor',
-            path: '/editor',
-            component: Editor,
-        },
-        {
-            name: 'login',
-            path: '/login',
-            component: () => Login,
-        },
-        {
-            name: 'manage',
-            path: '/manage',
-            component: () =>
-                import ('./views/Manage.vue'),
-        },
-        {
-            name: 'preview',
-            path: '/preview',
-            component: () =>
-                import ('./views/preview/Index.vue'),
-        },
-        {
-            name: 'real',
-            path: '/real',
-            component: () =>
-                import ('./views/real/Index.vue'),
-        },
-    ],
+  },
+  {
+    name: 'editor',
+    path: '/editor',
+    component: Editor,
+  },
+  {
+    name: 'login',
+    path: '/login',
+    component: () => Login,
+  },
+  {
+    name: 'manage',
+    path: '/manage',
+    component: () =>
+                import('./views/Manage.vue'),
+  },
+  {
+    name: 'preview',
+    path: '/preview',
+    component: () =>
+                import('./views/preview/Index.vue'),
+  },
+  {
+    name: 'real',
+    path: '/real',
+    component: () =>
+                import('./views/real/Index.vue'),
+  },
+  ],
 });

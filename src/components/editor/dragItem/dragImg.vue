@@ -25,11 +25,11 @@
       </i>
       <div class="drag-img" v-if="JSON.stringify(dragForm.img) === '{}'">
       </div>
-      <img v-if="JSON.stringify(dragForm.img) !== '{}'" 
+      <img v-if="JSON.stringify(dragForm.img) !== '{}'"
         :src="dragForm.img.url"
         :width="dragForm.size.w"
         :height="dragForm.size.h"/>
-      
+
     </vue-drag-resize>
 </template>
 <script>
@@ -65,7 +65,6 @@ export default {
   },
 
   updated() {
-    debugger;
     console.log(this.$store.state.editor);
     // alert(this.dragForm.size.h);
   },

@@ -34,14 +34,12 @@ export default {
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H,
       });
-      this.$nextTick(function () {
-          const _this = this;
-          setTimeout(()=> {
-            var url = _this.$refs.qrCode.children[1].getAttribute("src");
-            document.getElementsByClassName('qrcode-download')[0].setAttribute('href', url);
-            
-          }, 1000);
-        
+      this.$nextTick(() => {
+        const ele = this;
+        setTimeout(() => {
+          const url = ele.$refs.qrCode.children[1].getAttribute('src');
+          document.getElementsByClassName('qrcode-download')[0].setAttribute('href', url);
+        }, 1000);
       });
       return qr;
     },
@@ -50,17 +48,16 @@ export default {
     // 初始化二维码
     this.createQrCode();
     // 初始化复制面板
-    this.$nextTick(()=>{
-      debugger;
-    const copyBtn = new Clipboard('.copy-btn');
-    // 复制成功后执行的回调函数
-    copyBtn.on('success', () => {
-      this.$message({
-        showClose: true,
-        message: '复制成功',
-        type: 'success',
+    this.$nextTick(() => {
+      const copyBtn = new Clipboard('.copy-btn');
+      // 复制成功后执行的回调函数
+      copyBtn.on('success', () => {
+        this.$message({
+          showClose: true,
+          message: '复制成功',
+          type: 'success',
+        });
       });
-    });
     });
   },
 };

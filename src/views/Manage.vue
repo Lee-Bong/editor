@@ -61,11 +61,11 @@ export default {
       }
     },
     newEditor() {
-        this.$router.push({
-            path: '/editor',
-            name: 'editor'
-        });
-    }
+      this.$router.push({
+        path: '/editor',
+        name: 'editor',
+      });
+    },
 
   },
 };
