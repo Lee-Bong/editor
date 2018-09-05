@@ -1,4 +1,3 @@
-
 const UP_API = '/api/oss-up';
 
 export default async function upload(file) {

@@ -24,24 +24,29 @@
       @click="dragDel(listIndex)">
       </i>
       <div>
-        <audio autoplay="autoplay"
+        <audio-play v-if="!!dragForm.play && !!dragForm.play.url" :play="dragForm.play"/>
+
+        <!-- <audio autoplay="autoplay"
           controls="controls"
+          ref="aduioObj"
           preload="auto"
-          src="../assets/allright.mp3"
+          :src="!!dragForm.play && !!dragForm.play.url ?  dragForm.play.url : ''"
           :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
         >
-        </audio>
+        </audio> -->
       </div>
     </vue-drag-resize>
 
 </template>
 <script>
 import VueDragResize from 'vue-drag-resize';
+import audioPlay from '@/components/editor/dragItem/image/audioPlay';
 
 export default {
   name: 'dragAudio',
   components: {
     'vue-drag-resize': VueDragResize,
+    audioPlay,
   },
   props: {
     dragForm: Object,
@@ -68,6 +73,7 @@ export default {
   },
   data() {
     return {
+      isPlay: false,
       dragName: 'dragAudios',
       beforeZ: 0,
       inputValue: '',
@@ -144,4 +150,5 @@ export default {
 .drag-del-bottom {
   top: 10px !important;
 }
+
 </style>

@@ -5,7 +5,7 @@
         <el-row class="header-flex">
           <el-col :span="10" type="flex" >
           <el-breadcrumb separator="/" type="flex">
-            <el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/manage' }">
               微页面
             </el-breadcrumb-item>
             <el-breadcrumb-item>
@@ -164,8 +164,8 @@ export default {
           this.$store.commit('page_update', { pageSet: false });
         }
 
-        if (layerActive !== -1) {
-          this.dragClick(-1);
+        if (layerActive !== -1) { // todo 等待解决： 导致拖拽完不选中了
+          // this.dragClick(-1);
         }
       }
     },
@@ -257,7 +257,7 @@ export default {
         dragImages.map((item) => {
           dragArr.push({
             type: 2,
-            url: item.img,
+            url: item.img.url,
             location: {
               x: item.loaction.x,
               y: item.loaction.y,
@@ -303,9 +303,10 @@ export default {
         dragVideos.map((item) => {
           dragArr.push({
             type: 5,
-            source: item.source,
-            title: item.videoTitle,
+            source: item.video.url,
+            title: item.video.title,
             loop: item.loop,
+            poster: item.video.poster,
             location: {
               x: item.location.x,
               y: item.location.y,
@@ -325,8 +326,10 @@ export default {
         dragAudios.map((item) => {
           dragArr.push({
             type: 6,
-            source: item.source,
-            title: item.audioTitle,
+            source: item.play.url,
+            title: item.play.title,
+            second: item.play.second,
+            play: item.play,
             location: {
               x: item.location.x,
               y: item.location.y,

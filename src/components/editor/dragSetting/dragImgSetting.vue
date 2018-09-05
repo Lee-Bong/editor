@@ -18,7 +18,6 @@
               :disabled="fileAble"
               class="upload-demo"
               drag
-              action="https://jsonplaceholder.typicode.com/posts/"
               :file-list="dragForm.imglist"
               :on-success="onFileSuccess"
               :on-error="onFileError"
@@ -26,6 +25,7 @@
               list-type="picture"
               :limit="limit"
               :auto-upload="false"
+              action="https://jsonplaceholder.typicode.com/posts/"
               accept=".png,.gif,.jpeg, .jpg">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
@@ -33,7 +33,8 @@
             </el-upload>
           </div>
           <div class="file-info" v-if="this.fileSuccess">
-            <img-review-item :imgObj='dragForm.img'/>
+            <img-review-item :imgObj='dragForm.img'
+            @file-change="fileModify"/>
             <el-form-item label="位置：" size="mini">
               <el-input-number v-model="dragForm.location.x" @blur="locationChange"
                 :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
@@ -81,6 +82,7 @@ export default {
       fileSuccess: false,
       fileAble: false,
       fileFail: false,
+      isFirst: false, // 是否是更换图片
       files: [],
       sHeight: 500,
       limit: 1,
@@ -110,45 +112,69 @@ export default {
     sizeChange(opt) { // 大小值发生改变
       if (opt === 1) {
         // todo 300为图片的在375下自适应的真实高度
-        this.dragForm.size.h = (this.dragForm.size.w * 300) / 375;
+        this.dragForm.size.h = (this.dragForm.size.w * this.dragForm.img.h) / this.dragForm.img.w;
       } else {
-        this.dragForm.size.w = (this.dragForm.size.w * 375) / 300;
+        this.dragForm.size.w = (this.dragForm.size.h * this.dragForm.img.w) / this.dragForm.img.h;
       }
       this.$emit('input-sizeChange', 'dragImages', this.dragForm.size, 'imgActive');
       this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
     },
-    onFileSuccess(rep, file) {
-      this.fileSuccess = true;
-      this.fileAble = true;
+    onFileSuccess(file) {
+      const dragImg = new Image();
+      dragImg.src = file.url;
+      dragImg.onload = () => {
+        console.info(`${dragImg.height}sss${dragImg.width}`);
+        this.$message({
+          message: '图片上传成功～',
+          type: 'success',
+          duration: 2000,
+        });
+        const images = this.$store.state.editor.dragImages;
+        const drags = images[this.$store.state.editor.imgActive];
+        const newH = dragImg.height * this.$store.state.editor.phoneWidth / dragImg.width;
+
+        drags.img = {
+          // isUpload: true,
+          title: file.name,
+          url: file.url,
+          w: this.$store.state.editor.phoneWidth,
+          h: newH,
+        };
+        if (this.isFirst) {
+          drags.location = {
+            x: 0,
+            y: 0,
+          };
+        }
+        drags.size = {
+          h: newH,
+          w: this.$store.state.editor.phoneWidth,
+        };
+
+        drags.isUpload = false;
+        images[this.$store.state.editor.imgActive] = drags;
+        this.$store.commit('editor_update', { dragImages: images });
+        this.fileSuccess = true;
+        this.fileAble = true;
+        // todo 解决aspectRatio只根据初始值设定比例
+        setTimeout(() => {
+          drags.isUpload = true;
+          images[this.$store.state.editor.imgActive] = drags;
+          this.$store.commit('editor_update', { dragImages: images });
+        }, 100);
+      };
+      dragImg.onerror = function () {
+        this.onFileError();
+      };
+    },
+    onFileError() { // 图片上传失败
+      this.fileFail = true;
+      this.fileAble = false;
       this.$message({
-        message: '图片上传成功～',
-        type: 'success',
+        message: '图片上传失败，请重试～',
+        type: 'error',
         duration: 2000,
       });
-      const drags = this.$store.state.editor.dragImages[this.$store.state.editor.imgActive];
-      drags.img = {
-        title: file.name,
-        url: file.url,
-      };
-      this.$store.commit('editor_update', { dragImages: drags });
-    },
-    onFileError() { // 图片上传失败 err, file, fileList
-      // this.fileFail = true;
-      // this.fileAble = false;
-      // this.$message({
-      //   message: '图片上传失败，请重试～',
-      //   type: 'error',
-      //   duration: 2000,
-      // });
-      const { dragImages, imgActive } = this.$store.state.editor;
-      const drags = dragImages[imgActive];
-      drags.img = {
-        title: 'sss',
-        url: 'http://pic30.photophoto.cn/20140310/0008020974539766_b.jpg',
-      };
-      dragImages[imgActive] = drags;
-      this.$store.commit('editor_update', { dragImages });
-      this.fileSuccess = true;
     },
     async onFileChange(file) {
       // if (!this.fileFail) {
@@ -158,7 +184,15 @@ export default {
       this.fileFail = false;
 
       const up = await oss(file.raw);
-      console.log(up);
+      if (up && up.url) {
+        this.onFileSuccess(up);
+      } else {
+        this.onFileError();
+      }
+    },
+    fileModify(file) { // 更换图片
+      this.isFirst = true;
+      this.onFileChange(file);
     },
   },
 };

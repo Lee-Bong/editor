@@ -3,14 +3,16 @@
       :isActive="dragForm.isActive"
       :w="dragForm.size.w"
       :h="dragForm.size.h"
-      :aspectRatio="true"
       :sticks="['tl','tr','br','bl']"
       :x="dragForm.location.x"
       :y="dragForm.location.y"
       :z="dragForm.zIndex"
+      :isDraggable="JSON.stringify(dragForm.video) !== '{}' ? true : false"
+      :isResizable="JSON.stringify(dragForm.video) !== '{}' ? true : false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
+      :aspectRatio="dragForm.isUpload ? true: false"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
@@ -23,14 +25,18 @@
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
-      <div class="drag-img">
+      <div class="drag-img" v-if="JSON.stringify(dragForm.video) === '{}'">
         <div class="video-play">
           <i class="el-icon-caret-right" ></i>
         </div>
-        <!-- <video width="320" height="240" controls>
-          <source src="movie.mp4" type="video/mp4">
-      </video> -->
       </div>
+      <video v-if="JSON.stringify(dragForm.video) !== '{}' && dragForm.video.url"
+        class="video-show"
+        :width="dragForm.size.w"
+        :height="dragForm.size.h"
+        :poster="dragForm.video.poster" controls>
+          <source :src="dragForm.video.url" type="video/mp4">
+        </video>
 
     </vue-drag-resize>
 

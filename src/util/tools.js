@@ -34,3 +34,7 @@ export function now_time() {
   const am = hours > 12 ? ' AM' : ' PM';
   return `${hours}:${minutes}${am}`;
 }
+
+export function formatSecond(se) {
+  return `${parseInt(se / 60)}:${parseInt(se % 60)}`;
+}

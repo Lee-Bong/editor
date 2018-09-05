@@ -67,6 +67,7 @@
                 "type": 5,
                 "source": "http://www.baidu.com",
                 "title": "视频标题",
+                "poster": "视频封面",
                 "loop": false,
                 "location": {
                     "x": 0,

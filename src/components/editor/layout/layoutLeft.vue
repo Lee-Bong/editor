@@ -119,6 +119,7 @@ export default {
               w: 375,
               h: 300,
             },
+            isUpload: false,
           });
           newEditor = {
             imgSet: true,
@@ -226,6 +227,8 @@ export default {
               w: 375,
               h: 300,
             },
+            video: {},
+            isUpload: false,
           });
           newEditor = {
             videoSet: true,
@@ -260,7 +263,7 @@ export default {
             },
             size: {
               w: 375,
-              h: 65,
+              h: 165,
             },
           });
           newEditor = {
