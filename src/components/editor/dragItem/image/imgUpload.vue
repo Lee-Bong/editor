@@ -1,28 +1,11 @@
 <template>
-<div class="img-review-item">
-  <div class="image-review">
-    <div class="srouce-image"
-    :style="{background: 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
-    <div class="modify-image">
-      <el-upload
-        class="upload-modify"
-        action=""
-        :show-file-list="false"
-        :limit="1"
-        accept="png,gif,jpeg,jpg"
-        :on-remove="onFileRemove"
-        :on-change="onFileChange">
-        <div class="el-upload__text">更换图片</div>
-      </el-upload>
-    </div>
-  </div>
-  <div class="image-alt">
-    <el-input v-model="imgObj.title" class="alt-input" clearable></el-input>
-  </div>
+<div class="img-upload-item">
+  <input type="file" @change="fileChange"/>
 </div>
 </template>
 
 <script>
+import oss from '@/util/oss';
 export default {
   name: 'HelloWorld',
   props: {
@@ -34,8 +17,17 @@ export default {
     };
   },
   methods: {
-    onFileChange(file) {
-      this.$emit('file-change', file);
+    async fileChange(val) {
+        var file = val.currentTarget.files[0];
+        const up = await oss(file);
+        up.beforeName = file.name;
+        debugger;
+        if (up && up.url) {
+        this.$emit('upload-done', up);
+      } else {
+        // this.onFileError();
+      }
+      
     },
   },
 };

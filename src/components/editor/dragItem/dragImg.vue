@@ -1,16 +1,16 @@
 <template>
     <vue-drag-resize
       :isActive="isActive"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
       :y="dragForm.location.y"
       :x="dragForm.location.x"
       :z="dragForm.zIndex"
-      :isDraggable="!!dragForm.img ? true : false"
-      :isResizable="!!dragForm.img ? true : false"
+      :isDraggable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
+      :isResizable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
+      :w="dragForm.size.w"
+      :h="dragForm.size.h"
       :sticks="['tl','tr','br','bl']"
       :parentLimitation="true"
-      :aspectRatio="true"
+      :aspectRatio="dragForm.isUpload ? true: false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
 
@@ -23,8 +23,13 @@
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
-      <div class="drag-img">
+      <div class="drag-img" v-if="JSON.stringify(dragForm.img) === '{}'">
       </div>
+      <img v-if="JSON.stringify(dragForm.img) !== '{}'" 
+        :src="dragForm.img.url"
+        :width="dragForm.size.w"
+        :height="dragForm.size.h"/>
+      
     </vue-drag-resize>
 </template>
 <script>
@@ -59,8 +64,10 @@ export default {
     };
   },
 
-  mounted() {
-    // console.log(this.$store.state.editor);
+  updated() {
+    debugger;
+    console.log(this.$store.state.editor);
+    // alert(this.dragForm.size.h);
   },
 
   methods: {

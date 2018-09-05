@@ -29,7 +29,7 @@
             @change="audioSourceChange('2')">在线音频</el-radio>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'" label="上传音频：" size="mini">
-          <el-input type="text" v-model="dragForm.srouce"></el-input>
+          <img-uplaod @upload-done="uploadDone"/>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '2'" label="音频链接：" size="mini">
           <el-input type="text" v-model="dragForm.srouce"></el-input>
@@ -61,16 +61,20 @@
         </el-form>
       </div>
     </div>
-   <!-- </vue-drag-resize> -->
+   <audio v-show="false" ref="audioLoad" />
    </div>
 </template>
 
 <script>
+import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
 export default {
   name: 'DragSetting',
   props: {
     dragForm: Object,
     setForm: Object,
+  },
+   components: {
+    imgUplaod,
   },
   data() {
     return {
@@ -121,6 +125,47 @@ export default {
     },
     sizeChange() { // 大小值发生改变
       this.$emit('input-sizeChange', 'dragAudios', this.dragForm.size, 'audioActive');
+    },
+    uploadDone(file) {
+      this.onFileSuccess(file, 'dragAudios', 'videoActive');
+    },
+    onFileSuccess(file, dragList, active) {
+      this.$refs.audioLoad.setAttribute('src', file.url)
+      var _this = this;
+      this.$refs.audioLoad.addEventListener("loadedmetadata", function(){
+        const lists = _this.$store.state.editor[dragList];
+        const drags = lists[_this.$store.state.editor[active]];
+        let paly = {
+          title: file.beforeName ? file.beforeName : file.name,
+          url: file.url,
+          second: this.duration,
+          duration: parseInt(this.duration / 60) + ':' + parseInt(this.duration % 60)
+        };
+        drags.play = paly;
+        drags.location ={
+          x: 0,
+          y: 0
+        };
+        drags.isUpload = false;
+        lists[_this.$store.state.editor[active]] = drags;
+        _this.$store.commit('editor_update', { [dragList]: lists });
+        // todo 解决aspectRatio只根据初始值设定比例
+        setTimeout(()=> {
+          drags.isUpload = true;
+          lists[_this.$store.state.editor[active]] = drags;
+          _this.$store.commit('editor_update', { [dragList]: lists });
+        }, 100);
+      });
+       
+    },
+    onFileError() { // 图片上传失败
+      this.fileFail = true;
+      this.fileAble = false;
+      this.$message({
+        message: '视频上传失败，请重试～',
+        type: 'error',
+        duration: 2000,
+      });
     },
   },
 };

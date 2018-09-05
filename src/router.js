@@ -6,10 +6,12 @@ import Login from './views/Login.vue';
 Vue.use(Router);
 
 export default new Router({
+    mode: 'history',
     routes: [{
-            path: '/',
+            path: '/we',
             name: 'login',
             component: Login,
+
         },
         {
             name: 'editor',

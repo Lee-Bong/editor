@@ -13,10 +13,11 @@
         <div class="main-wrap">
             <div class="content-wrap">
                 <div>
-                    <el-button type="primary">新建H5</el-button>
+                    <el-button type="primary" @click="newEditor">新建H5</el-button>
                     <el-input class="table-search"
                         placeholder="请输入内容"
                         prefix-icon="el-icon-search"
+                        clearable
                         >
                     </el-input>
                     <button class="search-submit">搜索
@@ -59,6 +60,12 @@ export default {
         this.showList = true;
       }
     },
+    newEditor() {
+        this.$router.push({
+            path: '/editor',
+            name: 'editor'
+        });
+    }
 
   },
 };
@@ -102,7 +109,7 @@ export default {
 }
 .table-search {
     display: inline-block;
-    width: 180px;
+    width: 280px;
     margin-left: 15px;
 }
 .search-submit {

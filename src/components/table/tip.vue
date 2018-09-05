@@ -2,7 +2,8 @@
     <div class="tip-wrap">
     <el-input v-model="tipUrl" class="tip-url" readonly
     size='mini' placeholder="请输入内容"></el-input>
-    <el-button type="primary" size="mini" class="copy-btn">复制</el-button>
+    <el-button type="primary" size="mini" class="copy-btn"
+    :data-clipboard-text="tipUrl">复制</el-button>
     <div class="qrcode" ref="qrCode"></div>
     <a class="qrcode-download" download="二维码">下载二维码</a>
     </div>
@@ -49,6 +50,8 @@ export default {
     // 初始化二维码
     this.createQrCode();
     // 初始化复制面板
+    this.$nextTick(()=>{
+      debugger;
     const copyBtn = new Clipboard('.copy-btn');
     // 复制成功后执行的回调函数
     copyBtn.on('success', () => {
@@ -57,6 +60,7 @@ export default {
         message: '复制成功',
         type: 'success',
       });
+    });
     });
   },
 };

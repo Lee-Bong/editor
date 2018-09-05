@@ -6,7 +6,7 @@
         <div class="login-form">
             <h1>编辑器管理后台</h1>
             <div class="login-oa">
-                <a href="https://bfe.meiyou.com/oa" class="oa">OA一键登录</a>
+                <a href="https://bfe.meiyou.com/we/oa" class="oa">OA一键登录</a>
             </div>
         </div>
     </div>
