@@ -23,7 +23,21 @@ export default {
     };
   },
   methods: {
-
+    getUserInfo() {
+      this.$http({
+        method: 'get',
+        url: '/api/we/me',
+      }).then((res) => {
+          alert(JSON.stringify(res));
+        console.log(res);
+      }).catch((err) => {
+          alert(JSON.stringify(err));
+        console.log(err);
+      });
+    },
+  },
+  mounted() {
+    this.getUserInfo();
   },
 };
 </script>

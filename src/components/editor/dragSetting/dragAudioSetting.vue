@@ -67,6 +67,7 @@
 
 <script>
 import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
+import { formatSecond } from '@/util/tools';
 
 export default {
   name: 'DragSetting',
@@ -133,14 +134,17 @@ export default {
     onFileSuccess(file, dragList, active) {
       this.$refs.audioLoad.setAttribute('src', file.url);
       const ele = this;
-      this.$refs.audioLoad.addEventListener('loadedmetadata', () => {
+      this.$refs.audioLoad.addEventListener('loadedmetadata', function cb() {
         const lists = ele.$store.state.editor[dragList];
         const drags = lists[ele.$store.state.editor[active]];
+        const { duration } = this;
         const paly = {
           title: file.beforeName ? file.beforeName : file.name,
           url: file.url,
-          second: this.duration,
-          duration: `${parseInt(this.duration / 60, 10)}:${parseInt(this.duration % 60, 10)}`,
+          second: duration,
+          duration: formatSecond(duration),
+          isUplaod: true,
+          loop: false,
         };
         drags.play = paly;
         drags.location = {
