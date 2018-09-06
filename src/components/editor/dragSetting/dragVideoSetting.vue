@@ -7,7 +7,6 @@
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
@@ -83,44 +82,21 @@ export default {
   },
   data() {
     return {
-      sHeight: 800,
       limit: 1,
-      sizeList: ['12px', '14px'],
       fileList: [],
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        xmax: 10000000,
         ymin: 0,
-        ymax: 100,
       },
       size: {
-        w: 80,
-        h: 80,
         wmin: 0,
-        // wmax: 100,
         hmin: 0,
-        // hmax: 100,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    handleChange() {
-
-    },
     sourceChange(type) {
       this.$emit('videoSourceChange', type, 'dragVideos', 'videoActive');
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isVideoSet: false });

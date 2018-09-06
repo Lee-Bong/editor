@@ -3,19 +3,10 @@
     :class="['setting-content', $store.state.editor.isTextSet ? 'setting-show' : '']"
     :style="{width: setForm.width+'px'}"
     @click="settingClick">
-  <!-- <vue-drag-resize
-    class="setting-content"
-    :isActive="true"
-    :w="280"
-    :h="sHeight"
-    :x="600"
-    :y="66"
-    :isResizable="false"> -->
   <div class="setting-box">
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
@@ -75,7 +66,6 @@
         </el-form>
       </div>
     </div>
-   <!-- </vue-drag-resize>  -->
 </div>
 </template>
 
@@ -88,39 +78,17 @@ export default {
   },
   data() {
     return {
-      sHeight: 800,
-      sizeList: ['12px', '14px'],
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        xmax: 10000,
         ymin: 0,
-        ymax: 1000,
       },
       size: {
-        w: 80,
-        h: 80,
         wmin: 0,
-        wmax: this.$store.state.editor.phoneWidth,
         hmin: 0,
-        hmax: this.$store.state.editor.phoneHeight,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
-      xDisabled: false,
-      yDisabled: false,
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
-    },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isTextSet: false });
     },

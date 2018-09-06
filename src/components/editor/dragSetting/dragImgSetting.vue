@@ -7,7 +7,6 @@
      <div class="setting-title">
         <span>组件设置</span>
           <span class="header-btn">
-            <i class="el-icon-news" @click="settingFixed"></i>
             <i class="el-icon-close" @click="settingClose"></i>
         </span>
       </div>
@@ -100,9 +99,6 @@ export default {
 
   },
   methods: {
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
-    },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isImgSet: false });
     },

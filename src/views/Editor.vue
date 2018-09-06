@@ -161,9 +161,24 @@ export default {
       }
     },
     saveEditor() { // 保存草稿
-      // const editor = this.$store.state.editor;
-      // const data = JSON.stringify(editor);
-      // const saveData = JSON.parse(data);
+      let { state, draft } = this.getEditorJson();
+      state = JSON.stringify(state);
+      draft = JSON.stringify(draft);
+      this.$http({
+        method: 'post',
+        url: '/api/we/page',
+        data: {
+          state,
+          draft,
+          public: '',
+        },
+      }).then((res) => {
+        alert(JSON.stringify(res));
+        // console.log(res);
+      }).catch(() => {
+        //   alert(JSON.stringify(err));
+        // console.log(err);
+      });
     },
     dragDel(s, n) { // 删除当前编辑组件
       const { editor } = this.$store.state;

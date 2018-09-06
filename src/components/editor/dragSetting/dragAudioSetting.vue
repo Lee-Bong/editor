@@ -3,20 +3,10 @@
     :class="['setting-content', $store.state.editor.isAudioSet ? 'setting-show' : '']"
     :style="{width: setForm.width+'px'
     }">
-
-  <!-- <vue-drag-resize
-    class="setting-content"
-    :isActive="true"
-    :w="280"
-    :h="sHeight"
-    :x="600"
-    :y="66"
-    :isResizable="false"> -->
   <div class="setting-box">
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
@@ -106,18 +96,8 @@ export default {
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    handleChange() {
-
-    },
     audioSourceChange(type) {
       this.$emit('audioSourceChange', type, 'dragAudios', 'audioActive');
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isAudioSet: false });

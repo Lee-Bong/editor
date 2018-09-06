@@ -3,20 +3,10 @@
     ? 'setting-show' : '', 'link-setting']"
     :style="{width: setForm.width+'px'}"
   >
-
-  <!-- <vue-drag-resize
-    class="setting-content"
-    :isActive="true"
-    :w="280"
-    :h="sHeight"
-    :x="600"
-    :y="66"
-    :isResizable="false"> -->
   <div class="setting-box">
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
@@ -24,9 +14,11 @@
       <el-form ref="form">
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
+            :disabled="!isUpload"
             :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+            :disabled="!isUpload"
             :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
@@ -36,35 +28,26 @@
             class="upload-demo"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
-            multiple=true
+            :multiple="true"
             :file-list="dragForm.imglist"
-            :on-success="onFileSuccess"
-            :on-error="onFileError"
-            :on-remove="onFileRemove"
-            list-type="picture"
-            accept="image/jpeg">
+            :on-change="onFileChange"
+            list-type=""
+            :auto-upload="false"
+            accept=".png,.gif,.jpeg, .jpg">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
             <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
           </el-upload>
-        <!-- <file-upload
-          class="file-upload"
-          url=''
-          inputOfFile="file"
-          extensions="png,gif,jpeg,jpg"
-          @imageUploading="imageUploading"
-          @imageuploaded="imageuploaded"
-          @errorHandle="errorHandle"></file-upload> -->
         <span class="upload-dec"></span>
         </div>
       </el-form>
     </div>
-   <!-- </vue-drag-resize> -->
    </div>
    </div>
 </template>
 
 <script>
+import oss from '@/util/oss';
 
 export default {
   name: 'DragSetting',
@@ -76,44 +59,18 @@ export default {
   },
   data() {
     return {
-      sHeight: 800,
-
-      sizeList: ['12px', '14px'],
-
+      isUpLoad: false,
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        xmax: 10000000,
         ymin: 0,
-        ymax: 100,
       },
       size: {
-        w: 80,
-        h: 80,
         wmin: 0,
-        wmax: 1000000,
         hmin: 0,
-        hmax: 1000000,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    onFileSuccess(rep, file, fileList) {
-      this.fileSet(fileList);
-    },
-    onFileError() { // err, file, fileList图片上传失败
-    },
-    onFileRemove(file, fileList) {
-      this.fileSet(fileList);
-    },
     fileSet(fileList) {
       const { dragImageLists, imgListActive } = this.$store.state.editor;
       if (fileList.length) {
@@ -127,23 +84,78 @@ export default {
       }
       this.$store.commit('editor_update', { dragImageLists });
     },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
-    },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isImgListSet: false });
     },
     locationChange() { // 位置值发生改变
       this.$emit('input-locationChange', 'dragImageLists', this.dragForm.location, 'imgListActive');
     },
-
-    imageUploading() {
-
+    async onFileChange(file) {
+      const up = await oss(file.raw);
+      if (up && up.url) {
+        this.onFileSuccess(up);
+      } else {
+        this.onFileError();
+      }
     },
-    errorHandle() { // 图片上传异常
+    onFileSuccess(file) {
+      const dragImg = new Image();
+      dragImg.src = file.url;
+      dragImg.onload = () => {
+        this.isUpLoad = true;
+        console.info(`${dragImg.height}sss${dragImg.width}`);
+        this.$message({
+          message: '图片上传成功～',
+          type: 'success',
+          duration: 2000,
+        });
+        const images = this.$store.state.editor.dragImages;
+        const drags = images[this.$store.state.editor.imgActive];
+        const newH = (dragImg.height * this.$store.state.editor.phoneWidth) / dragImg.width;
 
+        drags.img = {
+          // isUpload: true,
+          title: file.name,
+          url: file.url,
+          w: this.$store.state.editor.phoneWidth,
+          h: newH,
+        };
+        if (this.isFirst) {
+          drags.location = {
+            x: 0,
+            y: 0,
+          };
+        }
+        drags.size = {
+          h: newH,
+          w: this.$store.state.editor.phoneWidth,
+        };
+
+        drags.isUpload = false;
+        images[this.$store.state.editor.imgActive] = drags;
+        this.$store.commit('editor_update', { dragImages: images });
+        this.fileSuccess = true;
+        this.fileAble = true;
+        // todo 解决aspectRatio只根据初始值设定比例
+        setTimeout(() => {
+          drags.isUpload = true;
+          images[this.$store.state.editor.imgActive] = drags;
+          this.$store.commit('editor_update', { dragImages: images });
+        }, 100);
+      };
+      dragImg.onerror = function () {
+        this.onFileError();
+      };
     },
-
+    onFileError() { // 图片上传失败
+      this.fileFail = true;
+      this.fileAble = false;
+      this.$message({
+        message: '图片上传失败，请重试～',
+        type: 'error',
+        duration: 2000,
+      });
+    },
   },
 
 };
