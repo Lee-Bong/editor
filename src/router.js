@@ -7,9 +7,14 @@ Vue.use(Router);
 
 export default new Router({
   mode: 'history',
+  base: 'we',
   routes: [{
+    path: '/',
+    redirect: '/login',
+  },
+  {
+    path: '/login',
     name: 'login',
-    path: '/we',
     component: Login,
   },
   {
@@ -17,28 +22,24 @@ export default new Router({
     path: '/we/editor',
     component: Editor,
   },
-    // {
-    //     name: 'login',
-    //     path: '/we/login',
-    //     component: () => Login,
-    // },
   {
     name: 'manage',
-    path: '/we/manage',
-    component: () =>
-                import('./views/Manage.vue'),
+    path: '/manage',
+    component: () => import('./views/Manage.vue'),
   },
   {
     name: 'preview',
     path: '/preview',
-    component: () =>
-                import('./views/preview/Index.vue'),
+    component: () => import('./views/preview/Index.vue'),
   },
   {
     name: 'real',
     path: '/real',
-    component: () =>
-                import('./views/real/Index.vue'),
+    component: () => import('./views/real/Index.vue'),
+  },
+  {
+    path: '*',
+    redirect: '/login',
   },
   ],
 });
