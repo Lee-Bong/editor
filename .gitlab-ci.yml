@@ -8,7 +8,7 @@ rsync_test:
     - "rm /data/git/beta/$PROJECT_NAME/ -Rf"
     - "/opt/gitlab/embedded/bin/git archive --format=tar --prefix=$PROJECT_NAME/ HEAD | (cd /data/git/beta/ && tar xf -)"
     - "scp -r /data/git/beta/$PROJECT_NAME/dist/* root@10.0.1.174:/opt/apps/test/bfe/public/we/"
-    - ssh root@10.0.1.174 "cd /opt/apps/test/bfe/; pm2 reload process.json --only bfe-test --env production --update-env"
+    - ssh root@10.0.1.174 "cd /opt/apps/test/bfe/; pm2 reload process.json --only bfe-test"
   only:
     - release
 rsync_master:
