@@ -11,6 +11,7 @@ import VueDragResize from 'vue-drag-resize';
 import axios from 'axios';
 
 Vue.config.productionTip = false;
+axios.defaults.withCredentials = true;
 Vue.prototype.$http = axios;
 
 Vue.use(ElementUI);

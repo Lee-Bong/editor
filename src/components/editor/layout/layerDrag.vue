@@ -64,11 +64,19 @@ export default {
     },
     datadragEnd(evt) {
       const { oldIndex, newIndex } = evt;
-      const { layerLists } = this.$store.state.editor;
-      const drag = layerLists[oldIndex];
-      const drop = layerLists[newIndex];
-      layerLists[oldIndex] = drop;
-      layerLists[newIndex] = drag;
+      const { layerLists, typeCat } = this.$store.state.editor;
+      const { type, num } = layerLists[newIndex];
+      const nDrags = this.$store.state.editor[typeCat[type][0]];
+      const oDrags = this.$store.state.editor[typeCat[layerLists[oldIndex].type][0]];
+      const nIndex = oDrags[layerLists[oldIndex].num].dragIndex;
+      const oIndex = nDrags[num].dragIndex;
+      nDrags[num].dragIndex = nIndex;
+      oDrags[num].dragIndex = oIndex;
+      this.$store.commit('editor_update', {
+        [typeCat[type][0]]: oDrags,
+        [typeCat[layerLists[newIndex].type][0]]: nDrags,
+      });
+      this.dragClick(num, type);
       this.$store.dispatch('layerMove', { layerLists, newIndex });
     },
     layerclick(drag, index) { // 单击图层

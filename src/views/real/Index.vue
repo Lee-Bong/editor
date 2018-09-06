@@ -1,16 +1,15 @@
 <template>
-    <div v-if="pageJson" class="wrap" :style='{ height: `${pageJson.page.phoneHeight}px` }'>
-        <custom-component
-            v-for="(component, index) in finalComponentsJson"
-            :key="index"
-            :component="component"
-        ></custom-component>
-    </div>
+  <div v-if="pageJson" class="wrap" :style='{ height: `${pageJson.page.phoneHeight}px` }'>
+    <custom-component v-for="(component, index) in finalComponentsJson" :key="index" :component="component"></custom-component>
+    <div class="bottom-download"></div>
+  </div>
 </template>
 <script>
+import share from '@/assets/javascript/share';
 import { sortBy, map } from 'lodash';
 import CustomComponent from './CustomComponent.vue';
 import mock from '../../mock.json';
+
 
 export default {
   data() {
@@ -58,6 +57,15 @@ export default {
     this.finalComponentsJson = finalComponentsJson;
 
     document.title = this.pageJson.page.title;
+    this.$nextTick(function () {
+      if (this.$route.query && this.$route.query.isShare) {
+        share('https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0', {
+          android: 'http://yangmao-download.seeyouyima.com/ymsq31.apk',
+          ios: 'https://itunes.apple.com/cn/app/id1412667195?mt=8',
+          weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
+        });
+      }
+    });
   },
 };
 </script>
@@ -66,6 +74,12 @@ export default {
 .wrap {
   overflow: hidden;
   position: relative;
+  .bottom-download {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    border-top: 1px solid #ddd;
+  }
 }
 </style>
 

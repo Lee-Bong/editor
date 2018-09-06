@@ -71,6 +71,7 @@ export default {
   methods: {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
+      this.$refs.inputCont.focus();
     },
     onResezing(newRect) {
       this.drag.width = newRect.width;
