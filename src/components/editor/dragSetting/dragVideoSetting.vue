@@ -42,19 +42,19 @@
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
             :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
             :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
             :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
             :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         </el-form>
@@ -92,6 +92,7 @@ export default {
         wmin: 0,
         hmin: 0,
       },
+      isUpload: false,
     };
   },
   methods: {
