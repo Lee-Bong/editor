@@ -131,7 +131,7 @@ export default {
         });
         const images = this.$store.state.editor.dragImages;
         const drags = images[this.$store.state.editor.imgActive];
-        const newH = dragImg.height * this.$store.state.editor.phoneWidth / dragImg.width;
+        const newH = (dragImg.height * this.$store.state.editor.phoneWidth) / dragImg.width;
 
         drags.img = {
           // isUpload: true,
