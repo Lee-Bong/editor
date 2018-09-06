@@ -19,7 +19,7 @@ export default new Router({
   },
   {
     name: 'editor',
-    path: '/we/editor',
+    path: '/editor',
     component: Editor,
   },
   {
