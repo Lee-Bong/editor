@@ -9,9 +9,5 @@ module.exports = {
             },
         },
     },
-    baseUrl: '/we/',
-    configureWebpack: () => {
-
-    },
-    // assetsPublicPath: cdnPath,
+    baseUrl: 'https://static.seeyouyima.com/bfe/we/',
 };
