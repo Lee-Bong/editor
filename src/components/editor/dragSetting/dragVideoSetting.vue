@@ -140,7 +140,7 @@ export default {
     onFileSuccess(file) {
       this.$refs.videoLoad.setAttribute('src', file.url);
       const ele = this;
-      this.$refs.videoLoad.addEventListener('loadedmetadata', () => {
+      this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
         ele.$message({
           message: '视频上传成功～',
           type: 'success',

@@ -3,29 +3,38 @@
   <span class="audio-title" >{{play.title}}</span>
   <div class="paly-control">
     <div class="icons">
-        <el-button class="paly-icon paly" v-if="!isPlay" type="primary"
+        <el-button class="paly-icon paly" v-if="!isPlay || !play.isUplaod"
+        :type="!play.isUplaod ? 'info' : 'primary'"
          icon="el-icon-caret-right" circle
-        @click="audioPlay"></el-button>
+         :disabled="!play.isUplaod"
+         plain
+          @click="audioPlay"></el-button>
         </div>
-        <el-button class="paly-icon" v-if="isPlay" type="primary" icon="el-icon-message" circle
+        <el-button class="paly-icon" v-if="isPlay && play.isUplaod" type="primary"
+         icon="el-icon-message" circle
         @click="audioPause"></el-button>
         <div class="paly-precent">
-          <el-slider v-model="playPrecent"></el-slider>
+          <el-slider v-model="playPrecent"
+          :format-tooltip="formatTooltip"
+          :disabled="!play.isUplaod"
+          @change="precentChange"></el-slider>
         </div>
-        <div class="play-time">{{this.showPre}}</div>
+        <div class="play-time">{{showPre + '/'+play.duration}}</div>
     </div>
-        <audio autoplay="autoplay"
+        <audio
           controls="controls"
           ref="aduioObj"
           preload="auto"
           v-show="false"
           :src="play.url"
+          :loop="play.loop"
         >
         </audio>
 </div>
 </template>
 
 <script>
+import { formatSecond } from '@/util/tools';
 
 export default {
   name: 'HelloWorld',
@@ -34,8 +43,10 @@ export default {
   },
   data() {
     return {
-      isPlay: true,
+      isPlay: false,
       playPrecent: 1,
+      showPre: '00:00',
+      isEnd: false,
     };
   },
   mounted() {
@@ -43,7 +54,6 @@ export default {
   },
   methods: {
     audioPlay() {
-      alert('sss');
       this.isPlay = true;
       this.$refs.aduioObj.play();
     },
@@ -54,17 +64,37 @@ export default {
     audioUpdate() {
       const ele = this;
       this.$refs.aduioObj.addEventListener('timeupdate', () => {
-        if (!ele.isPlay || parseInt(ele.playPrecent, 10) === 100) return false;
+        if (ele.isEnd || !ele.isPlay || parseInt(ele.playPrecent, 10) === 100) return false;
         const palyTime = ele.$refs.aduioObj.currentTime;
         const totalTime = ele.play.second;
         const precent = (Math.floor(palyTime) / Math.floor(totalTime)) * 100;
         ele.playPrecent = precent;
-        ele.showPre = `${parseInt(palyTime / 60, 10)}:${parseInt(palyTime % 60, 10)}/${ele.play.duration}`;
-        if (parseInt(ele.playPrecent, 10) === 100) {
-          // this.
+        ele.showPre = formatSecond(palyTime);
+        if (parseInt(ele.playPrecent, 10) === 100 && ele.play.loop) {
+          ele.$refs.aduioObj.currentTime = 0;
+          ele.playPrecent = 0;
+        }
+      }, false);
+      this.$refs.aduioObj.addEventListener('ended', () => {
+        ele.$refs.aduioObj.currentTime = 0;
+        ele.playPrecent = 0;
+        if (!ele.play.loop) {
+          ele.isEnd = true;
+          ele.isPlay = false;
+          ele.showPre = '00:00';
         }
       }, false);
     },
+    formatTooltip(val) {
+      return formatSecond((this.play.second * val) / 100);
+    },
+    precentChange(val) { // 拖动滑块改变播放进度
+      this.isChange = true;
+      this.playPrecent = val;
+      this.showPre = formatSecond((this.play.second * val) / 100);
+      this.$refs.aduioObj.currentTime = (this.play.second * val) / 100;
+    },
+
   },
 };
 </script>
@@ -75,6 +105,7 @@ export default {
   min-height: 82px;
 }
  .audio-title {
+   height: 16px;
   font-size: 12px;
   margin-left: 50px;
     display: block;
@@ -88,6 +119,10 @@ export default {
   position: absolute;
   z-index: 12;
 
+}
+.icons {
+  height: 40px;
+  width: 40px;
 }
   .paly-control {
     /* height: 50px; */
