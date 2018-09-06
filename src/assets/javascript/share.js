@@ -8,7 +8,7 @@ const uWeixin = browser.indexOf('micromessenger') > -1;
 const uQQ = browser.indexOf('mqqbrowser') > -1 || browser.indexOf('qq') > -1;
 const uWeibo = browser.indexOf('weibo') > -1;
 const u = navigator.userAgent;
-const isAndroid = u.indexOf("Android") > -1 || u.indexOf("Adr") > -1; //android终端
+const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; // android终端
 
 let MeiyouAppBar = require('meetyou.sharebar/lib/MeiyouAppBar');
 const YunQiAppBar = require('meetyou.sharebar/lib/YoubaobaoAppBar');
@@ -22,7 +22,7 @@ if ((appid === 2 || appid === 8 || appid === 14)) {
 const shareParm = {};
 let sharebar = null;
 
-exports.init = function cb(url, download) {
+export default function init(url, download) {
   const link = getLink(url);
   const downUrl = isAndroid ? download.android : download.ios;
   sharebar = new MeiyouAppBar({
@@ -33,15 +33,14 @@ exports.init = function cb(url, download) {
 
   $('.bottom-download,.astro-share-footer,.author,.share-mask').on('click', () => {
     if (uWeixin) {
-      return showTip();
+      if (!download.weixin) {
+        return showTip();
+      }
+      sharebar.downUrl = download.weixin;
     }
     sharebar.handleOpen();
   });
-};
-
-exports.getSharebar = function () {
-  return sharebar;
-};
+}
 
 function showTip() {
   $('<div class="opentip">' +
@@ -76,28 +75,6 @@ function getScheme() {
   return sch;
 }
 
-
-// open share total
-// function statShare() {
-//   getClientType();
-//   shareParm.type = 2;
-// }
-
-function getClientType() {
-  if (uWeibo) {
-    shareParm.client_type = 1;
-  } else if (uWeixin) {
-    if (query.from && query.from === 'timeline') {
-      shareParm.client_type = 3;
-    } else {
-      shareParm.client_type = 2;
-    }
-  } else if (uQQ) {
-    shareParm.client_type = 5;
-  } else {
-    shareParm.client_type = 0;
-  }
-}
 
 function wxShare() {
   // 微信访问设置二次分享相关数据

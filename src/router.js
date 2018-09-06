@@ -37,9 +37,9 @@ export default new Router({
     path: '/real',
     component: () => import('./views/real/Index.vue'),
   },
-  {
-    path: '*',
-    redirect: '/login',
-  },
+  // {
+  //   path: '*',
+  //   redirect: '/login',
+  // },
   ],
 });
