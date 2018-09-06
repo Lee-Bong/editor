@@ -8,4 +8,6 @@ module.exports = {
       },
     },
   },
+  // build的时候开启
+  // baseUrl: 'https://static.seeyouyima.com/bfe/we/',
 };

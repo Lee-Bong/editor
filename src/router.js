@@ -19,13 +19,8 @@ export default new Router({
   },
   {
     name: 'editor',
-    path: '/editor',
+    path: '/we/editor',
     component: Editor,
-  },
-  {
-    name: 'login',
-    path: '/login',
-    component: () => Login,
   },
   {
     name: 'manage',
