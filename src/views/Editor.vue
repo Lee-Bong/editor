@@ -3,23 +3,20 @@
     <el-container>
       <el-header>
         <el-row class="header-flex">
-          <el-col :span="10" type="flex" >
-          <el-breadcrumb separator="/" type="flex">
-            <el-breadcrumb-item :to="{ path: '/manage' }">
-              微页面
-            </el-breadcrumb-item>
-            <el-breadcrumb-item>
-              编辑微页面
-            </el-breadcrumb-item>
-          </el-breadcrumb>
+          <el-col :span="10" type="flex">
+            <el-breadcrumb separator="/" type="flex">
+              <el-breadcrumb-item :to="{ path: '/manage' }">
+                微页面
+              </el-breadcrumb-item>
+              <el-breadcrumb-item>
+                编辑微页面
+              </el-breadcrumb-item>
+            </el-breadcrumb>
           </el-col>
           <el-col :span="14">
-            <el-button
-              @click="saveEditor">保存草稿</el-button>
-            <el-button
-              @click="reviewEditor">预览</el-button>
-            <el-button type="primary" class="publish-btn"
-              @click="publishEditor">发布</el-button>
+            <el-button @click="saveEditor">保存草稿</el-button>
+            <el-button @click="reviewEditor">预览</el-button>
+            <el-button type="primary" class="publish-btn" @click="publishEditor">发布</el-button>
             <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
           </el-col>
         </el-row>
@@ -27,27 +24,22 @@
       <layout-left />
       <el-main>
         <div class="flxed-main">
-          <div class="phone-wrap"
-            :style="{height: wrapHeight+'px'}">
-            <div class="phone-container"
-              ref="phoneContainer"
-              :style="{width: phoneWidth+'px',
+          <div class="phone-wrap" :style="{height: wrapHeight+'px'}">
+            <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
                 height: ($store.state.editor.phoneHeight+64)+'px'}">
-              <div class="top-banner"
-                @click="topBannerClick">
+              <div class="top-banner" @click="topBannerClick">
                 <div class="web-title">{{$store.state.page.title}}</div>
               </div>
               <layout-main />
 
             </div>
-            <div class="phone-hidden"
-            :style="{width: phoneWidth+'px',
+            <div class="phone-hidden" :style="{width: phoneWidth+'px',
                 top: ($store.state.editor.phoneHeight + 64+ 37)+'px'}"></div>
           </div>
           <layout-setting />
         </div>
         <div class="fixed-right">
-        <layer />
+          <layer />
         </div>
       </el-main>
     </el-container>
@@ -59,7 +51,6 @@ import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
 import dragMxi from '@/util/dragMxi';
-import _ from '@/util/tools';
 
 export default {
   mixins: [dragMxi.dragCom()],
@@ -477,8 +468,8 @@ body {
   /* bottom: 0; */
   width: 260px;
   z-index: 98;
-      margin-top: 40px;
-    margin-right: -19px;
+  margin-top: 40px;
+  margin-right: -19px;
   background-color: #fafafa;
   border-left: 1px solid #ccd5db;
   box-sizing: content-box;
@@ -552,7 +543,6 @@ body {
   border: 1px solid #59c7f9;
 }
 
-
 .el-button.el-button--text {
   color: #606266;
 }
@@ -560,39 +550,41 @@ body {
 .publish-btn {
   margin-left: 10px !important;
 }
-body{
-    font-family:'微软雅黑'
+body {
+  font-family: "微软雅黑";
 }
-[v-cloak]{
-    display:none;
+[v-cloak] {
+  display: none;
 }
-#example{
-    width:1000px;
-    margin:0 auto;
+#example {
+  width: 1000px;
+  margin: 0 auto;
 }
 .list-complete-item {
   transition: all 1s;
-    height:50px;
-    line-height: 50px;
-    background: #000;
-    color:#fff;
-    text-align: center;
-    font-size:24px;
-    margin-top:10px;
+  height: 50px;
+  line-height: 50px;
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  margin-top: 10px;
 }
-.styleclass{
-    width:100px;
-    float:left;
+.styleclass {
+  width: 100px;
+  float: left;
 }
-.list-complete-enter, .list-complete-leave-active {
+.list-complete-enter,
+.list-complete-leave-active {
   opacity: 0;
   height: 0px;
   margin-top: 0px;
   padding: 0px;
   border: solid 0px;
 }
-.list-complete-sortable-chosen,.list-complete-sortable-ghost{
- opacity: 0;
+.list-complete-sortable-chosen,
+.list-complete-sortable-ghost {
+  opacity: 0;
   height: 0px;
   margin-top: 0px;
   padding: 0px;
@@ -605,7 +597,7 @@ body{
 
 .top-banner {
   cursor: pointer;
-  background: url('../assets/images/page_banner.png') no-repeat center center;
+  background: url("../assets/images/page_banner.png") no-repeat center center;
   background-size: 375px auto;
   z-index: 10;
   position: absolute;
@@ -613,18 +605,18 @@ body{
   height: 64px;
 }
 
-.web-title{
-    height: 42px;
-    color: #fff;
-    font-size: 16px;
-    margin-top: 23px;
-    line-height: 42px;
-    padding-left: 60px;
-    padding-right: 40px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
+.web-title {
+  height: 42px;
+  color: #fff;
+  font-size: 16px;
+  margin-top: 23px;
+  line-height: 42px;
+  padding-left: 60px;
+  padding-right: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .phone-wrap {
@@ -636,9 +628,7 @@ body{
 .phone-hidden {
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
-  bottom:0;
+  bottom: 0;
   z-index: 1050;
 }
-
-
 </style>

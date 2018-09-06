@@ -1,36 +1,24 @@
 <template>
-<div class="audio-upload-item">
-  <span class="audio-title" >{{play.title}}</span>
-  <div class="paly-control">
-    <div class="icons">
+  <div class="audio-upload-item">
+    <span class="audio-title">{{play.title}}</span>
+    <div class="paly-control">
+      <div class="icons">
         <el-button class="paly-icon paly" v-if="!isPlay || !play.isUplaod"
-        :type="!play.isUplaod ? 'info' : 'primary'"
-         icon="el-icon-caret-right" circle
-         :disabled="!play.isUplaod"
-         plain
-          @click="audioPlay"></el-button>
-        </div>
-        <el-button class="paly-icon" v-if="isPlay && play.isUplaod" type="primary"
-         icon="el-icon-message" circle
-        @click="audioPause"></el-button>
-        <div class="paly-precent">
-          <el-slider v-model="playPrecent"
-          :format-tooltip="formatTooltip"
-          :disabled="!play.isUplaod"
-          @change="precentChange"></el-slider>
-        </div>
-        <div class="play-time">{{showPre + '/'+play.duration}}</div>
+          :type="!play.isUplaod ? 'info' : 'primary'" icon="el-icon-caret-right"
+          circle :disabled="!play.isUplaod" plain @click="audioPlay"></el-button>
+      </div>
+      <el-button class="paly-icon" v-if="isPlay && play.isUplaod" type="primary"
+        icon="el-icon-message" circle @click="audioPause"></el-button>
+      <div class="paly-precent">
+        <el-slider v-model="playPrecent" :format-tooltip="formatTooltip"
+         :disabled="!play.isUplaod" @change="precentChange"></el-slider>
+      </div>
+      <div class="play-time">{{showPre + '/'+play.duration}}</div>
     </div>
-        <audio
-          controls="controls"
-          ref="aduioObj"
-          preload="auto"
-          v-show="false"
-          :src="play.url"
-          :loop="play.loop"
-        >
-        </audio>
-</div>
+    <audio controls="controls" ref="aduioObj" preload="auto" v-show="false"
+     :src="play.url" :loop="play.loop">
+    </audio>
+  </div>
 </template>
 
 <script>
@@ -104,50 +92,50 @@ export default {
   position: relative;
   min-height: 82px;
 }
- .audio-title {
-   height: 16px;
+.audio-title {
+  height: 16px;
   font-size: 12px;
   margin-left: 50px;
-    display: block;
-    margin-top: 10px;
-    padding-right: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  display: block;
+  margin-top: 10px;
+  padding-right: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   z-index: 1;
 }
 .paly-icon {
   position: absolute;
   z-index: 12;
-
 }
 .icons {
   height: 40px;
   width: 40px;
 }
-  .paly-control {
-    /* height: 50px; */
-    display: flex;
-    padding: 5px 15px;
-        align-items: center;
-    justify-content: space-between;
-  }
-  .paly-precent {
-    flex: 1;
-    margin-left: 10px;
-  }
-  .icons {
-    flex-basis: 40px;
-  }
-  .paly-precent .el-slider__bar, .paly-precent .el-slider__runway {
-    height: 4px;
-  }
-  .paly-precent .el-slider__button {
-    height: 10px;
-    width: 10px;
-    border-width: 1px;
-  }
-  .play-time {
-    font-size: 13px;
-    margin-left: 15px;
-  }
+.paly-control {
+  /* height: 50px; */
+  display: flex;
+  padding: 5px 15px;
+  align-items: center;
+  justify-content: space-between;
+}
+.paly-precent {
+  flex: 1;
+  margin-left: 10px;
+}
+.icons {
+  flex-basis: 40px;
+}
+.paly-precent .el-slider__bar,
+.paly-precent .el-slider__runway {
+  height: 4px;
+}
+.paly-precent .el-slider__button {
+  height: 10px;
+  width: 10px;
+  border-width: 1px;
+}
+.play-time {
+  font-size: 13px;
+  margin-left: 15px;
+}
 </style>
