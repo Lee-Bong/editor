@@ -1,4 +1,6 @@
-module.exports = {
+const { NODE_ENV } = process.env;
+
+const config = {
   productionSourceMap: false,
   devServer: {
     proxy: {
@@ -8,6 +10,10 @@ module.exports = {
       },
     },
   },
-  // build的时候开启
-  // baseUrl: 'https://static.seeyouyima.com/bfe/we/',
 };
+
+if (NODE_ENV === 'production') {
+  config.baseUrl = 'https://static.seeyouyima.com/bfe/we/'
+}
+
+module.exports = config;
