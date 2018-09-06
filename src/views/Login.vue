@@ -26,7 +26,7 @@ export default {
     getUserInfo() {
       this.$http({
         method: 'get',
-        url: '/api/we/me',
+        url: 'https://test-bfe.meiyou.com/api/we/me',
       }).then(() => {
         //   alert(JSON.stringify(res));
         // console.log(res);
