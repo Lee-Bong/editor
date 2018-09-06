@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-box" @click="hidePanel">
+  <div class="editor-box" >
     <el-container>
       <el-header>
         <el-row class="header-flex">

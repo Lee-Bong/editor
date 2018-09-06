@@ -40,6 +40,7 @@ export default new Vuex.Store({
     },
     /* 图层管理-图层拖拽排序 */
     layer_move(state, payload) {
+      debugger;
       state.editor.layerLists = payload.layerLists;
       state.editor.layerActive = payload.newIndex;
     },

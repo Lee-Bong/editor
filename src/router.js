@@ -13,13 +13,13 @@ export default new Router({
     redirect: '/login',
   },
   {
-    path: '/login',
     name: 'login',
+    path: '/login',
     component: Login,
   },
   {
     name: 'editor',
-    path: '/we/editor',
+    path: '/editor',
     component: Editor,
   },
   {
@@ -37,9 +37,9 @@ export default new Router({
     path: '/real',
     component: () => import('./views/real/Index.vue'),
   },
-  // {
-  //   path: '*',
-  //   redirect: '/login',
-  // },
+  {
+    path: '*',
+    redirect: '/login',
+  },
   ],
 });
