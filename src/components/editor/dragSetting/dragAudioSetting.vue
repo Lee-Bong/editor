@@ -3,20 +3,10 @@
     :class="['setting-content', $store.state.editor.isAudioSet ? 'setting-show' : '']"
     :style="{width: setForm.width+'px'
     }">
-
-  <!-- <vue-drag-resize
-    class="setting-content"
-    :isActive="true"
-    :w="280"
-    :h="sHeight"
-    :x="600"
-    :y="66"
-    :isResizable="false"> -->
   <div class="setting-box">
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
@@ -42,20 +32,20 @@
         </el-form-item>
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
-           :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
-           :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
-           :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
-          label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
-           :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
-          label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         </el-form>
@@ -67,6 +57,7 @@
 
 <script>
 import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
+import { formatSecond } from '@/util/tools';
 
 export default {
   name: 'DragSetting',
@@ -79,44 +70,20 @@ export default {
   },
   data() {
     return {
-      sHeight: 800,
-
-      sizeList: ['12px', '14px'],
-
+      isUpload: false,
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        xmax: 10000000,
         ymin: 0,
-        ymax: 100,
       },
       size: {
-        w: 80,
-        h: 80,
         wmin: 0,
-        // wmax: 100,
         hmin: 0,
-        // hmax: 100,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    handleChange() {
-
-    },
     audioSourceChange(type) {
       this.$emit('audioSourceChange', type, 'dragAudios', 'audioActive');
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isAudioSet: false });
@@ -133,14 +100,17 @@ export default {
     onFileSuccess(file, dragList, active) {
       this.$refs.audioLoad.setAttribute('src', file.url);
       const ele = this;
-      this.$refs.audioLoad.addEventListener('loadedmetadata', () => {
+      this.$refs.audioLoad.addEventListener('loadedmetadata', function cb() {
         const lists = ele.$store.state.editor[dragList];
         const drags = lists[ele.$store.state.editor[active]];
+        const { duration } = this;
         const paly = {
           title: file.beforeName ? file.beforeName : file.name,
           url: file.url,
-          second: this.duration,
-          duration: `${parseInt(this.duration / 60, 10)}:${parseInt(this.duration % 60, 10)}`,
+          second: duration,
+          duration: formatSecond(duration),
+          isUplaod: true,
+          loop: false,
         };
         drags.play = paly;
         drags.location = {

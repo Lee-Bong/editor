@@ -110,26 +110,26 @@ export default {
     };
   },
   methods: {
-    formatter(row, column) {
+    formatter(row) {
       return row.address;
     },
     handleSizeChange() {
 
     },
     handleCurrentChange() {},
-    popverShow(index, row) {
+    popverShow(index) {
       this.showTipNum = index;
     },
-    handleAdd(index, row) {
+    handleAdd() {
 
     },
-    handleEdit(index, row) {
+    handleEdit() {
       this.$router.push({
         path: '/editor',
         name: 'editor',
       });
     },
-    handlePublish(index, row) {
+    handlePublish() {
 
     },
   },

@@ -7,7 +7,7 @@
             class="content-container"
             :style="{ height: `${pageJson.page.phoneHeight}px` }"
         >
-            <iframe src="http://localhost:8080/#/real" frameborder="no" class="frame"/>
+            <iframe src="http://localhost:8080/we/real" frameborder="no" class="frame"/>
         </div>
     </div>
 </template>

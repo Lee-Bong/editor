@@ -263,6 +263,7 @@ export default {
             }
             return item;
           }
+          return false;
         });
         editor.layerActive = -1;
         editor.layoutKey -= 1;
@@ -275,11 +276,14 @@ export default {
       });
     },
     getLayerActive(sort, num) {
+      let k;
       this.$store.state.editor.layerLists.map((item, key) => {
         if (item.type === sort && item.num === num) {
-          return key;
+          k = key;
         }
+        return true;
       });
+      return k;
     },
   },
   created() {

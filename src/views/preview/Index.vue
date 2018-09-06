@@ -86,7 +86,6 @@ export default {
     background-color: #eee;
     .main-container {
       padding: 20px;
-      height: 100%;
       background-color: #ffffff;
       .phone {
         display: flex;
@@ -95,6 +94,7 @@ export default {
           position: relative;
           background-color: #ffffff;
           overflow: hidden;
+          border: 1px solid #eee;
         }
       }
     }

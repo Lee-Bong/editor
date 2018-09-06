@@ -8,8 +8,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 import 'vue-awesome/icons';
 import Icon from 'vue-awesome/components/Icon';
 import VueDragResize from 'vue-drag-resize';
+import axios from 'axios';
 
 Vue.config.productionTip = false;
+Vue.prototype.$http = axios;
 
 Vue.use(ElementUI);
 Vue.component('icon', Icon);

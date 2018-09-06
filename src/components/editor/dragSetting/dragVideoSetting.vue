@@ -7,7 +7,6 @@
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
@@ -43,19 +42,19 @@
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
             :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
             :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
             :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
             :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         </el-form>
@@ -83,44 +82,22 @@ export default {
   },
   data() {
     return {
-      sHeight: 800,
       limit: 1,
-      sizeList: ['12px', '14px'],
       fileList: [],
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        xmax: 10000000,
         ymin: 0,
-        ymax: 100,
       },
       size: {
-        w: 80,
-        h: 80,
         wmin: 0,
-        // wmax: 100,
         hmin: 0,
-        // hmax: 100,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
+      isUpload: false,
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    handleChange() {
-
-    },
     sourceChange(type) {
       this.$emit('videoSourceChange', type, 'dragVideos', 'videoActive');
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isVideoSet: false });
@@ -140,7 +117,7 @@ export default {
     onFileSuccess(file) {
       this.$refs.videoLoad.setAttribute('src', file.url);
       const ele = this;
-      this.$refs.videoLoad.addEventListener('loadedmetadata', () => {
+      this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
         ele.$message({
           message: '视频上传成功～',
           type: 'success',

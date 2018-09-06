@@ -36,5 +36,9 @@ export function now_time() {
 }
 
 export function formatSecond(se) {
-  return `${parseInt(se / 60)}:${parseInt(se % 60)}`;
+  let m = parseInt(se / 60, 10);
+  m = m < 10 ? `0${m}` : m;
+  let s = parseInt(se % 60, 10);
+  s = s < 10 ? `0${s}` : s;
+  return `${m}:${s}`;
 }
