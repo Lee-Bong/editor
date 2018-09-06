@@ -20,8 +20,6 @@
           placeholder="请输入内容"
           label-width='0'
           value="dragForm.content"
-          @focus='textInputFocus'
-          @click='textInputClick'
           v-model="dragForm.content">
           </el-input>
         </el-form-item>
@@ -78,6 +76,7 @@ export default {
   },
   data() {
     return {
+      sizeList: [],
       location: {
         xmin: 0,
         ymin: 0,

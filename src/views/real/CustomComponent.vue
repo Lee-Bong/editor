@@ -23,6 +23,7 @@
             v-if="component.type === 3"
             :style="component.style"
             :href="component.appLink"
+            class="share-mask"
         >
             {{component.content}}
         </a>

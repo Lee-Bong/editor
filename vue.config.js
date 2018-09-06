@@ -3,12 +3,12 @@ const { NODE_ENV } = process.env;
 const config = {
   productionSourceMap: false,
   devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://47.94.138.247:9040',
-        changeOrigin: true,
-      },
-    },
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://47.94.138.247:9040',
+    //     changeOrigin: true,
+    //   },
+    // },
   },
 };
 
