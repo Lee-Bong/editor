@@ -263,7 +263,13 @@ export default {
             },
             size: {
               w: 375,
-              h: 165,
+              h: 82,
+            },
+            play: {
+              title: '',
+              isUplaod: false,
+              duration: '00:00',
+              url: '',
             },
           });
           newEditor = {

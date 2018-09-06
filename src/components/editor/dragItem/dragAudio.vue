@@ -24,16 +24,7 @@
       @click="dragDel(listIndex)">
       </i>
       <div>
-        <audio-play v-if="!!dragForm.play && !!dragForm.play.url" :play="dragForm.play"/>
-
-        <!-- <audio autoplay="autoplay"
-          controls="controls"
-          ref="aduioObj"
-          preload="auto"
-          :src="!!dragForm.play && !!dragForm.play.url ?  dragForm.play.url : ''"
-          :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
-        >
-        </audio> -->
+        <audio-play :play="dragForm.play"/>
       </div>
     </vue-drag-resize>
 
