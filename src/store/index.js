@@ -44,10 +44,10 @@ export default new Vuex.Store({
       state.editor.layerActive = payload.newIndex;
     },
     editor_update(state, payload) {
-      state.editor = $.extend(state.editor, payload);
+      state.editor = Object.assign({}, state.editor, payload);
     },
     page_update(state, payload) { // 页面信息更新
-      state.page = $.extend(state.page, payload);
+      state.page = Object.assign({}, state.page, payload);
     },
   },
   actions: {

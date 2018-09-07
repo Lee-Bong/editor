@@ -28,6 +28,8 @@
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "lint-staged": "^7.2.0",
+    "meetyou.sharebar": "^1.2.6",
+    "meetyou.util": "^1.0.4",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "sortable": "^2.0.0",
