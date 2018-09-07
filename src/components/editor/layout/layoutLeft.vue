@@ -76,10 +76,10 @@ export default {
             y: textTop,
             isActive: true,
             dragIndex: zIndex,
-            content: '哈哈哈哈',
+            content: '',
             fontSize: '12px',
             textAlign: 'left',
-            textColor: 'rgba(19, 206, 102, 0.8)',
+            textColor: 'rgba(0, 0, 0, 1)',
             location: {
               x: 0,
               y: (this.$store.state.editor.phoneHeight / 2) - (30 / 2),

@@ -1,43 +1,18 @@
 <template>
-    <vue-drag-resize
-      :isActive="dragForm.isActive"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
-      :sticks="['tm','bm','ml','mr']"
-      :y="dragForm.location.y"
-      :x="dragForm.location.x"
-      :z="dragForm.zIndex"
-      :index="dragForm.dragIndex"
-      :listIndex="listIndex"
-      :parentLimitation="true"
-
-      @clicked="dragTextClick(listIndex)"
-      @dragstop="dragstop"
-      @resizestop="resizestop"
-      @resizing="resize"
-      @dragging="resize"
-      class="drag-item"
-      ref="dragItem"
-      >
-
-      <i class="el-icon-circle-close-outline drag-del"
-      v-if="dragForm.isActive"
-      @click="dragDel(listIndex)">
-      </i>
-      <textarea class="drag-text"
-        @keyup="inputChange"
-        @focus="inputFocus"
-        v-model="dragForm.content"
-        ref="inputCont"
-        :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px',
-          fontSize: dragForm.fontSize, textAlign: dragForm.textAlign,
-          color: dragForm.textColor}"
-        autofocus placeholder="请输入内容" />
-      <div class="input-record"
-      ref="inputRecord"
-      :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
-      >{{dragForm.content}}</div>
-    </vue-drag-resize>
+  <vue-drag-resize :isActive="dragForm.isActive" :w="dragForm.size.w" :h="dragForm.size.h" :sticks="['tm','bm','ml','mr']" :y="dragForm.location.y" :x="dragForm.location.x" :z="dragForm.zIndex" :index="dragForm.dragIndex" :listIndex="listIndex" :parentLimitation="true" @clicked="dragTextClick(listIndex)" @dragstop="dragstop" @resizestop="resizestop" @resizing="resize" @dragging="resize" class="drag-item" ref="dragItem">
+    <i class="el-icon-circle-close-outline drag-del"
+     v-if="dragForm.isActive" @click="dragDel(listIndex)">
+    </i>
+    <textarea class="drag-text" @keyup="inputChange(dragForm.dragIndex)" @focus="inputFocus"
+      v-model="dragForm.content" ref="inputCont" :style="{width: dragForm.size.w+'px',
+      height: dragForm.size.h+'px',
+      fontSize: dragForm.fontSize, textAlign: dragForm.textAlign,
+      color: dragForm.textColor}" placeholder="双击编辑文本" />
+    <!-- todo 产品修改交互，不自动扩展高度 <el-input class="input-record" ref="inputRecord" type="textarea"
+      :autosize="{ minRows: 1, maxRow: 3}" v-model="dragForm.content" :style="{width: dragForm.size.w+'px',
+      fontSize: dragForm.fontSize, textAlign: dragForm.textAlign,}">
+    </el-input> -->
+  </vue-drag-resize>
 </template>
 <script>
 import $ from 'jquery';
@@ -86,12 +61,14 @@ export default {
       this.drag.left = newRect.left;
     },
     inputChange() {
-      const textHeight = $('.input-record').outerHeight();
-      if (textHeight > $('.drag-text').outerHeight() && textHeight < this.drag.height) {
-        $('.drag-text').height($('.input-record').height());
-        this.drag.height = $('.input-record').height();
-      }
-      this.$emit('inputChange', this.dragForm.content);
+      // const textHeight = this.$refs.inputRecord.$el.offsetHeight;
+      // if (textHeight > this.$refs.inputCont.offsetHeight && textHeight > this.dragForm.size.h) {
+      //   const { dragTexts } = this.$store.state.editor;
+      //   dragTexts[listIndex].size.h = textHeight;
+      //   this.$store.commit('editor_update', {
+      //     dragTexts,
+      //   });
+      // }
     },
     inputFocus() {
     },
@@ -127,30 +104,44 @@ export default {
 
 <style>
 .drag-text {
+  position: relative;
   height: 30px;
   width: 360px;
-  line-height: 30px;
+  line-height: 1.5;
   min-height: 30px !important;
   border: 0;
   outline: 0;
   text-align: center;
   resize: none;
   box-sizing: border-box;
-  font-size: 14px;
-  font: 400 11px system-ui;
+  background: red;
+  padding: 5px;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .input-record {
-  position: absolute;
+  /* position: absolute;
   left: 0;
-  width: 360px;
-  top: 0;
-  line-height: 30px;
+  top: 0; */
+
   min-height: 30px !important;
-  font-size: 14px;
-  font: 400 11px system-ui;
-  padding: 2px;
+  padding: 0;
   z-index: -1;
-  visibility: hidden;
+  /* visibility: hidden; */
+}
+.input-record textarea {
+  padding: 5px;
+  height: 33px;
+  background: none;
+  padding: 5px;
+  border: 0;
+  outline: none;
+  line-height: 1.5;
+  min-height: 30px !important;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .vdr-stick {

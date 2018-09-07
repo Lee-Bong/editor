@@ -202,6 +202,7 @@ export default {
   },
   methods: {
     inputChange() { // 组件-文本值改变
+      
     },
 
     inputDragStop(form, ev, index) { // 拖动组件同步设置
@@ -285,8 +286,38 @@ export default {
       });
       return k;
     },
+    getWePage() {
+      this.$http({
+        method: 'get',
+        url: 'https://test-bfe.meiyou.com/api/we/page',
+      }).then(() => {
+        //   alert(JSON.stringify(res));
+        // console.log(res);
+      }).catch(() => {
+        //   alert(JSON.stringify(err));
+        // console.log(err);
+      });
+    },
+    saveWePage() {
+      this.$http({
+        method: 'post',
+        url: 'https://test-bfe.meiyou.com/api/we/page',
+        data: {
+          state: 'ssss',
+          draft: '',
+          public: '',
+        },
+      }).then(() => {
+          alert(JSON.stringify(res));
+        // console.log(res);
+      }).catch(() => {
+        //   alert(JSON.stringify(err));
+        // console.log(err);
+      });
+    },
   },
-  created() {
+  mounted() {
+    this.getWePage();
   },
 };
 </script>

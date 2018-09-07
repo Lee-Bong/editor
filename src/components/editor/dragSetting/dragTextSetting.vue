@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['setting-content', $store.state.editor.isTextSet ? 'setting-show' : '']"
+    :class="['setting-content', $store.state.editor.isTextSet ? 'setting-show' : '', 'text-setting']"
     :style="{width: setForm.width+'px'}"
     @click="settingClick">
   <div class="setting-box">
@@ -139,5 +139,8 @@ export default {
 .el-input-number.is-controls-right .el-input__inner {
       padding-left: 5px!important;
     padding-right: 34px!important;
+}
+.text-setting .el-textarea__inner {
+  padding: 5px 8px;
 }
 </style>
