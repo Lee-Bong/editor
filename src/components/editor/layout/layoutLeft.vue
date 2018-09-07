@@ -78,6 +78,7 @@ export default {
             dragIndex: zIndex,
             content: '哈哈哈哈',
             fontSize: '12px',
+            lineHeight: 1.5,
             textAlign: 'left',
             textColor: 'rgba(19, 206, 102, 0.8)',
             location: {

@@ -13,14 +13,14 @@
     <div class="setting">
       <el-form ref="form">
         <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
+          <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :disabled="!isUpload"
             :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+            controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.y" @change="locationChange"
             :disabled="!isUpload"
             :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <div class="upload-wrap">

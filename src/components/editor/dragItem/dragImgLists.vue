@@ -9,6 +9,9 @@
       :z="dragForm.zIndex"
       :index="dragForm.dragIndex"
       :parentLimitation="true"
+      :minw="0"
+      :minh="0"
+      
       @clicked="dragTextClick(dragForm.dragIndex)"
       class="drag-item"
       >

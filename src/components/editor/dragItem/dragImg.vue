@@ -13,6 +13,8 @@
       :aspectRatio="dragForm.isUpload ? true: false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
+      :minw="0"
+      :minh="0"
 
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"
@@ -100,32 +102,6 @@ export default {
 </script>
 
 <style>
-.drag-text {
-    height: 30px;
-    width: 360px;
-    line-height: 30px;
-    min-height: 30px !important;
-    border: 0;
-    outline: 0;
-    text-align: center;
-    resize: none;
-    box-sizing: border-box;
-    font-size: 14px;
-    font: 400 11px system-ui;
-}
-.input-record {
-  position: absolute;
-    left: 0;
-    width:360px;
-    top: 0;
-    line-height: 30px;
-    min-height: 30px !important;
-    font-size: 14px;
-    font: 400 11px system-ui;
-    padding: 2px;
-    z-index: -1;
-    visibility: hidden;
-}
 
 .vdr-stick {
   background-color: #fff;

@@ -9,7 +9,7 @@
         action=""
         :show-file-list="false"
         :limit="1"
-        accept="png,gif,jpeg,jpg"
+        accept=".png,.gif,.jpeg, .jpg"
         :on-remove="onFileRemove"
         :on-change="onFileChange">
         <div class="el-upload__text">更换图片</div>
@@ -17,7 +17,9 @@
     </div>
   </div>
   <div class="image-alt">
-    <el-input v-model="imgObj.title" class="alt-input" clearable></el-input>
+    <el-input v-model="imgObj.title" :title="imgObj.title" class="alt-input" clearable></el-input>
+    <el-progress  :percentage="pre"
+     class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
   </div>
 </div>
 </template>
@@ -30,12 +32,35 @@ export default {
   },
   data() {
     return {
-
+      isLoading: false,
+      pre: 0,
     };
   },
   methods: {
     onFileChange(file) {
+      this.loadingPre();
       this.$emit('file-change', file);
+    },
+    uplaodDone() {
+      this.pre = 100;
+      this.isLoading = false;
+      const clearTime = setTimeout(() => {
+        this.pre = 0;
+        clearTimeout(clearTime);
+      }, 3000);
+    },
+    loadingPre() {
+      this.isLoading = true;
+      let i = 0;
+      const step = 7;
+      const loadingTime = setInterval(() => {
+        if (this.pre >= 91) {
+          clearInterval(loadingTime);
+          return false;
+        }
+        this.pre = i;
+        i += step;
+      }, 15);
     },
   },
 };
@@ -89,5 +114,17 @@ export default {
   }
     .modify-image  .el-upload-list.el-upload-list--text {
 display: none!important;
+  }
+  .modify-precent {
+    margin-top: 20px;
+    opacity: 0;
+  }
+  .precent-out {
+    opacity: 1;
+    transition: opacity 0s;
+  }
+  .precent-in {
+    opacity: 0;
+    transition: opacity 1s;
   }
 </style>

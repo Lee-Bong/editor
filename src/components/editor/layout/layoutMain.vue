@@ -243,13 +243,9 @@ export default {
         const cat = typeCat[sort];
         editor[cat[0]] = editor[cat[0]].filter((item, key) => {
           if (key !== num) {
-            // if(key>num){
-            //   item.dragIndex= item.dragIndex-1;
-            //   item.zIndex = item.zIndex-1;
-            // }
             return item;
           }
-          return true;
+          return false;
         });
 
         editor[cat[2]] = false;
