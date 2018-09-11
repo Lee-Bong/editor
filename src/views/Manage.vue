@@ -16,15 +16,21 @@
       <div class="content-wrap">
         <div>
           <el-button type="primary" @click="newEditor">新建H5</el-button>
-          <el-input class="table-search" placeholder="请输入内容" prefix-icon="el-icon-search" clearable>
+          <el-input
+            v-model.trim="searchValue"
+            @keyup.native.enter="handleSearch"
+            class="table-search"
+            placeholder="请输入内容"
+            prefix-icon="el-icon-search"
+            clearable>
           </el-input>
-          <button class="search-submit">搜索
+          <button @click="handleSearch" class="search-submit">搜索
           </button>
         </div>
         <div>
           <keep-alive>
-            <table-list v-if="showList" />
-            <table-draft v-if="!showList" />
+            <table-list ref="tableList" v-if="showList" />
+            <table-draft v-else />
           </keep-alive>
         </div>
       </div>
@@ -47,6 +53,7 @@ export default {
   data() {
     return {
       showList: true,
+      searchValue: '',
     };
   },
   methods: {
@@ -64,7 +71,12 @@ export default {
         name: 'editor',
       });
     },
-
+    handleSearch() {
+      const value = this.searchValue;
+      if (value) {
+        this.$refs.tableList.search(value);
+      }
+    },
   },
 };
 </script>

@@ -1,17 +1,12 @@
 <template>
 <div>
   <el-table
-    :data="tableData"
-    style="width: 100%"
-    :default-sort = "{prop: 'date', order: 'descending'}"
     class="table-box"
+    style="width: 100%"
+    :data="tableData"
+    :default-sort="{prop: 'createdAt', order: 'descending'}"
+    @sort-change="handleSortChange"
     >
-    <el-table-column
-      prop="num"
-      label="编号"
-      min-width="90"
-    >
-    </el-table-column>
     <el-table-column
       prop="title"
       label="标题"
@@ -20,7 +15,7 @@
     >
     </el-table-column>
     <el-table-column
-      prop="date"
+      prop="createdAt"
       label="创建时间"
       sortable
       min-width="180">
@@ -49,10 +44,10 @@
         >
           <div class="spread" v-if="scope.$index === showTipNum"><tip :tip-url="tipUrl"/></div>
           <el-button
-          size="mini"
-          type="primary" plain
-          slot="reference"
-          >推广</el-button>
+            size="mini"
+            type="primary" plain
+            slot="reference"
+            >推广</el-button>
         </el-popover>
         <el-button
           size="mini"
@@ -62,19 +57,35 @@
     </el-table-column>
   </el-table>
   <el-pagination
-  class="table-page"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-size="10"
-      layout="total, prev, pager, next, jumper"
-      :total="40">
-    </el-pagination>
+    class="table-page"
+    layout="total, prev, pager, next, jumper"
+    @current-change="handlePageChange"
+    :current-page="pager.page"
+    :page-size="pager.size"
+    :total="pageTotal">
+  </el-pagination>
 </div>
 </template>
 
 <script>
 import tip from '@/components/table/tip';
+import { formatDate } from '@/util/tools';
+
+const formatTableData = (data) => {
+  const output = {
+    title: '',
+    createdAt: formatDate(data.createdAt),
+    visit: 0,
+  };
+  if (data.state) {
+    const json = JSON.parse(data.state);
+    const pageData = json.page;
+    if (pageData.title) {
+      output.title = pageData.title;
+    }
+  }
+  return output;
+};
 
 export default {
   components: {
@@ -83,67 +94,57 @@ export default {
   data() {
     return {
       showTipNum: -1,
-      currentPage: 1,
       tipUrl: 'http://www.baidu.com',
       tipTitle: '',
-      tableData: [{
-        num: 1,
-        title: '母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动',
-        date: '2016-05-04 19:00:12',
-        visit: 1800,
-      }, {
-        num: 2,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }, {
-        num: 3,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }, {
-        num: 4,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }],
+      tableData: [],
+      pageTotal: 0,
+      pager: {
+        page: 1,
+        size: 10,
+      },
+      query: {
+        sort: 'createdAt',
+        sort_by: 'DESC', // 'ASC'
+        dk: '',
+      },
     };
   },
-  mounted() {
-    this.fetchData();
-  },
+  // mounted() {
+  // this.getList();
+  // },
   methods: {
-    fetchData(query) { // 获取页面数据
-      const q = {
-        page: 1,
-        size: 20,
-        sort: 'createdAt',
-        sort_by: 'DESC',
-        dk: '',
-      };
+    getList() { // 获取页面数据
+      const q = { ...this.pager, ...this.query };
 
       this.$http({
-        params: q || query,
+        params: q,
         method: 'get',
         url: '/api/we/pages',
-      }).then(() => {
-        // console.log(res);
-      }).catch(() => {
-        // console.log(err);
+      }).then((res) => {
+        const r = res.data;
+        if (r.status === 'ok') {
+          let list = r.data.pages;
+          if (list && list.length) {
+            list = list.map(formatTableData).filter(e => !!e);
+          }
+          this.tableData = list;
+          this.pageTotal = r.data.count;
+        }
       });
     },
-    formatter(row) {
-      return row.address;
+    handlePageChange(page) {
+      this.pager.page = page;
+      this.getList();
     },
-    handleSizeChange() {
-
-    },
-    handleCurrentChange() {},
-    popverShow(index) {
-      this.showTipNum = index;
+    handleSortChange(obj) {
+      const { prop, order } = obj;
+      if (prop === 'createdAt') {
+        this.query.sort_by = order.replace('ending', '').toLocaleUpperCase();
+        this.getList();
+      }
     },
     handleAdd() {
-
+      // TODO 复制
     },
     handleEdit() {
       this.$router.push({
@@ -153,6 +154,16 @@ export default {
     },
     handlePublish() {
 
+    },
+    search(value) {
+      this.query.dk = value;
+      this.getList();
+    },
+    popverShow(index) {
+      this.showTipNum = index;
+    },
+    formatter(row) {
+      return row.address;
     },
   },
 };
