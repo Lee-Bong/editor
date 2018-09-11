@@ -19,7 +19,8 @@
             @change="audioSourceChange('2')">在线音频</el-radio>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'" label="上传音频：" size="mini">
-          <img-uplaod @upload-done="uploadDone"/>
+          <audio-uplaod :srouce="audioSource" @upload-done="uploadDone"
+          @file-remove="fileRemove" />
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '2'" label="音频链接：" size="mini">
           <el-input type="text" v-model="dragForm.srouce"></el-input>
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
+import audioUplaod from '@/components/editor/dragItem/image/audioUpload';
 import { formatSecond } from '@/util/tools';
 
 export default {
@@ -66,7 +67,7 @@ export default {
     setForm: Object,
   },
   components: {
-    imgUplaod,
+    audioUplaod,
   },
   data() {
     return {
@@ -79,6 +80,7 @@ export default {
         wmin: 0,
         hmin: 0,
       },
+      audioSource: {},
     };
   },
   methods: {
@@ -95,38 +97,56 @@ export default {
       this.$emit('input-sizeChange', 'dragAudios', this.dragForm.size, 'audioActive');
     },
     uploadDone(file) {
+      this.audioSource = { name: file.name };
       this.onFileSuccess(file, 'dragAudios', 'videoActive');
+    },
+    fileRemove() {
+      this.audioSource = { };
+      this.audioChange({
+        isUplaod: false,
+        title: '',
+        url: '',
+        second: 0,
+        duration: '00:00',
+        loop: false,
+      }, this, 'dragAudios', 'videoActive', true);
     },
     onFileSuccess(file, dragList, active) {
       this.$refs.audioLoad.setAttribute('src', file.url);
       const ele = this;
       this.$refs.audioLoad.addEventListener('loadedmetadata', function cb() {
-        const lists = ele.$store.state.editor[dragList];
-        const drags = lists[ele.$store.state.editor[active]];
-        const { duration } = this;
-        const paly = {
+        const se = this.duration;
+        const play = {
           title: file.beforeName ? file.beforeName : file.name,
           url: file.url,
-          second: duration,
-          duration: formatSecond(duration),
+          second: se,
+          duration: formatSecond(se),
           isUplaod: true,
           loop: false,
         };
-        drags.play = paly;
+        ele.audioChange(play, ele, dragList, active);
+      });
+    },
+    audioChange(play, ele, dragList, active, isRemove) {
+      const lists = ele.$store.state.editor[dragList];
+      let drags = lists[ele.$store.state.editor[active]];
+      drags = Object.assign(drags, { play });
+      if (!isRemove) {
         drags.location = {
           x: 0,
           y: 0,
         };
+        drags.isUpload = true;
+      } else {
         drags.isUpload = false;
+      }
+      lists[ele.$store.state.editor[active]] = drags;
+      ele.$store.commit('editor_update', { [dragList]: lists });
+      setTimeout(() => {
+        drags.isUpload = true;
         lists[ele.$store.state.editor[active]] = drags;
         ele.$store.commit('editor_update', { [dragList]: lists });
-        // todo 解决aspectRatio只根据初始值设定比例
-        setTimeout(() => {
-          drags.isUpload = true;
-          lists[ele.$store.state.editor[active]] = drags;
-          ele.$store.commit('editor_update', { [dragList]: lists });
-        }, 100);
-      });
+      }, 100);
     },
     onFileError() { // 图片上传失败
       this.fileFail = true;

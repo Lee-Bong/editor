@@ -27,6 +27,7 @@
             :limit="1"
             :auto-upload="false"
             :on-change="onFileChange"
+            accept=".mp4"
             :file-list="fileList">
             <el-button size="small" type="primary">
               <i class="el-icon-upload el-icon--right"></i>选择视频</el-button>
@@ -37,7 +38,7 @@
           <el-input type="text" v-model="dragForm.textColor"></el-input>
         </el-form-item>
         <el-form-item label="视频封面：" size="mini" class="video-el">
-          <img-uplaod @upload-done="uploadDone"/>
+          <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
         </el-form-item>
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
@@ -93,6 +94,7 @@ export default {
         hmin: 0,
       },
       isUpload: false,
+      imgObj: {},
     };
   },
   methods: {
@@ -166,14 +168,25 @@ export default {
       });
     },
     uploadDone(file) { // 封面上传成功
+      let newFile;
+      if (file && file.url) {
+        this.imgObj = { url: file.url };
+        newFile = {
+          poster: file.url,
+          posterTitle: file.name,
+        };
+      } else {
+        this.imgObj = {};
+        newFile = {};
+      }
       const videos = this.$store.state.editor.dragVideos;
       const drags = videos[this.$store.state.editor.videoActive];
-      drags.video = Object.assign({}, drags.video, {
-        poster: file.url,
-        posterTitle: file.name,
-      });
+      drags.video = Object.assign({}, drags.video, newFile);
       videos[this.$store.state.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
+    },
+    fileRemove() {
+      this.uploadDone();
     },
   },
 };

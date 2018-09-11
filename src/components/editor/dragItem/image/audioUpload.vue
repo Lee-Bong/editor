@@ -1,18 +1,13 @@
 <template>
   <div class="img-upload-item">
-    <div v-if="!imgObj||!imgObj.url">
+    <div v-if="!srouce||!srouce.name">
       <el-button type="primary" size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
-       class="check-upload" accept=".png,.gif,.jpeg, .jpg"/>
-    <div v-if="imgObj&&imgObj.url">
-      <div class="image-review">
-        <div class="srouce-image"
-        :style="{background: !imgObj.url ? '#ddd'
-        : 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
-        <div class="modify-image" @click="uploadTrigger">更换图片</div>
-      </div>
-      <el-button class="file-remove--plain" plain @click="fileRemove">删除图片</el-button>
+       class="check-upload" accept=".mp3"/>
+    <div v-if="srouce && srouce.name">
+      <div class="audio-name">{{srouce.name}}</div>
+      <el-button class="file-remove--plain" plain @click="fileRemove">删除</el-button>
     </div>
   </div>
 </template>
@@ -23,7 +18,7 @@ import oss from '@/util/oss';
 export default {
   name: 'HelloWorld',
   props: {
-    imgObj: Object,
+    srouce: Object,
   },
   data() {
     return {
@@ -38,7 +33,6 @@ export default {
         const file = val.currentTarget.files[0];
         const up = await oss(file);
         up.beforeName = file.name;
-
         if (up && up.url) {
           this.$emit('upload-done', up);
         } else {
@@ -53,14 +47,14 @@ export default {
     },
     onFileSuccess() {
       this.$message({
-        message: '图片上传成功～',
+        message: '音频上传成功～',
         type: 'success',
         duration: 2000,
       });
     },
     onFileError() {
       this.$message({
-        message: '图片上传失败，请重试～',
+        message: '音频上传失败，请重试～',
         type: 'error',
         duration: 2000,
       });
@@ -124,4 +118,11 @@ export default {
       top: 0;
     right: 0;
 }
+.audio-name {
+      max-width: 180px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 </style>

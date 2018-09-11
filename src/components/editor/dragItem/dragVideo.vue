@@ -26,9 +26,9 @@
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
-      <div class="drag-img" v-if="JSON.stringify(dragForm.video) === '{}'">
+      <div class="drag-img" v-if="JSON.stringify(dragForm.video) === '{}' && dragForm.video.url">
         <div class="video-play">
-          <i class="el-icon-caret-right" ></i>
+          <i class="el-icon-caret-right"></i>
         </div>
       </div>
       <video v-if="JSON.stringify(dragForm.video) !== '{}' && dragForm.video.url"

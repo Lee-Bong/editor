@@ -7,5 +7,8 @@ export default {
     shareDec: '分享描述',
     shareImg: '',
     backgroundColor: '#fff',
+    img: {
+
+    },
   },
 };

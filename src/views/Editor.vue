@@ -88,111 +88,47 @@ export default {
   },
 
   methods: {
-    hidePanel(event) { // todo 跟添加图层选中冲突
-      const dragItems = document.getElementsByClassName('drag-item');
-      const layerItems = document.getElementsByClassName('layer-item');
-      const layerAdd = document.getElementsByClassName('ed-com');
-      const dragDel = document.getElementsByClassName('drag-del');
-      const settingWrap = document.getElementsByClassName('setting-wrap');
-      const topBanner = document.getElementsByClassName('top-banner');
-      let isEnd = false;
-      if (topBanner[0].contains(event.target)) {
-        isEnd = true;
+    saveEditor() { // 保存草稿
+      const { isOk, msg } = this.checkSources();
+      if (!isOk) {
+        this.$message({
+          message: msg,
+          type: 'error',
+          duration: 2000,
+        });
         return false;
       }
-      if (!isEnd && settingWrap.length) {
-        if (settingWrap[0].contains(event.target)) {
-          isEnd = true;
-          return false;
+      let { state, draft } = this.getEditorJson();
+      state = JSON.stringify(state);
+      draft = JSON.stringify(draft);
+      this.$http({
+        method: 'post',
+        url: 'https://test-bfe.meiyou.com/api/we/page',
+        data: {
+          state,
+          draft,
+          public: '',
+        },
+      }).then((res) => {
+        if (res.data && res.data.status && res.data.status === 'ok') {
+          this.$message({
+            message: '保存草稿成功～',
+            type: 'success',
+            duration: 2000,
+          });
+        } else {
+          this.saveError();
         }
-      }
-      if (!isEnd && dragItems.length) {
-        const len = dragItems.length;
-        for (let i = 0; i < len; i++) {
-          if (dragItems[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      if (!isEnd && layerItems.length) {
-        const len1 = layerItems.length;
-        for (let i = 0; i < len1; i++) {
-          if (layerItems[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      if (!isEnd && dragDel.length) {
-        const len3 = dragDel.length;
-        for (let i = 0; i < len3; i++) {
-          if (dragDel[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      if (!isEnd && layerAdd.length) {
-        const len2 = layerAdd.length;
-        for (let i = 0; i < len2; i++) {
-          if (layerAdd[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      // alert(isEnd);
-      if (!isEnd) { // 点击区域外，组件激活状态消失
-        const layerCur = document.getElementsByClassName('layer-item active');
-        if (layerCur.length) {
-          layerCur[0].classList.remove('active');
-        }
-        // 移除组件的激活状态
-        const { editor, page } = this.$store.state;
-        const { layerActive } = editor;
-        if (page.pageSet) {
-          this.$store.commit('page_update', { pageSet: false });
-        }
-
-        if (layerActive !== -1) { // todo 等待解决： 导致拖拽完不选中了
-          // this.dragClick(-1);
-        }
-      }
+      }).catch(() => {
+        this.saveError();
+      });
     },
-    saveEditor() { // 保存草稿
-      alert(this.checkSources())
-      // let { state, draft } = this.getEditorJson();
-      // state = JSON.stringify(state);
-      // draft = JSON.stringify(draft);
-      // this.$http({
-      //   method: 'post',
-      //   url: 'https://test-bfe.meiyou.com/api/we/page',
-      //   data: {
-      //     state,
-      //     draft,
-      //     public: '',
-      //   },
-      // }).then((res) => {
-      //   debugger;
-      //   alert(JSON.stringify(res));
-      //   if (res.data && res.data.status && res.data.status === 'ok') {
-      //     this.$message({
-      //       message: '保存草稿成功～',
-      //       type: 'success',
-      //       duration: 2000,
-      //     });
-      //   } else {
-      //     this.$message({
-      //       message: '保存草稿失败，请重试～',
-      //       type: 'error',
-      //       duration: 2000,
-      //     });
-      //   }
-      // }).catch(() => {
-      //   //   alert(JSON.stringify(err));
-      //   // console.log(err);
-      // });
+    saveError() {
+      this.$message({
+        message: '保存草稿失败，请重试～',
+        type: 'error',
+        duration: 2000,
+      });
     },
     dragDel(s, n) { // 删除当前编辑组件
       const { editor } = this.$store.state;
@@ -242,7 +178,7 @@ export default {
         phoneHeight: page.phoneHeight, // 可视区高度
         shareTitle: page.shareTitle,
         shareDec: page.shareDec,
-        shareImg: page.shareImg,
+        shareImg: page.img.url,
         'background-color': page.backgroundColor,
       };
       const dragArr = [];
@@ -366,52 +302,82 @@ export default {
         });
       }
       eJson.editor.components = dragArr;
-
-      return eJson;
+      return { state: this.$store.state, draft: eJson.editor };
     },
     checkSources() { // 检测是否所有资源都上传
       const { page, editor } = this.$store.state;
-      // if (!page.shareImg) return false;
+      const { typeCat } = editor;
       let isOk = true;
-      const {
-        layerLists,
-      } = editor;
-      if (layerLists.length) {
-        for (let i = 0; i < layerLists.length; i++) {
-          const item = layerLists[i];
-          if (item.type === 2) {
-            if (JSON.stringify(item.img) !== '{}' || !item.img.url) {
-              isOk = false;
-              break;
+      let msg = '请添加分享缩略图～';
+      if (!page.img || (page.img && !page.img.url)) {
+        isOk = false;
+      } else {
+        const {
+          layerLists,
+        } = editor;
+        if (layerLists.length) {
+          for (let i = 0; i < layerLists.length; i++) {
+            const item = layerLists[i];
+            const drag = editor[typeCat[item.type][0]][item.num];
+            if (item.type === 2) {
+              if (JSON.stringify(drag.img) === '{}' || !drag.img.url) {
+                msg = '请添加图片～';
+                isOk = false;
+                break;
+              }
             }
-          }
-          if (item.type === 5 || item.type === 6) {
-            if (!item.source) {
-              isOk = false;
-              break;
+            if (item.type === 5 || item.type === 6) {
+              if (!drag.source) {
+                msg = `请添加${item.type === 5 ? '视频' : '音频'}～`;
+                isOk = false;
+                break;
+              }
             }
-          }
-          if (item.type === 4) {
-            if (item.imgList && JSON.stringify(item.imgList) === '[]') {
-              isOk = false;
-              break;
-            } else {
-              item.imgList.map((el) => {
-                if (!el.url) isOk = false;
-              });
+            if (item.type === 4) {
+              if (!drag.imgList) {
+                msg = '请添加多图组件的图片资源～';
+                isOk = false;
+                break;
+              }
+              if (JSON.stringify(drag.imgList) === '[]' || !this.imgListFilter(drag.imgList)) {
+                msg = '请添加多图组件的图片资源～';
+                isOk = false;
+                break;
+              }
             }
           }
         }
       }
+      return { isOk, msg };
+    },
+    imgListFilter(list) {
+      let isOk = true;
+      list.map((el) => {
+        if (!el.url) {
+          isOk = false;
+        }
+        return true;
+      });
       return isOk;
     },
   },
   mounted() {
-    // 读取保存数据
-    // const editorData = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":100,"isActive":true,"dragIndex":0,"content":"哈哈哈哈","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":100},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":true,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"文本","id":0,"type":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
-    // this.$store.commit('editor_update', JSON.parse(editorData));
-    // // const pageData = '';
-    // this.$store.commit('page_update', JSON.parse(editorData));
+    this.$http({
+      method: 'get',
+      url: `https://test-bfe.meiyou.com/api/we/page?page_id=${this.$route.query.page_id}`,
+    }).then((res) => {
+      if (res.data && res.data.status && res.data.status === 'ok' && res.data.data) {
+        const state = JSON.parse(res.data.data.state);
+        this.$store.commit('editor_update', state.editor);
+        this.$store.commit('page_update', state.page);
+      } else {
+        this.$message({
+          message: '获取编辑器数据失败，请重试',
+          type: 'error',
+          duration: 2000,
+        });
+      }
+    });
     this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
     setInterval(() => {
       // _.now_time();
