@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-box" >
+  <div class="editor-box">
     <el-container>
       <el-header>
         <el-row class="header-flex">
@@ -161,24 +161,38 @@ export default {
       }
     },
     saveEditor() { // 保存草稿
-      let { state, draft } = this.getEditorJson();
-      state = JSON.stringify(state);
-      draft = JSON.stringify(draft);
-      this.$http({
-        method: 'post',
-        url: '/api/we/page',
-        data: {
-          state,
-          draft,
-          public: '',
-        },
-      }).then((res) => {
-        alert(JSON.stringify(res));
-        // console.log(res);
-      }).catch(() => {
-        //   alert(JSON.stringify(err));
-        // console.log(err);
-      });
+      alert(this.checkSources())
+      // let { state, draft } = this.getEditorJson();
+      // state = JSON.stringify(state);
+      // draft = JSON.stringify(draft);
+      // this.$http({
+      //   method: 'post',
+      //   url: 'https://test-bfe.meiyou.com/api/we/page',
+      //   data: {
+      //     state,
+      //     draft,
+      //     public: '',
+      //   },
+      // }).then((res) => {
+      //   debugger;
+      //   alert(JSON.stringify(res));
+      //   if (res.data && res.data.status && res.data.status === 'ok') {
+      //     this.$message({
+      //       message: '保存草稿成功～',
+      //       type: 'success',
+      //       duration: 2000,
+      //     });
+      //   } else {
+      //     this.$message({
+      //       message: '保存草稿失败，请重试～',
+      //       type: 'error',
+      //       duration: 2000,
+      //     });
+      //   }
+      // }).catch(() => {
+      //   //   alert(JSON.stringify(err));
+      //   // console.log(err);
+      // });
     },
     dragDel(s, n) { // 删除当前编辑组件
       const { editor } = this.$store.state;
@@ -354,6 +368,42 @@ export default {
       eJson.editor.components = dragArr;
 
       return eJson;
+    },
+    checkSources() { // 检测是否所有资源都上传
+      const { page, editor } = this.$store.state;
+      // if (!page.shareImg) return false;
+      let isOk = true;
+      const {
+        layerLists,
+      } = editor;
+      if (layerLists.length) {
+        for (let i = 0; i < layerLists.length; i++) {
+          const item = layerLists[i];
+          if (item.type === 2) {
+            if (JSON.stringify(item.img) !== '{}' || !item.img.url) {
+              isOk = false;
+              break;
+            }
+          }
+          if (item.type === 5 || item.type === 6) {
+            if (!item.source) {
+              isOk = false;
+              break;
+            }
+          }
+          if (item.type === 4) {
+            if (item.imgList && JSON.stringify(item.imgList) === '[]') {
+              isOk = false;
+              break;
+            } else {
+              item.imgList.map((el) => {
+                if (!el.url) isOk = false;
+              });
+            }
+          }
+        }
+      }
+      return isOk;
     },
   },
   mounted() {
