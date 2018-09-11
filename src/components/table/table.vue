@@ -109,7 +109,29 @@ export default {
       }],
     };
   },
+  mounted() {
+    this.fetchData();
+  },
   methods: {
+    fetchData(query) { // 获取页面数据
+      const q = {
+        page: 1,
+        size: 20,
+        sort: 'createdAt',
+        sort_by: 'DESC',
+        dk: '',
+      };
+
+      this.$http({
+        params: q || query,
+        method: 'get',
+        url: '/api/we/pages',
+      }).then(() => {
+        // console.log(res);
+      }).catch(() => {
+        // console.log(err);
+      });
+    },
     formatter(row) {
       return row.address;
     },
