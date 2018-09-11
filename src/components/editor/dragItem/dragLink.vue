@@ -10,6 +10,7 @@
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
+      :preventActiveBehavior="true"
 
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"

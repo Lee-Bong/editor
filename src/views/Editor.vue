@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-box" >
+  <div class="editor-box">
     <el-container>
       <el-header>
         <el-row class="header-flex">
@@ -161,24 +161,38 @@ export default {
       }
     },
     saveEditor() { // 保存草稿
-      let { state, draft } = this.getEditorJson();
-      state = JSON.stringify(state);
-      draft = JSON.stringify(draft);
-      this.$http({
-        method: 'post',
-        url: '/api/we/page',
-        data: {
-          state,
-          draft,
-          public: '',
-        },
-      }).then((res) => {
-        alert(JSON.stringify(res));
-        // console.log(res);
-      }).catch(() => {
-        //   alert(JSON.stringify(err));
-        // console.log(err);
-      });
+      alert(this.checkSources())
+      // let { state, draft } = this.getEditorJson();
+      // state = JSON.stringify(state);
+      // draft = JSON.stringify(draft);
+      // this.$http({
+      //   method: 'post',
+      //   url: 'https://test-bfe.meiyou.com/api/we/page',
+      //   data: {
+      //     state,
+      //     draft,
+      //     public: '',
+      //   },
+      // }).then((res) => {
+      //   debugger;
+      //   alert(JSON.stringify(res));
+      //   if (res.data && res.data.status && res.data.status === 'ok') {
+      //     this.$message({
+      //       message: '保存草稿成功～',
+      //       type: 'success',
+      //       duration: 2000,
+      //     });
+      //   } else {
+      //     this.$message({
+      //       message: '保存草稿失败，请重试～',
+      //       type: 'error',
+      //       duration: 2000,
+      //     });
+      //   }
+      // }).catch(() => {
+      //   //   alert(JSON.stringify(err));
+      //   // console.log(err);
+      // });
     },
     dragDel(s, n) { // 删除当前编辑组件
       const { editor } = this.$store.state;
@@ -355,13 +369,49 @@ export default {
 
       return eJson;
     },
+    checkSources() { // 检测是否所有资源都上传
+      const { page, editor } = this.$store.state;
+      // if (!page.shareImg) return false;
+      let isOk = true;
+      const {
+        layerLists,
+      } = editor;
+      if (layerLists.length) {
+        for (let i = 0; i < layerLists.length; i++) {
+          const item = layerLists[i];
+          if (item.type === 2) {
+            if (JSON.stringify(item.img) !== '{}' || !item.img.url) {
+              isOk = false;
+              break;
+            }
+          }
+          if (item.type === 5 || item.type === 6) {
+            if (!item.source) {
+              isOk = false;
+              break;
+            }
+          }
+          if (item.type === 4) {
+            if (item.imgList && JSON.stringify(item.imgList) === '[]') {
+              isOk = false;
+              break;
+            } else {
+              item.imgList.map((el) => {
+                if (!el.url) isOk = false;
+              });
+            }
+          }
+        }
+      }
+      return isOk;
+    },
   },
   mounted() {
     // 读取保存数据
-    const editorData = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":100,"isActive":true,"dragIndex":0,"content":"哈哈哈哈","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":100},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":true,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"文本","id":0,"type":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
-    this.$store.commit('editor_update', JSON.parse(editorData));
-    // const pageData = '';
-    this.$store.commit('page_update', JSON.parse(editorData));
+    // const editorData = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":100,"isActive":true,"dragIndex":0,"content":"哈哈哈哈","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":100},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":true,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"文本","id":0,"type":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
+    // this.$store.commit('editor_update', JSON.parse(editorData));
+    // // const pageData = '';
+    // this.$store.commit('page_update', JSON.parse(editorData));
     this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
     setInterval(() => {
       // _.now_time();

@@ -10,7 +10,9 @@
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
+      :preventActiveBehavior="true"
 
+      @activated="activateEv"
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"
       @resizestop="resizestop"
@@ -30,7 +32,8 @@
         v-model="dragForm.content"
         ref="inputCont"
         :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px',
-          fontSize: dragForm.fontSize, textAlign: dragForm.textAlign,
+          fontSize: dragForm.fontSize, lineHeight:dragForm.lineHeight,
+          textAlign: dragForm.textAlign,
           color: dragForm.textColor}"
         autofocus placeholder="请输入内容" />
       <div class="input-record"
@@ -58,6 +61,8 @@ export default {
       beforeZ: 0,
       inputValue: '',
       input: '',
+      minw: 0,
+      minh: 0,
       drag: {
         width: 0,
         height: 0,
@@ -69,6 +74,9 @@ export default {
   },
 
   methods: {
+    activateEv() {
+      this.$refs.inputCont.focus();
+    },
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
       this.$refs.inputCont.focus();
@@ -108,29 +116,17 @@ export default {
     },
 
   },
-
-  mounted() {
-  },
-
-  updated() {
-    // 修复点击删除的时候，
-    // if (this.listIndex !== this.$store.state.editor.textActive) {
-    //   const lists = this.$store.state.editor.dragTexts;
-    //   lists[this.listIndex].isActive = false;
-    //   this.$store.commit('editor_update', {
-    //     dragTexts: lists,
-    //   });
-    // }
-  },
 };
 </script>
 
 <style>
 .drag-text {
+  position: absolute;
+    top: 0;
   height: 30px;
   width: 360px;
   line-height: 30px;
-  min-height: 30px !important;
+  /* min-height: 30px !important; */
   border: 0;
   outline: 0;
   text-align: center;
@@ -145,7 +141,7 @@ export default {
   width: 360px;
   top: 0;
   line-height: 30px;
-  min-height: 30px !important;
+  /* min-height: 30px !important; */
   font-size: 14px;
   font: 400 11px system-ui;
   padding: 2px;

@@ -13,6 +13,7 @@
       :listIndex="listIndex"
       :parentLimitation="true"
       :aspectRatio="dragForm.isUpload ? true: false"
+      :preventActiveBehavior="true"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"

@@ -78,6 +78,7 @@ export default {
             dragIndex: zIndex,
             content: '哈哈哈哈',
             fontSize: '12px',
+            lineHeight: 1.5,
             textAlign: 'left',
             textColor: 'rgba(19, 206, 102, 0.8)',
             location: {
@@ -172,11 +173,12 @@ export default {
         case 4:
         {
           const textTop4 = 0;
-          // const zIndex4 = this.$store.state.editor.dragImageLists.length;
-          const drag4 = this.$store.state.editor.dragImageLists;
+          // const zIndex4 = this.$store.state.editor.dragImgLists.length;
+          const drag4 = this.$store.state.editor.dragImgLists;
           num = drag4.length;
           layerName = `多图拼接${!num ? '' : num + 1}`;
           drag4.push({
+            isUplaod: false,
             isShow: true,
             zIndex: 1000,
             y: textTop4,
@@ -190,12 +192,12 @@ export default {
               w: 375,
               h: 300,
             },
-            imglist: [],
+            imgList: [],
           });
           newEditor = {
             imgListSet: true,
             isImgListSet: true,
-            dragImageLists: drag4,
+            dragImgLists: drag4,
             imgListActive: num,
             layoutKey: zIndex + 1,
           };

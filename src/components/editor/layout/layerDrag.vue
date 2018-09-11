@@ -26,7 +26,6 @@
 
 <script>
 import VueDraggable from 'vuedraggable';
-import Sortable from 'sortable';
 import dragMxi from '@/util/dragMxi';
 
 export default {
@@ -35,7 +34,6 @@ export default {
   props: {},
   components: {
     draggable: VueDraggable,
-    sortable: Sortable,
   },
   data() {
     return {
