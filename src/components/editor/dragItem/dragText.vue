@@ -10,8 +10,7 @@
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
-      :minw="minw"
-      :minh="minh"
+      :preventActiveBehavior="true"
 
       @activated="activateEv"
       @clicked="dragTextClick(listIndex)"
@@ -76,7 +75,7 @@ export default {
 
   methods: {
     activateEv() {
-    this.$refs.inputCont.focus();
+      this.$refs.inputCont.focus();
     },
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
@@ -116,20 +115,6 @@ export default {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
 
-  },
-
-  mounted() {
-  },
-
-  updated() {
-    // 修复点击删除的时候，
-    // if (this.listIndex !== this.$store.state.editor.textActive) {
-    //   const lists = this.$store.state.editor.dragTexts;
-    //   lists[this.listIndex].isActive = false;
-    //   this.$store.commit('editor_update', {
-    //     dragTexts: lists,
-    //   });
-    // }
   },
 };
 </script>

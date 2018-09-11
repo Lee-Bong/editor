@@ -13,8 +13,7 @@
       :aspectRatio="dragForm.isUpload ? true: false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
-      :minw="0"
-      :minh="0"
+      :preventActiveBehavior="true"
 
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"
@@ -64,11 +63,6 @@ export default {
         layerActive: 0,
       },
     };
-  },
-
-  updated() {
-    console.log(this.$store.state.editor);
-    // alert(this.dragForm.size.h);
   },
 
   methods: {

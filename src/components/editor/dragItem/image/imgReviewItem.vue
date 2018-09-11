@@ -2,9 +2,12 @@
 <div class="img-review-item">
   <div class="image-review">
     <div class="srouce-image"
-    :style="{background: 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
+    :style="{background: !imgObj.url ? '#ddd'
+     : 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
+    <i v-if="!imgObj.url" class="el-icon-loading"></i>
     <div class="modify-image">
       <el-upload
+        :disabled="isLoading"
         class="upload-modify"
         action=""
         :show-file-list="false"
@@ -17,7 +20,8 @@
     </div>
   </div>
   <div class="image-alt">
-    <el-input v-model="imgObj.title" :title="imgObj.title" class="alt-input" clearable></el-input>
+    <el-input :disabled="isLoading" v-model="imgObj.title"
+     :title="imgObj.title" class="alt-input" clearable></el-input>
     <el-progress  :percentage="pre"
      class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
   </div>
@@ -29,6 +33,7 @@ export default {
   name: 'HelloWorld',
   props: {
     imgObj: Object,
+    index: Number,
   },
   data() {
     return {
@@ -39,15 +44,20 @@ export default {
   methods: {
     onFileChange(file) {
       this.loadingPre();
-      this.$emit('file-change', file);
+      this.$emit('file-change', file, true, this.index || 0);
     },
-    uplaodDone() {
-      this.pre = 100;
-      this.isLoading = false;
-      const clearTime = setTimeout(() => {
+    uplaodDone(isError) {
+      if (!isError) {
+        this.pre = 100;
+        this.isLoading = false;
+        const clearTime = setTimeout(() => {
+          this.pre = 0;
+          clearTimeout(clearTime);
+        }, 3000);
+      } else {
+        this.isLoading = false;
         this.pre = 0;
-        clearTimeout(clearTime);
-      }, 3000);
+      }
     },
     loadingPre() {
       this.isLoading = true;
@@ -62,6 +72,16 @@ export default {
         i += step;
       }, 15);
     },
+    onFileRemove() {
+    },
+  },
+  mounted() {
+    this.isLoading = this.imgObj.isLoading ? this.imgObj.isLoading : false;
+    this.$nextTick(() => {
+      if (this.isLoading) {
+        this.loadingPre();
+      }
+    });
   },
 };
 </script>
@@ -87,6 +107,12 @@ export default {
             border: 0;
             outline: none;
         }
+        .el-icon-loading {
+    position: absolute;
+    top: 35%;
+    left: 42%;
+    animation: rotating 3s linear infinite;
+  }
         .modify-image {
           position: absolute;
           color: #fff;
@@ -127,4 +153,5 @@ display: none!important;
     opacity: 0;
     transition: opacity 1s;
   }
+
 </style>

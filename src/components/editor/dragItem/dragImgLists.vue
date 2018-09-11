@@ -1,5 +1,6 @@
 <template>
-    <vue-drag-resize
+<div :style="{marginTop: dragForm.location.y + 'px', zIndex: dragForm.zIndex}">
+    <div
       :isActive="dragForm.isActive"
       :w="dragForm.size.w"
       :h="dragForm.size.h"
@@ -9,26 +10,38 @@
       :z="dragForm.zIndex"
       :index="dragForm.dragIndex"
       :parentLimitation="true"
-      :minw="0"
-      :minh="0"
-      
-      @clicked="dragTextClick(dragForm.dragIndex)"
-      class="drag-item"
+      :listIndex="listIndex"
+      :isDraggable="false"
+      :isResizable="false"
+      :preventActiveBehavior="true"
+      @click="dragTextClick(listIndex)"
+      class="drag-img-list"
+      :class="[dragForm.isActive ? 'active': '',
+       JSON.stringify(dragForm.imgList) === '[]' ? 'init': '']"
       >
-      <i class="el-icon-circle-close-outline drag-del drag-del-bottom"
-      v-if="dragForm.isActive"
-      @click="dragDel(dragForm.dragIndex)">
-      </i>
-      <div class="drag-img">
+      <div class="drag-img" v-if="JSON.stringify(dragForm.imgList) === '[]'">
       </div>
-    </vue-drag-resize>
-
+      <div>
+        <img v-for="(item, index) in dragForm.imgList"
+        :key="item.url+index"
+        v-if="!!item.size && item.size.w"
+        :src="item.url"
+        :width="item.size.w"
+       />
+      </div>
+    </div>
+    <i class="el-icon-circle-close-outline drag-del"
+    v-if="dragForm.isActive"
+    @click="dragDel(listIndex)"
+    :style="{top: dragForm.location.y-10+ 'px'}">
+    </i>
+</div>
 </template>
 <script>
 import VueDragResize from 'vue-drag-resize';
 
 export default {
-  name: 'dragImageLists',
+  name: 'dragImgLists',
   components: {
     'vue-drag-resize': VueDragResize,
   },
@@ -38,7 +51,7 @@ export default {
   },
   data() {
     return {
-      dragName: 'dragImageLists',
+      dragName: 'dragImgLists',
       beforeZ: 0,
       inputValue: '',
       input: '',
@@ -70,7 +83,7 @@ export default {
     },
     // 删除组件
     dragDel(index) {
-      this.$emit('dragDel', 4, index);
+      this.$emit('dragDel', 4, index, this.dragForm.dragIndex);
     },
     dragDeactivated(index) { // 点击组件外区域
       this.$store.commit('inactive_drags', { index, arr: this.dragName, isAll: this.beforeZ });
@@ -111,5 +124,21 @@ export default {
   height: 100%;
   max-height: 100%;
   background-color: #bbb;
+}
+.drag-img-list {
+  position: relative;
+  width: 100%;
+}
+.drag-img-list.active::before {
+      content: "";
+right: 0;
+bottom: 0;
+    top: 0;
+    left: 0;
+        position: absolute;
+  border: 1px dashed #59c7f9;
+}
+.drag-img-list.init {
+  height: 300px;
 }
 </style>

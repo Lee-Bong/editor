@@ -11,8 +11,7 @@
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
-      :minw="0"
-      :minh="0"
+      :preventActiveBehavior="true"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
