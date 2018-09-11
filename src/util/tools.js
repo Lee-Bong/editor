@@ -14,7 +14,7 @@ export function textActiveOff(arrs, payload) {
       arr[index].zIndex = 1000;
     }
     if (arr.length !== 1) {
-      arr.map((item, i) => {
+      arr.forEach((item, i) => {
         if (i !== index && arr[i].isActive) {
           arr[i].isActive = false;
           arr[i].zIndex = arr[i].dragIndex;
@@ -25,9 +25,9 @@ export function textActiveOff(arrs, payload) {
   return arr;
 }
 
-export function del_drag(arr, index) { arr.filter((item, key) => key !== index); }
+export function delDrag(arr, index) { arr.filter((item, key) => key !== index); }
 
-export function now_time() {
+export function nowTime() {
   const myDate = new Date();
   const hours = myDate.getHours();
   const minutes = myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}` : myDate.getMinutes();
@@ -42,3 +42,10 @@ export function formatSecond(se) {
   s = s < 10 ? `0${s}` : s;
   return `${m}:${s}`;
 }
+
+export default {
+  textActiveOff,
+  delDrag,
+  nowTime,
+  formatSecond,
+};
