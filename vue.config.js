@@ -1,19 +1,16 @@
 const { NODE_ENV } = process.env;
 
 const config = {
+  baseUrl: NODE_ENV === 'production' ? 'https://static.seeyouyima.com/bfe/we/' : '/',
   productionSourceMap: false,
   devServer: {
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://47.94.138.247:9040',
-    //     changeOrigin: true,
-    //   },
-    // },
+    proxy: {
+      '/api': {
+        target: 'https://test-bfe.meiyou.com',
+        changeOrigin: true,
+      },
+    },
   },
 };
-
-if (NODE_ENV === 'production') {
-  config.baseUrl = 'https://static.seeyouyima.com/bfe/we/'
-}
 
 module.exports = config;
