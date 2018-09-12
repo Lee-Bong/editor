@@ -1,96 +1,43 @@
 <template>
-<vue-drag-resize class="phone-content" ref="phoneContent"
-  :sticks="['bm']"
-  :h="$store.state.editor.phoneHeight"
-  :isActive="true"
-  :isDraggable="false"
-  :isResizable="true"
-  :parentLimitation="false"
-  :y="64"
-  @resizestop="resizestop"
-  :style="{
+  <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
+    :h="$store.state.page.phoneHeight" :isActive="true" :isDraggable="false"
+    :isResizable="true" :parentLimitation="false" :preventActiveBehavior="true"
+    :y="64" axis="y" @resizestop="resizestop" :style="{
     width: $store.state.editor.phoneWidth+'px',
     backgroundColor:  $store.state.page.backgroundColor,
   }">
-     <div class="phone-resize">
-              <i class="el-icon-back resize-icon resize-up"></i>
-              拖动调节页面高度
-              <i class="el-icon-back resize-icon resize-down"></i>
-            </div>
-  <!-- <div class="phone-content" ref="phoneContent"
-    :style="{
-      width: $store.state.editor.phoneWidth+'px',
-      height: $store.state.editor.phoneHeight+'px',
-      backgroundColor:  $store.state.page.backgroundColor,
-    }"
-  > -->
-    <drag-text
-      v-for="(drag, index) in $store.state.editor.dragTexts"
-      v-if="drag.isShow"
-      :key="drag.zIndex"
-      :list-index="index"
-      :dragForm="drag"
-      @inputChange="inputChange"
-      @dragStop="inputDragStop"
-      @dragDel="dragDel"
-      @dragTextClick="dragTextClick"
-    />
+    <div class="phone-resize">
+      <i class="el-icon-back resize-icon resize-up"></i>
+      拖动调节页面高度
+      <i class="el-icon-back resize-icon resize-down"></i>
+    </div>
+    <div class="drag-items" :style="{
+      height: $store.state.page.phoneHeight + 'px',
+      backgroundColor:  $store.state.page.backgroundColor}">
+      <drag-text v-for="(drag, index) in $store.state.editor.dragTexts" v-if="drag.isShow"
+       :key="drag.zIndex" :list-index="index" :dragForm="drag" @inputChange="inputChange"
+       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-    <drag-img
-      v-for="(drag, index) in $store.state.editor.dragImages"
-      :key="drag.zIndex"
-      :list-index="index"
-      :is-active="drag.isActive"
-      v-if="drag.isShow"
-      :dragForm="drag"
-      @dragStop="inputDragStop"
-      @dragDel="dragDel"
-      @dragTextClick="dragTextClick"
-    />
+      <drag-img v-for="(drag, index) in $store.state.editor.dragImages" :key="drag.zIndex"
+       :list-index="index" :is-active="drag.isActive" v-if="drag.isShow" :dragForm="drag"
+       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-    <drag-link
-      v-for="(drag, index) in $store.state.editor.dragLinks"
-      v-if="drag.isShow"
-      :key="drag.zIndex"
-      :list-index="index"
-      :dragForm="drag"
-      @dragStop="inputDragStop"
-      @dragDel="dragDel"
-      @dragTextClick="dragTextClick"
-    />
+      <drag-link v-for="(drag, index) in $store.state.editor.dragLinks" v-if="drag.isShow"
+       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-    <drag-image-lists
-      v-for="(drag, index) in $store.state.editor.dragImageLists"
-      v-if="drag.isShow"
-      :key="drag.zIndex"
-      :list-index="index"
-      :dragForm="drag"
-      @dragDel="dragDel"
-      @dragTextClick="dragTextClick"
-    />
+      <drag-img-lists v-for="(drag, index) in $store.state.editor.dragImgLists" v-if="drag.isShow"
+       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragDel="dragDel"
+       @dragTextClick="dragTextClick" />
 
-    <drag-video
-      v-for="(drag, index) in $store.state.editor.dragVideos"
-      v-if="drag.isShow"
-      :key="drag.zIndex"
-      :list-index="index"
-      :dragForm="drag"
-      @dragStop="inputDragStop"
-      @dragDel="dragDel"
-      @dragTextClick="dragTextClick"
-    />
+      <drag-video v-for="(drag, index) in $store.state.editor.dragVideos" v-if="drag.isShow"
+       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-    <drag-audio
-      v-for="(drag, index) in $store.state.editor.dragAudios"
-      v-if="drag.isShow"
-      :key="drag.zIndex"
-      :list-index="index"
-      :dragForm="drag"
-      @dragStop="inputDragStop"
-      @dragDel="dragDel"
-      @dragTextClick="dragTextClick"
-    />
-
+      <drag-audio v-for="(drag, index) in $store.state.editor.dragAudios" v-if="drag.isShow"
+       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+    </div>
   </vue-drag-resize>
 </template>
 
@@ -98,7 +45,7 @@
 import dragText from '@/components/editor/dragItem/dragText';
 import dragImg from '@/components/editor/dragItem/dragImg';
 import dragLink from '@/components/editor/dragItem/dragLink';
-import dragImageLists from '@/components/editor/dragItem/dragImgLists';
+import dragImgLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
 import dragMxi from '@/util/dragMxi';
@@ -112,7 +59,7 @@ export default {
     dragText,
     dragImg,
     dragLink,
-    dragImageLists,
+    dragImgLists,
     dragVideo,
     dragAudio,
   },
@@ -148,7 +95,7 @@ export default {
         textColor: 'rgba(19, 206, 102, 0.8)',
         location: {
           x: 0,
-          y: (this.$store.state.editor.phoneHeight / 2) - (30 / 2),
+          y: (this.$store.state.page.phoneHeight / 2) - (30 / 2),
         },
         size: {
           w: 375,
@@ -243,13 +190,9 @@ export default {
         const cat = typeCat[sort];
         editor[cat[0]] = editor[cat[0]].filter((item, key) => {
           if (key !== num) {
-            // if(key>num){
-            //   item.dragIndex= item.dragIndex-1;
-            //   item.zIndex = item.zIndex-1;
-            // }
             return item;
           }
-          return true;
+          return false;
         });
 
         editor[cat[2]] = false;
@@ -271,7 +214,7 @@ export default {
       }
     },
     resizestop(ev) {
-      this.$store.commit('editor_update', {
+      this.$store.commit('page_update', {
         phoneHeight: ev.height,
       });
     },
@@ -286,14 +229,12 @@ export default {
       return k;
     },
   },
-  created() {
-  },
 };
 </script>
 
 <style >
 .drag-item {
-  position:absolute;
+  position: absolute;
 }
 .phone-content {
   position: absolute;
@@ -302,20 +243,19 @@ export default {
   left: 0;
   width: 366px;
   background-color: #fff;
-
 }
- .phone-content>.vdr-stick.vdr-stick-bm{
-    height: 35px!important;
-    width: 375px!important;
-    z-index: 2001!important;
-    bottom: -35px!important;
-    left: 0;
-    margin-left: 0!important;
-    background-color: rgba(0, 0, 0, 0);
-    border: 1px solid #e4e4e4;
-    box-shadow: none;
-  }
-  .phone-resize {
+.phone-content > .vdr-stick.vdr-stick-bm {
+  height: 35px !important;
+  width: 375px !important;
+  z-index: 2001 !important;
+  bottom: -35px !important;
+  left: 0;
+  margin-left: 0 !important;
+  background-color: rgba(0, 0, 0, 0);
+  border: 1px solid #e4e4e4;
+  box-shadow: none;
+}
+.phone-resize {
   height: 35px;
   width: 375px;
   position: absolute;
@@ -326,20 +266,23 @@ export default {
   font-size: 16px;
   line-height: 35px;
   color: #323232;
-      cursor: ns-resize;
-      z-index: 2000;
-      text-align: center;
+  cursor: ns-resize;
+  z-index: 2000;
+  text-align: center;
 }
-.resize-icon{
-  color: #EB5648;
+.resize-icon {
+  color: #eb5648;
 }
 .resize-up {
-      transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 .resize-down {
   transform: rotate(-90deg);
 }
 .phone-content.vdr.active:before {
   outline: none;
+}
+.drag-items {
+  overflow: hidden;
 }
 </style>

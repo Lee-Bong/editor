@@ -13,6 +13,7 @@
       :listIndex="listIndex"
       :parentLimitation="true"
       :aspectRatio="dragForm.isUpload ? true: false"
+      :preventActiveBehavior="true"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
@@ -25,9 +26,9 @@
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
-      <div class="drag-img" v-if="JSON.stringify(dragForm.video) === '{}'">
+      <div class="drag-img" v-if="JSON.stringify(dragForm.video) === '{}' && dragForm.video.url">
         <div class="video-play">
-          <i class="el-icon-caret-right" ></i>
+          <i class="el-icon-caret-right"></i>
         </div>
       </div>
       <video v-if="JSON.stringify(dragForm.video) !== '{}' && dragForm.video.url"
@@ -97,6 +98,8 @@ export default {
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
+  },
+  updated() {
   },
 };
 </script>

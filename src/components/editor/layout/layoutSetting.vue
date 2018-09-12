@@ -49,7 +49,7 @@
     />
     <drag-img-list-setting
       v-if="$store.state.editor.imgListSet"
-      :dragForm="this.$store.state.editor.dragImageLists[this.$store.state.editor.imgListActive]"
+      :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.imgListActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
