@@ -44,7 +44,9 @@
           trigger="click"
           @show="popverShow(scope.$index, scope.row)"
         >
-          <div class="spread" v-if="scope.$index === showTipNum"><tip :tip-url="tipUrl"/></div>
+          <div class="spread" v-if="scope.$index === tip.index">
+            <table-tip :url="tip.url"/>
+          </div>
           <el-button
             size="mini"
             type="primary" plain
@@ -73,12 +75,23 @@
 </template>
 
 <script>
-import tip from '@/components/table/tableTip';
+import tableTip from '@/components/table/tableTip';
 import { formatTableData } from '@/util/tools';
+
+const getTipUrl = (id) => {
+  const h = window.location.host;
+  let env = '';
+  if (h.indexOf('test-') > -1 || h.indexOf('localhost') > -1 || h.indexOf('127.0.0.1') > -1) {
+    env = 'test-';
+  } else if (h.indexOf('yf-') > -1) {
+    env = 'yf-';
+  }
+  return `https://${env}bfe.meiyou.com/we/real?page_id=${id}`;
+};
 
 export default {
   components: {
-    tip,
+    tableTip,
   },
   filters: {
     isOnline(value) {
@@ -87,9 +100,10 @@ export default {
   },
   data() {
     return {
-      showTipNum: -1,
-      tipUrl: 'http://www.baidu.com',
-      tipTitle: '',
+      tip: { // 推广二维码
+        index: -1,
+        url: '',
+      },
       tableData: [],
       pageTotal: 0,
       pager: {
@@ -143,9 +157,7 @@ export default {
         return 'table-row-new';
       }
     },
-    handleAdd(index, row) { // 复制
-      const { id } = row;
-
+    handleAdd(index, { id }) { // 复制
       this.$http({
         params: { page_id: id },
         method: 'post',
@@ -166,23 +178,22 @@ export default {
         this.$message.error('出错了，请稍后重试~');
       });
     },
-    handleEdit(index, row) {
-      const { id } = row;
+    handleEdit(index, { id }) {
       this.$router.push({
         path: '/editor',
         query: { id },
       });
     },
-    handlePublish(index, row) {
-      const { id } = row;
+    handlePublish(index, { id }) {
       console.log('上线/下线', id); // TODO
     },
     search(value) {
       this.query.dk = value;
       this.getList();
     },
-    popverShow(index) {
-      this.showTipNum = index;
+    popverShow(index, { id }) {
+      this.tip.index = index;
+      this.tip.url = getTipUrl(id);
     },
   },
 };

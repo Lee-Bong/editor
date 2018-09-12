@@ -96,7 +96,6 @@ export default {
       this.getList();
     },
     handleSortChange({ prop, order }) {
-      console.log('prop', prop);
       if (prop === 'createdAt') {
         this.query.sort_by = order.replace('ending', '').toLocaleUpperCase();
         this.getList();
