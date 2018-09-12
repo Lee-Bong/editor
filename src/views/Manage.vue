@@ -17,10 +17,11 @@
         <div>
           <el-button type="primary" @click="newEditor">新建H5</el-button>
           <el-input
+            ref="searchInput"
             v-model.trim="searchValue"
             @keyup.native.enter="handleSearch"
             class="table-search"
-            placeholder="请输入内容"
+            placeholder="请输入标题"
             prefix-icon="el-icon-search"
             clearable>
           </el-input>
@@ -75,6 +76,8 @@ export default {
       const value = this.searchValue;
       if (value) {
         this.$refs.tableList.search(value);
+      } else { // focus on search input
+        this.$refs.searchInput.focus();
       }
     },
   },

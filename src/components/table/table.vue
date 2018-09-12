@@ -3,6 +3,8 @@
   <el-table
     class="table-box"
     style="width: 100%"
+    v-loading="loading"
+    :row-class-name="tableRowClassName"
     :data="tableData"
     :default-sort="{prop: 'createdAt', order: 'descending'}"
     @sort-change="handleSortChange"
@@ -51,8 +53,11 @@
         </el-popover>
         <el-button
           size="mini"
+          :type="scope.row.online === 1 ? '' : 'primary'"
           plain
-          @click="handlePublish(scope.$index, scope.row)">下线</el-button>
+          @click="handlePublish(scope.$index, scope.row)">
+          {{ scope.row.online | isOnline }}
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -73,9 +78,11 @@ import { formatDate } from '@/util/tools';
 
 const formatTableData = (data) => {
   const output = {
+    id: data.id,
     title: '',
     createdAt: formatDate(data.createdAt),
     visit: 0,
+    online: 1, // TODO 上线|下线
   };
   if (data.state) {
     const json = JSON.parse(data.state);
@@ -91,12 +98,18 @@ export default {
   components: {
     tip,
   },
+  filters: {
+    isOnline(value) {
+      return !value ? '上线' : '下线';
+    },
+  },
   data() {
     return {
       showTipNum: -1,
       tipUrl: 'http://www.baidu.com',
       tipTitle: '',
       tableData: [],
+      currentRow: null,
       pageTotal: 0,
       pager: {
         page: 1,
@@ -107,15 +120,13 @@ export default {
         sort_by: 'DESC', // 'ASC'
         dk: '',
       },
+      loading: false, // 表格 loading 状态
     };
   },
-  // mounted() {
-  // this.getList();
-  // },
   methods: {
     getList() { // 获取页面数据
       const q = { ...this.pager, ...this.query };
-
+      this.loading = true;
       this.$http({
         params: q,
         method: 'get',
@@ -130,6 +141,9 @@ export default {
           this.tableData = list;
           this.pageTotal = r.data.count;
         }
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
       });
     },
     handlePageChange(page) {
@@ -141,19 +155,47 @@ export default {
       if (prop === 'createdAt') {
         this.query.sort_by = order.replace('ending', '').toLocaleUpperCase();
         this.getList();
+      // } else if (prop === 'visit') { // TODO 浏览量
       }
     },
-    handleAdd() {
-      // TODO 复制
+    tableRowClassName({ row }) {
+      if (row.isNew) {
+        return 'table-row-new';
+      }
     },
-    handleEdit() {
-      this.$router.push({
-        path: '/editor',
-        name: 'editor',
+    handleAdd(index, row) { // 复制
+      const { id } = row;
+
+      this.$http({
+        params: { page_id: id },
+        method: 'post',
+        url: '/api/we/page-dup',
+      }).then((res) => {
+        const r = res.data;
+        if (r.status === 'ok') {
+          this.$message.success('复制成功');
+
+          const newData = formatTableData(r.data);
+          newData.isNew = true; // 新复制的页面高亮选中
+
+          this.tableData.splice(index, 0, newData);
+        } else {
+          this.$message.warning('未复制成功，请稍后重试~');
+        }
+      }).catch(() => {
+        this.$message.error('出错了，请稍后重试~');
       });
     },
-    handlePublish() {
-
+    handleEdit(index, row) {
+      const { id } = row;
+      this.$router.push({
+        path: '/editor',
+        query: { id },
+      });
+    },
+    handlePublish(index, row) {
+      const { id } = row;
+      console.log('上线/下线', id); // TODO
     },
     search(value) {
       this.query.dk = value;
@@ -170,21 +212,24 @@ export default {
 </script>
 <style>
 .table-box {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 .table-box .el-button {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .table-box.el-table th {
-        background: #f5f7fa;
+  background: #f5f7fa;
 }
 .table-page {
-    margin-top: 20px;
-        height: 40px;
-    text-align: right;
+  margin-top: 20px;
+  height: 40px;
+  text-align: right;
+}
+.el-table th, .el-table tr.table-row-new {
+  background-color: #ecf5ff;
 }
 .spread{
-height: auto;
-width: 225px;
+  height: auto;
+  width: 225px;
 }
 </style>
