@@ -29,8 +29,8 @@
           @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
         <el-button
           size="mini"
-          type="info" plain disabled
-          @click="handlePublish(scope.$index, scope.row)">删除</el-button>
+          type="info" plain
+          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -38,9 +38,9 @@
     class="table-page"
     layout="total, prev, pager, next, jumper"
     @current-change="handlePageChange"
-    :current-page="currentPage"
-    :page-size="100"
-    :total="400">
+    :current-page="pager.page"
+    :page-size="pager.size"
+    :total="pageTotal">
     </el-pagination>
 </div>
 </template>
@@ -55,6 +55,7 @@ export default {
       currentPage: 1,
       tipTitle: '',
       tableData: [],
+      pageTotal: 0,
       pager: {
         page: 1,
         size: 10,
@@ -106,6 +107,34 @@ export default {
       this.$router.push({
         path: '/editor',
         query: { id },
+      });
+    },
+    handleDelete(index, row) {
+      this.$confirm('删除后将无法复原！是否确认删除？')
+        .then(() => {
+          const { id } = row;
+          this.deletePage(id);
+        })
+        .catch(() => {
+
+        });
+    },
+    deletePage(id) {
+      this.$http({
+        params: { page_id: id },
+        method: 'delete',
+        url: '/api/we/page',
+      }).then((res) => {
+        const r = res.data;
+        if (r.status === 'ok') {
+          this.$message.success('删除成功');
+
+          this.getList();
+        } else {
+          this.$message.warning('未删除成功，请稍后重试~');
+        }
+      }).catch(() => {
+        this.$message.error('出错了，请稍后重试~');
       });
     },
     search(value) {

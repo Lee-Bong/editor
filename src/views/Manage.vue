@@ -1,12 +1,12 @@
 <template>
   <div class="manage-wrap">
     <div class="header-fixed">
-      <el-tabs @tab-click="tabChange">
-        <el-tab-pane>
+      <el-tabs v-model="activeTab" @tab-click="tabChange">
+        <el-tab-pane name="pages">
           <span slot="label">
             <i class="el-icon-date"></i>H5 管理</span>
         </el-tab-pane>
-        <el-tab-pane label="">
+        <el-tab-pane name="draft">
           <span slot="label">
             <i class="el-icon-edit"></i>草稿箱</span>
         </el-tab-pane>
@@ -28,12 +28,12 @@
           <button @click="handleSearch" class="search-submit">搜索
           </button>
         </div>
-        <div>
+        <transition name="fade" mode="out-in">
           <keep-alive>
-            <table-list ref="tableList" v-if="showList" />
-            <table-draft ref="tableDraftList" v-else />
+            <table-list ref="tableList" v-if="activeTab === 'pages'" />
+            <table-draft ref="tableDraftList" v-if="activeTab === 'draft'" />
           </keep-alive>
-        </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -51,20 +51,28 @@ export default {
     tableList,
     tableDraft,
   },
+  watch: {
+    $route: 'changeTab',
+  },
   data() {
     return {
-      showList: true,
+      activeTab: 'pages',
       searchValue: '',
     };
   },
+  mounted() {
+    this.changeTab();
+  },
   methods: {
-    tabChange(tab, event) {
-      const tarId = event.currentTarget.getAttribute('id');
-      if (tarId === 'tab-1') { // 草稿tabs
-        this.showList = false;
-      } else {
-        this.showList = true;
-      }
+    changeTab() {
+      const tabName = this.$route.query.tab;
+      this.activeTab = (tabName === 'draft') ? tabName : 'pages';
+    },
+    tabChange(tab) {
+      this.$router.push({
+        path: '/manage',
+        query: { tab: tab.name },
+      });
     },
     newEditor() {
       this.$router.push({
@@ -75,9 +83,9 @@ export default {
     handleSearch() {
       const value = this.searchValue;
       if (value) {
-        if (this.showList) {
+        if (this.activeTab === 'pages') {
           this.$refs.tableList.search(value);
-        } else {
+        } else if (this.activeTab === 'draft') {
           this.$refs.tableDraftList.search(value);
         }
       } else { // focus on search input
