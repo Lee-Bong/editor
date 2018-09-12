@@ -1,6 +1,6 @@
 <template>
   <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
-    :h="$store.state.editor.phoneHeight" :isActive="true" :isDraggable="false"
+    :h="$store.state.page.phoneHeight" :isActive="true" :isDraggable="false"
     :isResizable="true" :parentLimitation="false" :preventActiveBehavior="true"
     :y="64" axis="y" @resizestop="resizestop" :style="{
     width: $store.state.editor.phoneWidth+'px',
@@ -12,7 +12,7 @@
       <i class="el-icon-back resize-icon resize-down"></i>
     </div>
     <div class="drag-items" :style="{
-      height: $store.state.editor.phoneHeight + 'px',
+      height: $store.state.page.phoneHeight + 'px',
       backgroundColor:  $store.state.page.backgroundColor}">
       <drag-text v-for="(drag, index) in $store.state.editor.dragTexts" v-if="drag.isShow"
        :key="drag.zIndex" :list-index="index" :dragForm="drag" @inputChange="inputChange"
@@ -95,7 +95,7 @@ export default {
         textColor: 'rgba(19, 206, 102, 0.8)',
         location: {
           x: 0,
-          y: (this.$store.state.editor.phoneHeight / 2) - (30 / 2),
+          y: (this.$store.state.page.phoneHeight / 2) - (30 / 2),
         },
         size: {
           w: 375,
@@ -214,7 +214,7 @@ export default {
       }
     },
     resizestop(ev) {
-      this.$store.commit('editor_update', {
+      this.$store.commit('page_update', {
         phoneHeight: ev.height,
       });
     },

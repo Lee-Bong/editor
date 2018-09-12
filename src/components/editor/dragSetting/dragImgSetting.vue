@@ -1,5 +1,6 @@
 <template>
-  <div :class="['setting-content', $store.state.editor.isImgSet ? 'setting-show' : '']" :style="{width: setForm.width+'px',
+  <div :class="['setting-content', $store.state.editor.isImgSet ?
+    'setting-show' : '']" :style="{width: setForm.width+'px',
   }">
     <div class="setting-box">
       <div class="setting-title">
@@ -10,8 +11,11 @@
       </div>
       <div class="setting">
         <el-form ref="form">
-          <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']" v-if="!this.fileSuccess">
-            <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imglist" :on-change="onFileChange" list-type="picture" :limit="limit" :auto-upload="true" action="" accept=".png,.gif,.jpeg, .jpg">
+          <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']"
+            v-if="!this.fileSuccess">
+            <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imglist"
+              :on-change="onFileChange" list-type="picture" :limit="limit"
+              :auto-upload="true" action="" accept=".png,.gif,.jpeg, .jpg">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
                 <em>+ 点击上传图片</em> ,或把图片拖到此处</div>
@@ -22,16 +26,24 @@
             <img-review-item :imgObj='dragForm.img' @file-change="fileModify"
               ref="imgReview"/>
             <el-form-item label="位置：" size="mini">
-              <el-input-number v-model="dragForm.location.x" @change="locationChange" :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
-              <el-input-number v-model="dragForm.location.y" @change="locationChange" :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)" label="描述文字" controls-position="right" class="num-input"></el-input-number>
+              <el-input-number v-model="dragForm.location.x" @change="locationChange"
+                :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+                controls-position="right" class="num-input"></el-input-number>
+              <el-input-number v-model="dragForm.location.y" @change="locationChange"
+                :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">
               <label>X</label>
               <label> Y</label>
             </div>
             <el-form-item label="尺寸：" size="mini">
-              <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)" :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x" label="描述文字" controls-position="right" class="num-input"></el-input-number>
-              <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)" :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y" label="描述文字" controls-position="right" class="num-input"></el-input-number>
+              <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
+                :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+                controls-position="right" class="num-input"></el-input-number>
+              <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
+                :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+                controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">
               <label>宽</label>
@@ -104,6 +116,7 @@ export default {
     onFileSuccess(file, isModify) {
       const dragImg = new Image();
       dragImg.src = file.url;
+      const ele = this;
       dragImg.onload = () => {
         this.$message({
           message: '图片上传成功～',
@@ -151,8 +164,8 @@ export default {
           clearTimeout(loadTime);
         }, 100);
       };
-      dragImg.onerror = function () {
-        this.onFileError();
+      dragImg.onerror = () => {
+        ele.onFileError();
       };
     },
     onFileError() { // 图片上传失败

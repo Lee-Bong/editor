@@ -40,7 +40,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$refs.oaLogin.setAttribute('href', `${config.api}/oa`);
+      this.$refs.oaLogin.setAttribute('href', 'https://bfe.meiyou.com/we/oa');
     });
     this.getUserInfo();
   },

@@ -20,24 +20,14 @@
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'"
           label="选择视频：" size="mini" class="video-el">
-          <el-upload
-            class="upload-demo upload-video"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            multiple
-            :limit="1"
-            :auto-upload="false"
-            :on-change="onFileChange"
-            :file-list="fileList">
-            <el-button size="small" type="primary">
-              <i class="el-icon-upload el-icon--right"></i>选择视频</el-button>
-            <div slot="tip" class="el-upload__tip">仅支持MP4格式</div>
-          </el-upload>
+          <audio-uplaod :source="mediaSource" @upload-done="mediaUploadDone"
+          @file-remove="mediaFileRemove"/>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接：" size="mini" class="video-el">
           <el-input type="text" v-model="dragForm.textColor"></el-input>
         </el-form-item>
         <el-form-item label="视频封面：" size="mini" class="video-el">
-          <img-uplaod @upload-done="uploadDone"/>
+          <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
         </el-form-item>
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
@@ -70,6 +60,8 @@
 <script>
 import oss from '@/util/oss';
 import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
+import audioUplaod from '@/components/editor/dragItem/image/audioUpload';
+
 
 export default {
   name: 'DragSetting',
@@ -79,6 +71,7 @@ export default {
   },
   components: {
     imgUplaod,
+    audioUplaod,
   },
   data() {
     return {
@@ -93,6 +86,10 @@ export default {
         hmin: 0,
       },
       isUpload: false,
+      imgObj: {},
+      mediaSource: {
+        accept: '.mp4',
+      },
     };
   },
   methods: {
@@ -114,7 +111,19 @@ export default {
         this.onFileSuccess(up);
       }
     },
-    onFileSuccess(file) {
+    mediaUploadDone(file) {
+      this.mediaSource = Object.assign({}, this.mediaSource, { name: file.beforeName });
+      this.onMediaFileSuccess(file, 'dragVideos', 'videoActive');
+    },
+    mediaFileRemove() {
+      this.mediaSource = Object.assign({}, this.mediaSource, { name: '', url: '' });
+      this.mediaChange({
+        isUplaod: false,
+        poster: '',
+        url: '',
+      }, this, 'dragVideos', 'videoActive', true);
+    },
+    onMediaFileSuccess(file, dragList, active) {
       this.$refs.videoLoad.setAttribute('src', file.url);
       const ele = this;
       this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
@@ -124,37 +133,54 @@ export default {
           duration: 2000,
         });
 
-        // var tol = this.duration;
-        const videos = ele.$store.state.editor.dragVideos;
-        const drags = videos[ele.$store.state.editor.videoActive];
+        const videos = ele.$store.state.editor[dragList];
+        const drags = videos[ele.$store.state.editor[active]];
         const newH = (this.videoHeight * ele.$store.state.editor.phoneWidth) / this.videoWidth;
         const video = {
-          w: this.videoWidth,
-          h: this.videoHeight,
+          w: ele.$store.state.editor.phoneWidth,
+          h: newH,
           title: file.name,
           url: file.url,
+          isPoster: !!drags.video.poster,
           poster: drags.video.poster ? drags.video.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
         };
-        drags.video = video;
-        drags.location = {
-          x: 0,
-          y: 0,
-        };
-        drags.size = {
-          h: newH,
-          w: ele.$store.state.editor.phoneWidth,
-        };
-
-        drags.isUpload = false;
-        videos[ele.$store.state.editor.videoActive] = drags;
-        ele.$store.commit('editor_update', { dragVideos: videos });
-        // todo 解决aspectRatio只根据初始值设定比例
+        ele.mediaChange(video, ele, dragList, active);
         setTimeout(() => {
           drags.isUpload = true;
-          videos[ele.$store.state.editor.videoActive] = drags;
+          videos[ele.$store.state.editor[active]] = drags;
           ele.$store.commit('editor_update', { dragVideos: videos });
         }, 100);
       });
+    },
+    mediaChange(video, ele, dragList, active, isRemove) {
+      const lists = ele.$store.state.editor[dragList];
+      let drags = lists[ele.$store.state.editor[active]];
+      const clone = Object.assign({}, { video });
+      if (!isRemove) {
+        clone.location = {
+          x: 0,
+          y: 0,
+        };
+        clone.size = {
+          w: ele.$store.state.editor.phoneWidth,
+          h: video.h,
+        };
+        clone.isUpload = true;
+      } else {
+        clone.isUpload = false;
+        clone.size = {
+          w: ele.$store.state.editor.phoneWidth,
+          h: ele.$store.state.editor.phoneHieght,
+        };
+      }
+      drags = Object.assign(drags, clone);
+      lists[ele.$store.state.editor[active]] = drags;
+      ele.$store.commit('editor_update', { [dragList]: lists });
+      setTimeout(() => {
+        drags.isUpload = true;
+        lists[ele.$store.state.editor[active]] = drags;
+        ele.$store.commit('editor_update', { [dragList]: lists });
+      }, 100);
     },
     onFileError() { // 图片上传失败
       this.fileFail = true;
@@ -166,14 +192,30 @@ export default {
       });
     },
     uploadDone(file) { // 封面上传成功
+      let newFile;
+      if (file && file.url) {
+        this.imgObj = { url: file.url };
+        newFile = {
+          poster: file.url,
+          posterTitle: file.name,
+          isPoster: true,
+        };
+      } else {
+        this.imgObj = {};
+        newFile = {
+          poster: '',
+          posterTitle: '',
+          isPoster: false,
+        };
+      }
       const videos = this.$store.state.editor.dragVideos;
       const drags = videos[this.$store.state.editor.videoActive];
-      drags.video = Object.assign({}, drags.video, {
-        poster: file.url,
-        posterTitle: file.name,
-      });
+      drags.video = Object.assign({}, drags.video, newFile);
       videos[this.$store.state.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
+    },
+    fileRemove() {
+      this.uploadDone();
     },
   },
 };
