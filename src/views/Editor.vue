@@ -26,7 +26,7 @@
         <div class="flxed-main">
           <div class="phone-wrap" :style="{height: wrapHeight+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
-                height: ($store.state.editor.phoneHeight+64)+'px'}">
+                height: ($store.state.page.phoneHeight+64)+'px'}">
               <div class="top-banner" @click="topBannerClick">
                 <div class="web-title">{{$store.state.page.title}}</div>
               </div>
@@ -34,7 +34,7 @@
 
             </div>
             <div class="phone-hidden" :style="{width: phoneWidth+'px',
-                top: ($store.state.editor.phoneHeight + 64+ 37)+'px'}"></div>
+                top: ($store.state.page.phoneHeight + 64+ 37)+'px'}"></div>
           </div>
           <layout-setting />
         </div>
@@ -84,6 +84,7 @@ export default {
         left: 0,
       },
       wrapHeight: 667,
+      isFirst: true, // 空白编辑页
     };
   },
 
@@ -101,9 +102,11 @@ export default {
       let { state, draft } = this.getEditorJson();
       state = JSON.stringify(state);
       draft = JSON.stringify(draft);
+      const api = 'https://test-bfe.meiyou.com/api/we/page';
+      const url = this.isFirst ? api : `${api}?page_id=${this.$route.query.page_id}`;
       this.$http({
-        method: 'post',
-        url: 'https://test-bfe.meiyou.com/api/we/page',
+        method: `${this.isFirst ? 'post' : 'patch'}`,
+        url,
         data: {
           state,
           draft,
@@ -215,8 +218,8 @@ export default {
             type: 2,
             url: item.img.url,
             location: {
-              x: item.loaction.x,
-              y: item.loaction.y,
+              x: item.location.x,
+              y: item.location.y,
             },
             size: {
               w: item.size.w,
@@ -301,8 +304,12 @@ export default {
           return true;
         });
       }
+      this.topBannerClick();
       eJson.editor.components = dragArr;
-      return { state: this.$store.state, draft: eJson.editor };
+      const saveState = this.$store.state;
+      saveState.page.pageSet = true;
+
+      return { state: saveState, draft: eJson.editor };
     },
     checkSources() { // 检测是否所有资源都上传
       const { page, editor } = this.$store.state;
@@ -326,9 +333,20 @@ export default {
                 break;
               }
             }
-            if (item.type === 5 || item.type === 6) {
-              if (!drag.source) {
-                msg = `请添加${item.type === 5 ? '视频' : '音频'}～`;
+            if (item.type === 6) {
+              if (!drag.play || !drag.play.url) {
+                msg = '请添加音频～';
+                isOk = false;
+                break;
+              }
+            }
+            if (item.type === 5) {
+              if (!drag.video || !drag.video.url) {
+                msg = '请添加视频～';
+                isOk = false;
+                break;
+              } else if (drag.video && drag.video.url && !drag.video.isPoster) {
+                msg = '请添加视频封面';
                 isOk = false;
                 break;
               }
@@ -362,30 +380,33 @@ export default {
     },
   },
   mounted() {
-    this.$http({
-      method: 'get',
-      url: `https://test-bfe.meiyou.com/api/we/page?page_id=${this.$route.query.page_id}`,
-    }).then((res) => {
-      if (res.data && res.data.status && res.data.status === 'ok' && res.data.data) {
-        const state = JSON.parse(res.data.data.state);
-        this.$store.commit('editor_update', state.editor);
-        this.$store.commit('page_update', state.page);
-      } else {
-        this.$message({
-          message: '获取编辑器数据失败，请重试',
-          type: 'error',
-          duration: 2000,
-        });
-      }
-    });
-    this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
-    setInterval(() => {
-      // _.nowTime();
-    }, 1000);
+    if (this.$route.query.page_id) {
+      this.isFirst = false;
+      this.$http({
+        method: 'get',
+        url: `https://test-bfe.meiyou.com/api/we/page?page_id=${this.$route.query.page_id}`,
+      }).then((res) => {
+        if (res.data && res.data.status && res.data.status === 'ok' && res.data.data) {
+          const state = JSON.parse(res.data.data.state);
+          this.$store.commit('editor_update', state.editor);
+          this.$store.commit('page_update', state.page);
+        } else {
+          this.$message({
+            message: '获取编辑器数据失败，请重试',
+            type: 'error',
+            duration: 2000,
+          });
+        }
+      });
+      this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
+      setInterval(() => {
+        // _.nowTime();
+      }, 1000);
+    }
   },
   updated() {
-    if (this.$store.state.editor.phoneHeight > this.wrapHeight) {
-      this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
+    if (this.$store.state.page.phoneHeight > this.wrapHeight) {
+      this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
     }
   },
 

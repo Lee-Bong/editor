@@ -19,7 +19,7 @@
             @change="audioSourceChange('2')">在线音频</el-radio>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'" label="上传音频：" size="mini">
-          <audio-uplaod :srouce="audioSource" @upload-done="uploadDone"
+          <audio-uplaod :source="audioSource" @upload-done="uploadDone"
           @file-remove="fileRemove" />
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '2'" label="音频链接：" size="mini">
@@ -80,7 +80,9 @@ export default {
         wmin: 0,
         hmin: 0,
       },
-      audioSource: {},
+      audioSource: {
+        accept: '.mp3',
+      },
     };
   },
   methods: {
@@ -97,11 +99,11 @@ export default {
       this.$emit('input-sizeChange', 'dragAudios', this.dragForm.size, 'audioActive');
     },
     uploadDone(file) {
-      this.audioSource = { name: file.name };
-      this.onFileSuccess(file, 'dragAudios', 'videoActive');
+      this.audioSource = { name: file.beforeName };
+      this.onFileSuccess(file, 'dragAudios', 'audioActive');
     },
     fileRemove() {
-      this.audioSource = { };
+      this.audioSource.name = '';
       this.audioChange({
         isUplaod: false,
         title: '',

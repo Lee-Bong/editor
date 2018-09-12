@@ -65,7 +65,7 @@ export default {
       switch (type) {
         case 1:
         {
-          const textTop = (this.$store.state.editor.phoneHeight / 2) - (30 / 2);
+          const textTop = (this.$store.state.page.phoneHeight / 2) - (30 / 2);
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
@@ -83,7 +83,7 @@ export default {
             textColor: 'rgba(0, 0, 0, 1)',
             location: {
               x: 0,
-              y: (this.$store.state.editor.phoneHeight / 2) - (30 / 2),
+              y: (this.$store.state.page.phoneHeight / 2) - (30 / 2),
             },
             size: {
               w: 375,

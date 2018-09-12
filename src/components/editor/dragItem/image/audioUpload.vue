@@ -1,12 +1,12 @@
 <template>
   <div class="img-upload-item">
-    <div v-if="!srouce||!srouce.name">
+    <div v-if="!source||!source.name">
       <el-button type="primary" size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
-       class="check-upload" accept=".mp3"/>
-    <div v-if="srouce && srouce.name">
-      <div class="audio-name">{{srouce.name}}</div>
+       class="check-upload" :accept="source.accept"/>
+    <div v-if="source && source.name">
+      <div class="audio-name">{{source.name}}</div>
       <el-button class="file-remove--plain" plain @click="fileRemove">删除</el-button>
     </div>
   </div>
@@ -18,7 +18,7 @@ import oss from '@/util/oss';
 export default {
   name: 'HelloWorld',
   props: {
-    srouce: Object,
+    source: Object,
   },
   data() {
     return {
@@ -47,14 +47,14 @@ export default {
     },
     onFileSuccess() {
       this.$message({
-        message: '音频上传成功～',
+        message: '资源上传成功～',
         type: 'success',
         duration: 2000,
       });
     },
     onFileError() {
       this.$message({
-        message: '音频上传失败，请重试～',
+        message: '资源上传失败，请重试～',
         type: 'error',
         duration: 2000,
       });
