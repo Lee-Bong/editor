@@ -57,8 +57,8 @@
   </div>
 </template>
 <script>
-import PhoneView from '../../components/phoneView/PhoneView.vue';
-import QrCode from '../../components/phoneView/QrCode.vue';
+import PhoneView from '../../components/PhoneView.vue';
+import QrCode from '../../components/QrCode.vue';
 import * as service from '../../service';
 
 export default {

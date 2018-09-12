@@ -23,11 +23,6 @@ import QRCode from 'qrcodejs2';
 import Clipboard from 'clipboard';
 
 export default {
-  data() {
-    return {
-      // url: 'http://192.168.45.37:8080/#/real',
-    };
-  },
   props: ['url'],
   mounted() {
     // 初始化二维码

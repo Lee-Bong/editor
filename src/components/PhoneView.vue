@@ -20,7 +20,7 @@ export default {
 
 <style lang="less" scoped>
 .header {
-  background: url('../../assets/images/page_banner.png') no-repeat center center;
+  background: url('../assets/images/page_banner.png') no-repeat center center;
   background-size: 375px auto;
   .title {
       position: relative;
