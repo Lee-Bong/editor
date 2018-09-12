@@ -64,6 +64,7 @@ export default {
         sort: 'createdAt',
         sort_by: 'DESC', // 'ASC'
         dk: '',
+        filter: 'draft', // 草稿
       },
       loading: false,
     };
