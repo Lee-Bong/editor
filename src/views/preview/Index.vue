@@ -2,18 +2,18 @@
   <div class="wrap">
     <el-container>
       <el-header>
-        <el-row class="header-flex">
-          <el-col :span="10" type="flex" >
-          <el-breadcrumb separator="/" type="flex">
-            <el-breadcrumb-item>
-              微页面
-            </el-breadcrumb-item>
-            <el-breadcrumb-item>
-              预览微页面
-            </el-breadcrumb-item>
-          </el-breadcrumb>
+        <el-row class="" type="flex" align="middle">
+          <el-col :span="10" >
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item>
+                微页面
+              </el-breadcrumb-item>
+              <el-breadcrumb-item>
+                预览微页面
+              </el-breadcrumb-item>
+            </el-breadcrumb>
           </el-col>
-          <el-col :span="14">
+          <el-col :span="14" class="button-group">
             <el-button @click="goEditor">继续编辑</el-button>
             <el-button type="primary" class="publish-btn">发布</el-button>
             <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
@@ -21,26 +21,28 @@
         </el-row>
       </el-header>
       <el-main>
-        <div class="main-container">
-          <el-row>
-            <el-col :span="12">
-              <div class="phone">
-                <div
-                  v-if="pageJson"
-                  class="phone-view-container"
-                  :style="{
-                    width: `${pageJson.page.phoneWidth}px`,
-                    height: `${pageJson.page.phoneHeight + HeadHeight}px`
-                }"
-                >
-                  <phone-view :pageJson="pageJson" :HeadHeight="HeadHeight"></phone-view>
+        <div class="content">
+          <div class="main-container">
+            <el-row>
+              <el-col :span="12">
+                <div class="phone">
+                  <div
+                    v-if="pageJson"
+                    class="phone-view-container"
+                    :style="{
+                      width: `${pageJson.page.phoneWidth}px`,
+                      height: `${pageJson.page.phoneHeight + HeadHeight}px`
+                  }"
+                  >
+                    <phone-view :pageJson="pageJson" :HeadHeight="HeadHeight"></phone-view>
+                  </div>
                 </div>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <qr-code></qr-code>
-            </el-col>
-          </el-row>
+              </el-col>
+              <el-col :span="12">
+                <qr-code></qr-code>
+              </el-col>
+            </el-row>
+          </div>
         </div>
       </el-main>
     </el-container>
@@ -76,7 +78,12 @@ export default {
 
 <style lang="less" scoped>
 .wrap {
-  .el-main{
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .el-main {
     padding: 20px;
     position: absolute;
     left: 0;
@@ -84,17 +91,21 @@ export default {
     bottom: 0;
     top: 60px;
     background-color: #eee;
-    .main-container {
-      padding: 20px;
-      background-color: #ffffff;
-      .phone {
-        display: flex;
-        justify-content: center;
-        .phone-view-container {
-          position: relative;
-          background-color: #ffffff;
-          overflow: hidden;
-          border: 1px solid #eee;
+    .content {
+      min-height: 100%;
+      background: #fff;
+      .main-container {
+        padding: 20px;
+        background-color: #ffffff;
+        .phone {
+          display: flex;
+          justify-content: center;
+          .phone-view-container {
+            position: relative;
+            background-color: #ffffff;
+            overflow: hidden;
+            border: 1px solid #eee;
+          }
         }
       }
     }
