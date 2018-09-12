@@ -414,7 +414,7 @@ export default {
     // this.$store.commit('page_update', JSON.parse(editorData));
     this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
     setInterval(() => {
-      // _.now_time();
+      // _.nowTime();
     }, 1000);
   },
   updated() {
