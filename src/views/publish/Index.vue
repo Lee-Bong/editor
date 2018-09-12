@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-import mock from '../../mock.json';
+import * as service from '../../service';
 import PhoneView from '../../components/phoneView/PhoneView.vue';
 import QrCode from '../../components/phoneView/QrCode.vue';
 
@@ -67,8 +67,17 @@ export default {
     PhoneView,
     QrCode,
   },
-  mounted() {
-    this.pageJson = mock.editor;
+  async mounted() {
+    try {
+      const { data: { draft } } = await service.getPageInfo(this.pageId);
+      this.pageJson = JSON.parse(draft);
+      if (!this.pageJson) {
+        this.$router.replace('/error');
+      }
+    } catch (error) {
+      console.error(error.message);
+      this.$router.replace('/error');
+    }
   },
   methods: {
     goList() {
@@ -76,8 +85,11 @@ export default {
     },
   },
   computed: {
+    pageId() {
+      return this.$route.query.page_id;
+    },
     realUrl() {
-      return `${window.location.host}/we/real`;
+      return `${window.location.host}/we/real?page_id=${this.pageId}&is_formal=1`;
     },
   },
 };

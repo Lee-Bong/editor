@@ -15,7 +15,7 @@
           </el-col>
           <el-col :span="14" class="button-group">
             <el-button @click="goEditor">继续编辑</el-button>
-            <el-button type="primary" class="publish-btn">发布</el-button>
+            <el-button @click="publish" type="primary" class="publish-btn">发布</el-button>
             <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
           </el-col>
         </el-row>
@@ -75,19 +75,34 @@ export default {
   },
   async mounted() {
     try {
-      const { draft } = await service.getPageInfo(this.pageId);
+      const { data: { draft } } = await service.getPageInfo(this.pageId);
       this.pageJson = JSON.parse(draft);
       if (!this.pageJson) {
         this.$router.replace('/error');
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       this.$router.replace('/error');
     }
   },
   methods: {
     goEditor() {
       this.$router.push('/');
+    },
+    async publish() {
+      try {
+        await service.publishPage(this.pageId);
+        this.$message({
+          message: '发布成功~',
+          type: 'success',
+        });
+        setTimeout(() => {
+          this.$router.push(`publish?page_id=${this.pageId}`);
+        }, 3000);
+      } catch (error) {
+        this.$message.error(error.message);
+        console.log(error);
+      }
     },
   },
   computed: {
