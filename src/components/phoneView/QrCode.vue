@@ -1,23 +1,20 @@
 <template>
-    <div>
-        预览页面：
-        <div class="qr-code-container">
-          <div class="url">
-            <div class="text">
-              {{url}}
-            </div>
-            <div>
-              <el-button
-                class="copy-btn"
-                size="mini"
-                type="primary"
-                :data-clipboard-text="url"
-              >复制</el-button>
-            </div>
-          </div>
-          <div class="qrcode" ref="qrCode"></div>
-          <div class="tip">扫码预览</div>
+    <div class="qr-code-container">
+      <div class="url">
+        <div class="text">
+          {{url}}
         </div>
+        <div>
+          <el-button
+            class="copy-btn"
+            size="mini"
+            type="primary"
+            :data-clipboard-text="url"
+          >复制</el-button>
+        </div>
+      </div>
+      <div class="qrcode" ref="qrCode"></div>
+      <div class="tip">扫码预览</div>
     </div>
 </template>
 
@@ -28,9 +25,10 @@ import Clipboard from 'clipboard';
 export default {
   data() {
     return {
-      url: 'http://192.168.45.37:8080/#/real',
+      // url: 'http://192.168.45.37:8080/#/real',
     };
   },
+  props: ['url'],
   mounted() {
     // 初始化二维码
     this.createQrCode();
@@ -76,6 +74,7 @@ export default {
       margin-right: 10px;
       overflow: hidden;
       border: 1px solid #000;
+      white-space: nowrap;
     }
   }
   .qrcode {

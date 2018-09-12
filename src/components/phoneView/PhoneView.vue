@@ -7,14 +7,14 @@
             class="content-container"
             :style="{ height: `${pageJson.page.phoneHeight}px` }"
         >
-            <iframe src="http://localhost:8080/we/real" frameborder="no" class="frame"/>
+            <iframe :src="url" frameborder="no" class="frame"/>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-  props: ['pageJson', 'HeadHeight'],
+  props: ['pageJson', 'HeadHeight', 'url'],
 };
 </script>
 

@@ -9,13 +9,12 @@
                 微页面
               </el-breadcrumb-item>
               <el-breadcrumb-item>
-                预览微页面
+                发布微页面
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
           <el-col :span="14" class="button-group">
-            <el-button @click="goEditor">继续编辑</el-button>
-            <el-button type="primary" class="publish-btn">发布</el-button>
+            <el-button type="primary" @click="goList">查看列表</el-button>
             <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
           </el-col>
         </el-row>
@@ -34,18 +33,13 @@
                       height: `${pageJson.page.phoneHeight + HeadHeight}px`
                   }"
                   >
-                    <phone-view
-                      :pageJson="pageJson"
-                      :HeadHeight="HeadHeight"
-                      :url="realUrl"
-                    >
-                    </phone-view>
+                    <phone-view :pageJson="pageJson" :HeadHeight="HeadHeight"></phone-view>
                   </div>
                 </div>
               </el-col>
               <el-col :span="12">
                 <div>
-                  预览页面：
+                  发布成功：
                   <qr-code :url="realUrl"></qr-code>
                 </div>
               </el-col>
@@ -57,9 +51,9 @@
   </div>
 </template>
 <script>
+import mock from '../../mock.json';
 import PhoneView from '../../components/phoneView/PhoneView.vue';
 import QrCode from '../../components/phoneView/QrCode.vue';
-import * as service from '../../service';
 
 export default {
   data() {
@@ -73,29 +67,17 @@ export default {
     PhoneView,
     QrCode,
   },
-  async mounted() {
-    try {
-      const { draft } = await service.getPageInfo(this.pageId);
-      this.pageJson = JSON.parse(draft);
-      if (!this.pageJson) {
-        this.$router.replace('/error');
-      }
-    } catch (error) {
-      console.error(error);
-      this.$router.replace('/error');
-    }
+  mounted() {
+    this.pageJson = mock.editor;
   },
   methods: {
-    goEditor() {
+    goList() {
       this.$router.push('/');
     },
   },
   computed: {
-    pageId() {
-      return this.$route.query.page_id;
-    },
     realUrl() {
-      return `http://${window.location.host}/we/real?page_id=${this.pageId}`;
+      return `${window.location.host}/we/real`;
     },
   },
 };
