@@ -23,7 +23,7 @@
         <div class="content">
           <div class="main-container">
             <el-row>
-              <el-col :span="12">
+              <el-col :span="14">
                 <div class="phone">
                   <div
                     v-if="pageJson"
@@ -37,9 +37,9 @@
                   </div>
                 </div>
               </el-col>
-              <el-col :span="12">
-                <div>
-                  发布成功：
+              <el-col :span="10">
+                <div class="qrcode">
+                  <div class="text">发布成功：</div>
                   <qr-code :url="realUrl"></qr-code>
                 </div>
               </el-col>
@@ -101,6 +101,9 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    .el-button {
+      margin-right: 10px;
+    }
   }
   .el-main {
     padding: 20px;
@@ -124,6 +127,13 @@ export default {
             background-color: #ffffff;
             overflow: hidden;
             border: 1px solid #eee;
+          }
+        }
+        .qrcode {
+          .text {
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            font-weight: bold;
           }
         }
       }
