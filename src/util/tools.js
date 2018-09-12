@@ -66,10 +66,33 @@ export function formatDate(date) {
   return d.toString();
 }
 
+/**
+ * 格式化表格数据
+ * @param {array} data 表格数据数组
+ */
+export function formatTableData(data) {
+  const output = {
+    id: data.id,
+    title: '',
+    createdAt: formatDate(data.createdAt),
+    visit: 0,
+    online: 1, // TODO 上线|下线
+  };
+  if (data.state) {
+    const json = JSON.parse(data.state);
+    const pageData = json.page;
+    if (pageData.title) {
+      output.title = pageData.title;
+    }
+  }
+  return output;
+}
+
 export default {
   textActiveOff,
   delDrag,
   nowTime,
   formatSecond,
   formatDate,
+  formatTableData,
 };

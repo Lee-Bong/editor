@@ -31,7 +31,7 @@
         <div>
           <keep-alive>
             <table-list ref="tableList" v-if="showList" />
-            <table-draft v-else />
+            <table-draft ref="tableDraftList" v-else />
           </keep-alive>
         </div>
       </div>
@@ -75,7 +75,11 @@ export default {
     handleSearch() {
       const value = this.searchValue;
       if (value) {
-        this.$refs.tableList.search(value);
+        if (this.showList) {
+          this.$refs.tableList.search(value);
+        } else {
+          this.$refs.tableDraftList.search(value);
+        }
       } else { // focus on search input
         this.$refs.searchInput.focus();
       }

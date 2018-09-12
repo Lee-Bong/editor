@@ -73,26 +73,8 @@
 </template>
 
 <script>
-import tip from '@/components/table/tip';
-import { formatDate } from '@/util/tools';
-
-const formatTableData = (data) => {
-  const output = {
-    id: data.id,
-    title: '',
-    createdAt: formatDate(data.createdAt),
-    visit: 0,
-    online: 1, // TODO 上线|下线
-  };
-  if (data.state) {
-    const json = JSON.parse(data.state);
-    const pageData = json.page;
-    if (pageData.title) {
-      output.title = pageData.title;
-    }
-  }
-  return output;
-};
+import tip from '@/components/table/tableTip';
+import { formatTableData } from '@/util/tools';
 
 export default {
   components: {
@@ -109,7 +91,6 @@ export default {
       tipUrl: 'http://www.baidu.com',
       tipTitle: '',
       tableData: [],
-      currentRow: null,
       pageTotal: 0,
       pager: {
         page: 1,
@@ -150,8 +131,7 @@ export default {
       this.pager.page = page;
       this.getList();
     },
-    handleSortChange(obj) {
-      const { prop, order } = obj;
+    handleSortChange({ prop, order }) {
       if (prop === 'createdAt') {
         this.query.sort_by = order.replace('ending', '').toLocaleUpperCase();
         this.getList();
@@ -203,9 +183,6 @@ export default {
     },
     popverShow(index) {
       this.showTipNum = index;
-    },
-    formatter(row) {
-      return row.address;
     },
   },
 };

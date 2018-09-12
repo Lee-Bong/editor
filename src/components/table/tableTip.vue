@@ -1,12 +1,12 @@
 <template>
-    <div class="tip-wrap">
-    <el-input v-model="tipUrl" class="tip-url" readonly
-    size='mini' placeholder="请输入内容"></el-input>
-    <el-button type="primary" size="mini" class="copy-btn"
-    :data-clipboard-text="tipUrl">复制</el-button>
-    <div class="qrcode" ref="qrCode"></div>
-    <a class="qrcode-download" download="二维码">下载二维码</a>
-    </div>
+  <div class="tip-wrap">
+  <el-input v-model="tipUrl" class="tip-url" readonly
+  size='mini' placeholder="请输入内容"></el-input>
+  <el-button type="primary" size="mini" class="copy-btn"
+  :data-clipboard-text="tipUrl">复制</el-button>
+  <div class="qrcode" ref="qrCode"></div>
+  <a class="qrcode-download" download="二维码">下载二维码</a>
+  </div>
 </template>
 
 <script>
@@ -14,11 +14,10 @@ import QRCode from 'qrcodejs2';
 import Clipboard from 'clipboard';
 
 export default {
-  name: 'HelloWorld',
+  name: 'tableTip',
   props: {
     tipUrl: String,
   },
-
   data() {
     return {
 
