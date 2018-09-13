@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable';
 import sortable from 'sortable';
 import drag from './layerDrag';
 
@@ -22,7 +21,6 @@ export default {
   props: {
   },
   components: {
-    draggable,
     sortable,
     drag,
   },

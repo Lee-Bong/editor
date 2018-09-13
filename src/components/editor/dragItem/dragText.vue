@@ -1,21 +1,48 @@
 <template>
-  <vue-drag-resize :isActive="dragForm.isActive" :w="dragForm.size.w" :h="dragForm.size.h" :sticks="['tm','bm','ml','mr']" :y="dragForm.location.y" :x="dragForm.location.x" :z="dragForm.zIndex" :index="dragForm.dragIndex" :listIndex="listIndex" :parentLimitation="true" @clicked="dragTextClick(listIndex)" @dragstop="dragstop" @resizestop="resizestop" @resizing="resize" @dragging="resize" class="drag-item" ref="dragItem">
-    <i class="el-icon-circle-close-outline drag-del"
-     v-if="dragForm.isActive" @click="dragDel(listIndex)">
-    </i>
-    <textarea class="drag-text" @keyup="inputChange(dragForm.dragIndex)" @focus="inputFocus"
-      v-model="dragForm.content" ref="inputCont" :style="{width: dragForm.size.w+'px',
-      height: dragForm.size.h+'px',
-      fontSize: dragForm.fontSize, textAlign: dragForm.textAlign,
-      color: dragForm.textColor}" placeholder="双击编辑文本" />
-    <!-- todo 产品修改交互，不自动扩展高度 <el-input class="input-record" ref="inputRecord" type="textarea"
-      :autosize="{ minRows: 1, maxRow: 3}" v-model="dragForm.content" :style="{width: dragForm.size.w+'px',
-      fontSize: dragForm.fontSize, textAlign: dragForm.textAlign,}">
-    </el-input> -->
-  </vue-drag-resize>
+    <vue-drag-resize
+      :isActive="dragForm.isActive"
+      :w="dragForm.size.w"
+      :h="dragForm.size.h"
+      :sticks="['tm','bm','ml','mr']"
+      :y="dragForm.location.y"
+      :x="dragForm.location.x"
+      :z="dragForm.zIndex"
+      :index="dragForm.dragIndex"
+      :listIndex="listIndex"
+      :parentLimitation="true"
+      :preventActiveBehavior="true"
+
+      @activated="activateEv"
+      @clicked="dragTextClick(listIndex)"
+      @dragstop="dragstop"
+      @resizestop="resizestop"
+      @resizing="resize"
+      @dragging="resize"
+      class="drag-item"
+      ref="dragItem"
+      >
+
+      <i class="el-icon-circle-close-outline drag-del"
+      v-if="dragForm.isActive"
+      @click="dragDel(listIndex)">
+      </i>
+      <textarea class="drag-text"
+        @keyup="inputChange"
+        @focus="inputFocus"
+        v-model="dragForm.content"
+        ref="inputCont"
+        :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px',
+          fontSize: dragForm.fontSize, lineHeight:dragForm.lineHeight,
+          textAlign: dragForm.textAlign,
+          color: dragForm.textColor}"
+        autofocus placeholder="请输入内容" />
+      <div class="input-record"
+      ref="inputRecord"
+      :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
+      >{{dragForm.content}}</div>
+    </vue-drag-resize>
 </template>
 <script>
-import $ from 'jquery';
 import VueDragResize from 'vue-drag-resize';
 
 export default {
@@ -33,6 +60,8 @@ export default {
       beforeZ: 0,
       inputValue: '',
       input: '',
+      minw: 0,
+      minh: 0,
       drag: {
         width: 0,
         height: 0,
@@ -44,6 +73,9 @@ export default {
   },
 
   methods: {
+    activateEv() {
+      this.$refs.inputCont.focus();
+    },
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
       this.$refs.inputCont.focus();
@@ -85,30 +117,17 @@ export default {
     },
 
   },
-
-  mounted() {
-  },
-
-  updated() {
-    // 修复点击删除的时候，
-    // if (this.listIndex !== this.$store.state.editor.textActive) {
-    //   const lists = this.$store.state.editor.dragTexts;
-    //   lists[this.listIndex].isActive = false;
-    //   this.$store.commit('editor_update', {
-    //     dragTexts: lists,
-    //   });
-    // }
-  },
 };
 </script>
 
 <style>
 .drag-text {
-  position: relative;
+  position: absolute;
+    top: 0;
   height: 30px;
   width: 360px;
-  line-height: 1.5;
-  min-height: 30px !important;
+  line-height: 30px;
+  /* min-height: 30px !important; */
   border: 0;
   outline: 0;
   text-align: center;
@@ -123,10 +142,13 @@ export default {
 .input-record {
   /* position: absolute;
   left: 0;
-  top: 0; */
-
-  min-height: 30px !important;
-  padding: 0;
+  width: 360px;
+  top: 0;
+  line-height: 30px;
+  /* min-height: 30px !important; */
+  font-size: 14px;
+  font: 400 11px system-ui;
+  padding: 2px;
   z-index: -1;
   /* visibility: hidden; */
 }

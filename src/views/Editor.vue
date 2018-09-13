@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-box" >
+  <div class="editor-box">
     <el-container>
       <el-header>
         <el-row class="header-flex">
@@ -26,7 +26,7 @@
         <div class="flxed-main">
           <div class="phone-wrap" :style="{height: wrapHeight+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
-                height: ($store.state.editor.phoneHeight+64)+'px'}">
+                height: ($store.state.page.phoneHeight+64)+'px'}">
               <div class="top-banner" @click="topBannerClick">
                 <div class="web-title">{{$store.state.page.title}}</div>
               </div>
@@ -34,7 +34,7 @@
 
             </div>
             <div class="phone-hidden" :style="{width: phoneWidth+'px',
-                top: ($store.state.editor.phoneHeight + 64+ 37)+'px'}"></div>
+                top: ($store.state.page.phoneHeight + 64+ 37)+'px'}"></div>
           </div>
           <layout-setting />
         </div>
@@ -51,6 +51,8 @@ import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
 import dragMxi from '@/util/dragMxi';
+import merge from 'webpack-merge';
+import * as service from '../service';
 
 export default {
   mixins: [dragMxi.dragCom()],
@@ -84,102 +86,11 @@ export default {
         left: 0,
       },
       wrapHeight: 667,
+      isFirst: true, // 空白编辑页
     };
   },
 
   methods: {
-    hidePanel(event) { // todo 跟添加图层选中冲突
-      const dragItems = document.getElementsByClassName('drag-item');
-      const layerItems = document.getElementsByClassName('layer-item');
-      const layerAdd = document.getElementsByClassName('ed-com');
-      const dragDel = document.getElementsByClassName('drag-del');
-      const settingWrap = document.getElementsByClassName('setting-wrap');
-      const topBanner = document.getElementsByClassName('top-banner');
-      let isEnd = false;
-      if (topBanner[0].contains(event.target)) {
-        isEnd = true;
-        return false;
-      }
-      if (!isEnd && settingWrap.length) {
-        if (settingWrap[0].contains(event.target)) {
-          isEnd = true;
-          return false;
-        }
-      }
-      if (!isEnd && dragItems.length) {
-        const len = dragItems.length;
-        for (let i = 0; i < len; i++) {
-          if (dragItems[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      if (!isEnd && layerItems.length) {
-        const len1 = layerItems.length;
-        for (let i = 0; i < len1; i++) {
-          if (layerItems[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      if (!isEnd && dragDel.length) {
-        const len3 = dragDel.length;
-        for (let i = 0; i < len3; i++) {
-          if (dragDel[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      if (!isEnd && layerAdd.length) {
-        const len2 = layerAdd.length;
-        for (let i = 0; i < len2; i++) {
-          if (layerAdd[i].contains(event.target)) {
-            isEnd = true;
-            break;
-          }
-        }
-      }
-      // alert(isEnd);
-      if (!isEnd) { // 点击区域外，组件激活状态消失
-        const layerCur = document.getElementsByClassName('layer-item active');
-        if (layerCur.length) {
-          layerCur[0].classList.remove('active');
-        }
-        // 移除组件的激活状态
-        const { editor, page } = this.$store.state;
-        const { layerActive } = editor;
-        if (page.pageSet) {
-          this.$store.commit('page_update', { pageSet: false });
-        }
-
-        if (layerActive !== -1) { // todo 等待解决： 导致拖拽完不选中了
-          // this.dragClick(-1);
-        }
-      }
-    },
-    saveEditor() { // 保存草稿
-      let { state, draft } = this.getEditorJson();
-      state = JSON.stringify(state);
-      draft = JSON.stringify(draft);
-      this.$http({
-        method: 'post',
-        url: 'https://test-bfe.meiyou.com/api/we/page',
-        data: {
-          state,
-          draft,
-          public: '',
-        },
-      }).then((res) => {
-        alert(JSON.stringify(res));
-        // console.log(res);
-      }).catch(() => {
-        //   alert(JSON.stringify(err));
-        // console.log(err);
-      });
-    },
     dragDel(s, n) { // 删除当前编辑组件
       const { editor } = this.$store.state;
       const { typeCat, layerActive } = editor;
@@ -213,11 +124,88 @@ export default {
       this.drag.top = newRect.top;
       this.drag.left = newRect.left;
     },
-    reviewEditor() { // 预览
-      this.getEditorJson();
+    async saveEditor(isTrigger) { // 保存草稿
+      const { isOk, msg } = this.checkSources();
+      const ele = this;
+      if (!isOk) {
+        ele.$message({
+          message: msg,
+          type: 'error',
+          duration: 2000,
+        });
+        return false;
+      }
+      let { state, draft } = ele.getEditorJson();
+      state = JSON.stringify(state);
+      draft = JSON.stringify(draft);
+      const params = {
+        state,
+        draft,
+        piblic: '',
+      };
+      let data;
+      if (this.isFirst) {
+        data = await service.postPageInfo(params);
+      } else {
+        data = await service.patchPageInfo(ele.$route.query.page_id, params);
+      }
+      if (data && data.status === 'ok' && data.data) {
+        if (isTrigger) {
+          ele.optSucsess('保存草稿');
+        }
+        if (this.isFirst) {
+          ele.$router.push({
+            query: merge(ele.$route.query, { page_id: data.data.id }),
+          });
+          this.isFirst = false;
+        }
+        return true;
+      } else if (isTrigger)ele.optError('保存草稿');
+      return false;
     },
-    publishEditor() { // 发布
-      this.getEditorJson();
+    optError(msg) {
+      this.$message({
+        message: `${msg}失败，请重试～`,
+        type: 'error',
+        duration: 2000,
+      });
+    },
+    optSucsess(msg) {
+      this.$message({
+        message: `${msg}成功～`,
+        type: 'success',
+        duration: 2000,
+      });
+    },
+    async reviewEditor() { // 预览
+      const ele = this;
+      const isOk = await this.saveEditor(false);
+      if (isOk) {
+        ele.$router.push({
+          path: '/preview',
+          query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
+        });
+      }
+    },
+    async publishEditor() { // 发布
+      try {
+        const ele = this;
+        const isOk = await this.saveEditor(false);
+        if (isOk) {
+          const { data } = await service.publishPage(this.$route.query.page_id);
+          if (data) {
+            ele.optSucsess('发布页面');
+            ele.$router.push({
+              path: '/publish',
+              query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
+            });
+          } else {
+            ele.optError('发布页面');
+          }
+        }
+      } catch (err) {
+        this.optError('发布页面');
+      }
     },
     getEditorJson() { // 生成预览与发布的json
       const eJson = { editor: {} };
@@ -228,7 +216,7 @@ export default {
         phoneHeight: page.phoneHeight, // 可视区高度
         shareTitle: page.shareTitle,
         shareDec: page.shareDec,
-        shareImg: page.shareImg,
+        shareImg: page.img.url,
         'background-color': page.backgroundColor,
       };
       const dragArr = [];
@@ -253,6 +241,7 @@ export default {
               'font-size': parseInt(item.fontSize, 10),
               'text-align': item.textAlign,
               'text-color': item.textColor,
+              'line-height': item.lineHeight,
               'z-index': item.zIndex,
             },
           });
@@ -265,8 +254,8 @@ export default {
             type: 2,
             url: item.img.url,
             location: {
-              x: item.loaction.x,
-              y: item.loaction.y,
+              x: item.location.x,
+              y: item.location.y,
             },
             size: {
               w: item.size.w,
@@ -301,6 +290,26 @@ export default {
             iosLink: item.iosLink,
             andLink: item.andLink,
             yybLink: item.yybLink,
+          });
+          return true;
+        });
+      }
+      if (dragLinks.length) {
+        dragLinks.map((item) => {
+          dragArr.push({
+            type: 4,
+            location: {
+              x: item.location.x,
+              y: item.location.y,
+            },
+            size: {
+              w: item.size.w,
+              h: item.size.h,
+            },
+            style: {
+              'z-index': item.zIndex,
+            },
+            imgList: item.imgList,
           });
           return true;
         });
@@ -351,25 +360,103 @@ export default {
           return true;
         });
       }
+      this.topBannerClick();
       eJson.editor.components = dragArr;
+      const saveState = this.$store.state;
+      saveState.page.pageSet = true;
 
-      return eJson;
+      return { state: saveState, draft: eJson.editor };
+    },
+    checkSources() { // 检测是否所有资源都上传
+      const { page, editor } = this.$store.state;
+      const { typeCat } = editor;
+      let isOk = true;
+      let msg = '请添加分享缩略图～';
+      if (!page.img || (page.img && !page.img.url)) {
+        isOk = false;
+      } else {
+        const {
+          layerLists,
+        } = editor;
+        if (layerLists.length) {
+          for (let i = 0; i < layerLists.length; i++) {
+            const item = layerLists[i];
+            const drag = editor[typeCat[item.type][0]][item.num];
+            if (item.type === 2) {
+              if (JSON.stringify(drag.img) === '{}' || !drag.img.url) {
+                msg = '请添加图片～';
+                isOk = false;
+                break;
+              }
+            }
+            if (item.type === 6) {
+              if (!drag.play || !drag.play.url) {
+                msg = '请添加音频～';
+                isOk = false;
+                break;
+              }
+            }
+            if (item.type === 5) {
+              if (!drag.video || !drag.video.url) {
+                msg = '请添加视频～';
+                isOk = false;
+                break;
+              } else if (drag.video && drag.video.url && !drag.video.isPoster) {
+                msg = '请添加视频封面';
+                isOk = false;
+                break;
+              }
+            }
+            if (item.type === 4) {
+              if (!drag.imgList) {
+                msg = '请添加多图组件的图片资源～';
+                isOk = false;
+                break;
+              }
+              if (JSON.stringify(drag.imgList) === '[]' || !this.imgListFilter(drag.imgList)) {
+                msg = '请添加多图组件的图片资源～';
+                isOk = false;
+                break;
+              }
+            }
+          }
+        }
+      }
+      return { isOk, msg };
+    },
+    imgListFilter(list) {
+      let isOk = true;
+      list.map((el) => {
+        if (!el.url) {
+          isOk = false;
+        }
+        return true;
+      });
+      return isOk;
     },
   },
-  mounted() {
-    // 读取保存数据
-    const editorData = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":100,"isActive":false,"dragIndex":0,"content":"","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":100},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"文本","id":0,"type":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
-    this.$store.commit('editor_update', JSON.parse(editorData));
-    // const pageData = '';
-    this.$store.commit('page_update', JSON.parse(editorData));
-    this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
-    setInterval(() => {
-      // _.now_time();
-    }, 1000);
+  async mounted() {
+    if (this.$route.query.page_id) {
+      try {
+        this.isFirst = false;
+        const { data } = await service.getPageInfo(this.$route.query.page_id);
+        if (data) {
+          const state = JSON.parse(data.state);
+          this.$store.commit('editor_update', state.editor);
+          this.$store.commit('page_update', state.page);
+        } else {
+          this.optError('获取编辑器数据');
+        }
+      } catch (err) {
+        this.optError('获取编辑器数据');
+      }
+
+      this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
+    }
   },
   updated() {
-    if (this.$store.state.editor.phoneHeight > this.wrapHeight) {
-      this.wrapHeight = this.$store.state.editor.phoneHeight + 64 + 37;
+    if (this.$store.state.page.phoneHeight > this.wrapHeight) {
+      this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
     }
   },
 

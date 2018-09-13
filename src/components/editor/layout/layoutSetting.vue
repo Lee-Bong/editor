@@ -49,7 +49,7 @@
     />
     <drag-img-list-setting
       v-if="$store.state.editor.imgListSet"
-      :dragForm="this.$store.state.editor.dragImageLists[this.$store.state.editor.imgListActive]"
+      :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.imgListActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -107,6 +107,9 @@ export default {
     inputSizeChange(form, val, active) {
       const dragItems = this.$store.state.editor[form];
       dragItems[this.$store.state.editor[active]].size = val;
+      if (form === 'dragVideos') {
+        dragItems[this.$store.state.editor[active]].isUpload = false;
+      }
       this.$store.commit('editor_update', {
         [form]: dragItems,
       });

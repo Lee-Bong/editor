@@ -6,13 +6,15 @@
     <div class="login-form">
       <h1>编辑器管理后台</h1>
       <div class="login-oa">
-        <a href="https://bfe.meiyou.com/we/oa" class="oa">OA一键登录</a>
+        <a ref="oaLogin" class="oa">OA一键登录</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import config from '../../vue.config';
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -37,6 +39,9 @@ export default {
     },
   },
   mounted() {
+    this.$nextTick(() => {
+      this.$refs.oaLogin.setAttribute('href', 'https://bfe.meiyou.com/we/oa');
+    });
     this.getUserInfo();
   },
 };

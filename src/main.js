@@ -1,17 +1,16 @@
 import Vue from 'vue';
+import ElementUI from 'element-ui';
+import Icon from 'vue-awesome/components/Icon';
+import VueDragResize from 'vue-drag-resize';
+import 'vue-awesome/icons';
+import 'element-ui/lib/theme-chalk/index.css';
+import { axios } from './service';
+
 import App from './App.vue';
 import router from './router';
 import store from './store/index';
 
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-import 'vue-awesome/icons';
-import Icon from 'vue-awesome/components/Icon';
-import VueDragResize from 'vue-drag-resize';
-import axios from 'axios';
-
 Vue.config.productionTip = false;
-axios.defaults.withCredentials = true;
 Vue.prototype.$http = axios;
 
 Vue.use(ElementUI);
@@ -24,3 +23,5 @@ new Vue({
   store,
   render: h => h(App),
 }).$mount('#app');
+
+export default { axios };

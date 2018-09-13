@@ -1,6 +1,7 @@
 <template>
   <div
-    :class="['setting-content', $store.state.editor.isTextSet ? 'setting-show' : '', 'text-setting']"
+    :class="['setting-content', $store.state.editor.isTextSet ?
+     'setting-show' : '', 'text-setting']"
     :style="{width: setForm.width+'px'}"
     @click="settingClick">
   <div class="setting-box">
@@ -11,7 +12,7 @@
       </span>
     </div>
     <div class="setting">
-      <el-form ref="form" >
+      <el-form ref="form" :rules="formRules">
         <el-form-item label="" label-width="0">
           文本内容：
           <el-input
@@ -23,7 +24,7 @@
           v-model="dragForm.content">
           </el-input>
         </el-form-item>
-        <el-form-item label="字体大小：" size="mini">
+        <el-form-item label="字体大小：" size="mini" prop="name">
         <el-select v-model="dragForm.fontSize"
           filterable remote :remote-method="remoteMethod" placeholder="请选择">
           <el-option
@@ -33,6 +34,12 @@
             :value="item">
           </el-option>
         </el-select>
+        </el-form-item>
+        <el-form-item label="行高：" size="mini" class="line-item">
+          <el-slider :show-tooltip="false" v-model="lineNum" @change="lineSliderChange"></el-slider>
+          <el-input-number v-model="dragForm.lineHeight"
+            :min="0" :max="3" :step="0.1" @change="lineNumChange"
+            controls-position="right" class="line-num-input"></el-input-number>
         </el-form-item>
         <el-form-item label="对齐方式：" size="mini">
           <el-radio v-model="dragForm.textAlign" label="left">左对齐</el-radio>
@@ -44,19 +51,19 @@
           <el-button type="text" class="bg-reset" @click="textColorReset">重置</el-button>
         </el-form-item>
         <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
+          <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+          <el-input-number v-model="dragForm.location.y" @change="locationChange"
             :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
+          <el-input-number v-model="dragForm.size.w" @change="sizeChange"
             :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
+          <el-input-number v-model="dragForm.size.h" @change="sizeChange"
             :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
@@ -84,6 +91,9 @@ export default {
       size: {
         wmin: 0,
         hmin: 0,
+      },
+      lineNum: 0,
+      formRules: {
       },
     };
   },
@@ -113,6 +123,19 @@ export default {
         dragTexts,
       });
     },
+    lineNumChange(num) {
+      this.lineNum = (num / 3) * 100;
+    },
+    lineSliderChange(pre) {
+      this.updateLineHieght((pre * 3 / 100).toFixed(1));
+    },
+    updateLineHieght(num) {
+      const { dragTexts, textActive } = this.$store.state.editor;
+      dragTexts[textActive].lineHeight = num;
+      this.$store.commit('editor_update', {
+        dragTexts,
+      });
+    },
 
 
   },
@@ -124,6 +147,7 @@ export default {
       i += 2;
     }
     this.sizeList = list;
+    this.lineNum = (this.dragForm.lineHeight / 3) * 100;
   },
   destroyed() {
     // console.log('destroyed');
@@ -140,7 +164,27 @@ export default {
       padding-left: 5px!important;
     padding-right: 34px!important;
 }
+.line-item .el-slider__runway, .ine-item .el-slider__bar {
+  height: 4px;
+}
+.line-item .el-slider__button {
+  width: 10px;
+  height: 10px;
+}
+.line-item .el-slider__runway {
+  width: 180px;
+  margin: 0;
+  display: inline-block;
+}
+.line-item .el-slider {
+  float: left;
+}
+.line-num-input.el-input-number--mini {
+  display: inline-block;
+  width: 80px;
+  margin-left: 15px;
+}
 .text-setting .el-textarea__inner {
-  padding: 5px 8px;
+  padding: 5px;
 }
 </style>

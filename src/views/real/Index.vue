@@ -1,15 +1,20 @@
 <template>
   <div v-if="pageJson" class="wrap" :style='{ height: `${pageJson.page.phoneHeight}px` }'>
-    <custom-component v-for="(component, index) in finalComponentsJson" :key="index" :component="component"></custom-component>
+    <custom-component
+      v-for="(component, index) in finalComponentsJson"
+      :key="index"
+      :component="component"
+    >
+    </custom-component>
     <div class="bottom-download"></div>
   </div>
 </template>
 <script>
 import share from '@/assets/javascript/share';
 import { sortBy, map } from 'lodash';
+import jssdk from 'meetyou.jssdk';
+import * as service from '../../service';
 import CustomComponent from './CustomComponent.vue';
-import mock from '../../mock.json';
-
 
 export default {
   data() {
@@ -19,45 +24,62 @@ export default {
       finalComponentsJson: null,
     };
   },
-  components: {
-    CustomComponent,
+  computed: {
+    isFormal() {
+      return this.$route.query.is_formal === '1' ? '1' : '0';
+    },
+    pageId() {
+      return this.$route.query.page_id;
+    },
   },
-  mounted() {
-    this.pageJson = mock.editor;
-    // 按照 y 进行排序
-    let finalComponentsJson = sortBy(mock.editor.components, [
-      item => item.location.y,
-    ]);
+  methods: {
+    // 对页面数据进行加工转换
+    getFinalComponentsJson() {
+      // 按照 y 进行排序
+      let finalComponentsJson = sortBy(this.pageJson.components, [
+        item => item.location.y,
+      ]);
 
-    // 屏幕缩放比例
-    const scale = window.innerWidth / this.pageJson.page.phoneWidth;
-    finalComponentsJson = map(finalComponentsJson, (componentJson) => {
-      const componentJsonTemp = {
-        ...componentJson,
-        location: {
-          x: componentJson.location.x * scale,
-          y: componentJson.location.y * scale,
-        },
-        size: {
-          w: componentJson.size.w * scale,
-          h: componentJson.size.h * scale,
-        },
-        style: {
-          width: '100%',
-          height: '100%',
-          'font-size': componentJson.fontSize
-            ? `${componentJson.fontSize * scale}px`
-            : '',
-          ...componentJson.style,
-        },
-      };
-      return componentJsonTemp;
-    });
+      // 屏幕缩放比例
+      const scale = window.innerWidth / this.pageJson.page.phoneWidth;
+      finalComponentsJson = map(finalComponentsJson, (componentJson) => {
+        const componentJsonTemp = {
+          ...componentJson,
+          location: {
+            x: componentJson.location.x * scale,
+            y: componentJson.location.y * scale,
+          },
+          size: {
+            w: componentJson.size.w * scale,
+            h: componentJson.size.h * scale,
+          },
+          style: {
+            width: '100%',
+            height: '100%',
+            'font-size': componentJson.fontSize
+              ? `${componentJson.fontSize * scale}px`
+              : '',
+            ...componentJson.style,
+          },
+        };
+        return componentJsonTemp;
+      });
+      return finalComponentsJson;
+    },
+    initShare() {
+      const fromURL = `${window.location.host}/we/real?page_id=${this.pageId}&is_formal=${this.isFormal}&isShare=1`;
+      const { shareDec, shareImg } = this.getFinalComponentsJson();
+      jssdk.registerTopbarRightButton({
+        image: 'http://static.seeyouyima.com/news-node.seeyouyima.com/right_bar_and-de8fcdd4a49b2f45b3fdfa238bf8b143.png',
+      }, () => {
+        jssdk.share({
+          title: this.pageJson.page.title,
+          content: shareDec,
+          imageURL: shareImg,
+          fromURL,
+        });
+      });
 
-    this.finalComponentsJson = finalComponentsJson;
-
-    document.title = this.pageJson.page.title;
-    this.$nextTick(function () {
       if (this.$route.query && this.$route.query.isShare) {
         share('https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0', {
           android: 'http://yangmao-download.seeyouyima.com/ymsq31.apk',
@@ -65,7 +87,25 @@ export default {
           weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
         });
       }
-    });
+    },
+  },
+  components: {
+    CustomComponent,
+  },
+  async mounted() {
+    try {
+      const { data: { draft, public: formal } } = await service.getPageInfo(this.pageId);
+      this.pageJson = JSON.parse(this.isFormal ? formal : draft);
+      if (!this.pageJson) {
+        this.$router.replace('/error');
+      }
+      this.finalComponentsJson = this.pageJson.components;
+      document.title = this.pageJson.page.title;
+      this.$nextTick(this.initShare);
+    } catch (error) {
+      console.error(error);
+      this.$router.replace('/error');
+    }
   },
 };
 </script>

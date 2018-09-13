@@ -2,14 +2,17 @@
 <div class="img-review-item">
   <div class="image-review">
     <div class="srouce-image"
-    :style="{background: 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
+    :style="{background: !imgObj.url ? '#ddd'
+     : 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
+    <i v-if="!imgObj.url" class="el-icon-loading"></i>
     <div class="modify-image">
       <el-upload
+        :disabled="isLoading"
         class="upload-modify"
         action=""
         :show-file-list="false"
         :limit="1"
-        accept="png,gif,jpeg,jpg"
+        accept=".png,.gif,.jpeg, .jpg"
         :on-remove="onFileRemove"
         :on-change="onFileChange">
         <div class="el-upload__text">更换图片</div>
@@ -17,7 +20,10 @@
     </div>
   </div>
   <div class="image-alt">
-    <el-input v-model="imgObj.title" class="alt-input" clearable></el-input>
+    <el-input :disabled="isLoading" v-model="imgObj.title"
+     :title="imgObj.title" class="alt-input" clearable></el-input>
+    <el-progress  :percentage="pre"
+     class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
   </div>
 </div>
 </template>
@@ -27,16 +33,55 @@ export default {
   name: 'HelloWorld',
   props: {
     imgObj: Object,
+    index: Number,
   },
   data() {
     return {
-
+      isLoading: false,
+      pre: 0,
     };
   },
   methods: {
     onFileChange(file) {
-      this.$emit('file-change', file);
+      this.loadingPre();
+      this.$emit('file-change', file, true, this.index || 0);
     },
+    uplaodDone(isError) {
+      if (!isError) {
+        this.pre = 100;
+        this.isLoading = false;
+        const clearTime = setTimeout(() => {
+          this.pre = 0;
+          clearTimeout(clearTime);
+        }, 3000);
+      } else {
+        this.isLoading = false;
+        this.pre = 0;
+      }
+    },
+    loadingPre() {
+      this.isLoading = true;
+      let i = 0;
+      const step = 7;
+      const loadingTime = setInterval(() => {
+        if (this.pre >= 91) {
+          clearInterval(loadingTime);
+          return false;
+        }
+        this.pre = i;
+        i += step;
+      }, 15);
+    },
+    onFileRemove() {
+    },
+  },
+  mounted() {
+    this.isLoading = this.imgObj.isLoading ? this.imgObj.isLoading : false;
+    this.$nextTick(() => {
+      if (this.isLoading) {
+        this.loadingPre();
+      }
+    });
   },
 };
 </script>
@@ -62,6 +107,12 @@ export default {
             border: 0;
             outline: none;
         }
+        .el-icon-loading {
+    position: absolute;
+    top: 35%;
+    left: 42%;
+    animation: rotating 3s linear infinite;
+  }
         .modify-image {
           position: absolute;
           color: #fff;
@@ -90,4 +141,17 @@ export default {
     .modify-image  .el-upload-list.el-upload-list--text {
 display: none!important;
   }
+  .modify-precent {
+    margin-top: 20px;
+    opacity: 0;
+  }
+  .precent-out {
+    opacity: 1;
+    transition: opacity 0s;
+  }
+  .precent-in {
+    opacity: 0;
+    transition: opacity 1s;
+  }
+
 </style>

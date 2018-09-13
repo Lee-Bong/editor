@@ -65,7 +65,7 @@ export default {
       switch (type) {
         case 1:
         {
-          const textTop = (this.$store.state.editor.phoneHeight / 2) - (30 / 2);
+          const textTop = (this.$store.state.page.phoneHeight / 2) - (30 / 2);
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
@@ -78,11 +78,12 @@ export default {
             dragIndex: zIndex,
             content: '',
             fontSize: '12px',
+            lineHeight: 1.5,
             textAlign: 'left',
             textColor: 'rgba(0, 0, 0, 1)',
             location: {
               x: 0,
-              y: (this.$store.state.editor.phoneHeight / 2) - (30 / 2),
+              y: (this.$store.state.page.phoneHeight / 2) - (30 / 2),
             },
             size: {
               w: 375,
@@ -172,11 +173,12 @@ export default {
         case 4:
         {
           const textTop4 = 0;
-          // const zIndex4 = this.$store.state.editor.dragImageLists.length;
-          const drag4 = this.$store.state.editor.dragImageLists;
+          // const zIndex4 = this.$store.state.editor.dragImgLists.length;
+          const drag4 = this.$store.state.editor.dragImgLists;
           num = drag4.length;
           layerName = `多图拼接${!num ? '' : num + 1}`;
           drag4.push({
+            isUplaod: false,
             isShow: true,
             zIndex: 1000,
             y: textTop4,
@@ -190,12 +192,12 @@ export default {
               w: 375,
               h: 300,
             },
-            imglist: [],
+            imgList: [],
           });
           newEditor = {
             imgListSet: true,
             isImgListSet: true,
-            dragImageLists: drag4,
+            dragImgLists: drag4,
             imgListActive: num,
             layoutKey: zIndex + 1,
           };
@@ -216,7 +218,7 @@ export default {
             isActive: true,
             dragIndex: zIndex,
             sourceType: '1', // 1.本地视频 2.在线视频
-            source: 'http://',
+            source: '',
             videoTitle: '',
             loop: true,
             location: {
@@ -254,7 +256,7 @@ export default {
             isActive: true,
             dragIndex: zIndex + 1,
             sourceType: '1', // 1.本地音频 2.在线音频
-            source: 'http://',
+            source: '',
             audioTitle: '',
             loop: true,
             location: {

@@ -7,12 +7,13 @@
       :x="dragForm.location.x"
       :y="dragForm.location.y"
       :z="dragForm.zIndex"
-      :isDraggable="JSON.stringify(dragForm.video) !== '{}' ? true : false"
-      :isResizable="JSON.stringify(dragForm.video) !== '{}' ? true : false"
+      :isDraggable="Boolean(dragForm.video && dragForm.video.url)"
+      :isResizable="Boolean(dragForm.video && dragForm.video.url)"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
       :aspectRatio="dragForm.isUpload ? true: false"
+      :preventActiveBehavior="true"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
@@ -25,12 +26,12 @@
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
-      <div class="drag-img" v-if="JSON.stringify(dragForm.video) === '{}'">
+      <div class="drag-img" v-if="!Boolean(dragForm.video && dragForm.video.url)">
         <div class="video-play">
-          <i class="el-icon-caret-right" ></i>
+          <i class="el-icon-caret-right"></i>
         </div>
       </div>
-      <video v-if="JSON.stringify(dragForm.video) !== '{}' && dragForm.video.url"
+      <video v-if="Boolean(dragForm.video && dragForm.video.url)"
         class="video-show"
         :width="dragForm.size.w"
         :height="dragForm.size.h"
@@ -97,6 +98,10 @@ export default {
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
+  },
+  updated() {
+  },
+  mounted() {
   },
 };
 </script>
