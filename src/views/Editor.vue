@@ -52,6 +52,7 @@ import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
 import dragMxi from '@/util/dragMxi';
 import merge from 'webpack-merge';
+import * as service from '../service';
 
 export default {
   mixins: [dragMxi.dragCom()],
@@ -123,7 +124,7 @@ export default {
       this.drag.top = newRect.top;
       this.drag.left = newRect.left;
     },
-    saveEditor(isTrigger) { // 保存草稿
+    async saveEditor(isTrigger) { // 保存草稿
       const { isOk, msg } = this.checkSources();
       const ele = this;
       if (!isOk) {
@@ -137,30 +138,30 @@ export default {
       let { state, draft } = ele.getEditorJson();
       state = JSON.stringify(state);
       draft = JSON.stringify(draft);
-      const api = 'https://test-bfe.meiyou.com/api/we/page';
-      const url = ele.isFirst ? api : `${api}?page_id=${ele.$route.query.page_id}`;
-      this.$http({
-        method: `${ele.isFirst ? 'post' : 'patch'}`,
-        url,
-        data: {
-          state,
-          draft,
-          public: '',
-        },
-      }).then((res) => {
-        if (res.data && res.data.status && res.data.status === 'ok') {
-          if (isTrigger.type && isTrigger.type === 'click') {
-            ele.optSucsess('保存草稿');
-          } else {
-            ele.$router.push({
-              query: merge(ele.$route.query, { page_id: res.data.data.id }),
-            });
-            this.isFirst = false;
-          }
-        } else if (!isTrigger) ele.optError('保存草稿');
-      }).catch(() => {
-        if (!isTrigger) this.optError('保存草稿');
-      });
+      const params = {
+        state,
+        draft,
+        piblic: '',
+      };
+      let data;
+      if (this.isFirst) {
+        data = await service.postPageInfo(params);
+      } else {
+        data = await service.patchPageInfo(ele.$route.query.page_id, params);
+      }
+      if (data && data.status === 'ok' && data.data) {
+        if (isTrigger) {
+          ele.optSucsess('保存草稿');
+        }
+        if (this.isFirst) {
+          ele.$router.push({
+            query: merge(ele.$route.query, { page_id: data.data.id }),
+          });
+          this.isFirst = false;
+        }
+        return true;
+      } else if (isTrigger)ele.optError('保存草稿');
+      return false;
     },
     optError(msg) {
       this.$message({
@@ -176,34 +177,35 @@ export default {
         duration: 2000,
       });
     },
-    reviewEditor() { // 预览
+    async reviewEditor() { // 预览
       const ele = this;
-      this.saveEditor(true);
-      ele.$router.push({
-        path: '/preview',
-        query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
-      });
+      const isOk = await this.saveEditor(false);
+      if (isOk) {
+        ele.$router.push({
+          path: '/preview',
+          query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
+        });
+      }
     },
-    publishEditor() { // 发布
-      const ele = this;
-      this.saveEditor(true);
-      const url = `https://test-bfe.meiyou.com/api/we/page-pub?page_id=${this.$route.query.page_id}`;
-      this.$http({
-        method: 'post',
-        url,
-      }).then((res) => {
-        if (res.data && res.data.status && res.data.status === 'ok') {
-          ele.optSucsess('发布页面');
-          ele.$router.push({
-            path: '/publish',
-            query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
-          });
-        } else {
-          ele.optError('发布页面');
+    async publishEditor() { // 发布
+      try {
+        const ele = this;
+        const isOk = await this.saveEditor(false);
+        if (isOk) {
+          const { data } = await service.publishPage(this.$route.query.page_id);
+          if (data) {
+            ele.optSucsess('发布页面');
+            ele.$router.push({
+              path: '/publish',
+              query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
+            });
+          } else {
+            ele.optError('发布页面');
+          }
         }
-      }).catch(() => {
-        ele.optError('发布页面');
-      });
+      } catch (err) {
+        this.optError('发布页面');
+      }
     },
     getEditorJson() { // 生成预览与发布的json
       const eJson = { editor: {} };
@@ -433,29 +435,23 @@ export default {
       return isOk;
     },
   },
-  mounted() {
+  async mounted() {
     if (this.$route.query.page_id) {
-      this.isFirst = false;
-      this.$http({
-        method: 'get',
-        url: `https://test-bfe.meiyou.com/api/we/page?page_id=${this.$route.query.page_id}`,
-      }).then((res) => {
-        if (res.data && res.data.status && res.data.status === 'ok' && res.data.data) {
-          const state = JSON.parse(res.data.data.state);
+      try {
+        this.isFirst = false;
+        const { data } = await service.getPageInfo(this.$route.query.page_id);
+        if (data) {
+          const state = JSON.parse(data.state);
           this.$store.commit('editor_update', state.editor);
           this.$store.commit('page_update', state.page);
         } else {
-          this.$message({
-            message: '获取编辑器数据失败，请重试',
-            type: 'error',
-            duration: 2000,
-          });
+          this.optError('获取编辑器数据');
         }
-      });
+      } catch (err) {
+        this.optError('获取编辑器数据');
+      }
+
       this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
-      setInterval(() => {
-        // _.nowTime();
-      }, 1000);
     }
   },
   updated() {
