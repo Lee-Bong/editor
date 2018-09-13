@@ -18,7 +18,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
-dist/css/
-dist/fonts/
-dist/js/
-dist/img/
+
+!dist/index.html
+dist
