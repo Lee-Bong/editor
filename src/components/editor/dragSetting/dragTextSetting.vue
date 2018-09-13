@@ -1,6 +1,7 @@
 <template>
   <div
-    :class="['setting-content', $store.state.editor.isTextSet ? 'setting-show' : '', 'text-setting']"
+    :class="['setting-content', $store.state.editor.isTextSet ?
+     'setting-show' : '', 'text-setting']"
     :style="{width: setForm.width+'px'}"
     @click="settingClick">
   <div class="setting-box">

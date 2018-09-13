@@ -38,5 +38,6 @@ export default {
       6: ['dragAudios', 'audioSet', 'isAudioSet', 'audioActive'],
     },
     pageSet: true,
+    mediaHeight: 300,
   },
 };

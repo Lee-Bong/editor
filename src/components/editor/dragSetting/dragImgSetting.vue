@@ -103,15 +103,36 @@ export default {
     locationChange() { // 位置值发生改变
       this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
     },
-    sizeChange(opt) { // 大小值发生改变
-      if (opt === 1) {
-        // todo 300为图片的在375下自适应的真实高度
-        this.dragForm.size.h = (this.dragForm.size.w * this.dragForm.img.h) / this.dragForm.img.w;
+    sizeChange(type) { // 大小值发生改变
+      let { size } = this.dragForm;
+      const { img } = this.dragForm;
+      if (type === 1) {
+        let newW = size.w;
+        let newH = (img.h * size.w) / img.w;
+        const maxH = this.$store.state.editor.phoneHeight - this.dragForm.location.y;
+        if (newH > maxH) {
+          newH = maxH;
+          newW = (img.w * newH) / img.h;
+        }
+        size = {
+          w: newW,
+          h: newH,
+        };
       } else {
-        this.dragForm.size.w = (this.dragForm.size.h * this.dragForm.img.w) / this.dragForm.img.h;
+        let newW = (img.w * size.h) / img.h;
+        let newH = size.h;
+        const maxW = this.$store.state.editor.phoneWidth - this.dragForm.location.x;
+        if (newW > maxW) {
+          newW = maxW;
+          newH = (img.h * newW) / img.w;
+        }
+        size = {
+          w: newW,
+          h: newH,
+        };
       }
-      this.$emit('input-sizeChange', 'dragImages', this.dragForm.size, 'imgActive');
-      this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
+      this.$emit('input-sizeChange', 'dragImages', size, 'imgActive');
+      // this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
     },
     onFileSuccess(file, isModify) {
       const dragImg = new Image();

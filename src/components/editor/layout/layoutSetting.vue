@@ -107,6 +107,9 @@ export default {
     inputSizeChange(form, val, active) {
       const dragItems = this.$store.state.editor[form];
       dragItems[this.$store.state.editor[active]].size = val;
+      if (form === 'dragVideos') {
+        dragItems[this.$store.state.editor[active]].isUpload = false;
+      }
       this.$store.commit('editor_update', {
         [form]: dragItems,
       });

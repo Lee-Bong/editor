@@ -90,6 +90,36 @@
                     "text-color": "rgba(19, 206, 102, 0.8)",
                     "z-index": 2
                 }
+            },
+            {
+                "type": 4,
+                "location": {
+                    "x": 0,
+                    "y": 0
+                },
+                "size": {
+                    "w": 375,
+                    "h": 400
+                },
+                "style": {
+                    "z-index": 8
+                },
+                "imgList": [
+                    {
+                        "url": "https://sc.seeyouyima.com/bfe/we/751edd82821c08ecfcac328c21e96253.png",
+                        "size": {
+                            "w": 375,
+                            "h": 375
+                        }
+                    },
+                    {
+                        "url": "https://sc.seeyouyima.com/bfe/we/751edd82821c08ecfcac328c21e96253.png",
+                        "size": {
+                            "w": 375,
+                            "h": 375
+                        }
+                    }
+                ]
             }
             
         ]
