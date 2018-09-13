@@ -7,6 +7,7 @@
         <div>
           <el-button
             class="copy-btn"
+            ref="copybtn"
             size="mini"
             type="primary"
             :data-clipboard-text="url"
@@ -14,7 +15,10 @@
         </div>
       </div>
       <div class="qrcode" ref="qrCode"></div>
-      <div class="tip">扫码预览</div>
+      <div class="tip">
+        <span v-if="footer" v-html="footer"></span>
+        <a v-else class="qrcode-download" download="二维码">下载二维码</a>
+      </div>
     </div>
 </template>
 
@@ -23,31 +27,51 @@ import QRCode from 'qrcodejs2';
 import Clipboard from 'clipboard';
 
 export default {
-  props: ['url'],
+  // footer: 默认为下载链接
+  props: ['url', 'qrOption', 'footer'],
+  data() {
+    return {
+      clipboard: null,
+    };
+  },
   mounted() {
-    // 初始化二维码
-    this.createQrCode();
     // 初始化复制面板
-    const copyBtn = new Clipboard('.copy-btn');
+    const copyBtn = this.$refs.copybtn.$el;
+    this.clipboard = new Clipboard(copyBtn);
     // 复制成功后执行的回调函数
-    copyBtn.on('success', () => {
+    this.clipboard.on('success', () => {
       this.$message({
         showClose: true,
         message: '复制成功',
         type: 'success',
       });
     });
+    // 初始化二维码
+    this.createQrCode();
+  },
+  destroyed() {
+    if (this.clipboard) {
+      this.clipboard.destroy();
+    }
   },
   methods: {
     createQrCode() {
-      const qr = new QRCode(this.$refs.qrCode, {
+      const defaultOption = {
         text: this.url,
-        width: 180,
-        height: 180,
+        width: 120,
+        height: 120,
         colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H,
-      });
+      };
+      const qr = new QRCode(this.$refs.qrCode, { ...defaultOption, ...this.qrOption });
+      if (!this.footer) {
+        setTimeout(() => {
+          const ele = this;
+          const url = ele.$refs.qrCode.children[1].getAttribute('src');
+          document.getElementsByClassName('qrcode-download')[0].setAttribute('href', url);
+        });
+      }
       return qr;
     },
   },
@@ -56,12 +80,10 @@ export default {
 
 <style lang="less" scoped>
 .qr-code-container {
-  width: 250px;
-  padding: 20px 10px;
-  border: 1px solid #eee;
-  border-radius: 2px;
+  padding: 5px;
   .url {
     display: flex;
+    justify-content: center;
     margin-bottom: 40px;
     .text {
       padding: 2px;
@@ -80,6 +102,9 @@ export default {
   .tip {
     text-align: center;
     color: #409eff;
+    .qrcode-download {
+      color: #409eff;
+    }
   }
 }
 </style>

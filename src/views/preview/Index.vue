@@ -46,7 +46,7 @@
               <el-col :span="10">
                 <div class="qrcode">
                   <div class="text">预览页面：</div>
-                  <qr-code :url="realUrl"></qr-code>
+                  <qr-code :url="realUrl" footer="扫码预览"  class="qr-code-content"></qr-code>
                 </div>
               </el-col>
             </el-row>
@@ -155,6 +155,11 @@ export default {
             margin-bottom: 25px;
             font-size: 1.5rem;
             font-weight: bold;
+          }
+          .qr-code-content {
+            width: 220px;
+            border: 1px solid #eee;
+            padding: 20px;
           }
         }
       }
