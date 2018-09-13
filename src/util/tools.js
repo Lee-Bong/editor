@@ -81,7 +81,7 @@ export function formatTableData(data) {
   if (data.state) {
     const json = JSON.parse(data.state);
     const pageData = json.page;
-    if (pageData.title) {
+    if (pageData && pageData.title) {
       output.title = pageData.title;
     }
   }
