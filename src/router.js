@@ -15,12 +15,12 @@ export default new Router({
   {
     name: 'login',
     path: '/login',
-    component: Login,
+    component: () => import('./views/Login.vue'),
   },
   {
     name: 'editor',
     path: '/editor',
-    component: Editor,
+    component: () => import('./views/Editor.vue'),
   },
   {
     name: 'manage',
