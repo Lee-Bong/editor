@@ -33,7 +33,11 @@
                       height: `${pageJson.page.phoneHeight + HeadHeight}px`
                   }"
                   >
-                    <phone-view :pageJson="pageJson" :HeadHeight="HeadHeight"></phone-view>
+                    <phone-view
+                      :url="realUrl"
+                      :pageJson="pageJson"
+                      :HeadHeight="HeadHeight"
+                    ></phone-view>
                   </div>
                 </div>
               </el-col>
@@ -69,8 +73,8 @@ export default {
   },
   async mounted() {
     try {
-      const { data: { draft } } = await service.getPageInfo(this.pageId);
-      this.pageJson = JSON.parse(draft);
+      const { data: { public: formal } } = await service.getPageInfo(this.pageId);
+      this.pageJson = JSON.parse(formal);
       if (!this.pageJson) {
         this.$router.replace('/error');
       }
@@ -89,61 +93,14 @@ export default {
       return this.$route.query.page_id;
     },
     realUrl() {
-      return `${window.location.host}/we/real?page_id=${this.pageId}&is_formal=1`;
+      return `http://${window.location.host}/we/real?page_id=${this.pageId}&is_formal=1`;
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.wrap {
-  .button-group {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    .el-button {
-      margin-right: 10px;
-    }
-  }
-  .el-main {
-    padding: 20px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 60px;
-    background-color: #eee;
-    .content {
-      min-height: 100%;
-      background: #fff;
-      .main-container {
-        padding: 20px;
-        background-color: #ffffff;
-        .phone {
-          display: flex;
-          justify-content: center;
-          .phone-view-container {
-            position: relative;
-            background-color: #ffffff;
-            overflow: hidden;
-            border: 1px solid #eee;
-          }
-        }
-        .qrcode {
-          .text {
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-            font-weight: bold;
-          }
-           .qr-code-content {
-            width: 220px;
-            border: 1px solid #eee;
-            padding: 20px;
-          }
-        }
-      }
-    }
-  }
-}
+@import '../preview/style.less';
+
 </style>
 

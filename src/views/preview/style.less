@@ -1,0 +1,55 @@
+.wrap {
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        .el-button {
+            margin-right: 10px;
+        }
+    }
+    .el-main {
+        padding: 20px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 60px;
+        background-color: #eee;
+        .content {
+            min-height: 100%;
+            background: #fff;
+            .main-container {
+                padding: 20px;
+                background-color: #ffffff;
+                .el-row {
+                    min-width: 100%;
+                    .el-col {
+                        min-height: 300px;
+                    }
+                }
+                .phone {
+                    display: flex;
+                    justify-content: center;
+                    .phone-view-container {
+                        position: relative;
+                        background-color: #ffffff;
+                        overflow: hidden;
+                        border: 1px solid #eee;
+                    }
+                }
+                .qrcode {
+                    .text {
+                        margin-bottom: 25px;
+                        font-size: 1.5rem;
+                        font-weight: bold;
+                    }
+                    .qr-code-content {
+                        width: 220px;
+                        border: 1px solid #eee;
+                        padding: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
