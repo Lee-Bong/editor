@@ -43,9 +43,56 @@ export function formatSecond(se) {
   return `${m}:${s}`;
 }
 
+/**
+ * 日期格式化 yyyy-MM-hh HH:mm:ss
+ */
+export function formatDate(date) {
+  const addZero = s => (s < 10 ? '0' : '') + s;
+  let d = date;
+  let output1 = '';
+  let output2 = '';
+
+  if (typeof d === 'string') {
+    d = new Date(d);
+  }
+
+  if (d instanceof Date) {
+    output1 = [d.getFullYear(), addZero(d.getMonth() + 1), addZero(d.getDate())];
+    output2 = [addZero(d.getHours()), addZero(d.getMinutes()), addZero(d.getSeconds())];
+
+    return `${output1.join('-')} ${output2.join(':')}`;
+  }
+
+  return d.toString();
+}
+
+/**
+ * 格式化表格数据
+ * @param {array} data 表格数据数组
+ */
+export function formatTableData(data) {
+  const output = {
+    id: data.id,
+    title: '',
+    createdAt: formatDate(data.createdAt),
+    visit: 0,
+    online: 1, // TODO 上线|下线
+  };
+  if (data.state) {
+    const json = JSON.parse(data.state);
+    const pageData = json.page;
+    if (pageData.title) {
+      output.title = pageData.title;
+    }
+  }
+  return output;
+}
+
 export default {
   textActiveOff,
   delDrag,
   nowTime,
   formatSecond,
+  formatDate,
+  formatTableData,
 };
