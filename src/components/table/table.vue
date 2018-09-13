@@ -79,14 +79,11 @@ import tableTip from '@/components/table/tableTip';
 import { formatTableData } from '@/util/tools';
 
 const getTipUrl = (id) => {
-  const h = window.location.host;
-  let env = '';
+  let h = window.location.host;
   if (h.indexOf('test-') > -1 || h.indexOf('localhost') > -1 || h.indexOf('127.0.0.1') > -1) {
-    env = 'test-';
-  } else if (h.indexOf('yf-') > -1) {
-    env = 'yf-';
+    h = 'https://test-bfe.meiyou.com';
   }
-  return `https://${env}bfe.meiyou.com/we/real?page_id=${id}`;
+  return `${h}/we/real?page_id=${id}&is_formal=1`;
 };
 
 export default {
