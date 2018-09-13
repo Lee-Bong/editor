@@ -33,7 +33,11 @@
                       height: `${pageJson.page.phoneHeight + HeadHeight}px`
                   }"
                   >
-                    <phone-view :pageJson="pageJson" :HeadHeight="HeadHeight"></phone-view>
+                    <phone-view
+                      :url="realUrl"
+                      :pageJson="pageJson"
+                      :HeadHeight="HeadHeight"
+                    ></phone-view>
                   </div>
                 </div>
               </el-col>
@@ -89,7 +93,7 @@ export default {
       return this.$route.query.page_id;
     },
     realUrl() {
-      return `${window.location.host}/we/real?page_id=${this.pageId}&is_formal=1`;
+      return `http://${window.location.host}/we/real?page_id=${this.pageId}&is_formal=1`;
     },
   },
 };

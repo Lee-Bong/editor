@@ -12,6 +12,7 @@
 <script>
 import share from '@/assets/javascript/share';
 import { sortBy, map } from 'lodash';
+import jssdk from 'meetyou.jssdk';
 import * as service from '../../service';
 import CustomComponent from './CustomComponent.vue';
 
@@ -25,23 +26,15 @@ export default {
   },
   computed: {
     isFormal() {
-      return this.$route.query.is_formal;
+      return this.$route.query.is_formal === '1' ? '1' : '0';
     },
     pageId() {
       return this.$route.query.page_id;
     },
   },
-  components: {
-    CustomComponent,
-  },
-  async mounted() {
-    try {
-      const { data: { draft, public: formal } } = await service.getPageInfo(this.pageId);
-      this.pageJson = JSON.parse(this.isFormal ? formal : draft);
-      if (!this.pageJson) {
-        this.$router.replace('/error');
-      }
-      console.log(this.pageJson);
+  methods: {
+    // 对页面数据进行加工转换
+    getFinalComponentsJson() {
       // 按照 y 进行排序
       let finalComponentsJson = sortBy(this.pageJson.components, [
         item => item.location.y,
@@ -71,19 +64,44 @@ export default {
         };
         return componentJsonTemp;
       });
-
-      this.finalComponentsJson = finalComponentsJson;
-
-      document.title = this.pageJson.page.title;
-      this.$nextTick(function () {
-        if (this.$route.query && this.$route.query.isShare) {
-          share('https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0', {
-            android: 'http://yangmao-download.seeyouyima.com/ymsq31.apk',
-            ios: 'https://itunes.apple.com/cn/app/id1412667195?mt=8',
-            weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
-          });
-        }
+      return finalComponentsJson;
+    },
+    initShare() {
+      const fromURL = `${window.location.host}/we/real?page_id=${this.pageId}&is_formal=${this.isFormal}&isShare=1`;
+      const { shareDec, shareImg } = this.getFinalComponentsJson();
+      jssdk.registerTopbarRightButton({
+        image: 'http://static.seeyouyima.com/news-node.seeyouyima.com/right_bar_and-de8fcdd4a49b2f45b3fdfa238bf8b143.png',
+      }, () => {
+        jssdk.share({
+          title: this.pageJson.page.title,
+          content: shareDec,
+          imageURL: shareImg,
+          fromURL,
+        });
       });
+
+      if (this.$route.query && this.$route.query.isShare) {
+        share('https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0', {
+          android: 'http://yangmao-download.seeyouyima.com/ymsq31.apk',
+          ios: 'https://itunes.apple.com/cn/app/id1412667195?mt=8',
+          weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
+        });
+      }
+    },
+  },
+  components: {
+    CustomComponent,
+  },
+  async mounted() {
+    try {
+      const { data: { draft, public: formal } } = await service.getPageInfo(this.pageId);
+      this.pageJson = JSON.parse(this.isFormal ? formal : draft);
+      if (!this.pageJson) {
+        this.$router.replace('/error');
+      }
+      this.finalComponentsJson = this.pageJson.components;
+      document.title = this.pageJson.page.title;
+      this.$nextTick(this.initShare);
     } catch (error) {
       console.error(error);
       this.$router.replace('/error');
