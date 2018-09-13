@@ -3,58 +3,62 @@
     ? 'setting-show' : '', 'video-setting']"
     :style="{width: setForm.width+'px'}"
   >
-  <div class="setting-box">
-    <div class="setting-title">
-      <span>组件设置</span>
-      <span class="header-btn">
-          <i class="el-icon-close" @click="settingClose"></i>
-      </span>
-    </div>
-    <div class="setting">
-      <el-form ref="form" >
-        <el-form-item label="类型：" size="mini">
-          <el-radio v-model="dragForm.sourceType"
-            @change="sourceChange('1')" label="1">本地上传</el-radio>
-          <el-radio v-model="dragForm.sourceType"
-            @change="sourceChange('2')" label="2">在线视频</el-radio>
-        </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '1'"
-          label="选择视频：" size="mini" class="video-el">
-          <audio-uplaod :source="mediaSource" @upload-done="mediaUploadDone"
-          @file-remove="mediaFileRemove"/>
-        </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接：" size="mini" class="video-el">
-          <el-input type="text" v-model="dragForm.textColor"></el-input>
-        </el-form-item>
-        <el-form-item label="视频封面：" size="mini" class="video-el">
-          <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
-        </el-form-item>
-        <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
-            :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
-            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
-            :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
-            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
-        </el-form-item>
-        <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
-            :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
-            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
-            :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
-            :disabled="!isUpload" controls-position="right" class="num-input"></el-input-number>
-        </el-form-item>
-        <div class="dec-label"> <label>宽</label> <label>高</label></div>
+    <div class="setting-box">
+      <div class="setting-title">
+        <span>组件设置</span>
+        <span class="header-btn">
+            <i class="el-icon-close" @click="settingClose"></i>
+        </span>
+      </div>
+      <div class="setting">
+        <el-form ref="form" >
+          <el-form-item label="类型：" size="mini">
+            <el-radio v-model="dragForm.sourceType"
+              @change="sourceChange('1')" label="1">本地上传</el-radio>
+            <el-radio v-model="dragForm.sourceType"
+              @change="sourceChange('2')" label="2">在线视频</el-radio>
+          </el-form-item>
+          <el-form-item v-if="dragForm.sourceType === '1'"
+            label="选择视频：" size="mini" class="video-el">
+            <audio-uplaod :source="mediaSource" @upload-done="mediaUploadDone"
+            @file-remove="mediaFileRemove"/>
+          </el-form-item>
+          <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
+            size="mini" class="video-el">
+            <el-input type="text" v-model="dragForm.textColor"></el-input>
+          </el-form-item>
+          <el-form-item label="视频封面：" size="mini" class="video-el">
+            <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
+          </el-form-item>
+          <el-form-item label="位置：" size="mini">
+            <el-input-number v-model="dragForm.location.x" @change="locationChange"
+              :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
+              class="num-input"></el-input-number>
+            <el-input-number v-model="dragForm.location.y" @change="locationChange"
+              :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
+              class="num-input"></el-input-number>
+          </el-form-item>
+          <div class="dec-label"> <label>X</label> <label> Y</label></div>
+          <el-form-item label="尺寸：" size="mini">
+            <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
+              :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
+              class="num-input"></el-input-number>
+            <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
+              :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
+              class="num-input"></el-input-number>
+          </el-form-item>
+          <div class="dec-label"> <label>宽</label> <label>高</label></div>
         </el-form>
-
       </div>
     </div>
-     <video ref="videoLoad" controls v-show="false">
-        <source  type="video/mp4">
-      </video>
-   </div>
+    <video ref="videoLoad" controls v-show="false">
+      <source  type="video/mp4">
+    </video>
+  </div>
 </template>
 
 <script>
@@ -85,7 +89,6 @@ export default {
         wmin: 0,
         hmin: 0,
       },
-      isUpload: false,
       imgObj: {},
       mediaSource: {
         accept: '.mp4',
@@ -102,8 +105,36 @@ export default {
     locationChange() { // 位置值发生改变
       this.$emit('input-locationChange', 'dragVideos', this.dragForm.location, 'videoActive');
     },
-    sizeChange() { // 大小值发生改变
-      this.$emit('input-sizeChange', 'dragVideos', this.dragForm.size, 'videoActive');
+    sizeChange(type) { // 大小值发生改变
+      let { size } = this.dragForm;
+      const { video } = this.dragForm;
+      if (type === 1) {
+        let newW = size.w;
+        let newH = (video.h * size.w) / video.w;
+        const maxH = this.$store.state.editor.phoneHeight - this.dragForm.location.y;
+        if (newH > maxH) {
+          newH = maxH;
+          newW = (video.w * newH) / video.h;
+        }
+        size = {
+          w: newW,
+          h: newH,
+        };
+      } else {
+        let newW = (video.w * size.h) / video.h;
+        let newH = size.h;
+        const maxW = this.$store.state.editor.phoneWidth - this.dragForm.location.x;
+        if (newW > maxW) {
+          newW = maxW;
+          newH = (video.h * newW) / video.w;
+        }
+        size = {
+          w: newW,
+          h: newH,
+        };
+      }
+      this.$emit('input-sizeChange', 'dragVideos', size, 'videoActive');
+      this.ratioSet(this, 'dragVideos', 'videoActive');
     },
     async onFileChange(file) {
       const up = await oss(file.raw);
@@ -118,7 +149,6 @@ export default {
     mediaFileRemove() {
       this.mediaSource = Object.assign({}, this.mediaSource, { name: '', url: '' });
       this.mediaChange({
-        isUplaod: false,
         poster: '',
         url: '',
       }, this, 'dragVideos', 'videoActive', true);
@@ -156,6 +186,7 @@ export default {
       const lists = ele.$store.state.editor[dragList];
       let drags = lists[ele.$store.state.editor[active]];
       const clone = Object.assign({}, { video });
+      clone.isUpload = false;
       if (!isRemove) {
         clone.location = {
           x: 0,
@@ -165,22 +196,16 @@ export default {
           w: ele.$store.state.editor.phoneWidth,
           h: video.h,
         };
-        clone.isUpload = true;
       } else {
-        clone.isUpload = false;
         clone.size = {
           w: ele.$store.state.editor.phoneWidth,
-          h: ele.$store.state.editor.phoneHieght,
+          h: ele.$store.state.editor.mediaHeight,
         };
       }
       drags = Object.assign(drags, clone);
       lists[ele.$store.state.editor[active]] = drags;
       ele.$store.commit('editor_update', { [dragList]: lists });
-      setTimeout(() => {
-        drags.isUpload = true;
-        lists[ele.$store.state.editor[active]] = drags;
-        ele.$store.commit('editor_update', { [dragList]: lists });
-      }, 100);
+      this.ratioSet(ele, dragList, active);
     },
     onFileError() { // 图片上传失败
       this.fileFail = true;
@@ -216,6 +241,15 @@ export default {
     },
     fileRemove() {
       this.uploadDone();
+    },
+    ratioSet(ele, dragList, active) {
+      const lists = ele.$store.state.editor[dragList];
+      let drags = lists[ele.$store.state.editor[active]];
+      setTimeout(() => {
+        drags = Object.assign(drags, { isUpload: true });
+        lists[ele.$store.state.editor[active]] = drags;
+        ele.$store.commit('editor_update', { [dragList]: lists });
+      }, 100);
     },
   },
 };
