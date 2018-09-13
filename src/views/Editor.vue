@@ -258,6 +258,26 @@ export default {
           return true;
         });
       }
+      if (dragLinks.length) {
+        dragLinks.map((item) => {
+          dragArr.push({
+            type: 4,
+            location: {
+              x: item.location.x,
+              y: item.location.y,
+            },
+            size: {
+              w: item.size.w,
+              h: item.size.h,
+            },
+            style: {
+              'z-index': item.zIndex,
+            },
+            imgList: item.imgList,
+          });
+          return true;
+        });
+      }
       if (dragVideos.length) {
         dragVideos.map((item) => {
           dragArr.push({
