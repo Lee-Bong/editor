@@ -373,6 +373,7 @@ export default {
       let isOk = true;
       let msg = '请添加分享缩略图～';
       if (!page.img || (page.img && !page.img.url)) {
+        this.topBannerClick();
         isOk = false;
       } else {
         const {
