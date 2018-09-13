@@ -52,11 +52,11 @@
 </template>
 
 <script>
-import tip from '@/components/table/tip';
+import QrCode from '../../components/QrCode';
 
 export default {
   components: {
-    tip,
+    QrCode,
   },
   data() {
     return {

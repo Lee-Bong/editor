@@ -33,9 +33,19 @@ export default new Router({
     component: () => import('./views/preview/Index.vue'),
   },
   {
+    name: 'publish',
+    path: '/publish',
+    component: () => import('./views/publish/Index.vue'),
+  },
+  {
     name: 'real',
     path: '/real',
     component: () => import('./views/real/Index.vue'),
+  },
+  {
+    name: 'error',
+    path: '/error',
+    component: () => import('./views/Error.vue'),
   },
   {
     path: '*',

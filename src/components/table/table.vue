@@ -47,7 +47,9 @@
           trigger="click"
           @show="popverShow(scope.$index, scope.row)"
         >
-          <div class="spread" v-if="scope.$index === showTipNum"><tip :tip-url="tipUrl"/></div>
+          <div class="spread" v-if="scope.$index === showTipNum">
+            <qr-code :url="tipUrl"></qr-code>
+          </div>
           <el-button
           size="mini"
           type="primary" plain
@@ -74,11 +76,11 @@
 </template>
 
 <script>
-import tip from '@/components/table/tip';
+import QrCode from '../../components/QrCode';
 
 export default {
   components: {
-    tip,
+    QrCode,
   },
   data() {
     return {
