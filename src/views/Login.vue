@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import config from '../../vue.config';
+import * as service from '../service';
 
 export default {
   name: 'HelloWorld',
@@ -25,17 +25,23 @@ export default {
     };
   },
   methods: {
-    getUserInfo() {
-      this.$http({
-        method: 'get',
-        url: 'https://test-bfe.meiyou.com/api/we/me',
-      }).then(() => {
-        //   alert(JSON.stringify(res));
-        // console.log(res);
-      }).catch(() => {
-        //   alert(JSON.stringify(err));
-        // console.log(err);
-      });
+    async getUserInfo() {
+      try {
+        const ele = this;
+        await service.getUserInfo().then((data) => {
+          if (data && data.status === 'ok' && data.data) {
+            ele.$router.push({
+              path: '/manage',
+            });
+          }
+        }).catch((err) => {
+          if (err.request.status === 401) {
+            // console.log('未登陆');
+          }
+        });
+      } catch (err) {
+        // console.log('未登陆');
+      }
     },
   },
   mounted() {

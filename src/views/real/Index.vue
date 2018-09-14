@@ -1,6 +1,7 @@
 <template>
   <div v-if="pageJson" class="wrap" :style='{ height: `${pageJson.page.phoneHeight}px` }'>
     <custom-component
+      v-if="finalComponentsJson"
       v-for="(component, index) in finalComponentsJson"
       :key="index"
       :component="component"
@@ -68,12 +69,12 @@ export default {
     },
     initShare() {
       const fromURL = `${window.location.host}/we/real?page_id=${this.pageId}&is_formal=${this.isFormal}&isShare=1`;
-      const { shareDec, shareImg } = this.getFinalComponentsJson();
+      const { shareDec, shareImg, shareTitle } = this.pageJson.page;
       jssdk.registerTopbarRightButton({
         image: 'http://static.seeyouyima.com/news-node.seeyouyima.com/right_bar_and-de8fcdd4a49b2f45b3fdfa238bf8b143.png',
       }, () => {
         jssdk.share({
-          title: this.pageJson.page.title,
+          title: shareTitle,
           content: shareDec,
           imageURL: shareImg,
           fromURL,
@@ -95,11 +96,11 @@ export default {
   async mounted() {
     try {
       const { data: { draft, public: formal } } = await service.getPageInfo(this.pageId);
-      this.pageJson = JSON.parse(this.isFormal ? formal : draft);
+      this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
       if (!this.pageJson) {
         this.$router.replace('/error');
       }
-      this.finalComponentsJson = this.pageJson.components;
+      this.finalComponentsJson = this.getFinalComponentsJson();
       document.title = this.pageJson.page.title;
       this.$nextTick(this.initShare);
     } catch (error) {

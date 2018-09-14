@@ -46,6 +46,7 @@
   </div>
 </template>
 <script>
+import VueDragResize from 'vue-drag-resize';
 import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
@@ -53,11 +54,14 @@ import layoutSetting from '@/components/editor/layout/layoutSetting';
 import dragMxi from '@/util/dragMxi';
 import merge from 'webpack-merge';
 import * as service from '../service';
+// import Icon from 'vue-awesome/components/Icon';
+
 
 export default {
   mixins: [dragMxi.dragCom()],
   name: 'editor',
   components: {
+    VueDragResize,
     layoutMain,
     layer,
     layoutLeft,
