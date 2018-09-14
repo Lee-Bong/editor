@@ -26,7 +26,6 @@
 
 <script>
 import VueDraggable from 'vuedraggable';
-import Sortable from 'sortable';
 import dragMxi from '@/util/dragMxi';
 
 export default {
@@ -35,7 +34,6 @@ export default {
   props: {},
   components: {
     draggable: VueDraggable,
-    sortable: Sortable,
   },
   data() {
     return {
@@ -111,23 +109,8 @@ export default {
 
 <style>
 .layer-drag {
-  /* position: absolute;
-  top: 51px;
-  right: 0px;
-  left: 0; */
   z-index: 99999;
 }
-/* .setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 10px;
-  right: 266px;
-  width: 260px;
-  z-index: 1001;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
-} */
 .setting-title {
   height: 31px;
   padding-left: 15px;

@@ -6,13 +6,15 @@
     <div class="login-form">
       <h1>编辑器管理后台</h1>
       <div class="login-oa">
-        <a href="https://bfe.meiyou.com/we/oa" class="oa">OA一键登录</a>
+        <a ref="oaLogin" class="oa">OA一键登录</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as service from '../service';
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -23,20 +25,29 @@ export default {
     };
   },
   methods: {
-    getUserInfo() {
-      this.$http({
-        method: 'get',
-        url: 'https://test-bfe.meiyou.com/api/we/me',
-      }).then(() => {
-        //   alert(JSON.stringify(res));
-        // console.log(res);
-      }).catch(() => {
-        //   alert(JSON.stringify(err));
-        // console.log(err);
-      });
+    async getUserInfo() {
+      try {
+        const ele = this;
+        await service.getUserInfo().then((data) => {
+          if (data && data.status === 'ok' && data.data) {
+            ele.$router.push({
+              path: '/manage',
+            });
+          }
+        }).catch((err) => {
+          if (err.request.status === 401) {
+            // console.log('未登陆');
+          }
+        });
+      } catch (err) {
+        // console.log('未登陆');
+      }
     },
   },
   mounted() {
+    this.$nextTick(() => {
+      this.$refs.oaLogin.setAttribute('href', 'https://bfe.meiyou.com/we/oa');
+    });
     this.getUserInfo();
   },
 };

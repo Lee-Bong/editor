@@ -13,32 +13,40 @@
     <div class="setting">
       <el-form ref="form">
         <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
-            :disabled="!isUpload"
+          <el-input-number v-model="dragForm.location.x" @change="locationChange"
+            :disabled="!fileSuccess"
             :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
-            :disabled="!isUpload"
+            controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.y" @change="locationChange"
+            :disabled="!fileSuccess"
             :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <div class="upload-wrap">
+        <div class="upload-wrap upload-wrap--list">
           <el-upload
             class="upload-demo"
             drag
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action=""
             :multiple="true"
-            :file-list="dragForm.imglist"
-            :on-change="onFileChange"
-            list-type=""
-            :auto-upload="false"
+            :file-list="dragForm.imgList"
+            :http-request="onFileChange"
+            list-type="picture"
+            :auto-upload="true"
+            :show-file-list="false"
             accept=".png,.gif,.jpeg, .jpg">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
             <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
           </el-upload>
-        <span class="upload-dec"></span>
+          <draggable class="upload-reviews">
+            <transition-group name="list-complete" >
+              <div v-for="(rev, index) in imgList" :key="index">
+                <img-review-item :imgObj='rev' @file-change="fileModify"
+                ref="imgReview" :index="index" />
+              </div>
+            </transition-group>
+          </draggable>
         </div>
       </el-form>
     </div>
@@ -48,6 +56,8 @@
 
 <script>
 import oss from '@/util/oss';
+import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
+import draggable from 'vuedraggable';
 
 export default {
   name: 'DragSetting',
@@ -56,10 +66,12 @@ export default {
     setForm: Object,
   },
   components: {
+    imgReviewItem,
+    draggable,
   },
   data() {
     return {
-      isUpLoad: false,
+      isUpload: false,
       location: {
         xmin: 0,
         ymin: 0,
@@ -68,94 +80,116 @@ export default {
         wmin: 0,
         hmin: 0,
       },
+      imgList: [],
+      fileSuccess: false,
     };
   },
   methods: {
-    fileSet(fileList) {
-      const { dragImageLists, imgListActive } = this.$store.state.editor;
-      if (fileList.length) {
-        fileList.map((item) => {
-          dragImageLists[imgListActive].imglist.push({
-            name: item.name, // todo 需要图片原本名
-            url: URL.createObjectURL(item.raw),
-          });
-          return true;
-        });
-      }
-      this.$store.commit('editor_update', { dragImageLists });
-    },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isImgListSet: false });
     },
     locationChange() { // 位置值发生改变
-      this.$emit('input-locationChange', 'dragImageLists', this.dragForm.location, 'imgListActive');
+      this.$emit('input-locationChange', 'dragImgLists', this.dragForm.location, 'imgListActive');
     },
-    async onFileChange(file) {
-      const up = await oss(file.raw);
-      if (up && up.url) {
-        this.onFileSuccess(up);
-      } else {
-        this.onFileError();
-      }
-    },
-    onFileSuccess(file) {
+    onFileSuccess(file, key) {
       const dragImg = new Image();
       dragImg.src = file.url;
+      const ele = this;
+      const updateImg = {
+        title: file.oldName,
+        url: file.url,
+        size: {
+          w: 375,
+        },
+      };
+      updateImg.location = {
+        x: 0,
+        y: 0,
+      };
+      ele.fileDone(key, updateImg);
       dragImg.onload = () => {
-        this.isUpLoad = true;
-        console.info(`${dragImg.height}sss${dragImg.width}`);
-        this.$message({
+        ele.$message({
           message: '图片上传成功～',
           type: 'success',
           duration: 2000,
         });
-        const images = this.$store.state.editor.dragImages;
-        const drags = images[this.$store.state.editor.imgActive];
-        const newH = (dragImg.height * this.$store.state.editor.phoneWidth) / dragImg.width;
-
-        drags.img = {
-          // isUpload: true,
-          title: file.name,
-          url: file.url,
-          w: this.$store.state.editor.phoneWidth,
-          h: newH,
-        };
-        if (this.isFirst) {
-          drags.location = {
-            x: 0,
-            y: 0,
-          };
+        if (key !== undefined) {
+          ele.$refs.imgReview[key].uplaodDone();
         }
-        drags.size = {
+        const newH = (dragImg.height * ele.$store.state.editor.phoneWidth) / dragImg.width;
+        if (!ele.fileSuccess) ele.fileSuccess = true;
+        updateImg.size = {
+          w: 375,
           h: newH,
-          w: this.$store.state.editor.phoneWidth,
         };
-
-        drags.isUpload = false;
-        images[this.$store.state.editor.imgActive] = drags;
-        this.$store.commit('editor_update', { dragImages: images });
-        this.fileSuccess = true;
-        this.fileAble = true;
-        // todo 解决aspectRatio只根据初始值设定比例
-        setTimeout(() => {
-          drags.isUpload = true;
-          images[this.$store.state.editor.imgActive] = drags;
-          this.$store.commit('editor_update', { dragImages: images });
-        }, 100);
+        ele.fileDone(key, updateImg);
       };
-      dragImg.onerror = function () {
-        this.onFileError();
+      dragImg.onerror = () => {
+        this.onFileError(key);
       };
     },
-    onFileError() { // 图片上传失败
-      this.fileFail = true;
+    onFileError(isModify, key) { // 图片上传失败
       this.fileAble = false;
       this.$message({
         message: '图片上传失败，请重试～',
         type: 'error',
         duration: 2000,
       });
+      if (!isModify) {
+        this.$refs.imgReview[key].uplaodDone(true);
+        this.imgList.splice(key, 1);
+      }
     },
+    onFileChange(params, isModify, key) {
+      const file = isModify ? params : params.file;
+      const addItem = {
+        title: file.name,
+        url: '',
+        isLoading: true,
+      };
+      if (!isModify) {
+        this.imgList.push(addItem);
+      } else {
+        addItem.url = file.url;
+        this.imgList[key] = addItem;
+      }
+      this.fileAble = true;
+      const curKey = key !== undefined ? key : this.imgList.length - 1;
+      this.fileUploading(file, curKey, isModify);
+    },
+    fileModify(file, isModify, key) {
+      this.onFileChange(file, isModify, key);
+    },
+    async fileUploading(item, k, isModify) {
+      try {
+        const upItem = isModify ? item.raw : item;
+        const up = await oss(upItem);
+        up.oldName = item.name;
+        if (up && up.url) {
+          this.imgList[k].url = up.url;
+          this.onFileSuccess(up, k);
+        } else {
+          this.onFileError(isModify, k);
+        }
+      } catch (err) {
+        this.onFileError(isModify, k);
+      }
+    },
+    fileDone(key, updateImg) {
+      const { dragImgLists, imgListActive } = this.$store.state.editor;
+      const imgLists = dragImgLists;
+      this.imgList[key] = updateImg;
+      const drag = imgLists[imgListActive];
+      drag.imgList = this.imgList;
+      imgLists[imgListActive] = drag;
+      this.$set(this.$store.state.editor, 'dragImgLists', imgLists);
+    },
+
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.imgList = this.dragForm.imgList;
+    });
   },
 
 };
@@ -186,5 +220,24 @@ export default {
 }
 .file-upload:active .upload-dec {
   color: #fff;
+}
+.upload-wrap .el-upload-list__item {
+  transition: all 0.1s;
+}
+.upload-wrap--list .el-upload-list {
+  display: none;
+}
+.drag-del {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #888;
+  border-radius: 20px;
+  right: -10px;
+  top: -10px;
+  cursor: pointer;
+      background-color: #ddd;
+      z-index: 1090;
 }
 </style>

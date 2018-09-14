@@ -14,7 +14,7 @@ export function textActiveOff(arrs, payload) {
       arr[index].zIndex = 1000;
     }
     if (arr.length !== 1) {
-      arr.map((item, i) => {
+      arr.forEach((item, i) => {
         if (i !== index && arr[i].isActive) {
           arr[i].isActive = false;
           arr[i].zIndex = arr[i].dragIndex;
@@ -25,9 +25,9 @@ export function textActiveOff(arrs, payload) {
   return arr;
 }
 
-export function del_drag(arr, index) { arr.filter((item, key) => key !== index); }
+export function delDrag(arr, index) { arr.filter((item, key) => key !== index); }
 
-export function now_time() {
+export function nowTime() {
   const myDate = new Date();
   const hours = myDate.getHours();
   const minutes = myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}` : myDate.getMinutes();
@@ -42,3 +42,57 @@ export function formatSecond(se) {
   s = s < 10 ? `0${s}` : s;
   return `${m}:${s}`;
 }
+
+/**
+ * 日期格式化 yyyy-MM-hh HH:mm:ss
+ */
+export function formatDate(date) {
+  const addZero = s => (s < 10 ? '0' : '') + s;
+  let d = date;
+  let output1 = '';
+  let output2 = '';
+
+  if (typeof d === 'string') {
+    d = new Date(d);
+  }
+
+  if (d instanceof Date) {
+    output1 = [d.getFullYear(), addZero(d.getMonth() + 1), addZero(d.getDate())];
+    output2 = [addZero(d.getHours()), addZero(d.getMinutes()), addZero(d.getSeconds())];
+
+    return `${output1.join('-')} ${output2.join(':')}`;
+  }
+
+  return d.toString();
+}
+
+/**
+ * 格式化表格数据
+ * @param {array} data 表格数据数组
+ */
+export function formatTableData(data) {
+  const output = {
+    id: data.id,
+    title: '',
+    createdAt: formatDate(data.createdAt),
+    visit: 0,
+    online: 1, // TODO 上线|下线
+  };
+  if (data.state) {
+    const json = JSON.parse(data.state);
+    const pageData = json.page;
+    if (pageData && pageData.title) {
+      output.title = pageData.title;
+    }
+  }
+  return output;
+}
+
+export default {
+  textActiveOff,
+  delDrag,
+  nowTime,
+  formatSecond,
+  formatDate,
+  formatTableData,
+};

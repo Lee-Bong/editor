@@ -5,7 +5,7 @@ Vue.use(Router);
 
 export default new Router({
   mode: 'history',
-  base: 'we',
+  base: '/we/admin/',
   routes: [{
     path: '/',
     redirect: '/login',
@@ -13,37 +13,27 @@ export default new Router({
   {
     name: 'login',
     path: '/login',
-    component: () => import('./views/Login.vue'),
+    component: () => import('../../views/Login.vue'),
   },
   {
     name: 'editor',
     path: '/editor',
-    component: () => import('./views/Editor.vue'),
+    component: () => import('../../views/Editor.vue'),
   },
   {
     name: 'manage',
     path: '/manage',
-    component: () => import('./views/Manage.vue'),
+    component: () => import('../../views/Manage.vue'),
   },
   {
     name: 'preview',
     path: '/preview',
-    component: () => import('./views/preview/Index.vue'),
+    component: () => import('../../views/preview/Index.vue'),
   },
   {
     name: 'publish',
     path: '/publish',
-    component: () => import('./views/publish/Index.vue'),
-  },
-  {
-    name: 'real',
-    path: '/real',
-    component: () => import('./views/real/Index.vue'),
-  },
-  {
-    name: 'error',
-    path: '/error',
-    component: () => import('./views/Error.vue'),
+    component: () => import('../../views/publish/Index.vue'),
   },
   {
     path: '*',

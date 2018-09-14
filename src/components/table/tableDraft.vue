@@ -1,17 +1,13 @@
 <template>
 <div>
   <el-table
-    :data="tableData"
-    style="width: 100%"
-    :default-sort = "{prop: 'date', order: 'descending'}"
     class="table-box"
+    style="width: 100%"
+    v-loading="loading"
+    :data="tableData"
+    :default-sort="{prop: 'createdAt', order: 'descending'}"
+    @sort-change="handleSortChange"
     >
-    <el-table-column
-      prop="num"
-      label="编号"
-      min-width="90"
-    >
-    </el-table-column>
     <el-table-column
       prop="title"
       label="标题"
@@ -20,7 +16,7 @@
     >
     </el-table-column>
     <el-table-column
-      prop="date"
+      prop="createdAt"
       label="创建时间"
       sortable
       min-width="220">
@@ -33,82 +29,117 @@
           @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
         <el-button
           size="mini"
-          type="info" plain disabled
-          @click="handlePublish(scope.$index, scope.row)">删除</el-button>
+          type="info" plain
+          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
   <el-pagination
-  class="table-page"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+    class="table-page"
+    layout="total, prev, pager, next, jumper"
+    @current-change="handlePageChange"
+    :current-page="pager.page"
+    :page-size="pager.size"
+    :total="pageTotal">
     </el-pagination>
 </div>
 </template>
 
 <script>
-import tip from '@/components/table/tip';
+import { formatTableData } from '@/util/tools';
 
 export default {
-  components: {
-    tip,
-  },
   data() {
     return {
       showTipNum: -1,
       currentPage: 1,
-      tipUrl: 'www.baidu.com',
       tipTitle: '',
-      tableData: [{
-        num: 1,
-        title: '母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动',
-        date: '2016-05-04 19:00:12',
-        visit: 1800,
-      }, {
-        num: 2,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }, {
-        num: 3,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }, {
-        num: 4,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }],
+      tableData: [],
+      pageTotal: 0,
+      pager: {
+        page: 1,
+        size: 10,
+      },
+      query: {
+        sort: 'createdAt',
+        sort_by: 'DESC', // 'ASC'
+        dk: '',
+        filter: 'draft', // 草稿
+      },
+      loading: false,
     };
   },
   methods: {
-    formatter(row) {
-      return row.address;
-    },
-    handleSizeChange() {
-
-    },
-    handleCurrentChange() {},
-    popverShow(index) {
-      this.showTipNum = index;
-    },
-    handleAdd() {
-
-    },
-    handleEdit() {
-      this.$router.push({
-        path: '/editor',
-        name: 'editor',
+    getList() {
+      const q = { ...this.pager, ...this.query };
+      this.loading = true;
+      this.$http({
+        params: q,
+        method: 'get',
+        url: '/api/we/pages',
+      }).then((res) => {
+        const r = res.data;
+        if (r.status === 'ok') {
+          let list = r.data.pages;
+          if (list && list.length) {
+            list = list.map(formatTableData).filter(e => !!e);
+          }
+          this.tableData = list;
+          this.pageTotal = r.data.count;
+        }
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
       });
     },
-    handlePublish() {
+    handlePageChange(page) {
+      this.pager.page = page;
+      this.getList();
+    },
+    handleSortChange({ prop, order }) {
+      if (prop === 'createdAt') {
+        this.query.sort_by = order.replace('ending', '').toLocaleUpperCase();
+        this.getList();
+      }
+    },
+    handleEdit(index, row) {
+      const { id } = row;
+      this.$router.push({
+        path: '/editor',
+        query: { id },
+      });
+    },
+    handleDelete(index, row) {
+      this.$confirm('删除后将无法复原！是否确认删除？')
+        .then(() => {
+          const { id } = row;
+          this.deletePage(id);
+        })
+        .catch(() => {
 
+        });
+    },
+    deletePage(id) {
+      this.$http({
+        params: { page_id: id },
+        method: 'delete',
+        url: '/api/we/page',
+      }).then((res) => {
+        const r = res.data;
+        if (r.status === 'ok') {
+          this.$message.success('删除成功');
+
+          this.getList();
+        } else {
+          this.$message.warning('未删除成功，请稍后重试~');
+        }
+      }).catch(() => {
+        this.$message.error('出错了，请稍后重试~');
+      });
+    },
+    search(value) {
+      this.query.dk = value;
+      this.getList();
     },
   },
 };

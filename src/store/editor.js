@@ -6,7 +6,7 @@ export default {
     dragTexts: [], // 组件-文本
     dragImages: [], // 组件-图片
     dragLinks: [], // 热区
-    dragImageLists: [], // 多图
+    dragImgLists: [], // 多图
     dragAudios: [], // 音频
     dragVideos: [], // 视频
     textActive: 0, // 当前活跃组件
@@ -33,10 +33,11 @@ export default {
       1: ['dragTexts', 'textSet', 'isTextSet', 'textActive'],
       2: ['dragImages', 'imgSet', 'isImgSet', 'imgActive'],
       3: ['dragLinks', 'linkSet', 'isLinkSet', 'linkActive'],
-      4: ['dragImageLists', 'imgListSet', 'isImgListSet', 'imgListActive'],
+      4: ['dragImgLists', 'imgListSet', 'isImgListSet', 'imgListActive'],
       5: ['dragVideos', 'videoSet', 'isVideoSet', 'videoActive'],
       6: ['dragAudios', 'audioSet', 'isAudioSet', 'audioActive'],
     },
     pageSet: true,
+    mediaHeight: 300,
   },
 };

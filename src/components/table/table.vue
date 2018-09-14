@@ -1,17 +1,14 @@
 <template>
 <div>
   <el-table
-    :data="tableData"
-    style="width: 100%"
-    :default-sort = "{prop: 'date', order: 'descending'}"
     class="table-box"
+    style="width: 100%"
+    v-loading="loading"
+    :row-class-name="tableRowClassName"
+    :data="tableData"
+    :default-sort="{prop: 'createdAt', order: 'descending'}"
+    @sort-change="handleSortChange"
     >
-    <el-table-column
-      prop="num"
-      label="编号"
-      min-width="90"
-    >
-    </el-table-column>
     <el-table-column
       prop="title"
       label="标题"
@@ -20,7 +17,7 @@
     >
     </el-table-column>
     <el-table-column
-      prop="date"
+      prop="createdAt"
       label="创建时间"
       sortable
       min-width="180">
@@ -47,111 +44,178 @@
           trigger="click"
           @show="popverShow(scope.$index, scope.row)"
         >
-          <div class="spread" v-if="scope.$index === showTipNum"><tip :tip-url="tipUrl"/></div>
+          <div class="spread" v-if="scope.$index === tip.index">
+            <qr-code :url="tip.url"/>
+          </div>
           <el-button
-          size="mini"
-          type="primary" plain
-          slot="reference"
-          >推广</el-button>
+            size="mini"
+            type="primary" plain
+            slot="reference"
+            >推广</el-button>
         </el-popover>
         <el-button
           size="mini"
+          :type="scope.row.online === 1 ? '' : 'primary'"
           plain
-          @click="handlePublish(scope.$index, scope.row)">下线</el-button>
+          @click="handlePublish(scope.$index, scope.row)">
+          {{ scope.row.online | isOnline }}
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
   <el-pagination
-  class="table-page"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-size="10"
-      layout="total, prev, pager, next, jumper"
-      :total="40">
-    </el-pagination>
+    class="table-page"
+    layout="total, prev, pager, next, jumper"
+    @current-change="handlePageChange"
+    :current-page="pager.page"
+    :page-size="pager.size"
+    :total="pageTotal">
+  </el-pagination>
 </div>
 </template>
 
 <script>
-import tip from '@/components/table/tip';
+import { formatTableData } from '@/util/tools';
+import qrCode from '../../components/QrCode';
+
+const getTipUrl = (id) => {
+  let h = window.location.host;
+  if (h.indexOf('test-') > -1 || h.indexOf('localhost') > -1 || h.indexOf('127.0.0.1') > -1) {
+    h = 'https://test-bfe.meiyou.com';
+  }
+  return `${h}/we/real?page_id=${id}&is_formal=1`;
+};
 
 export default {
   components: {
-    tip,
+    qrCode,
+  },
+  filters: {
+    isOnline(value) {
+      return !value ? '上线' : '下线';
+    },
   },
   data() {
     return {
-      showTipNum: -1,
-      currentPage: 1,
-      tipUrl: 'http://www.baidu.com',
-      tipTitle: '',
-      tableData: [{
-        num: 1,
-        title: '母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动母亲节活动',
-        date: '2016-05-04 19:00:12',
-        visit: 1800,
-      }, {
-        num: 2,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }, {
-        num: 3,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }, {
-        num: 4,
-        title: '七夕活动',
-        date: '2016-05-04 19:00:12',
-        visit: 2000,
-      }],
+      tip: { // 推广二维码
+        index: -1,
+        url: '',
+      },
+      tableData: [],
+      pageTotal: 0,
+      pager: {
+        page: 1,
+        size: 10,
+      },
+      query: {
+        sort: 'createdAt',
+        sort_by: 'DESC', // 'ASC'
+        dk: '',
+        filter: 'public',
+      },
+      loading: false, // 表格 loading 状态
     };
   },
   methods: {
-    formatter(row) {
-      return row.address;
-    },
-    handleSizeChange() {
-
-    },
-    handleCurrentChange() {},
-    popverShow(index) {
-      this.showTipNum = index;
-    },
-    handleAdd() {
-
-    },
-    handleEdit() {
-      this.$router.push({
-        path: '/editor',
-        name: 'editor',
+    getList() { // 获取页面数据
+      const q = { ...this.pager, ...this.query };
+      this.loading = true;
+      this.$http({
+        params: q,
+        method: 'get',
+        url: '/api/we/pages',
+      }).then((res) => {
+        const r = res.data;
+        if (r.status === 'ok') {
+          let list = r.data.pages;
+          if (list && list.length) {
+            list = list.map(formatTableData).filter(e => !!e);
+          }
+          this.tableData = list;
+          this.pageTotal = r.data.count;
+        }
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
       });
     },
-    handlePublish() {
+    handlePageChange(page) {
+      this.pager.page = page;
+      this.getList();
+    },
+    handleSortChange({ prop, order }) {
+      if (prop === 'createdAt') {
+        this.query.sort_by = order.replace('ending', '').toLocaleUpperCase();
+        this.getList();
+      // } else if (prop === 'visit') { // TODO 浏览量
+      }
+    },
+    tableRowClassName({ row }) {
+      if (row.isNew) {
+        return 'table-row-new';
+      }
+    },
+    handleAdd(index, { id }) { // 复制
+      this.$http({
+        params: { page_id: id },
+        method: 'post',
+        url: '/api/we/page-dup',
+      }).then((res) => {
+        const r = res.data;
+        if (r.status === 'ok') {
+          this.$message.success('复制成功');
 
+          const newData = formatTableData(r.data);
+          newData.isNew = true; // 新复制的页面高亮选中
+
+          this.tableData.splice(index, 0, newData);
+        } else {
+          this.$message.warning('未复制成功，请稍后重试~');
+        }
+      }).catch(() => {
+        this.$message.error('出错了，请稍后重试~');
+      });
+    },
+    handleEdit(index, { id }) {
+      this.$router.push({
+        path: '/editor',
+        query: { id },
+      });
+    },
+    handlePublish() { // (index, { id })
+    //   console.log('上线/下线', id); // TODO
+    },
+    search(value) {
+      this.query.dk = value;
+      this.getList();
+    },
+    popverShow(index, { id }) {
+      this.tip.index = index;
+      this.tip.url = getTipUrl(id);
     },
   },
 };
 </script>
 <style>
 .table-box {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 .table-box .el-button {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .table-box.el-table th {
-        background: #f5f7fa;
+  background: #f5f7fa;
 }
 .table-page {
-    margin-top: 20px;
-        height: 40px;
-    text-align: right;
+  margin-top: 20px;
+  height: 40px;
+  text-align: right;
+}
+.el-table th, .el-table tr.table-row-new {
+  background-color: #ecf5ff;
 }
 .spread{
-height: auto;
-width: 225px;
+  height: auto;
+  width: 225px;
 }
 </style>

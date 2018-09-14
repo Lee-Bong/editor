@@ -1,19 +1,43 @@
 const { NODE_ENV } = process.env;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const config = {
+  baseUrl: NODE_ENV === 'production' ? 'https://static.seeyouyima.com/bfe/we/' : '/we',
   productionSourceMap: false,
   devServer: {
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://47.94.138.247:9040',
-    //     changeOrigin: true,
-    //   },
-    // },
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/we\/admin/, to: '/we/admin.html' },
+        { from: /^\/we\/view/, to: '/we/view.html' },
+      ],
+    },
+    proxy: {
+      '/api': {
+        target: 'https://test-bfe.meiyou.com',
+        changeOrigin: true,
+      },
+    },
+  },
+  configureWebpack: {
+    plugins: [
+      // new BundleAnalyzerPlugin(),
+    ],
+  },
+  pages: {
+    admin: {
+      entry: 'src/pages/admin/main.js',
+      template: 'public/admin.html',
+      filename: 'admin.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'admin'],
+    },
+    view: {
+      entry: 'src/pages/view/main.js',
+      template: 'public/view.html',
+      filename: 'view.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'view'],
+    },
   },
 };
 
-if (NODE_ENV === 'production') {
-  config.baseUrl = 'https://static.seeyouyima.com/bfe/we/'
-}
 
 module.exports = config;
