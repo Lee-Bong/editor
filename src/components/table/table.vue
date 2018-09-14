@@ -111,6 +111,7 @@ export default {
         sort: 'createdAt',
         sort_by: 'DESC', // 'ASC'
         dk: '',
+        filter: 'public',
       },
       loading: false, // 表格 loading 状态
     };

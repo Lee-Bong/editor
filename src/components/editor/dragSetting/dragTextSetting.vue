@@ -127,7 +127,7 @@ export default {
       this.lineNum = (num / 3) * 100;
     },
     lineSliderChange(pre) {
-      this.updateLineHieght((pre * 3 / 100).toFixed(1));
+      this.updateLineHieght(((pre * 3) / 100).toFixed(1));
     },
     updateLineHieght(num) {
       const { dragTexts, textActive } = this.$store.state.editor;

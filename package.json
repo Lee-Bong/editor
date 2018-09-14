@@ -24,7 +24,6 @@
     "@vue/eslint-config-airbnb": "^3.0.0",
     "ali-oss": "^6.0.1",
     "axios": "^0.18.0",
-    "jquery": "^3.3.1",
     "js-md5": "^0.7.3",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
