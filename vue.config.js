@@ -1,16 +1,16 @@
 const { NODE_ENV } = process.env;
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const config = {
   baseUrl: NODE_ENV === 'production' ? 'https://static.seeyouyima.com/bfe/we/' : '/',
   productionSourceMap: false,
   devServer: {
-    historyApiFallback: {
-      rewrites: [
-        { from: /^\/admin/, to: '/admin.html' },
-        { from: /^\/view/, to: '/view.html' },
-      ],
-    },
+    // historyApiFallback: {
+    //   rewrites: [
+    //     { from: /we\/admin/, to: '/public/admin.html' },
+    //     { from: /^\/view/, to: '/public/view.html' },
+    //   ],
+    // },
     proxy: {
       '/api': {
         target: 'https://test-bfe.meiyou.com',

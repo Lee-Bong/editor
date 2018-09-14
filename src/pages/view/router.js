@@ -4,8 +4,8 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-  mode: 'hash',
-  base: 'we',
+  mode: 'history',
+  // base: '/we/view',
   routes: [
     {
       name: 'real',
