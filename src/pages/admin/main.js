@@ -2,7 +2,7 @@ import Vue from 'vue';
 import ElementUI from 'element-ui';
 import VueDragResize from 'vue-drag-resize';
 import 'element-ui/lib/theme-chalk/index.css';
-import './assets/icons/iconfont.css';
+import '../../assets/icons/iconfont.css';
 
 import { axios } from '../../service';
 import App from './App.vue';
