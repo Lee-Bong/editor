@@ -6,7 +6,8 @@
     </div>
     <el-button v-for="(list, i) in com.list" :key="i" type="text" class="ed-com"
       @click="dragItemClick(list.type)">
-      <icon :name="list.icon"></icon>
+      <i :class="['iconfont', list.icon]"></i>
+      <!-- <icon :name="list.icon"></icon> -->
       <span class="el-com-text">{{list.text}}</span>
     </el-button>
 </el-card>
@@ -26,17 +27,17 @@ export default {
         {
           kind: '基础组件',
           list: [
-            { text: '文本', icon: 'text-width', type: 1 },
-            { text: '图片', icon: 'image', type: 2 },
-            { text: '热区', icon: 'link', type: 3 },
-            { text: '多图拼接', icon: 'th-list', type: 4 },
+            { text: '文本', icon: 'iconfont ed-icon-text1', type: 1 },
+            { text: '图片', icon: 'iconfont ed-icon-i-img', type: 2 },
+            { text: '热区', icon: 'ed-icon-requ', type: 3 },
+            { text: '多图拼接', icon: 'ed-icon-gengduotupian', type: 4 },
           ],
         },
         {
           kind: '媒体组件',
           list: [
-            { text: '视频', icon: 'film', type: 5 },
-            { text: '音频', icon: 'music', type: 6 },
+            { text: '视频', icon: 'ed-icon-shipin1', type: 5 },
+            { text: '音频', icon: 'ed-icon-yinpin1', type: 6 },
           ],
         },
       ],
@@ -112,6 +113,7 @@ export default {
             isActive: true,
             dragIndex: zIndex,
             img: {},
+            imgList: [],
             location: {
               x: 0,
               y: 0,
