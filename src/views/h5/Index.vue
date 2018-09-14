@@ -1,13 +1,20 @@
 <template>
-  <div v-if="pageJson" class="wrap" :style='{ height: `${pageJson.page.phoneHeight}px` }'>
-    <custom-component
-      v-if="finalComponentsJson"
-      v-for="(component, index) in finalComponentsJson"
-      :key="index"
-      :component="component"
-    >
-    </custom-component>
-    <div class="bottom-download"></div>
+<div>
+  <div
+    v-if="pageJson && !showError"
+    class="wrap"
+    :style='{ height: `${pageJson.page.phoneHeight}px` }'
+  >
+      <custom-component
+        v-if="finalComponentsJson"
+        v-for="(component, index) in finalComponentsJson"
+        :key="index"
+        :component="component"
+      >
+      </custom-component>
+      <div class="bottom-download"></div>
+    </div>
+    <error v-else></error>
   </div>
 </template>
 <script>
@@ -16,6 +23,7 @@ import { sortBy, map } from 'lodash';
 import jssdk from 'meetyou.jssdk';
 import * as service from '../../service';
 import CustomComponent from './CustomComponent.vue';
+import Error from '../Error.vue';
 
 export default {
   data() {
@@ -23,6 +31,7 @@ export default {
       pageJson: null,
       // 经过计算转换过的结构
       finalComponentsJson: null,
+      showError: false,
     };
   },
   computed: {
@@ -68,44 +77,54 @@ export default {
       return finalComponentsJson;
     },
     initShare() {
-      const fromURL = `${window.location.host}/we/real?page_id=${this.pageId}&is_formal=${this.isFormal}&isShare=1`;
+      const fromURL = `${window.location.host}/we/view?page_id=${
+        this.pageId
+      }&is_formal=${this.isFormal}&isShare=1`;
       const { shareDec, shareImg, shareTitle } = this.pageJson.page;
-      jssdk.registerTopbarRightButton({
-        image: 'http://static.seeyouyima.com/news-node.seeyouyima.com/right_bar_and-de8fcdd4a49b2f45b3fdfa238bf8b143.png',
-      }, () => {
-        jssdk.share({
-          title: shareTitle,
-          content: shareDec,
-          imageURL: shareImg,
-          fromURL,
-        });
-      });
+      jssdk.registerTopbarRightButton(
+        {
+          image:
+            'http://static.seeyouyima.com/news-node.seeyouyima.com/right_bar_and-de8fcdd4a49b2f45b3fdfa238bf8b143.png',
+        },
+        () => {
+          jssdk.share({
+            title: shareTitle,
+            content: shareDec,
+            imageURL: shareImg,
+            fromURL,
+          });
+        },
+      );
 
       if (this.$route.query && this.$route.query.isShare) {
-        share('https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0', {
-          android: 'http://yangmao-download.seeyouyima.com/ymsq31.apk',
-          ios: 'https://itunes.apple.com/cn/app/id1412667195?mt=8',
-          weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
-        });
+        share(
+          'https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0',
+          {
+            android: 'http://yangmao-download.seeyouyima.com/ymsq31.apk',
+            ios: 'https://itunes.apple.com/cn/app/id1412667195?mt=8',
+            weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
+          },
+        );
       }
     },
   },
   components: {
     CustomComponent,
+    Error,
   },
   async mounted() {
     try {
       const { data: { draft, public: formal } } = await service.getPageInfo(this.pageId);
       this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
       if (!this.pageJson) {
-        this.$router.replace('/error');
+        this.showError = true;
       }
       this.finalComponentsJson = this.getFinalComponentsJson();
       document.title = this.pageJson.page.title;
       this.$nextTick(this.initShare);
     } catch (error) {
       console.error(error);
-      this.$router.replace('/error');
+      this.showError = true;
     }
   },
 };

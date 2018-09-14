@@ -36,6 +36,11 @@ export default new Router({
     component: () => import('../../views/publish/Index.vue'),
   },
   {
+    name: 'error',
+    path: '/error',
+    component: () => import('../../views/Error.vue'),
+  },
+  {
     path: '*',
     redirect: '/login',
   },
