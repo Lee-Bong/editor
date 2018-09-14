@@ -19,5 +19,6 @@ yarn-error.log*
 *.sln
 *.sw*
 
-!dist/index.html
-dist
+dist/**/*
+!dist/admin.html
+!dist/view.html
