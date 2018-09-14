@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import config from '../../vue.config';
+// import config from '../../vue.config';
 
 export default {
   name: 'HelloWorld',
