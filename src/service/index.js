@@ -12,6 +12,10 @@ const getPageInfo = pageId => axios.get('/api/we/page', { params: { page_id: pag
 const publishPage = pageId => axios.post(`${api}/api/we/page-pub?page_id=${pageId}`)
   .then(property('data'));
 
+// 下线
+const unpublishPage = pageId => axios.post(`${api}/api/we/page-unp?page_id=${pageId}`)
+  .then(property('data'));
+
 const postPageInfo = data => axios.post(`${api}/api/we/page`, data)
   .then(property('data'));
 
@@ -20,4 +24,13 @@ const patchPageInfo = (pageId, data) => axios.patch(`${api}/api/we/page?page_id=
 
 const getUserInfo = () => axios.get(`${api}/api/we/me`).then(property('data'));
 
-export { axios, getPageInfo, publishPage, postPageInfo, patchPageInfo, getUserInfo };
+export {
+  axios,
+  api,
+  getPageInfo,
+  publishPage,
+  unpublishPage,
+  postPageInfo,
+  patchPageInfo,
+  getUserInfo,
+};

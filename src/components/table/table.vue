@@ -76,15 +76,10 @@
 
 <script>
 import { formatTableData } from '@/util/tools';
+import * as API from '@/service';
 import qrCode from '../../components/QrCode';
 
-const getTipUrl = (id) => {
-  let h = window.location.host;
-  if (h.indexOf('test-') > -1 || h.indexOf('localhost') > -1 || h.indexOf('127.0.0.1') > -1) {
-    h = 'https://test-bfe.meiyou.com';
-  }
-  return `${h}/we/real?page_id=${id}&is_formal=1`;
-};
+const getTipUrl = id => `${API.api}/we/real?page_id=${id}&is_formal=1`;
 
 export default {
   components: {
@@ -182,8 +177,36 @@ export default {
         query: { id },
       });
     },
-    handlePublish() { // (index, { id })
-    //   console.log('上线/下线', id); // TODO
+    handlePublish(index, { id, online }) {
+      if (online) { // 已上线
+        API.unpublishPage(id)
+          .then((res) => {
+            if (res.status === 'ok') {
+              const updatedData = formatTableData(res.data);
+              this.$set(this.tableData[index], 'online', updatedData.online);
+              this.$message.success('下线操作成功');
+            } else {
+              this.$message.warning('下线操作失败，请稍后再试~');
+            }
+          })
+          .catch(() => {
+            this.$message.error('出错了，请稍后再试~');
+          });
+      } else { // 未上线
+        API.publishPage(id)
+          .then((res) => {
+            if (res.status === 'ok') {
+              const updatedData = formatTableData(res.data);
+              this.$set(this.tableData[index], 'online', updatedData.online);
+              this.$message.success('上线操作成功');
+            } else {
+              this.$message.warning('上线操作失败，请稍后再试~');
+            }
+          })
+          .catch(() => {
+            this.$message.error('出错了，请稍后再试~');
+          });
+      }
     },
     search(value) {
       this.query.dk = value;
