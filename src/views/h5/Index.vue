@@ -19,7 +19,8 @@
 </template>
 <script>
 import share from '@/assets/javascript/share';
-import { sortBy, map } from 'lodash';
+import sortBy from 'lodash/sortBy';
+import map from 'lodash/map';
 import jssdk from 'meetyou.jssdk';
 import * as service from '../../service';
 import CustomComponent from './CustomComponent.vue';
