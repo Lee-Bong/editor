@@ -115,24 +115,22 @@ export default {
     getList() { // 获取页面数据
       const q = { ...this.pager, ...this.query };
       this.loading = true;
-      this.$http({
-        params: q,
-        method: 'get',
-        url: '/api/we/pages',
-      }).then((res) => {
-        const r = res.data;
-        if (r.status === 'ok') {
-          let list = r.data.pages;
-          if (list && list.length) {
-            list = list.map(formatTableData).filter(e => !!e);
+
+      API.getPageList(q)
+        .then((res) => {
+          if (res.status === 'ok') {
+            let list = res.data.pages;
+            if (list && list.length) {
+              list = list.map(formatTableData).filter(e => !!e);
+            }
+            this.tableData = list;
+            this.pageTotal = res.data.count;
           }
-          this.tableData = list;
-          this.pageTotal = r.data.count;
-        }
-        this.loading = false;
-      }).catch(() => {
-        this.loading = false;
-      });
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
     handlePageChange(page) {
       this.pager.page = page;
@@ -151,25 +149,22 @@ export default {
       }
     },
     handleAdd(index, { id }) { // 复制
-      this.$http({
-        params: { page_id: id },
-        method: 'post',
-        url: '/api/we/page-dup',
-      }).then((res) => {
-        const r = res.data;
-        if (r.status === 'ok') {
-          this.$message.success('复制成功');
+      API.duplicatePage(id)
+        .then((res) => {
+          if (res.status === 'ok') {
+            this.$message.success('复制成功');
 
-          const newData = formatTableData(r.data);
-          newData.isNew = true; // 新复制的页面高亮选中
+            const newData = formatTableData(res.data);
+            newData.isNew = true; // 新复制的页面高亮选中
 
-          this.tableData.splice(index, 0, newData);
-        } else {
-          this.$message.warning('未复制成功，请稍后重试~');
-        }
-      }).catch(() => {
-        this.$message.error('出错了，请稍后重试~');
-      });
+            this.tableData.splice(index, 0, newData);
+          } else {
+            this.$message.warning('未复制成功，请稍后重试~');
+          }
+        })
+        .catch(() => {
+          this.$message.error('出错了，请稍后重试~');
+        });
     },
     handleEdit(index, { id }) {
       this.$router.push({
