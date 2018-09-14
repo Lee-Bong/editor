@@ -12,8 +12,8 @@
       <div class="setting">
         <el-form ref="form">
           <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']"
-            v-if="!this.fileSuccess">
-            <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imglist"
+            v-if="!dragForm.notModify">
+            <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imgList"
               :on-change="onFileChange" list-type="picture" :limit="limit"
               :auto-upload="true" action="" accept=".png,.gif,.jpeg, .jpg">
               <i class="el-icon-upload"></i>
@@ -22,7 +22,7 @@
               <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
             </el-upload>
           </div>
-          <div class="file-info" v-if="this.fileSuccess">
+          <div class="file-info" v-if="!!dragForm.notModify">
             <img-review-item :imgObj='dragForm.img' @file-change="fileModify"
               ref="imgReview"/>
             <el-form-item label="位置：" size="mini">
@@ -90,7 +90,7 @@ export default {
         wmin: 0,
         hmin: 0,
       },
-      imglist: [],
+      imgList: [],
     };
   },
   computed: {
@@ -167,7 +167,9 @@ export default {
           h: newH,
           w: this.$store.state.editor.phoneWidth,
         };
-
+        if (!isModify) {
+          drags.notModify = true;
+        }
         drags.isUpload = false;
         images[this.$store.state.editor.imgActive] = drags;
         this.$store.commit('editor_update', { dragImages: images });
@@ -204,8 +206,8 @@ export default {
         const up = await oss(file.raw);
         up.oldName = file.name;
         if (up && up.url) {
-          this.imglist = [file];
-          this.onFileSuccess(up, isModify);
+          this.imgList = [file];
+          // this.onFileSuccess(up, isModify);
         } else {
           this.onFileError(isModify);
         }
@@ -217,6 +219,12 @@ export default {
       this.isFirst = true;
       this.onFileChange(file, [], true);
     },
+  },
+  mounted() {
+    this.imgList = this.dragForm.imgList;
+  },
+  updated() {
+    this.imgList = this.dragForm.imgList;
   },
 };
 </script>
