@@ -47,6 +47,7 @@
 
 <script>
 import { formatTableData } from '@/util/tools';
+import * as API from '@/service';
 
 export default {
   data() {
@@ -73,24 +74,22 @@ export default {
     getList() {
       const q = { ...this.pager, ...this.query };
       this.loading = true;
-      this.$http({
-        params: q,
-        method: 'get',
-        url: '/api/we/pages',
-      }).then((res) => {
-        const r = res.data;
-        if (r.status === 'ok') {
-          let list = r.data.pages;
-          if (list && list.length) {
-            list = list.map(formatTableData).filter(e => !!e);
+
+      API.getPageList(q)
+        .then((res) => {
+          if (res.status === 'ok') {
+            let list = res.data.pages;
+            if (list && list.length) {
+              list = list.map(formatTableData).filter(e => !!e);
+            }
+            this.tableData = list;
+            this.pageTotal = res.data.count;
           }
-          this.tableData = list;
-          this.pageTotal = r.data.count;
-        }
-        this.loading = false;
-      }).catch(() => {
-        this.loading = false;
-      });
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
     handlePageChange(page) {
       this.pager.page = page;
@@ -120,22 +119,18 @@ export default {
         });
     },
     deletePage(id) {
-      this.$http({
-        params: { page_id: id },
-        method: 'delete',
-        url: '/api/we/page',
-      }).then((res) => {
-        const r = res.data;
-        if (r.status === 'ok') {
-          this.$message.success('删除成功');
-
-          this.getList();
-        } else {
-          this.$message.warning('未删除成功，请稍后重试~');
-        }
-      }).catch(() => {
-        this.$message.error('出错了，请稍后重试~');
-      });
+      API.deletePage(id)
+        .then((res) => {
+          if (res.status === 'ok') {
+            this.$message.success('删除成功');
+            this.getList();
+          } else {
+            this.$message.warning('未删除成功，请稍后重试~');
+          }
+        })
+        .catch(() => {
+          this.$message.error('出错了，请稍后重试~');
+        });
     },
     search(value) {
       this.query.dk = value;

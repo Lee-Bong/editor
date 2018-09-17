@@ -76,7 +76,7 @@ export function formatTableData(data) {
     title: '',
     createdAt: formatDate(data.createdAt),
     visit: 0,
-    online: 1, // TODO 上线|下线
+    online: data.public ? 1 : 0, // 上线|下线
   };
   if (data.state) {
     const json = JSON.parse(data.state);
