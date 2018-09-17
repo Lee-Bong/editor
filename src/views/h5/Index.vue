@@ -13,13 +13,11 @@
         :scale="scale"
       >
       </custom-component>
-      <div class="bottom-download"></div>
     </div>
     <error v-else></error>
   </div>
 </template>
 <script>
-// import share from '@/assets/javascript/share';
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
 import jssdk from 'meetyou.jssdk';
@@ -78,6 +76,8 @@ export default {
         };
         return componentJsonTemp;
       });
+      console.log(this.pageJson.components);
+      console.log(finalComponentsJson);
       return finalComponentsJson;
     },
     initShare() {
@@ -99,17 +99,6 @@ export default {
           });
         },
       );
-
-      /* if (this.$route.query && this.$route.query.isShare) {
-        share(
-          'https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0',
-          {
-            android: 'http://yangmao-download.seeyouyima.com/ymsq31.apk',
-            ios: 'https://itunes.apple.com/cn/app/id1412667195?mt=8',
-            weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
-          },
-        );
-      } */
     },
   },
   components: {

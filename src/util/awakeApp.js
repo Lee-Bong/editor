@@ -3,9 +3,9 @@ import MeiyouAppBar from 'meetyou.sharebar/lib/MeiyouAppBar';
 import YunQiAppBar from 'meetyou.sharebar/lib/YoubaobaoAppBar';
 import querystring from 'meetyou.util/lib/querystring';
 
-const ua = navigator.userAgent.toLowerCase();
+const ua = navigator.userAgent;
 const isWeixin = ua.indexOf('micromessenger') !== -1;
-const isAndroid = ua.indexOf('android') > -1 || ua.indexOf('adr') > -1;
+const isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
 const isIOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 
 const getDownLoadUrl = (downloadUrls) => {

@@ -2,7 +2,9 @@
     <div
         class="container"
         :id="componentId"
+        v-if="component.type !== 4"
         :style="{
+            position: component.isFixed ? 'fixed' : 'absolute',
             top: `${component.location.y}px`,
             left: `${component.location.x}px`,
             width: `${component.size.w}px`,
@@ -22,9 +24,8 @@
         />
         <div
             v-if="component.type === 3"
-            :style="component.style"
-            :href="component.appLink"
             class="link"
+            :style="component.style"
             @click="handleLinkClick()"
         >
         </div>
@@ -62,30 +63,54 @@
 <script>
 import jssdk from 'meetyou.jssdk';
 import nanoid from 'nanoid';
-import * as awakeApp from '../../util/awakeApp.js';
+import awakeApp from '../../util/awakeApp.js';
 
 export default {
   data() {
     const componentId = nanoid();
     return {
       componentId,
+      sharebar: null,
     };
   },
-  props: ['component', 'scale'],
-  methods: {
-    handleLinkClick() {
-    // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
+
+  computed: {
+    downloadUrls() {
       const {
-        sourceType, awakeLink, outLink, appLink, iosLink, andLink, yybLink,
+        iosLink, andLink, yybLink,
       } = this.component;
-      const downloadUrls = {
+      return {
         android: andLink,
         ios: iosLink,
         yyb: yybLink,
       };
+    },
+  },
+
+  mounted() {
+    const {
+      type, sourceType, awakeLink,
+    } = this.component;
+    // 如果是热区且在分享页唤起app
+    if (type === 3 && sourceType === '2' && this.$route.query.isShare) {
+      this.sharebar = awakeApp.init({
+        link: awakeLink,
+        container: `#${this.commentId}`,
+        downloadUrls: this.downloadUrls,
+      });
+    }
+  },
+  props: ['component', 'scale'],
+  methods: {
+    handleLinkClick() {
+      // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
+      const {
+        sourceType, awakeLink, outLink, appLink,
+      } = this.component;
+
       if (sourceType === '1') {
         // 普通跳转
-        if (this.$route.query.isShare) {
+        /* if (this.$route.query.isShare) {
           // 分享出去的页面
           window.location.href = outLink;
         } else {
@@ -93,21 +118,17 @@ export default {
           jssdk.callNative('web', {
             url: appLink,
           });
-        }
+        } */
+        window.location.href = this.$route.query.isShare ? outLink : appLink;
       } else if (this.$route.query.isShare) {
         // 分享页面唤起app
-        const sharebar = awakeApp.init({
-          link: awakeLink,
-          container: `#${this.commentId}`,
-          downloadUrls,
-        });
-        awakeApp.handleOpen(sharebar);
+        awakeApp.handleOpen(this.sharebar);
       } else {
         // app内唤起app
         jssdk.callNative('open', { url: awakeLink }, (path, data) => {
           if (!data) {
             // 打开失败，跳转下载应用
-            const download = awakeApp.getDownLoadUrl(downloadUrls);
+            const download = awakeApp.getDownLoadUrl(this.downloadUrls);
             if (!download) {
               return awakeApp.showDownLoadTip();
             }
@@ -122,7 +143,6 @@ export default {
 
 <style lang="less" scoped>
 .container {
-  position: absolute;
   .link {
     cursor: pointer;
   }
