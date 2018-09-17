@@ -120,6 +120,9 @@ export default {
 </script>
 
 <style>
+.drag-item textarea {
+  background-color: rgba(0, 0, 0, 0);
+}
 .drag-text {
   position: absolute;
     top: 0;
