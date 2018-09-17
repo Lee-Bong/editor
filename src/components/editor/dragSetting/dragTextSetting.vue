@@ -68,6 +68,11 @@
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
+        <el-form-item label="固定位置：" size="mini">
+          <el-radio v-model="dragForm.textAlign" label="relative">不固定</el-radio>
+          <el-radio v-model="dragForm.textAlign" label="center">相对顶部固定</el-radio>
+          <el-radio v-model="dragForm.textAlign" label="right">相对底部固定</el-radio>
+        </el-form-item>
         </el-form>
       </div>
     </div>

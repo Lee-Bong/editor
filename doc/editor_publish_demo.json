@@ -44,7 +44,7 @@
             },
             {
                 "type": 3,
-                "appLink": "http://www.baidu.com",
+                "appLink": "meiyou:///web/pure?params=eyJ1cmwiOiJodHRwczovL3N0YXRpYy5zZWV5b3V5aW1hLmNvbS9nYW1lLWNvbW1vbi8yMDQ4L3dlYi1tb2JpbGUvaW5kZT9kZGQiLCJuYXZCYXJTdHlsZSI6ImhpZGUiLCJpbW1lcnNpdmUiOjF9",
                 "outLink": "http://www.baidu.com",
                 "location": {
                     "x": 0,
@@ -58,10 +58,10 @@
                     "z-index": 3
                 },
                 "sourceType": "1", // 1.普通跳转 2. 唤起下载app
-                "awakeLink": "http://",
-                "iosLink": "http://",
-                "andLink": "http://",
-                "yybLink": "http://"
+                "awakeLink": "meiyou:///web/pure?params=eyJ1cmwiOiJodHRwczovL3N0YXRpYy5zZWV5b3V5aW1hLmNvbS9nYW1lLWNvbW1vbi8yMDQ4L3dlYi1tb2JpbGUvaW5kZT9kZGQiLCJuYXZCYXJTdHlsZSI6ImhpZGUiLCJpbW1lcnNpdmUiOjF9",
+                "iosLink": "https://itunes.apple.com/cn/app/mei-you-yun-qi-kuai-le-huai/id952685843?mt=8",
+                "andLink": "http://yunqidl.seeyouyima.com/app/169.apk",
+                "yybLink": "http://sj.qq.com/myapp/detail.htm?apkName=com.lingan.yunqi"
             },
             {
                 "type": 5,

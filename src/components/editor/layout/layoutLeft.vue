@@ -7,7 +7,6 @@
     <el-button v-for="(list, i) in com.list" :key="i" type="text" class="ed-com"
       @click="dragItemClick(list.type)">
       <i :class="['iconfont', list.icon]"></i>
-      <!-- <icon :name="list.icon"></icon> -->
       <span class="el-com-text">{{list.text}}</span>
     </el-button>
 </el-card>
