@@ -2,7 +2,6 @@
     <div
         class="container"
         :id="componentId"
-        v-if="component.type !== 4"
         :style="{
             position: component.isFixed ? 'fixed' : 'absolute',
             top: `${component.location.y}px`,
