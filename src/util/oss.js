@@ -7,6 +7,7 @@ export default async function upload(file) {
   const req = await fetch(UP_API, {
     method: 'POST',
     body: fd,
+    credentials: 'include',
   });
 
   const res = await req.json();

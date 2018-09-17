@@ -232,7 +232,7 @@ export default {
         up.oldName = file.name;
         if (up && up.url) {
           this.imgList = [file];
-          // this.onFileSuccess(up, isModify);
+          this.onFileSuccess(up, isModify);
         } else {
           this.onFileError(isModify);
         }

@@ -98,7 +98,7 @@ exports.dragCom = () => {
       setFixedBottom(x, h) {
         this.fixedBottom = this.$store.state.page.screenHeight - x - h;
       },
-      
+
     },
     computed: {
       fixedBottom() {
