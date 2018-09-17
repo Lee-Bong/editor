@@ -123,7 +123,7 @@ export default {
       this.$http({
         params: q,
         method: 'get',
-        url: '/api/we/pages',
+        url: 'https://test-bfe.meiyou.com/api/we/pages',
       }).then((res) => {
         const r = res.data;
         if (r.status === 'ok') {

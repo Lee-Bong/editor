@@ -3,7 +3,7 @@
     :h="$store.state.page.phoneHeight" :isActive="true" :isDraggable="false"
     :isResizable="true" :parentLimitation="false" :preventActiveBehavior="true"
     :y="64" axis="y" @resizestop="resizestop" :style="{
-    width: $store.state.editor.phoneWidth+'px',
+    width: $store.state.page.phoneWidth+'px',
     backgroundColor:  $store.state.page.backgroundColor,
   }">
     <div class="phone-resize">
@@ -149,6 +149,9 @@ export default {
       return k;
     },
   },
+  updated() {
+
+  },
 };
 </script>
 
@@ -161,7 +164,8 @@ export default {
   top: 64px;
   /* padding-top: 1px;  */
   left: 0;
-  width: 366px;
+  right: 0;
+  width: 375px;
   background-color: #fff;
 }
 .phone-content > .vdr-stick.vdr-stick-bm {

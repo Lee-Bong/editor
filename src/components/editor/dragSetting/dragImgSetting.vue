@@ -21,16 +21,18 @@
                 <em>+ 点击上传图片</em> ,或把图片拖到此处</div>
               <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
             </el-upload>
+            <img-review-item v-if="imgList && imgList.length" :imgObj='rev'
+              @file-change="fileModify" ref="imgReview" :index="index" />
           </div>
           <div class="file-info" v-if="!!dragForm.notModify">
             <img-review-item :imgObj='dragForm.img' @file-change="fileModify"
               ref="imgReview"/>
             <el-form-item label="位置：" size="mini">
               <el-input-number v-model="dragForm.location.x" @change="locationChange"
-                :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+                :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
                 controls-position="right" class="num-input"></el-input-number>
               <el-input-number v-model="dragForm.location.y" @change="locationChange"
-                :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">
@@ -39,16 +41,37 @@
             </div>
             <el-form-item label="尺寸：" size="mini">
               <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
-                :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+                :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
                 controls-position="right" class="num-input"></el-input-number>
               <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
-                :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+                :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">
               <label>宽</label>
               <label>高</label>
             </div>
+          </div>
+          <div v-if="!!dragForm.notModify">
+            <el-form-item label="固定位置：" size="mini">
+            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+              >相对顶部固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+              >相对底部固定</el-radio>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
+              <el-input-number
+                v-model="fixedTop" @change="fixedTopChange"
+                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+              <el-input-number
+                v-model="fixedBottom" @change="fixedBottomChange"
+                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
           </div>
         </el-form>
       </div>
@@ -59,8 +82,10 @@
 <script>
 import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
 import oss from '@/util/oss';
+import dragMxi from '@/util/dragMxi';
 
 export default {
+  mixins: [dragMxi.dragCom()],
   name: 'DragImgSetting',
   props: {
     dragForm: Object,
@@ -109,7 +134,7 @@ export default {
       if (type === 1) {
         let newW = size.w;
         let newH = (img.h * size.w) / img.w;
-        const maxH = this.$store.state.editor.phoneHeight - this.dragForm.location.y;
+        const maxH = this.$store.state.page.phoneHeight - this.dragForm.location.y;
         if (newH > maxH) {
           newH = maxH;
           newW = (img.w * newH) / img.h;
@@ -121,7 +146,7 @@ export default {
       } else {
         let newW = (img.w * size.h) / img.h;
         let newH = size.h;
-        const maxW = this.$store.state.editor.phoneWidth - this.dragForm.location.x;
+        const maxW = this.$store.state.page.phoneWidth - this.dragForm.location.x;
         if (newW > maxW) {
           newW = maxW;
           newH = (img.h * newW) / img.w;
@@ -149,12 +174,12 @@ export default {
         }
         const images = this.$store.state.editor.dragImages;
         const drags = images[this.$store.state.editor.imgActive];
-        const newH = (dragImg.height * this.$store.state.editor.phoneWidth) / dragImg.width;
+        const newH = (dragImg.height * this.$store.state.page.phoneWidth) / dragImg.width;
 
         drags.img = {
           title: file.oldName,
           url: file.url,
-          w: this.$store.state.editor.phoneWidth,
+          w: this.$store.state.page.phoneWidth,
           h: newH,
         };
         if (this.isFirst) {
@@ -165,7 +190,7 @@ export default {
         }
         drags.size = {
           h: newH,
-          w: this.$store.state.editor.phoneWidth,
+          w: this.$store.state.page.phoneWidth,
         };
         if (!isModify) {
           drags.notModify = true;
@@ -207,7 +232,7 @@ export default {
         up.oldName = file.name;
         if (up && up.url) {
           this.imgList = [file];
-          // this.onFileSuccess(up, isModify);
+          this.onFileSuccess(up, isModify);
         } else {
           this.onFileError(isModify);
         }
@@ -218,6 +243,14 @@ export default {
     fileModify(file) { // 更换图片
       this.isFirst = true;
       this.onFileChange(file, [], true);
+    },
+    positionChange() {
+      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragImages', location, 'imgActive');
+      }
     },
   },
   mounted() {

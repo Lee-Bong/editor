@@ -14,19 +14,19 @@
       <el-form ref="form">
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
-            :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+            :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
-            :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
-            :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+            :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
-            :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+            :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
             label="描述文字" controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
@@ -54,6 +54,27 @@
         <el-form-item class="link-el" v-if="dragForm.sourceType==='2'" label="应用宝渠道：" size="mini">
           <el-input type="text" v-model="dragForm.yybLink"></el-input>
         </el-form-item>
+        <div>
+            <el-form-item label="固定位置：" size="mini">
+            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+              >相对顶部固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+              >相对底部固定</el-radio>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
+              <el-input-number
+                v-model="fixedTop" @change="fixedTopChange"
+                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+              <el-input-number
+                v-model="fixedBottom" @change="fixedBottomChange"
+                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+          </div>
       </el-form>
     </div>
    </div>
@@ -61,7 +82,10 @@
 </template>
 
 <script>
+import dragMxi from '@/util/dragMxi';
+
 export default {
+  mixins: [dragMxi.dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -95,6 +119,14 @@ export default {
     },
     sourceChange(type) {
       this.$emit('linkSourceChange', type, 'dragLinks', 'linkActive');
+    },
+    positionChange() {
+      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragLinks', location, 'linkActive');
+      }
     },
   },
   mounted() {

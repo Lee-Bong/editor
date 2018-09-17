@@ -30,8 +30,8 @@
               <div class="top-banner" @click="topBannerClick">
                 <div class="web-title">{{$store.state.page.title}}</div>
               </div>
+              <div class="screen-line" v-show="$store.state.page.phoneHeight > 667"></div>
               <layout-main />
-
             </div>
             <div class="phone-hidden" :style="{width: phoneWidth+'px',
                 top: ($store.state.page.phoneHeight + 64+ 37)+'px'}"></div>
@@ -54,8 +54,6 @@ import layoutSetting from '@/components/editor/layout/layoutSetting';
 import dragMxi from '@/util/dragMxi';
 import merge from 'webpack-merge';
 import * as service from '../service';
-// import Icon from 'vue-awesome/components/Icon';
-
 
 export default {
   mixins: [dragMxi.dragCom()],
@@ -737,5 +735,13 @@ body {
   position: absolute;
   bottom: 0;
   z-index: 1050;
+}
+.screen-line {
+  position: absolute;
+  width: 110%;
+  left:-5%;
+  top: 731px;
+  border: 0.5px dashed #eb5648;
+  z-index: 1001;
 }
 </style>

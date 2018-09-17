@@ -11,6 +11,7 @@
       :listIndex="listIndex"
       :parentLimitation="true"
       :preventActiveBehavior="true"
+      :parentH="parentH"
 
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"
@@ -52,7 +53,14 @@ export default {
       },
     };
   },
-
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
+  },
   methods: {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 3);

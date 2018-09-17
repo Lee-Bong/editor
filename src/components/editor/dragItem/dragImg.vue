@@ -14,6 +14,7 @@
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :preventActiveBehavior="true"
+      :parentH="parentH"
 
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"
@@ -63,6 +64,14 @@ export default {
         layerActive: 0,
       },
     };
+  },
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
   },
 
   methods: {

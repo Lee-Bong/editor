@@ -7,7 +7,6 @@
     <el-button v-for="(list, i) in com.list" :key="i" type="text" class="ed-com"
       @click="dragItemClick(list.type)">
       <i :class="['iconfont', list.icon]"></i>
-      <!-- <icon :name="list.icon"></icon> -->
       <span class="el-com-text">{{list.text}}</span>
     </el-button>
 </el-card>
@@ -90,6 +89,7 @@ export default {
               w: 375,
               h: 90,
             },
+            position: 'relative',
           });
           newEditor = {
             textSet: true,
@@ -123,6 +123,7 @@ export default {
               h: 300,
             },
             isUpload: false,
+            position: 'relative',
           });
           newEditor = {
             imgSet: true,
@@ -161,7 +162,7 @@ export default {
             iosLink: '',
             andLink: '',
             yybLink: '',
-
+            position: 'relative',
           });
           newEditor = {
             linkSet: true,
@@ -233,6 +234,7 @@ export default {
             },
             video: {},
             isUpload: false,
+            position: 'relative',
           });
           newEditor = {
             videoSet: true,
@@ -275,6 +277,7 @@ export default {
               duration: '00:00',
               url: '',
             },
+            position: 'relative',
           });
           newEditor = {
             audioSet: true,
