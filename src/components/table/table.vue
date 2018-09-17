@@ -179,7 +179,7 @@ export default {
     handleEdit(index, { id }) {
       this.$router.push({
         path: '/editor',
-        query: { id },
+        query: { page_id: id },
       });
     },
     handlePublish() { // (index, { id })

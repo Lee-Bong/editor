@@ -225,6 +225,7 @@ export default {
       // todo 多图组件未添加
       const {
         dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
+        dragImgLists,
       } = editor;
       if (dragTexts.length) {
         dragTexts.map((item) => {
@@ -296,8 +297,8 @@ export default {
           return true;
         });
       }
-      if (dragLinks.length) {
-        dragLinks.map((item) => {
+      if (dragImgLists.length) {
+        dragImgLists.map((item) => {
           dragArr.push({
             type: 4,
             location: {

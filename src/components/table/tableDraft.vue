@@ -106,7 +106,7 @@ export default {
       const { id } = row;
       this.$router.push({
         path: '/editor',
-        query: { id },
+        query: { page_id: id },
       });
     },
     handleDelete(index, row) {
