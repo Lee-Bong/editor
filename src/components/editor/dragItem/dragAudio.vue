@@ -8,11 +8,13 @@
       :x="dragForm.location.x"
       :y="dragForm.location.y"
       :z="locationZ"
+      :isDraggable="Boolean(dragForm.play && dragForm.play.url)"
+      :isResizable="Boolean(dragForm.play && dragForm.play.url)"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
       :preventActiveBehavior="true"
-      :parentH="$store.state.page.phoneHeight"
+      :parentH="parentH"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
@@ -80,7 +82,13 @@ export default {
       },
     };
   },
-  created() {
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
   },
 
   methods: {
