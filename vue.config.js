@@ -11,12 +11,12 @@ const config = {
         { from: /^\/we\/view/, to: '/we/view.html' },
       ],
     },
-    proxy: {
-      '/api': {
-        target: 'https://test-bfe.meiyou.com',
-        changeOrigin: true,
-      },
-    },
+    // proxy: {
+    //   '/api': {
+    //     target: 'https://test-bfe.meiyou.com',
+    //     changeOrigin: true,
+    //   },
+    // },
   },
   configureWebpack: {
     plugins: [
