@@ -52,6 +52,27 @@
               class="num-input"></el-input-number>
           </el-form-item>
           <div class="dec-label"> <label>宽</label> <label>高</label></div>
+          <div v-if="Boolean(dragForm.video && dragForm.video.url)">
+            <el-form-item label="固定位置：" size="mini">
+            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+              >相对顶部固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+              >相对底部固定</el-radio>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
+              <el-input-number
+                v-model="fixedTop" @change="fixedTopChange"
+                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+              <el-input-number
+                v-model="fixedBottom" @change="fixedBottomChange"
+                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+          </div>
         </el-form>
       </div>
     </div>
@@ -65,9 +86,10 @@
 import oss from '@/util/oss';
 import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
 import audioUplaod from '@/components/editor/dragItem/image/audioUpload';
-
+import dragMxi from '@/util/dragMxi';
 
 export default {
+  mixins: [dragMxi.dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -250,6 +272,14 @@ export default {
         lists[ele.$store.state.editor[active]] = drags;
         ele.$store.commit('editor_update', { [dragList]: lists });
       }, 100);
+    },
+    positionChange() {
+      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragVideos', location, 'videoActive');
+      }
     },
   },
 };
