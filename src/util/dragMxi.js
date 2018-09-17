@@ -98,10 +98,15 @@ exports.dragCom = () => {
       setFixedBottom(x, h) {
         this.fixedBottom = this.$store.state.page.screenHeight - x - h;
       },
-      fixedInit() {
-        this.fixedBottom = this.$store.state.page.screenHeight - this.dragForm.location.y
+      
+    },
+    computed: {
+      fixedBottom() {
+        return this.$store.state.page.screenHeight - this.dragForm.location.y
        - this.dragForm.size.h;
-        this.fixedTop = this.dragForm.location.y - 0;
+      },
+      fixedTop() {
+        return this.dragForm.location.y;
       },
     },
   };

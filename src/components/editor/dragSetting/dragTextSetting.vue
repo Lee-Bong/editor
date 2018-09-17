@@ -72,10 +72,10 @@
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         <el-form-item label="固定位置：" size="mini">
           <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
-          <el-radio v-model="dragForm.position" label="fixedTop"
-            @change="fixedInit">相对顶部固定</el-radio>
-          <el-radio v-model="dragForm.position" label="fixedBottom"
-            @change="fixedInit">相对底部固定</el-radio>
+          <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+             >相对顶部固定</el-radio>
+          <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+            >相对底部固定</el-radio>
         </el-form-item>
         <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
           <el-input-number
@@ -90,7 +90,6 @@
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         </el-form>
-
       </div>
     </div>
 </div>
@@ -120,8 +119,6 @@ export default {
       lineNum: 0,
       formRules: {
       },
-      fixedBottom: 0,
-      fixedTop: 0,
     };
   },
   methods: {
@@ -164,6 +161,14 @@ export default {
         dragTexts,
       });
     },
+    positionChange() {
+      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragTexts', location, 'textActive');
+      }
+    },
   },
   mounted() {
     let i = 12;
@@ -180,8 +185,6 @@ export default {
     // console.log('destroyed');
   },
   updated() {
-    // this.fixedBottom = this.$store.state.page.screenHeight - this.dragForm.location.y
-    //  - this.dragForm.size.h;
   },
 };
 </script>

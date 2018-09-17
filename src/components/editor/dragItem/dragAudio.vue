@@ -12,6 +12,7 @@
       :listIndex="listIndex"
       :parentLimitation="true"
       :preventActiveBehavior="true"
+      :parentH="$store.state.page.phoneHeight"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"

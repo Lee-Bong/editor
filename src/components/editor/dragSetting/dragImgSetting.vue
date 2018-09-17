@@ -52,6 +52,27 @@
               <label>高</label>
             </div>
           </div>
+          <div v-if="!!dragForm.notModify">
+            <el-form-item label="固定位置：" size="mini">
+            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+              >相对顶部固定</el-radio>
+            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+              >相对底部固定</el-radio>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
+              <el-input-number
+                v-model="fixedTop" @change="fixedTopChange"
+                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+              <el-input-number
+                v-model="fixedBottom" @change="fixedBottomChange"
+                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+          </div>
         </el-form>
       </div>
     </div>
@@ -61,8 +82,10 @@
 <script>
 import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
 import oss from '@/util/oss';
+import dragMxi from '@/util/dragMxi';
 
 export default {
+  mixins: [dragMxi.dragCom()],
   name: 'DragImgSetting',
   props: {
     dragForm: Object,
@@ -220,6 +243,14 @@ export default {
     fileModify(file) { // 更换图片
       this.isFirst = true;
       this.onFileChange(file, [], true);
+    },
+    positionChange() {
+      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragImages', location, 'imgActive');
+      }
     },
   },
   mounted() {
