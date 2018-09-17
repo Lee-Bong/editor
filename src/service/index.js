@@ -2,7 +2,7 @@ import property from 'lodash/property';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = '/';
+axios.defaults.baseURL = 'https://test-bfe.meiyou.com';
 
 const { NODE_ENV } = process.env;
 const api = NODE_ENV === 'development' ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
