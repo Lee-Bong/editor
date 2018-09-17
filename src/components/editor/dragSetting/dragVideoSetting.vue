@@ -32,22 +32,22 @@
           </el-form-item>
           <el-form-item label="位置：" size="mini">
             <el-input-number v-model="dragForm.location.x" @change="locationChange"
-              :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+              :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="dragForm.location.y" @change="locationChange"
-              :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+              :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
           <div class="dec-label"> <label>X</label> <label> Y</label></div>
           <el-form-item label="尺寸：" size="mini">
             <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
-              :min="size.wmin" :max="$store.state.editor.phoneWidth-dragForm.location.x"
+              :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
-              :min="size.hmin" :max="$store.state.editor.phoneHeight-dragForm.location.y"
+              :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
@@ -111,7 +111,7 @@ export default {
       if (type === 1) {
         let newW = size.w;
         let newH = (video.h * size.w) / video.w;
-        const maxH = this.$store.state.editor.phoneHeight - this.dragForm.location.y;
+        const maxH = this.$store.state.page.phoneHeight - this.dragForm.location.y;
         if (newH > maxH) {
           newH = maxH;
           newW = (video.w * newH) / video.h;
@@ -123,7 +123,7 @@ export default {
       } else {
         let newW = (video.w * size.h) / video.h;
         let newH = size.h;
-        const maxW = this.$store.state.editor.phoneWidth - this.dragForm.location.x;
+        const maxW = this.$store.state.page.phoneWidth - this.dragForm.location.x;
         if (newW > maxW) {
           newW = maxW;
           newH = (video.h * newW) / video.w;
@@ -165,9 +165,9 @@ export default {
 
         const videos = ele.$store.state.editor[dragList];
         const drags = videos[ele.$store.state.editor[active]];
-        const newH = (this.videoHeight * ele.$store.state.editor.phoneWidth) / this.videoWidth;
+        const newH = (this.videoHeight * ele.$store.state.page.phoneWidth) / this.videoWidth;
         const video = {
-          w: ele.$store.state.editor.phoneWidth,
+          w: ele.$store.state.page.phoneWidth,
           h: newH,
           title: file.name,
           url: file.url,
@@ -193,12 +193,12 @@ export default {
           y: 0,
         };
         clone.size = {
-          w: ele.$store.state.editor.phoneWidth,
+          w: ele.$store.state.page.phoneWidth,
           h: video.h,
         };
       } else {
         clone.size = {
-          w: ele.$store.state.editor.phoneWidth,
+          w: ele.$store.state.page.phoneWidth,
           h: ele.$store.state.editor.mediaHeight,
         };
       }
