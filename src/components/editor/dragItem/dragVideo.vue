@@ -14,7 +14,7 @@
       :parentLimitation="true"
       :aspectRatio="dragForm.isUpload ? true: false"
       :preventActiveBehavior="true"
-      :parentH="$store.state.page.phoneHeight"
+      :parentH="parentH"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
@@ -69,6 +69,14 @@ export default {
         layerActive: 0,
       },
     };
+  },
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
   },
 
   methods: {
