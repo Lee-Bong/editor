@@ -89,6 +89,9 @@ export default {
               w: 375,
               h: 90,
             },
+            position: 'relative',
+            fixedTop: 0,
+            fixedBottom: 0,
           });
           newEditor = {
             textSet: true,

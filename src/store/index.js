@@ -28,7 +28,7 @@ export default new Vuex.Store({
     },
     /* 图片组件操作 */
     add_drag_img(state) {
-      const textTop = state.editor.phoneHeight / 2 - 30 / 2;
+      const textTop = state.page.phoneHeight / 2 - 30 / 2;
       const zIndex = state.editor.dragTexts.length ? state.editor.dragTexts[state.editor.dragTexts.length - 1].zIndex + 1 : 0;
       state.editor.dragImages.push({
         isShow: true,

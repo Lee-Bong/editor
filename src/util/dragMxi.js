@@ -73,6 +73,36 @@ exports.dragCom = () => {
         }
         return arr;
       },
+      fixedTopChange(val) {
+        this.fixedTop = this.getDistan(val);
+        this.dragForm.location.y = this.fixedTop;
+        this.setFixedBottom(val, this.dragForm.size.h);
+        this.locationChange();
+      },
+      fixedBottomChange(val) {
+        this.fixedBottom = this.getDistan(val);
+        const y = this.$store.state.page.screenHeight - this.fixedBottom - this.dragForm.size.h;
+        this.dragForm.location.y = y;
+        this.locationChange();
+      },
+      getDistan(val) {
+        let dis;
+        const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+        if (val > maxBottom) {
+          dis = maxBottom;
+        } else {
+          dis = val;
+        }
+        return dis;
+      },
+      setFixedBottom(x, h) {
+        this.fixedBottom = this.$store.state.page.screenHeight - x - h;
+      },
+      fixedInit() {
+        this.fixedBottom = this.$store.state.page.screenHeight - this.dragForm.location.y
+       - this.dragForm.size.h;
+        this.fixedTop = this.dragForm.location.y - 0;
+      },
     },
   };
   return drag;
