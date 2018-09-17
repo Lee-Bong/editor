@@ -10,6 +10,7 @@
         v-for="(component, index) in finalComponentsJson"
         :key="index"
         :component="component"
+        :scale="scale"
       >
       </custom-component>
       <div class="bottom-download"></div>
@@ -18,7 +19,7 @@
   </div>
 </template>
 <script>
-import share from '@/assets/javascript/share';
+// import share from '@/assets/javascript/share';
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
 import jssdk from 'meetyou.jssdk';
@@ -33,6 +34,8 @@ export default {
       // 经过计算转换过的结构
       finalComponentsJson: null,
       showError: false,
+      // 屏幕缩放比例
+      scale: 1,
     };
   },
   computed: {
@@ -52,23 +55,23 @@ export default {
       ]);
 
       // 屏幕缩放比例
-      const scale = window.innerWidth / this.pageJson.page.phoneWidth;
+      this.scale = window.innerWidth / this.pageJson.page.phoneWidth;
       finalComponentsJson = map(finalComponentsJson, (componentJson) => {
         const componentJsonTemp = {
           ...componentJson,
           location: {
-            x: componentJson.location.x * scale,
-            y: componentJson.location.y * scale,
+            x: componentJson.location.x * this.scale,
+            y: componentJson.location.y * this.scale,
           },
           size: {
-            w: componentJson.size.w * scale,
-            h: componentJson.size.h * scale,
+            w: componentJson.size.w * this.scale,
+            h: componentJson.size.h * this.scale,
           },
           style: {
             width: '100%',
             height: '100%',
             'font-size': componentJson.fontSize
-              ? `${componentJson.fontSize * scale}px`
+              ? `${componentJson.fontSize * this.scale}px`
               : '',
             ...componentJson.style,
           },
@@ -97,7 +100,7 @@ export default {
         },
       );
 
-      if (this.$route.query && this.$route.query.isShare) {
+      /* if (this.$route.query && this.$route.query.isShare) {
         share(
           'https://news-node.seeyouyima.com/article?news_id=26760893&news_type=2&appid=1&v=6.7.0',
           {
@@ -106,7 +109,7 @@ export default {
             weixin: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.meiyou.sheep',
           },
         );
-      }
+      } */
     },
   },
   components: {
