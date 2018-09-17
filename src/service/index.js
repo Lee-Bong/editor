@@ -6,7 +6,7 @@ axios.defaults.baseURL = 'https://test-bfe.meiyou.com';
 
 const { NODE_ENV } = process.env;
 const api = NODE_ENV === 'development' ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
-const getPageInfo = pageId => axios.get('/api/we/page', { params: { page_id: pageId } })
+const getPageInfo = pageId => axios.get(`${api}/api/we/page`, { params: { page_id: pageId } })
   .then(property('data'));
 
 const publishPage = pageId => axios.post(`${api}/api/we/page-pub?page_id=${pageId}`)

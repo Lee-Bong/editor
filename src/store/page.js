@@ -4,6 +4,7 @@ export default {
     title: '活动页',
     phoneWidth: 375,
     phoneHeight: 667,
+    screenHeight: 667,
     shareTitle: '分享标题',
     shareDec: '分享描述',
     shareImg: '',

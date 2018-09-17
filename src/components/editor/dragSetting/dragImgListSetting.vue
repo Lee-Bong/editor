@@ -15,11 +15,11 @@
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :disabled="!fileSuccess"
-            :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+            :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
             controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @change="locationChange"
             :disabled="!fileSuccess"
-            :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
@@ -116,7 +116,7 @@ export default {
         if (key !== undefined) {
           ele.$refs.imgReview[key].uplaodDone();
         }
-        const newH = (dragImg.height * ele.$store.state.editor.phoneWidth) / dragImg.width;
+        const newH = (dragImg.height * ele.$store.state.page.phoneWidth) / dragImg.width;
         if (!ele.fileSuccess) ele.fileSuccess = true;
         updateImg.size = {
           w: 375,

@@ -14,6 +14,7 @@
       :parentLimitation="true"
       :aspectRatio="dragForm.isUpload ? true: false"
       :preventActiveBehavior="true"
+      :parentH="$store.state.page.phoneHeight"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"

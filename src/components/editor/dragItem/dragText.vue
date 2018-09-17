@@ -11,6 +11,7 @@
       :listIndex="listIndex"
       :parentLimitation="true"
       :preventActiveBehavior="true"
+      :parentH="parentH"
 
       @activated="activateEv"
       @clicked="dragTextClick(listIndex)"
@@ -72,7 +73,14 @@ export default {
       },
     };
   },
-
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
+  },
   methods: {
     activateEv() {
       this.$refs.inputCont.focus();
@@ -109,7 +117,14 @@ export default {
       // this.$store.commit('del_drag', {index, arr: this.dragName, active: 'isTextSet'});
     },
     dragstop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
+      const evs = ev;
+      if (this.dragForm.position !== 'relative') {
+        const maxTop = this.$store.state.page.screenHeight - this.dragForm.size.h;
+        if (evs.top > maxTop) {
+          evs.top = maxTop;
+        }
+      }
+      this.$emit('dragStop', this.dragName, evs, this.listIndex);
     },
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
