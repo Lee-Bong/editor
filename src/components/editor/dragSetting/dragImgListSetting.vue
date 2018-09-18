@@ -56,7 +56,7 @@
 
 <script>
 import oss from '@/util/oss';
-import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
+import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import draggable from 'vuedraggable';
 
 export default {

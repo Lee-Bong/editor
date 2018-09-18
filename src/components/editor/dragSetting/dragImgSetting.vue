@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
+import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import oss from '@/util/oss';
 import dragMxi from '@/util/dragMxi';
 

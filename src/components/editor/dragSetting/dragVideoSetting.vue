@@ -25,7 +25,7 @@
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
             size="mini" class="video-el">
-            <el-input type="text" v-model="dragForm.textColor"></el-input>
+            <el-input type="text" ref="lineVideo" v-model="lineSource" @blur="lineSourceBlur"></el-input>
           </el-form-item>
           <el-form-item label="视频封面：" size="mini" class="video-el">
             <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
@@ -77,15 +77,14 @@
       </div>
     </div>
     <video ref="videoLoad" controls v-show="false">
-      <source  type="video/mp4">
     </video>
   </div>
 </template>
 
 <script>
 import oss from '@/util/oss';
-import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
-import audioUplaod from '@/components/editor/dragItem/image/audioUpload';
+import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
+import audioUplaod from '@/components/editor/dragSetting/upload/audioUpload';
 import dragMxi from '@/util/dragMxi';
 
 export default {
@@ -115,11 +114,20 @@ export default {
       mediaSource: {
         accept: '.mp4',
       },
+      lineSource: '',
+      isLineUpload: false,
+      lastCont: '', // 标记二次在线url是否一致
     };
   },
   methods: {
     sourceChange(type) {
+      const size = {
+        w: this.$store.state.editor.phoneWidth,
+        h: this.$store.state.editor.mediaHeight,
+      };
+      this.$emit('input-sizeChange', 'dragVideos', size, 'videoActive');
       this.$emit('videoSourceChange', type, 'dragVideos', 'videoActive');
+      this.ratioSet(this, 'dragVideos', 'videoActive');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isVideoSet: false });
@@ -179,19 +187,20 @@ export default {
       this.$refs.videoLoad.setAttribute('src', file.url);
       const ele = this;
       this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
-        ele.$message({
-          message: '视频上传成功～',
-          type: 'success',
-          duration: 2000,
-        });
-
+        if (ele.dragForm.sourceType === '1') {
+          ele.$message({
+            message: '视频上传成功～',
+            type: 'success',
+            duration: 2000,
+          });
+        }
         const videos = ele.$store.state.editor[dragList];
         const drags = videos[ele.$store.state.editor[active]];
         const newH = (this.videoHeight * ele.$store.state.page.phoneWidth) / this.videoWidth;
         const video = {
           w: ele.$store.state.page.phoneWidth,
           h: newH,
-          title: file.name,
+          title: file.name || '',
           url: file.url,
           isPoster: !!drags.video.poster,
           poster: drags.video.poster ? drags.video.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
@@ -203,11 +212,28 @@ export default {
           ele.$store.commit('editor_update', { dragVideos: videos });
         }, 100);
       });
+      this.$refs.videoLoad.addEventListener('error', () => {
+        if (ele.dragForm.sourceType === '2') {
+          ele.onFileError('资源不存在或已经损坏，请重试～');
+          ele.$refs.lineVideo.focus();
+          ele.mediaChange({
+            poster: '',
+            url: '',
+          }, ele, 'dragVideos', 'videoActive', true);
+        } else {
+          ele.onFileError();
+          ele.mediaChange({}, ele, dragList, active, true);
+        }
+      });
     },
     mediaChange(video, ele, dragList, active, isRemove) {
       const lists = ele.$store.state.editor[dragList];
       let drags = lists[ele.$store.state.editor[active]];
-      const clone = Object.assign({}, { video });
+      let videoObj = { video };
+      if (this.dragForm.sourceType === '2') {
+        videoObj = { lineVideo: video };
+      }
+      const clone = Object.assign({}, videoObj);
       clone.isUpload = false;
       if (!isRemove) {
         clone.location = {
@@ -229,11 +255,12 @@ export default {
       ele.$store.commit('editor_update', { [dragList]: lists });
       this.ratioSet(ele, dragList, active);
     },
-    onFileError() { // 图片上传失败
+    onFileError(msg) { // 图片上传失败
       this.fileFail = true;
       this.fileAble = false;
+      const message = msg ? msg : '视频上传失败，请重试～';
       this.$message({
-        message: '视频上传失败，请重试～',
+        message,
         type: 'error',
         duration: 2000,
       });
@@ -281,6 +308,23 @@ export default {
         this.$emit('input-locationChange', 'dragVideos', location, 'videoActive');
       }
     },
+    lineSourceBlur() {
+      const val = this.lineSource;
+      if (val) {
+        if (this.lastCont && this.lastCont === val) return false;
+        this.lastCont = val;
+        if (this.dragForm.lineVideo &&
+        this.dragForm.lineVideo.url && this.dragForm.lineVideo.url === val) return false;
+        this.onMediaFileSuccess({ url: val }, 'dragVideos', 'videoActive');
+      }
+    },
+    onlineFileError() { // 图片上传失败
+      this.$message({
+        message: '该资源不存在或者已经损坏，请重试～',
+        type: 'error',
+        duration: 2000,
+      });
+    },
   },
 };
 </script>
@@ -299,5 +343,8 @@ export default {
     position: absolute;
     z-index: -1;
     top: 0;
+}
+.video-setting .el-input__inner {
+  padding: 0 8px;
 }
 </style>
