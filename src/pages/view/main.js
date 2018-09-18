@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Button from 'element-ui/lib/button';
 import Slider from 'element-ui/lib/slider';
-import 'element-ui/lib/theme-chalk/index.css';
+import './element-ui.scss';
 import { axios } from '../../service';
 
 import App from './App.vue';
