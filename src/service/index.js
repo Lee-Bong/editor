@@ -1,4 +1,4 @@
-import { property } from 'lodash';
+import property from 'lodash/property';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;

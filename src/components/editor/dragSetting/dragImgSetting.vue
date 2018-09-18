@@ -82,10 +82,10 @@
 <script>
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import oss from '@/util/oss';
-import dragMxi from '@/util/dragMxi';
+import dragCom from '@/util/dragMxi';
 
 export default {
-  mixins: [dragMxi.dragCom()],
+  mixins: [dragCom()],
   name: 'DragImgSetting',
   props: {
     dragForm: Object,

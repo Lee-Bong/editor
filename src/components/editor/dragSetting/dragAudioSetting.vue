@@ -84,10 +84,10 @@
 <script>
 import audioUplaod from '@/components/editor/dragSetting/upload/audioUpload';
 import { formatSecond } from '@/util/tools';
-import dragMxi from '@/util/dragMxi';
+import dragCom from '@/util/dragMxi';
 
 export default {
-  mixins: [dragMxi.dragCom()],
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,

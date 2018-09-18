@@ -85,10 +85,10 @@
 import oss from '@/util/oss';
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 import audioUplaod from '@/components/editor/dragSetting/upload/audioUpload';
-import dragMxi from '@/util/dragMxi';
+import dragCom from '@/util/dragMxi';
 
 export default {
-  mixins: [dragMxi.dragCom()],
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,

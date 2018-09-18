@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     goEditor() {
-      this.$router.push('/');
+      this.$router.push(`/editor?page_id=${this.pageId}`);
     },
     async publish() {
       try {
