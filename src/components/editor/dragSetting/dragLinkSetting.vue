@@ -15,19 +15,19 @@
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
             :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
-            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :min="location.ymin" :max="yMax"
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
             :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
             :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         <el-form-item size="mini">

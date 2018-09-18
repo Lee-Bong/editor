@@ -94,9 +94,6 @@ exports.dragCom = () => {
         }
         return dis;
       },
-      setFixedBottom(x, h) {
-        // this.fixedBottom = this.$store.state.page.screenHeight - x - h;
-      },
 
     },
     computed: {
@@ -106,6 +103,10 @@ exports.dragCom = () => {
       },
       fixedTop() {
         return this.dragForm.location.y;
+      },
+      yMax() {
+        return this.dragForm.position === 'relative' ? this.$store.state.page.phoneHeight - this.dragForm.size.h
+          : this.$store.state.page.screenHeight - this.dragForm.size.h;
       },
     },
   };

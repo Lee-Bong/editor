@@ -32,7 +32,7 @@
                 :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
                 controls-position="right" class="num-input"></el-input-number>
               <el-input-number v-model="dragForm.location.y" @change="locationChange"
-                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="yMax"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">

@@ -53,21 +53,19 @@
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
-            :disabled="dragForm.position !== 'relative'"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @change="locationChange"
-            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
-            :disabled="dragForm.position !== 'relative'"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            :min="location.ymin" :max="yMax"
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
           <el-input-number v-model="dragForm.size.w" @change="sizeChange"
             :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @change="sizeChange"
             :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
-            label="描述文字" controls-position="right" class="num-input"></el-input-number>
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
         <el-form-item label="固定位置：" size="mini">
@@ -162,12 +160,12 @@ export default {
       });
     },
     positionChange() {
-      // const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
-      // if (this.dragForm.location.y > maxBottom) {
-      //   const { location } = this.dragForm;
-      //   location.y = maxBottom;
-      // this.$emit('input-locationChange', 'dragTexts', location, 'textActive');
-      // }
+      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragTexts', location, 'textActive');
+      }
     },
   },
   mounted() {
