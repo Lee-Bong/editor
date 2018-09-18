@@ -48,6 +48,8 @@
             v-if="component.type === 5"
             :style="component.style"
             :src="component.source"
+            :poster="component.poster"
+            :loop="component.loop"
             controls="controls"
         />
         <audio-play
