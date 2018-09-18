@@ -50,27 +50,31 @@
             :src="component.source"
             controls="controls"
         />
-        <audio
+        <audio-play
             v-if="component.type === 6"
             :style="component.style"
-            :src="component.source"
-            controls="controls"
-        />
+            :play="component.play"
+        ></audio-play>
     </div>
 </template>
 
 <script>
 import jssdk from 'meetyou.jssdk';
-import nanoid from 'nanoid';
+import generate from 'nanoid/generate';
 import awakeApp from '../../util/awakeApp.js';
+import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
 
 export default {
   data() {
-    const componentId = nanoid();
+    const componentId = generate('abcdefghijklmn', 10);
     return {
       componentId,
       sharebar: null,
     };
+  },
+
+  components: {
+    AudioPlay,
   },
 
   computed: {
@@ -94,7 +98,7 @@ export default {
     if (type === 3 && sourceType === '2' && this.$route.query.isShare) {
       this.sharebar = awakeApp.init({
         link: awakeLink,
-        container: `#${this.commentId}`,
+        container: `#${this.componentId}`,
         downloadUrls: this.downloadUrls,
       });
     }

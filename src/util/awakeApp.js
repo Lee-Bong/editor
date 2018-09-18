@@ -4,20 +4,20 @@ import YunQiAppBar from 'meetyou.sharebar/lib/YoubaobaoAppBar';
 import querystring from 'meetyou.util/lib/querystring';
 
 const ua = navigator.userAgent;
-const isWeixin = ua.indexOf('micromessenger') !== -1;
+const isWeixin = ua.indexOf('MicroMessenger') !== -1 || ua.indexOf('micromessenger') !== -1;
 const isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
 const isIOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 
 const getDownLoadUrl = (downloadUrls) => {
-  let download = '';
-  if (isAndroid) {
-    download = downloadUrls.android;
+  let url = '';
+  if (isWeixin) {
+    url = downloadUrls.yyb;
+  } else if (isAndroid) {
+    url = downloadUrls.android;
   } else if (isIOS) {
-    download = downloadUrls.ios;
-  } else if (isWeixin) {
-    download = downloadUrls.yyb;
+    url = downloadUrls.ios;
   }
-  return download;
+  return url;
 };
 
 const init = ({ link, container, downloadUrls }) => {
@@ -29,12 +29,11 @@ const init = ({ link, container, downloadUrls }) => {
     AppBar = YunQiAppBar;
   }
   const download = getDownLoadUrl(downloadUrls);
-
   const sharebar = new AppBar({
     container,
     link,
     download,
-    template: '<div style="height: 100%; width: 100%"/>',
+    template: '<div class="downloadbar" style="display: none"/>',
   });
 
   return sharebar;
@@ -52,7 +51,7 @@ const showDownLoadTip = () => {
 };
 
 const handleOpen = (sharebar) => {
-  if (!sharebar.download) {
+  if (isWeixin && !sharebar.download) {
     return showDownLoadTip();
   }
   sharebar.handleOpen();

@@ -14,7 +14,7 @@
       >
       </custom-component>
     </div>
-    <error v-else></error>
+    <error v-if="showError"></error>
   </div>
 </template>
 <script>
