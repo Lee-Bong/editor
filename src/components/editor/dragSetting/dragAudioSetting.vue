@@ -37,7 +37,7 @@
             :disabled="!dragForm.isUpload" controls-position="right"
             class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
-            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+            :min="location.ymin" :max="yMax"
             :disabled="!dragForm.isUpload" controls-position="right"
             class="num-input"></el-input-number>
         </el-form-item>
