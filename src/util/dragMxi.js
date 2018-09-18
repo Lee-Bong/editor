@@ -74,14 +74,13 @@ exports.dragCom = () => {
         return arr;
       },
       fixedTopChange(val) {
-        this.fixedTop = this.getDistan(val);
-        this.dragForm.location.y = this.fixedTop;
-        this.setFixedBottom(val, this.dragForm.size.h);
+        const curTop = this.getDistan(val);
+        this.dragForm.location.y = curTop;
         this.locationChange();
       },
       fixedBottomChange(val) {
-        this.fixedBottom = this.getDistan(val);
-        const y = this.$store.state.page.screenHeight - this.fixedBottom - this.dragForm.size.h;
+        const curBottom = this.getDistan(val);
+        const y = this.$store.state.page.screenHeight - curBottom - this.dragForm.size.h;
         this.dragForm.location.y = y;
         this.locationChange();
       },
@@ -96,7 +95,7 @@ exports.dragCom = () => {
         return dis;
       },
       setFixedBottom(x, h) {
-        this.fixedBottom = this.$store.state.page.screenHeight - x - h;
+        // this.fixedBottom = this.$store.state.page.screenHeight - x - h;
       },
 
     },

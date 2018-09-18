@@ -79,13 +79,13 @@
         </el-form-item>
         <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
           <el-input-number
-            v-model="fixedTop" @change="fixedTopChange"
+            :value="fixedTop" @change="fixedTopChange"
             :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
           <el-input-number
-            v-model="fixedBottom" @change="fixedBottomChange"
+            :value="fixedBottom" @change="fixedBottomChange"
             :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
@@ -162,12 +162,12 @@ export default {
       });
     },
     positionChange() {
-      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom) {
-        const { location } = this.dragForm;
-        location.y = maxBottom;
-        this.$emit('input-locationChange', 'dragTexts', location, 'textActive');
-      }
+      // const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      // if (this.dragForm.location.y > maxBottom) {
+      //   const { location } = this.dragForm;
+      //   location.y = maxBottom;
+      // this.$emit('input-locationChange', 'dragTexts', location, 'textActive');
+      // }
     },
   },
   mounted() {
@@ -179,7 +179,6 @@ export default {
     }
     this.sizeList = list;
     this.lineNum = (this.dragForm.lineHeight / 3) * 100;
-    this.fiexInit();
   },
   destroyed() {
     // console.log('destroyed');
