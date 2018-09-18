@@ -82,10 +82,10 @@
 </template>
 
 <script>
-import dragMxi from '@/util/dragMxi';
+import dragCom from '@/util/dragMxi';
 
 export default {
-  mixins: [dragMxi.dragCom()],
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,

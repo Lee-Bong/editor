@@ -48,10 +48,10 @@ import dragLink from '@/components/editor/dragItem/dragLink';
 import dragImgLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
-import dragMxi from '@/util/dragMxi';
+import dragCom from '@/util/dragMxi';
 
 export default {
-  mixins: [dragMxi.dragCom()],
+  mixins: [dragCom()],
   name: 'layoutMain',
   props: {
   },
