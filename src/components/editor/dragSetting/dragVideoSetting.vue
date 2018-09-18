@@ -121,13 +121,16 @@ export default {
   },
   methods: {
     sourceChange(type) {
-      const size = {
-        w: this.$store.state.editor.phoneWidth,
-        h: this.$store.state.editor.mediaHeight,
-      };
-      this.$emit('input-sizeChange', 'dragVideos', size, 'videoActive');
+      const isActive = Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
+      if (!isActive && (this.dragForm.size.h !== this.$store.state.editor.mediaHeight
+        || this.dragForm.size.w !== this.$store.state.page.phoneWidth)) {
+        this.mediaChange({
+          poster: '',
+          url: '',
+        }, this, 'dragVideos', 'videoActive', true, true);
+      }
       this.$emit('videoSourceChange', type, 'dragVideos', 'videoActive');
-      this.ratioSet(this, 'dragVideos', 'videoActive');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isVideoSet: false });
@@ -137,34 +140,38 @@ export default {
     },
     sizeChange(type) { // 大小值发生改变
       let { size } = this.dragForm;
-      const { video } = this.dragForm;
+      const videoObj = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
       if (type === 1) {
         let newW = size.w;
-        let newH = (video.h * size.w) / video.w;
+        let newH = (videoObj.h * size.w) / videoObj.w;
         const maxH = this.$store.state.page.phoneHeight - this.dragForm.location.y;
         if (newH > maxH) {
           newH = maxH;
-          newW = (video.w * newH) / video.h;
+          newW = (videoObj.w * newH) / videoObj.h;
         }
         size = {
           w: newW,
           h: newH,
         };
       } else {
-        let newW = (video.w * size.h) / video.h;
+        let newW = (videoObj.w * size.h) / videoObj.h;
         let newH = size.h;
         const maxW = this.$store.state.page.phoneWidth - this.dragForm.location.x;
         if (newW > maxW) {
           newW = maxW;
-          newH = (video.h * newW) / video.w;
+          newH = (videoObj.h * newW) / videoObj.w;
         }
         size = {
           w: newW,
           h: newH,
         };
       }
-      this.$emit('input-sizeChange', 'dragVideos', size, 'videoActive');
-      this.ratioSet(this, 'dragVideos', 'videoActive');
+      const videos = Object.assign({}, this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive], 
+      {
+        size,
+      });
+      this.$store.commit('editor_update', { dragVideos: videos });
+      // this.$emit('input-sizeChange', 'dragVideos', size, 'videoActive');
     },
     async onFileChange(file) {
       const up = await oss(file.raw);
@@ -198,6 +205,8 @@ export default {
         const drags = videos[ele.$store.state.editor[active]];
         const newH = (this.videoHeight * ele.$store.state.page.phoneWidth) / this.videoWidth;
         const video = {
+          sourceW: this.videoWidth,
+          sourceH: this.videoHeight,
           w: ele.$store.state.page.phoneWidth,
           h: newH,
           title: file.name || '',
@@ -226,12 +235,15 @@ export default {
         }
       });
     },
-    mediaChange(video, ele, dragList, active, isRemove) {
+    mediaChange(video, ele, dragList, active, isRemove, isChange) {
       const lists = ele.$store.state.editor[dragList];
       let drags = lists[ele.$store.state.editor[active]];
-      let videoObj = { video };
-      if (this.dragForm.sourceType === '2') {
-        videoObj = { lineVideo: video };
+      let videoObj = {};
+      if (!isChange) {
+        videoObj = { video };
+        if (this.dragForm.sourceType === '2') {
+          videoObj = { lineVideo: video };
+        }
       }
       const clone = Object.assign({}, videoObj);
       clone.isUpload = false;
@@ -250,6 +262,20 @@ export default {
           h: ele.$store.state.editor.mediaHeight,
         };
       }
+      if (isChange) {
+         debugger;
+        if (this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url) {
+          clone.size = {
+            w: this.dragForm.video.w,
+            h: this.dragForm.video.h,
+          };
+        } else if (this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url) {
+          clone.size = {
+            w: this.dragForm.lineVideo.w,
+            h: this.dragForm.lineVideo.h,
+          };
+        }
+      }
       drags = Object.assign(drags, clone);
       lists[ele.$store.state.editor[active]] = drags;
       ele.$store.commit('editor_update', { [dragList]: lists });
@@ -258,7 +284,7 @@ export default {
     onFileError(msg) { // 图片上传失败
       this.fileFail = true;
       this.fileAble = false;
-      const message = msg ? msg : '视频上传失败，请重试～';
+      const message = msg || '视频上传失败，请重试～';
       this.$message({
         message,
         type: 'error',

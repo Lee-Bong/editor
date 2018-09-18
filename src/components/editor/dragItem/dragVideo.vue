@@ -2,7 +2,7 @@
     <vue-drag-resize
       :isActive="dragForm.isActive"
       :w="dragForm.size.w"
-      :h="isAction ? dragForm.size.h: this.$store.state.editor.mediaHeight"
+      :h="dragForm.size.h"
       :sticks="['tl','tr','br','bl']"
       :x="dragForm.location.x"
       :y="dragForm.location.y"
