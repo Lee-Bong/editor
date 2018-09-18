@@ -233,6 +233,7 @@ export default {
               h: 300,
             },
             video: {},
+            lineVideo: {},
             isUpload: false,
             position: 'relative',
           });

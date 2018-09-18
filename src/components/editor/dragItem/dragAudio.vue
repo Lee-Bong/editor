@@ -35,7 +35,7 @@
 </template>
 <script>
 import VueDragResize from 'vue-drag-resize';
-import audioPlay from '@/components/editor/dragItem/image/audioPlay';
+import audioPlay from '@/components/editor/dragSetting/upload/audioPlay';
 
 export default {
   name: 'dragAudio',

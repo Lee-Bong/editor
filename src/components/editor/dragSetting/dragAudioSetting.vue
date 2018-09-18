@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import audioUplaod from '@/components/editor/dragItem/image/audioUpload';
+import audioUplaod from '@/components/editor/dragSetting/upload/audioUpload';
 import { formatSecond } from '@/util/tools';
 import dragMxi from '@/util/dragMxi';
 

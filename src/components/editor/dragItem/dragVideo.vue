@@ -2,7 +2,7 @@
     <vue-drag-resize
       :isActive="dragForm.isActive"
       :w="dragForm.size.w"
-      :h="dragForm.size.h"
+      :h="isAction ? dragForm.size.h: this.$store.state.editor.mediaHeight"
       :sticks="['tl','tr','br','bl']"
       :x="dragForm.location.x"
       :y="dragForm.location.y"
@@ -27,17 +27,18 @@
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
-      <div class="drag-img" v-if="!Boolean(dragForm.video && dragForm.video.url)">
+      <div class="drag-img" v-if="!isAction">
         <div class="video-play">
           <i class="el-icon-caret-right"></i>
         </div>
       </div>
-      <video v-if="Boolean(dragForm.video && dragForm.video.url)"
+      <video v-if="isAction"
         class="video-show"
         :width="dragForm.size.w"
         :height="dragForm.size.h"
         :poster="dragForm.video.poster" controls>
-          <source :src="dragForm.video.url" type="video/mp4">
+          <source :src="dragForm.sourceType === '1' ? dragForm.video.url : dragForm.lineVideo.url"
+           type="video/mp4">
         </video>
 
     </vue-drag-resize>
@@ -76,6 +77,10 @@ export default {
         return this.$store.state.page.phoneHeight;
       }
       return this.$store.state.page.screenHeight;
+    },
+    isAction() {
+      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
     },
   },
 

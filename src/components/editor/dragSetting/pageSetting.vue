@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import imgUplaod from '@/components/editor/dragItem/image/imgUpload';
+import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 
 export default {
   name: 'DragSetting',
