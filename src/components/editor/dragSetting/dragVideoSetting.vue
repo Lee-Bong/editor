@@ -20,7 +20,7 @@
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '1'"
             label="选择视频：" size="mini" class="video-el">
-            <audio-uplaod :source="mediaSource" @upload-done="mediaUploadDone"
+            <media-upload :source="mediaSource" @upload-done="mediaUploadDone"
             @file-remove="mediaFileRemove" ref="mediaUpload"/>
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
@@ -85,7 +85,7 @@
 <script>
 import oss from '@/util/oss';
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
-import audioUplaod from '@/components/editor/dragSetting/upload/audioUpload';
+import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
 import dragCom from '@/util/dragMxi';
 
 export default {
@@ -97,7 +97,7 @@ export default {
   },
   components: {
     imgUplaod,
-    audioUplaod,
+    mediaUpload,
   },
   data() {
     return {

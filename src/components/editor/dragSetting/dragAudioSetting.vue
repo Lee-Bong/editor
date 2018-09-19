@@ -19,7 +19,7 @@
             @change="audioSourceChange('2')">在线音频</el-radio>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'" label="上传音频：" size="mini" class="audio-el">
-          <audio-uplaod :source="mediaSource" @upload-done="uploadDone"
+          <media-upload :source="mediaSource" @upload-done="uploadDone"
           @file-remove="fileRemove" ref="mediaUpload"/>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'" label="标题：" size="mini" class="audio-el">
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import audioUplaod from '@/components/editor/dragSetting/upload/audioUpload';
+import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
 import { formatSecond } from '@/util/tools';
 import dragCom from '@/util/dragMxi';
 
@@ -99,7 +99,7 @@ export default {
     setForm: Object,
   },
   components: {
-    audioUplaod,
+    mediaUpload,
   },
   data() {
     return {

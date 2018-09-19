@@ -2,8 +2,8 @@ export default function dragCom() {
   const drag = {
     methods: {
       dragClick(index, type) { // 点击组件  index=-1表示全部都取消，index=-2表示点击了网页标题
-        let newEditor,
-          layerActive;
+        let newEditor;
+        let layerActive;
         if (type !== undefined) {
           newEditor = this.deActiveArr(index, type);
           layerActive = this.updateLayer(index, type);
@@ -52,7 +52,8 @@ export default function dragCom() {
         });
         return i;
       },
-      textActiveOff(arr, payload) {
+      textActiveOff(arrs, payload) {
+        const arr = arrs;
         const { index, isAll } = payload;
         if (arr && arr.length) {
           if (isAll !== undefined) {
@@ -68,6 +69,7 @@ export default function dragCom() {
                 arr[i].isActive = false;
                 arr[i].zIndex = arr[i].dragIndex;
               }
+              return true;
             });
           }
         }
