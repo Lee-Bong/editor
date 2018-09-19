@@ -93,24 +93,6 @@ export default {
   },
 
   methods: {
-    dragDel(s, n) { // 删除当前编辑组件
-      const { editor } = this.$store.state;
-      const { typeCat, layerActive } = editor;
-      let { layerLists } = editor;
-      if (layerLists.length) {
-        const sort = s || layerLists[layerActive].type;
-        const num = n || layerLists[layerActive].num;
-        const cat = typeCat[sort];
-        editor[cat[0]] = editor[cat[0]].filter((item, key) => key !== num);
-        editor[cat[2]] = false;
-        if (!editor[cat[0]].length) {
-          editor[cat[1]] = false;
-        }
-        layerLists = editor[cat[0]].filter((item, key) => key !== layerActive);
-        editor.layerLists = layerLists;
-        this.$store.commit('editor_update', editor);
-      }
-    },
     topBannerClick() { // 点击页面顶部，显示页面设置
       const { pageSet } = this.$store.state.page;
       if (!pageSet) {
@@ -455,6 +437,7 @@ export default {
         this.optError('获取编辑器数据');
       }
 
+
       this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
     }
   },
@@ -462,6 +445,17 @@ export default {
     if (this.$store.state.page.phoneHeight > this.wrapHeight) {
       this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
     }
+  },
+  created() {
+    const ele = this;
+    document.onkeydown = (e) => {
+      if (e.keyCode && parseInt(e.keyCode, 10) === 8) {
+        const { layerActive, layerLists } = ele.$store.state.editor;
+        if (layerLists.length && layerActive !== -1) {
+          this.dragDel();
+        }
+      }
+    };
   },
 
 };

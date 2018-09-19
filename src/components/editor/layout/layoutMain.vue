@@ -86,53 +86,6 @@ export default {
     dragTextClick(index, type) { // 点击组件
       this.dragClick(index, type);
     },
-
-    dragDel(s, n, dragIndex) { // 删除当前编辑组件
-      const { editor } = this.$store.state;
-      const { layerActive, layerLists, typeCat } = editor;
-      const lActive = layerActive === -1 ? this.getLayerActive(s, n) : layerActive;
-      if (layerLists.length) {
-        const sort = s !== undefined ? s : layerLists[lActive].type;
-        const num = n !== undefined ? n : layerLists[lActive].num;
-        for (const k in typeCat) {
-          if (editor[typeCat[k][0]].length) {
-            editor[typeCat[k][0]].map((item, i) => {
-              if (item.dragIndex > dragIndex) {
-                const ke = editor[typeCat[k][0]][i].dragIndex - 1;
-                editor[typeCat[k][0]][i].dragIndex = ke;
-                editor[typeCat[k][0]][i].zIndex = ke;
-              }
-              return true;
-            });
-          }
-        }
-
-        const cat = typeCat[sort];
-        editor[cat[0]] = editor[cat[0]].filter((item, key) => {
-          if (key !== num) {
-            return item;
-          }
-          return false;
-        });
-
-        editor[cat[2]] = false;
-        if (!editor[cat[0]].length) {
-          editor[cat[1]] = false;
-        }
-        editor.layerLists = layerLists.filter((item, key) => {
-          if (key !== lActive) {
-            if (item.type === sort && item.num > num) {
-              layerLists[key].num -= 1;
-            }
-            return item;
-          }
-          return false;
-        });
-        editor.layerActive = -1;
-        editor.layoutKey -= 1;
-        this.$store.commit('editor_update', editor);
-      }
-    },
     resizestop(ev) {
       this.$store.commit('page_update', {
         phoneHeight: ev.height,
