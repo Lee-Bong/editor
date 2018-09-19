@@ -262,5 +262,4 @@ export default {
 .setting-content .el-input--mini .el-input__inner {
   padding: 0 8px;
 }
-
 </style>

@@ -19,16 +19,16 @@
               @change="sourceChange('2')" label="2">在线视频</el-radio>
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '1'"
-            label="选择视频：" size="mini" class="video-el">
+            label="选择视频：" size="mini" class="is-require video-el">
             <media-upload :source="mediaSource" @upload-done="mediaUploadDone"
             @file-remove="mediaFileRemove" ref="mediaUpload"/>
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
-            size="mini" class="video-el">
+            size="mini" class="is-require video-el">
             <el-input type="text" ref="lineVideo"
                v-model="lineSource" @blur="lineSourceBlur"></el-input>
           </el-form-item>
-          <el-form-item label="视频封面：" size="mini" class="video-el">
+          <el-form-item label="视频封面：" size="mini" class="is-require video-el">
             <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
           </el-form-item>
           <el-form-item label="位置：" size="mini">

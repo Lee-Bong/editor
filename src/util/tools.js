@@ -31,7 +31,7 @@ export function nowTime() {
   const myDate = new Date();
   const hours = myDate.getHours();
   const minutes = myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}` : myDate.getMinutes();
-  const am = hours > 12 ? ' AM' : ' PM';
+  const am = hours > 12 ? ' PM' : ' AM';
   return `${hours}:${minutes}${am}`;
 }
 

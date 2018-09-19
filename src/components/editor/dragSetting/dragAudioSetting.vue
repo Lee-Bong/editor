@@ -18,7 +18,8 @@
           <el-radio v-model="dragForm.sourceType" label="2"
             @change="audioSourceChange('2')">在线音频</el-radio>
         </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '1'" label="上传音频：" size="mini" class="audio-el">
+        <el-form-item v-if="dragForm.sourceType === '1'" label="上传音频：" size="mini"
+          class="is-require audio-el">
           <media-upload :source="mediaSource" @upload-done="uploadDone"
           @file-remove="fileRemove" ref="mediaUpload"/>
         </el-form-item>
@@ -26,7 +27,8 @@
           <el-input type="text" v-model="title"
            :disabled="!dragForm.play.url" @blur="lineTitleBlur"></el-input>
         </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '2'" label="音频链接：" size="mini" class="audio-el">
+        <el-form-item v-if="dragForm.sourceType === '2'" label="音频链接：" size="mini"
+          class="is-require audio-el">
           <el-input type="text" v-model="lineSource" @blur="lineSourceBlur"></el-input>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '2'" label="标题：" size="mini" class="audio-el">

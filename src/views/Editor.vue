@@ -28,6 +28,7 @@
             <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
                 height: ($store.state.page.phoneHeight+64)+'px'}">
               <div class="top-banner" @click="topBannerClick">
+                <div class="now-show">{{this.now}}</div>
                 <div class="web-title">{{$store.state.page.title}}</div>
               </div>
               <div class="screen-line" v-show="$store.state.page.phoneHeight > 667"></div>
@@ -52,6 +53,7 @@ import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
 import dragCom from '@/util/dragMxi';
+import { nowTime } from '@/util/tools';
 import merge from 'webpack-merge';
 import * as service from '../service';
 
@@ -89,6 +91,8 @@ export default {
       },
       wrapHeight: 667,
       isFirst: true, // 空白编辑页
+      now: '00:00 AM',
+      nowTimer: null,
     };
   },
 
@@ -361,8 +365,7 @@ export default {
         msg = '请添加页面名称～';
         this.topBannerClick();
         isOk = false;
-      }
-      if (!page.img || (page.img && !page.img.url)) {
+      } else if (!page.img || (page.img && !page.img.url)) {
         this.topBannerClick();
         isOk = false;
       } else {
@@ -461,12 +464,17 @@ export default {
         }
       }
     };
+    this.now = nowTime();
+    this.nowTimer = setInterval(() => {
+      this.now = nowTime();
+    }, 60000);
+  },
+  destroyed() {
+    clearInterval(this.nowTimer);
   },
 
 };
-
 </script>
-
 
 <style>
 html,
@@ -702,7 +710,7 @@ body {
 
 .top-banner {
   cursor: pointer;
-  background: url("../assets/images/page_banner.png") no-repeat center center;
+  background: url("../assets/images/page_banner1.png") no-repeat center center;
   background-size: 375px auto;
   z-index: 10;
   position: absolute;
@@ -743,5 +751,18 @@ body {
   top: 731px;
   border: 0.5px dashed #eb5648;
   z-index: 1001;
+}
+.now-show {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    line-height: 22px;
+    font-family: 'Arial';
+}
+.is-require .el-form-item__label:before {
+  content: '*';
+  color: #eb5648;
 }
 </style>
