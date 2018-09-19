@@ -76,8 +76,6 @@ export default {
         };
         return componentJsonTemp;
       });
-      console.log(this.pageJson.components);
-      console.log(finalComponentsJson);
       return finalComponentsJson;
     },
     initShare() {
