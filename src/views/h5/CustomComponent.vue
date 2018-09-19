@@ -38,8 +38,8 @@
                 :key="index"
                 :src="image.url"
                 :style="{
-                    height: image.size.w * scale,
-                    width: image.size.h * scale
+                    height: `${image.size.h * scale}px`,
+                    width: `${image.size.w * scale}px`
                 }"
                 alt=""
             />
