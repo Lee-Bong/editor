@@ -7,7 +7,8 @@
             top: `${component.location.y}px`,
             left: `${component.location.x}px`,
             width: `${component.size.w}px`,
-            height: `${component.size.h}px`
+            height: `${component.size.h}px`,
+            'z-index': component.style['z-index'] || 0
     }"
     >
         <div
