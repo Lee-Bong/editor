@@ -84,7 +84,9 @@ export default {
       const fromURL = `${window.location.host}/we/view?page_id=${
         this.pageId
       }&is_formal=${this.isFormal}&isShare=1`;
-      const { shareDec, shareImg, shareTitle } = this.pageJson.page;
+      const {
+        shareDec, shareImg, shareTitle, title,
+      } = this.pageJson.page;
       jssdk.registerTopbarRightButton(
         {
           image:
@@ -92,7 +94,7 @@ export default {
         },
         () => {
           jssdk.share({
-            title: shareTitle,
+            title: shareTitle || title,
             content: shareDec,
             imageURL: shareImg,
             fromURL,
