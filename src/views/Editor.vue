@@ -227,7 +227,7 @@ export default {
               'text-align': item.textAlign,
               'text-color': item.textColor,
               'line-height': item.lineHeight,
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -247,7 +247,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -268,7 +268,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
             sourceType: item.sourceType, // 1.普通跳转 2. 唤起下载app
             awakeLink: item.awakeLink,
@@ -292,7 +292,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
             imgList: item.imgList,
           });
@@ -316,7 +316,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -339,7 +339,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -357,6 +357,11 @@ export default {
       const { typeCat } = editor;
       let isOk = true;
       let msg = '请添加分享缩略图～';
+      if (!page.title) {
+        msg = '请添加页面名称～';
+        this.topBannerClick();
+        isOk = false;
+      }
       if (!page.img || (page.img && !page.img.url)) {
         this.topBannerClick();
         isOk = false;
