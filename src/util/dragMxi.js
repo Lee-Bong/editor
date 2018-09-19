@@ -2,8 +2,8 @@ export default function dragCom() {
   const drag = {
     methods: {
       dragClick(index, type) { // 点击组件  index=-1表示全部都取消，index=-2表示点击了网页标题
-        let newEditor,
-          layerActive;
+        let newEditor;
+        let layerActive;
         if (type !== undefined) {
           newEditor = this.deActiveArr(index, type);
           layerActive = this.updateLayer(index, type);
@@ -52,7 +52,8 @@ export default function dragCom() {
         });
         return i;
       },
-      textActiveOff(arr, payload) {
+      textActiveOff(arrs, payload) {
+        const arr = arrs;
         const { index, isAll } = payload;
         if (arr && arr.length) {
           if (isAll !== undefined) {
@@ -68,6 +69,7 @@ export default function dragCom() {
                 arr[i].isActive = false;
                 arr[i].zIndex = arr[i].dragIndex;
               }
+              return true;
             });
           }
         }
@@ -94,6 +96,63 @@ export default function dragCom() {
         }
         return dis;
       },
+      dragDel(s, n, dragIndex) { // 删除当前编辑组件
+        this.$confirm('确定删除组件? 删除后将不可恢复', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(() => {
+          this.delComponet(s, n, dragIndex);
+        }).catch(() => {
+        });
+      },
+      delComponet(s, n, dragIndex) {
+        const { editor } = this.$store.state;
+        const { layerActive, layerLists, typeCat } = editor;
+        const lActive = layerActive === -1 ? this.getLayerActive(s, n) : layerActive;
+        if (layerLists.length) {
+          const sort = s !== undefined ? s : layerLists[lActive].type;
+          const num = n !== undefined ? n : layerLists[lActive].num;
+          const cat = typeCat[sort];
+          const curIndex = dragIndex;
+          const index = dragIndex ? curIndex : editor[cat[0]][num];
+          for (const k in typeCat) {
+            if (editor[typeCat[k][0]].length) {
+              editor[typeCat[k][0]].map((item, i) => {
+                if (item.dragIndex > index) {
+                  const ke = editor[typeCat[k][0]][i].dragIndex - 1;
+                  editor[typeCat[k][0]][i].dragIndex = ke;
+                  editor[typeCat[k][0]][i].zIndex = ke;
+                }
+                return true;
+              });
+            }
+          }
+          editor[cat[0]] = editor[cat[0]].filter((item, key) => {
+            if (key !== num) {
+              return item;
+            }
+            return false;
+          });
+
+          editor[cat[2]] = false;
+          if (!editor[cat[0]].length) {
+            editor[cat[1]] = false;
+          }
+          editor.layerLists = layerLists.filter((item, key) => {
+            if (key !== lActive) {
+              if (item.type === sort && item.num > num) {
+                layerLists[key].num -= 1;
+              }
+              return item;
+            }
+            return false;
+          });
+          editor.layerActive = -1;
+          editor.layoutKey -= 1;
+          this.$store.commit('editor_update', editor);
+        }
+      },
 
     },
     computed: {
@@ -111,4 +170,4 @@ export default function dragCom() {
     },
   };
   return drag;
-};
+}

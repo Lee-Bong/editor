@@ -278,6 +278,12 @@ export default {
               duration: '00:00',
               url: '',
             },
+            linePlay: {
+              title: '',
+              isUplaod: false,
+              duration: '00:00',
+              url: '',
+            },
             position: 'relative',
           });
           newEditor = {

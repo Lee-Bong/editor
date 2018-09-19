@@ -1,12 +1,12 @@
 export default {
   state: {
     pageSet: true,
-    title: '活动页',
+    title: '',
     phoneWidth: 375,
     phoneHeight: 667,
     screenHeight: 667,
-    shareTitle: '分享标题',
-    shareDec: '分享描述',
+    shareTitle: '',
+    shareDec: '',
     shareImg: '',
     backgroundColor: '#fff',
     img: {
