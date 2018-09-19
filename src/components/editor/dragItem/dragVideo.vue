@@ -7,8 +7,8 @@
       :x="dragForm.location.x"
       :y="dragForm.location.y"
       :z="dragForm.zIndex"
-      :isDraggable="Boolean(dragForm.video && dragForm.video.url)"
-      :isResizable="Boolean(dragForm.video && dragForm.video.url)"
+      :isDraggable="isAction"
+      :isResizable="isAction"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
@@ -32,13 +32,22 @@
           <i class="el-icon-caret-right"></i>
         </div>
       </div>
-      <video v-if="isAction"
+      <video v-if="dragForm.sourceType === '1' &&  dragForm.video.url"
+        ref="videoPlay"
         class="video-show"
         :width="dragForm.size.w"
         :height="dragForm.size.h"
-        :poster="dragForm.video.poster" controls>
-          <source :src="dragForm.sourceType === '1' ? dragForm.video.url : dragForm.lineVideo.url"
+        :poster="dragForm.poster" controls>
+          <source :src="dragForm.video.url"
            type="video/mp4">
+        </video>
+        <video v-if="dragForm.sourceType === '2' &&  dragForm.lineVideo.url"
+        ref="lineVideoPlay"
+        class="video-show"
+        :width="dragForm.size.w"
+        :height="dragForm.size.h"
+        :poster="dragForm.poster" controls>
+          <source :src="dragForm.lineVideo.url">
         </video>
 
     </vue-drag-resize>
@@ -114,6 +123,12 @@ export default {
     },
   },
   updated() {
+    if (this.dragForm.sourceType === '1' && this.dragForm.video.url) {
+      this.$refs.videoPlay.src = this.dragForm.video.url;
+    }
+    if (this.dragForm.sourceType === '2' && this.dragForm.lineVideo.url) {
+      this.$refs.lineVideoPlay.src = this.dragForm.lineVideo.url;
+    }
   },
   mounted() {
   },

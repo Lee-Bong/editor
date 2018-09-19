@@ -21,11 +21,12 @@
           <el-form-item v-if="dragForm.sourceType === '1'"
             label="选择视频：" size="mini" class="video-el">
             <audio-uplaod :source="mediaSource" @upload-done="mediaUploadDone"
-            @file-remove="mediaFileRemove"/>
+            @file-remove="mediaFileRemove" ref="videoUpload"/>
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
             size="mini" class="video-el">
-            <el-input type="text" ref="lineVideo" v-model="lineSource" @blur="lineSourceBlur"></el-input>
+            <el-input type="text" ref="lineVideo"
+               v-model="lineSource" @blur="lineSourceBlur"></el-input>
           </el-form-item>
           <el-form-item label="视频封面：" size="mini" class="video-el">
             <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
@@ -124,11 +125,21 @@ export default {
       const isActive = Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
        || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
       if (!isActive && (this.dragForm.size.h !== this.$store.state.editor.mediaHeight
-        || this.dragForm.size.w !== this.$store.state.page.phoneWidth)) {
-        this.mediaChange({
-          poster: '',
-          url: '',
-        }, this, 'dragVideos', 'videoActive', true, true);
+        || this.dragForm.size.w !== this.$store.state.page.phoneWidth
+        || !this.dragForm.isLineUpload)) {
+        this.setVideoInit();
+      } else {
+        const videoObj = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        this.setVideoInit({
+          size: {
+            w: videoObj.w,
+            h: videoObj.h,
+          },
+          location: {
+            x: videoObj.x,
+            y: videoObj.y,
+          },
+        });
       }
       this.$emit('videoSourceChange', type, 'dragVideos', 'videoActive');
     },
@@ -166,10 +177,12 @@ export default {
           h: newH,
         };
       }
-      const videos = Object.assign({}, this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive], 
-      {
-        size,
-      });
+      const videos = Object.assign(
+        {}, this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive],
+        {
+          size,
+        },
+      );
       this.$store.commit('editor_update', { dragVideos: videos });
       // this.$emit('input-sizeChange', 'dragVideos', size, 'videoActive');
     },
@@ -180,6 +193,7 @@ export default {
       }
     },
     mediaUploadDone(file) {
+      this.$refs.videoUpload.uplaodDone();
       this.mediaSource = Object.assign({}, this.mediaSource, { name: file.beforeName });
       this.onMediaFileSuccess(file, 'dragVideos', 'videoActive');
     },
@@ -191,9 +205,11 @@ export default {
       }, this, 'dragVideos', 'videoActive', true);
     },
     onMediaFileSuccess(file, dragList, active) {
-      this.$refs.videoLoad.setAttribute('src', file.url);
+      // this.$refs.videoLoad.setAttribute('src', file.url);
+      this.$refs.videoLoad.src = file.url;
       const ele = this;
       this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
+        if (ele.$refs.videoLoad.currentSrc !== file.url) return false;
         if (ele.dragForm.sourceType === '1') {
           ele.$message({
             message: '视频上传成功～',
@@ -209,17 +225,19 @@ export default {
           sourceH: this.videoHeight,
           w: ele.$store.state.page.phoneWidth,
           h: newH,
+          x: 0,
+          y: 0,
           title: file.name || '',
           url: file.url,
-          isPoster: !!drags.video.poster,
-          poster: drags.video.poster ? drags.video.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
+          isPoster: !!drags.poster,
+          poster: drags.poster ? drags.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
         };
         ele.mediaChange(video, ele, dragList, active);
-        setTimeout(() => {
-          drags.isUpload = true;
-          videos[ele.$store.state.editor[active]] = drags;
-          ele.$store.commit('editor_update', { dragVideos: videos });
-        }, 100);
+        // setTimeout(() => {
+        //   drags.isUpload = true;
+        //   videos[ele.$store.state.editor[active]] = drags;
+        //   ele.$store.commit('editor_update', { dragVideos: videos });
+        // }, 100);
       });
       this.$refs.videoLoad.addEventListener('error', () => {
         if (ele.dragForm.sourceType === '2') {
@@ -234,6 +252,7 @@ export default {
           ele.mediaChange({}, ele, dragList, active, true);
         }
       });
+      this.ratioSet(ele, dragList, active);
     },
     mediaChange(video, ele, dragList, active, isRemove, isChange) {
       const lists = ele.$store.state.editor[dragList];
@@ -247,6 +266,8 @@ export default {
       }
       const clone = Object.assign({}, videoObj);
       clone.isUpload = false;
+      clone.isPoster = !!drags.poster;
+      clone.poster = drags.poster ? drags.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png';
       if (!isRemove) {
         clone.location = {
           x: 0,
@@ -263,7 +284,11 @@ export default {
         };
       }
       if (isChange) {
-         debugger;
+        clone.location = {
+          x: 0,
+          y: 0,
+        };
+
         if (this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url) {
           clone.size = {
             w: this.dragForm.video.w,
@@ -290,6 +315,7 @@ export default {
         type: 'error',
         duration: 2000,
       });
+      if (!msg) this.$refs.videoUpload.uplaodDone(true);
     },
     uploadDone(file) { // 封面上传成功
       let newFile;
@@ -303,14 +329,16 @@ export default {
       } else {
         this.imgObj = {};
         newFile = {
-          poster: '',
+          poster: 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
           posterTitle: '',
           isPoster: false,
         };
       }
       const videos = this.$store.state.editor.dragVideos;
       const drags = videos[this.$store.state.editor.videoActive];
+      drags.poster = newFile.poster;
       drags.video = Object.assign({}, drags.video, newFile);
+      drags.lineVideo = Object.assign({}, drags.lineVideo, newFile);
       videos[this.$store.state.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
     },
@@ -336,12 +364,14 @@ export default {
     },
     lineSourceBlur() {
       const val = this.lineSource;
+      if (this.lastCont && this.lastCont === val) return false;
+      this.lastCont = val;
       if (val) {
-        if (this.lastCont && this.lastCont === val) return false;
-        this.lastCont = val;
         if (this.dragForm.lineVideo &&
         this.dragForm.lineVideo.url && this.dragForm.lineVideo.url === val) return false;
         this.onMediaFileSuccess({ url: val }, 'dragVideos', 'videoActive');
+      } else {
+        this.setVideoInit(null, true);
       }
     },
     onlineFileError() { // 图片上传失败
@@ -350,6 +380,35 @@ export default {
         type: 'error',
         duration: 2000,
       });
+    },
+    setVideoInit(newVideo, isClear) { // 恢复视频初始展示
+      let newObj = {
+        sourceType: this.dragForm.sourceType,
+        isUpload: false,
+        size: {
+          w: this.$store.state.page.phoneWidth,
+          h: this.$store.state.editor.mediaHeight,
+        },
+        location: {
+          x: 0,
+          y: 0,
+        },
+      };
+      if (newVideo) {
+        newObj = Object.assign(newObj, newVideo);
+      }
+      if (isClear) {
+        if (this.dragForm.sourceType === '1' && this.dragForm.video.url) {
+          newObj = Object.assign(newObj, { video: { url: '' } });
+        } else if (this.dragForm.sourceType === '2' && this.dragForm.lineVideo.url) {
+          newObj = Object.assign(newObj, { lineVideo: { url: '' } });
+        }
+      }
+      const videos = this.$store.state.editor.dragVideos;
+      let drags = videos[this.$store.state.editor.videoActive];
+      drags = Object.assign({}, drags, newObj);
+      videos[this.$store.state.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragVideos: videos });
     },
   },
 };
