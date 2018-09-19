@@ -216,6 +216,12 @@ export default {
             type: 'success',
             duration: 2000,
           });
+        } else {
+          ele.$message({
+            message: '在线视频访问成功～',
+            type: 'success',
+            duration: 2000,
+          });
         }
         const videos = ele.$store.state.editor[dragList];
         const drags = videos[ele.$store.state.editor[active]];
@@ -233,11 +239,6 @@ export default {
           poster: drags.poster ? drags.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
         };
         ele.mediaChange(video, ele, dragList, active);
-        // setTimeout(() => {
-        //   drags.isUpload = true;
-        //   videos[ele.$store.state.editor[active]] = drags;
-        //   ele.$store.commit('editor_update', { dragVideos: videos });
-        // }, 100);
       });
       this.$refs.videoLoad.addEventListener('error', () => {
         if (ele.dragForm.sourceType === '2') {
@@ -252,7 +253,6 @@ export default {
           ele.mediaChange({}, ele, dragList, active, true);
         }
       });
-      this.ratioSet(ele, dragList, active);
     },
     mediaChange(video, ele, dragList, active, isRemove, isChange) {
       const lists = ele.$store.state.editor[dragList];
@@ -301,7 +301,7 @@ export default {
           };
         }
       }
-      drags = Object.assign(drags, clone);
+      drags = Object.assign({}, drags, clone);
       lists[ele.$store.state.editor[active]] = drags;
       ele.$store.commit('editor_update', { [dragList]: lists });
       this.ratioSet(ele, dragList, active);
@@ -349,7 +349,7 @@ export default {
       const lists = ele.$store.state.editor[dragList];
       let drags = lists[ele.$store.state.editor[active]];
       setTimeout(() => {
-        drags = Object.assign(drags, { isUpload: true });
+        drags = Object.assign({}, drags, { isUpload: true });
         lists[ele.$store.state.editor[active]] = drags;
         ele.$store.commit('editor_update', { [dragList]: lists });
       }, 100);
@@ -395,13 +395,13 @@ export default {
         },
       };
       if (newVideo) {
-        newObj = Object.assign(newObj, newVideo);
+        newObj = Object.assign({}, newObj, newVideo);
       }
       if (isClear) {
         if (this.dragForm.sourceType === '1' && this.dragForm.video.url) {
-          newObj = Object.assign(newObj, { video: { url: '' } });
+          newObj = Object.assign({}, newObj, { video: { url: '' } });
         } else if (this.dragForm.sourceType === '2' && this.dragForm.lineVideo.url) {
-          newObj = Object.assign(newObj, { lineVideo: { url: '' } });
+          newObj = Object.assign({}, newObj, { lineVideo: { url: '' } });
         }
       }
       const videos = this.$store.state.editor.dragVideos;

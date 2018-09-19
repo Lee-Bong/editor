@@ -150,7 +150,6 @@ export default {
     },
   },
   updated() {
-
   },
 };
 </script>
@@ -162,7 +161,6 @@ export default {
 .phone-content {
   position: absolute;
   top: 64px;
-  /* padding-top: 1px;  */
   left: 0;
   right: 0;
   width: 375px;
