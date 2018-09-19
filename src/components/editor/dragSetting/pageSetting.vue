@@ -21,7 +21,7 @@
             <el-input type="text" v-model="dragForm.shareDec"
              placeholder="微信分享描述，最多输入40个字"></el-input>
           </el-form-item>
-          <el-form-item label="分享缩略图：" size="mini" class="share-img is-require">
+          <el-form-item label="分享缩略图：" size="mini" class="share-img">
             <img-uplaod :imgObj="dragForm.img" @upload-done="uploadDone"
              @file-remove="fileRemove" />
           </el-form-item>

@@ -360,12 +360,9 @@ export default {
       const { page, editor } = this.$store.state;
       const { typeCat } = editor;
       let isOk = true;
-      let msg = '请添加分享缩略图～';
+      let msg = '请添加页面名称～';
       if (!page.title) {
         msg = '请添加页面名称～';
-        this.topBannerClick();
-        isOk = false;
-      } else if (!page.img || (page.img && !page.img.url)) {
         this.topBannerClick();
         isOk = false;
       } else {
