@@ -21,7 +21,7 @@
           <el-form-item v-if="dragForm.sourceType === '1'"
             label="选择视频：" size="mini" class="video-el">
             <audio-uplaod :source="mediaSource" @upload-done="mediaUploadDone"
-            @file-remove="mediaFileRemove" ref="videoUpload"/>
+            @file-remove="mediaFileRemove" ref="mediaUpload"/>
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
             size="mini" class="video-el">
@@ -193,7 +193,7 @@ export default {
       }
     },
     mediaUploadDone(file) {
-      this.$refs.videoUpload.uplaodDone();
+      this.$refs.mediaUpload.uplaodDone();
       this.mediaSource = Object.assign({}, this.mediaSource, { name: file.beforeName });
       this.onMediaFileSuccess(file, 'dragVideos', 'videoActive');
     },
@@ -315,7 +315,7 @@ export default {
         type: 'error',
         duration: 2000,
       });
-      if (!msg) this.$refs.videoUpload.uplaodDone(true);
+      if (!msg) this.$refs.mediaUpload.uplaodDone(true);
     },
     uploadDone(file) { // 封面上传成功
       let newFile;

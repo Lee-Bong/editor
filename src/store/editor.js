@@ -37,5 +37,6 @@ export default {
     },
     pageSet: true,
     mediaHeight: 300,
+    audioHeight: 82,
   },
 };
