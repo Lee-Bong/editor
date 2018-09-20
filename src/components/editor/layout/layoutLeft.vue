@@ -147,8 +147,8 @@ export default {
             y: textTop3,
             isActive: true,
             dragIndex: zIndex,
-            appLink: 'http://',
-            outLink: 'http://',
+            appLink: '',
+            outLink: '',
             location: {
               x: 0,
               y: 0,

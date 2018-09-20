@@ -182,6 +182,7 @@ export default {
     // console.log('destroyed');
   },
   updated() {
+
   },
 };
 </script>

@@ -49,17 +49,6 @@
             class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
-            :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
-            :disabled="!dragForm.isUpload" controls-position="right"
-            class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
-            :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
-            :disabled="!dragForm.isUpload" controls-position="right"
-            class="num-input"></el-input-number>
-        </el-form-item>
-        <div class="dec-label"> <label>宽</label> <label>高</label></div>
         <div v-if="dragForm.isUpload">
             <el-form-item label="固定位置：" size="mini">
             <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
@@ -149,9 +138,6 @@ export default {
     },
     locationChange() { // 位置值发生改变
       this.$emit('input-locationChange', 'dragAudios', this.dragForm.location, 'audioActive');
-    },
-    sizeChange() { // 大小值发生改变
-      this.$emit('input-sizeChange', 'dragAudios', this.dragForm.size, 'audioActive');
     },
     uploadDone(file) {
       this.onFileSuccess(file, 'dragAudios', 'audioActive');

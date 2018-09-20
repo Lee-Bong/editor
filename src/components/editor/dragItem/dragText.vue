@@ -12,6 +12,7 @@
       :parentLimitation="true"
       :preventActiveBehavior="true"
       :parentH="parentH"
+      contenteditable="true"
 
       @activated="activateEv"
       @clicked="dragTextClick(listIndex)"
@@ -36,7 +37,7 @@
           fontSize: dragForm.fontSize, lineHeight:dragForm.lineHeight,
           textAlign: dragForm.textAlign,
           color: dragForm.textColor}"
-        autofocus placeholder="请输入内容" />
+          placeholder="请输入内容" />
       <div class="input-record"
       ref="inputRecord"
       :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
@@ -83,7 +84,7 @@ export default {
   },
   methods: {
     activateEv() {
-      this.$refs.inputCont.focus();
+      // this.$refs.inputCont.focus();
     },
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
@@ -130,6 +131,8 @@ export default {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
 
+  },
+  created() {
   },
 };
 </script>

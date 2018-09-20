@@ -28,10 +28,8 @@
           </button>
         </div>
         <transition name="fade" mode="out-in">
-          <keep-alive>
             <table-list ref="tableList" v-if="activeTab === 'pages'" />
             <table-draft ref="tableDraftList" v-if="activeTab === 'draft'" />
-          </keep-alive>
         </transition>
       </div>
     </div>

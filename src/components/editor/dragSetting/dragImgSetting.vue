@@ -21,8 +21,8 @@
                 <em>+ 点击上传图片</em> ,或把图片拖到此处</div>
               <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
             </el-upload>
-            <img-review-item v-if="imgList && imgList.length" :imgObj='rev'
-              @file-change="fileModify" ref="imgReview" :index="index" />
+            <img-review-item v-if="imgList && imgList.length" :imgObj='imgList[0]'
+              @file-change="fileModify" ref="imgReview" :index="0" :isDel="false"/>
           </div>
           <div class="file-info" v-if="!!dragForm.notModify">
             <img-review-item :imgObj='dragForm.img' @file-change="fileModify"

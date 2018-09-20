@@ -89,6 +89,8 @@ export default {
       this.$store.commit('inactive_drags', { index, arr: this.dragName, isAll: this.beforeZ });
     },
   },
+  update() {
+  },
 };
 </script>
 

@@ -1,7 +1,7 @@
 <template>
 <div class="setting-wrap">
     <drag-text-setting
-      v-if="$store.state.editor.textSet"
+      v-if="this.$store.state.editor.dragTexts.length && $store.state.editor.isTextSet"
       :dragForm="this.$store.state.editor.dragTexts[this.$store.state.editor.textActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
@@ -11,7 +11,7 @@
 
     <drag-img-setting
       v-if="$store.state.editor.imgSet"
-      :dragForm="this.$store.state.editor.dragImages[this.$store.state.editor.imgActive]"
+      :dragForm="this.$store.state.editor.dragImages[this.$store.state.editor.isImgActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -20,7 +20,7 @@
 
     <drag-video-setting
       v-if="$store.state.editor.videoSet"
-      :dragForm="this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive]"
+      :dragForm="this.$store.state.editor.dragVideos[this.$store.state.editor.isVideoActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @videoSourceChange="sourceChange"
@@ -30,7 +30,7 @@
 
     <drag-audio-setting
       v-if="$store.state.editor.audioSet"
-      :dragForm="this.$store.state.editor.dragAudios[this.$store.state.editor.audioActive]"
+      :dragForm="this.$store.state.editor.dragAudios[this.$store.state.editor.isAudioActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @audioSourceChange="sourceChange"
@@ -40,7 +40,7 @@
 
     <drag-link-setting
       v-if="$store.state.editor.linkSet"
-      :dragForm="this.$store.state.editor.dragLinks[this.$store.state.editor.linkActive]"
+      :dragForm="this.$store.state.editor.dragLinks[this.$store.state.editor.isLinkActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -49,7 +49,7 @@
     />
     <drag-img-list-setting
       v-if="$store.state.editor.imgListSet"
-      :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.imgListActive]"
+      :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.isImgListActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"

@@ -93,6 +93,7 @@ export default {
       isFirst: true, // 空白编辑页
       now: '00:00 AM',
       nowTimer: null,
+      dataInit: '{"editor":{"layoutKey":0,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
     };
   },
 
@@ -113,6 +114,7 @@ export default {
       this.drag.left = newRect.left;
     },
     async saveEditor(isTrigger) { // 保存草稿
+      let { state, draft } = this.getEditorJson();
       const { isOk, msg } = this.checkSources();
       const ele = this;
       if (!isOk) {
@@ -123,7 +125,7 @@ export default {
         });
         return false;
       }
-      let { state, draft } = ele.getEditorJson();
+      // let { state, draft } = ele.getEditorJson();
       state = JSON.stringify(state);
       draft = JSON.stringify(draft);
       const params = {
@@ -184,7 +186,7 @@ export default {
           if (data) {
             ele.optSucsess('发布页面');
             ele.$router.push({
-              path: '/publish',
+              path: '/manage',
               query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
             });
           } else {
@@ -425,6 +427,13 @@ export default {
       });
       return isOk;
     },
+    editorInit(data) {
+      let init = data;
+      init = data ? init : this.dataInit;
+      const state = JSON.parse(init);
+      this.$store.commit('editor_update', state.editor);
+      this.$store.commit('page_update', state.page);
+    },
   },
   async mounted() {
     if (this.$route.query.page_id) {
@@ -432,18 +441,17 @@ export default {
         this.isFirst = false;
         const { data } = await service.getPageInfo(this.$route.query.page_id);
         if (data) {
-          const state = JSON.parse(data.state);
-          this.$store.commit('editor_update', state.editor);
-          this.$store.commit('page_update', state.page);
+          this.editorInit(data.state);
         } else {
-          this.optError('获取编辑器数据');
+          this.optError('获取编辑器数据, 请重试～');
+          this.editorInit();
         }
       } catch (err) {
-        this.optError('获取编辑器数据');
+        this.optError('获取编辑器数据, 请重试～');
       }
-
-
       this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
+    } else {
+      this.editorInit();
     }
   },
   updated() {
@@ -453,18 +461,21 @@ export default {
   },
   created() {
     const ele = this;
+    const classList = ['drag-text', 'el-textarea__inner', 'el-input__inner'];
     document.onkeydown = (e) => {
       if (e.keyCode && parseInt(e.keyCode, 10) === 8) {
-        const { layerActive, layerLists } = ele.$store.state.editor;
-        if (layerLists.length && layerActive !== -1) {
-          this.dragDel();
+        if (!classList.includes(document.activeElement.className)) {
+          const { layerActive, layerLists } = ele.$store.state.editor;
+          if (layerLists.length && layerActive !== -1) {
+            this.dragDel();
+          }
         }
       }
     };
     this.now = nowTime();
     this.nowTimer = setInterval(() => {
       this.now = nowTime();
-    }, 60000);
+    }, 30000);
   },
   destroyed() {
     clearInterval(this.nowTimer);

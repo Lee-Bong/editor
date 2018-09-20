@@ -16,6 +16,7 @@ Vue.use(ElementUI);
 Vue.component('vue-drag-resize', VueDragResize);
 
 new Vue({
+  hashbang: true,
   router,
   store,
   render: h => h(App),

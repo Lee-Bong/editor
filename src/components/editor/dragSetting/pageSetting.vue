@@ -14,11 +14,11 @@
             <el-input type="text" v-model="dragForm.title" placeholder="H5标题，最多输入10个字"></el-input>
           </el-form-item>
           <el-form-item label="分享标题：" size="mini">
-            <el-input type="text" v-model="dragForm.shareTitle"
+            <el-input type="text" v-model="dragForm.shareTitle" maxlength=15
              placeholder="微信分享标题，最多输入15个字"></el-input>
           </el-form-item>
           <el-form-item label="分享描述：" size="mini">
-            <el-input type="text" v-model="dragForm.shareDec"
+            <el-input :rows="2" maxlength=40 v-model="dragForm.shareDec" type="textarea"
              placeholder="微信分享描述，最多输入40个字"></el-input>
           </el-form-item>
           <el-form-item label="分享缩略图：" size="mini" class="share-img">

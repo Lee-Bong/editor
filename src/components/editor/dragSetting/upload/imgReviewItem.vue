@@ -1,31 +1,27 @@
 <template>
-<div class="img-review-item">
-  <div class="image-review">
-    <div class="srouce-image"
-    :style="{background: !imgObj.url ? '#ddd'
+  <div class="img-review-item" v-if="imgObj && imgObj.url">
+    <div @click="onFileRemove" class="review-del" v-if="isDel">
+      <i class="el-icon-circle-close"></i>
+    </div>
+    <div class="image-review">
+      <div class="srouce-image" :style="{background: !(imgObj && imgObj.url) ? '#ddd'
      : 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
-    <i v-if="!imgObj.url" class="el-icon-loading"></i>
-    <div class="modify-image">
-      <el-upload
-        :disabled="isLoading"
-        class="upload-modify"
-        action=""
-        :show-file-list="false"
-        :limit="1"
-        accept=".png,.gif,.jpeg, .jpg"
-        :on-remove="onFileRemove"
-        :on-change="onFileChange">
-        <div class="el-upload__text">更换图片</div>
-      </el-upload>
+      <i v-if="!(imgObj && imgObj.url)" class="el-icon-loading"></i>
+      <div class="modify-image">
+        <el-upload :disabled="isLoading" class="upload-modify" action=""
+          :show-file-list="false" :limit="1" accept=".png,.gif,.jpeg, .jpg"
+          :on-change="onFileChange" :auto-upload="false">
+          <div class="el-upload__text">更换图片</div>
+        </el-upload>
+      </div>
+    </div>
+    <div class="image-alt">
+      <el-input :disabled="isLoading" v-model="imgObj.title" :title="imgObj.title"
+        class="alt-input" clearable></el-input>
+      <el-progress :percentage="pre" class="modify-precent"
+        :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
     </div>
   </div>
-  <div class="image-alt">
-    <el-input :disabled="isLoading" v-model="imgObj.title"
-     :title="imgObj.title" class="alt-input" clearable></el-input>
-    <el-progress  :percentage="pre"
-     class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
-  </div>
-</div>
 </template>
 
 <script>
@@ -34,6 +30,7 @@ export default {
   props: {
     imgObj: Object,
     index: Number,
+    isDel: Boolean,
   },
   data() {
     return {
@@ -73,11 +70,12 @@ export default {
       }, 15);
     },
     onFileRemove() {
+      this.$emit('file-remove', this.index || 0);
     },
   },
   mounted() {
-    this.isLoading = this.imgObj.isLoading ? this.imgObj.isLoading : false;
     this.$nextTick(() => {
+      this.isLoading = this.imgObj && this.imgObj.isLoading ? this.imgObj.isLoading : false;
       if (this.isLoading) {
         this.loadingPre();
       }
@@ -87,71 +85,78 @@ export default {
 </script>
 
 <style>
-  .img-review-item {
-    display: flex;
-    border: 1px dashed #ddd;
-    padding: 10px;
-    margin: 10px;
-  }
-  .image-review {
-      position: relative;
-      width: 100px;
-      height: 100px;
-      margin-right: 10px;
-      border: 1px solid #e5e5e5;
-      text-align: center;
-    }
-    .srouce-image {
-        height: 80px;
-        width: 100px;
-            border: 0;
-            outline: none;
-        }
-        .el-icon-loading {
-    position: absolute;
-    top: 35%;
-    left: 42%;
-    animation: rotating 3s linear infinite;
-  }
-        .modify-image {
-          position: absolute;
-          color: #fff;
-      background: rgba(0,0,0,.5);
-      bottom: 0;
-      width: 100%;
-      height: 20px;
-      font-size: 12px;
-      line-height: 20px;
-      cursor: pointer;
-      flex-shrink: 0;
-        }
-        .image-alt {
-          flex-grow: 1;
-          flex-shrink: 1;
-        }
-  .alt-input .el-input__inner {
-    height: 30px;
-    border-radius: 2px;
-    padding: 0 8px;
-    line-height: 30px;
-    font-size: 12px;
-
-
-  }
-    .modify-image  .el-upload-list.el-upload-list--text {
-display: none!important;
-  }
-  .modify-precent {
-    margin-top: 20px;
-    opacity: 0;
-  }
-  .precent-out {
-    opacity: 1;
-    transition: opacity 0s;
-  }
-  .precent-in {
-    opacity: 0;
-    transition: opacity 1s;
-  }
-
+.img-review-item {
+  display: flex;
+  border: 1px dashed #ddd;
+  padding: 10px;
+  margin: 10px;
+  position: relative;
+  cursor: move;
+}
+.image-review {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+  border: 1px solid #e5e5e5;
+  text-align: center;
+}
+.srouce-image {
+  height: 80px;
+  width: 100px;
+  border: 0;
+  outline: none;
+}
+.el-icon-loading {
+  position: absolute;
+  top: 35%;
+  left: 42%;
+  animation: rotating 3s linear infinite;
+}
+.modify-image {
+  position: absolute;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.image-alt {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+.alt-input .el-input__inner {
+  height: 30px;
+  border-radius: 2px;
+  padding: 0 8px;
+  line-height: 30px;
+  font-size: 12px;
+}
+.modify-image .el-upload-list.el-upload-list--text {
+  display: none !important;
+}
+.modify-precent {
+  margin-top: 20px;
+  opacity: 0;
+}
+.precent-out {
+  opacity: 1;
+  transition: opacity 0s;
+}
+.precent-in {
+  opacity: 0;
+  transition: opacity 1s;
+}
+.review-del {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  color: #999999ba;
+  cursor: pointer;
+  font-size: 18px;
+}
 </style>
