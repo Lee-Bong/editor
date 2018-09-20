@@ -4,11 +4,11 @@
     <div class="paly-control">
       <div class="icons">
         <el-button class="paly-icon paly" v-if="!isPlay || !play.isUplaod"
-          :type="!play.isUplaod ? 'info' : 'primary'" icon="el-icon-caret-right"
+          :type="!play.isUplaod ? 'info' : 'primary'" icon="iconfont ed-icon-paly"
           circle :disabled="!play.isUplaod" plain @click="audioPlay"></el-button>
+          <el-button class="paly-icon" v-if="isPlay && play.isUplaod" type="primary"
+        icon="iconfont ed-icon-zanting" circle @click="audioPause"></el-button>
       </div>
-      <el-button class="paly-icon" v-if="isPlay && play.isUplaod" type="primary"
-        icon="el-icon-message" circle @click="audioPause"></el-button>
       <div class="paly-precent">
         <el-slider v-model="playPrecent" :format-tooltip="formatTooltip"
          :disabled="!play.isUplaod" @change="precentChange"></el-slider>
@@ -90,7 +90,8 @@ export default {
 <style>
 .audio-upload-item {
   position: relative;
-  min-height: 82px;
+  min-height: 80px;
+  border: 1px solid #ddd;
 }
 .audio-title {
   height: 16px;
@@ -104,6 +105,9 @@ export default {
   z-index: 1;
 }
 .paly-icon {
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
   position: absolute;
   z-index: 12;
 }
@@ -137,5 +141,8 @@ export default {
 .play-time {
   font-size: 13px;
   margin-left: 15px;
+}
+.iconfont.ed-icon-paly {
+  margin-left: 2px;
 }
 </style>

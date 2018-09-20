@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Button from 'element-ui/lib/button';
 import Slider from 'element-ui/lib/slider';
 import './element-ui.scss';
+import '../../assets/icons/iconfont.css';
+
 import { axios } from '../../service';
 
 import App from './App.vue';

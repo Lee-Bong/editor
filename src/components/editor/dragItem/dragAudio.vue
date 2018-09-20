@@ -9,7 +9,7 @@
       :y="dragForm.location.y"
       :z="dragForm.zIndex"
       :isDraggable="isAction"
-      :isResizable="isAction"
+      :isResizable="false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
