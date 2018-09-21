@@ -6,22 +6,15 @@
 
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, 'Microsoft YaHei', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
 }
 body {
-  margin: 0
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  margin: 0;
+  padding: constant(safe-area-inset-top)
+        constant(safe-area-inset-right)
+        constant(safe-area-inset-bottom)
+        constant(safe-area-inset-left);
 }
 </style>

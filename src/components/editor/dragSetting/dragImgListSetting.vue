@@ -12,7 +12,7 @@
     </div>
     <div class="setting">
       <el-form ref="form">
-        <el-form-item label="位置：" size="mini">
+        <!-- <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :disabled="!dragForm.imgList.length"
             :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
@@ -22,7 +22,7 @@
             :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
-        <div class="dec-label"> <label>X</label> <label> Y</label></div>
+        <div class="dec-label"> <label>X</label> <label> Y</label></div> -->
         <div class="upload-wrap upload-wrap--list">
           <el-upload
             class="upload-demo"
@@ -37,7 +37,7 @@
             accept=".png,.gif,.jpeg, .jpg">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
-            <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
+            <div class="el-upload__tip" slot="tip">建议宽度750像素，支持多选</div>
           </el-upload>
           <draggable class="upload-reviews" @update="imgListUpdated">
             <transition-group name="list-complete" >
@@ -189,7 +189,7 @@ export default {
       });
     },
     updateHeight() {
-      let wrapH = 0;
+      let wrapH = this.dragForm.location.y || 0;
       this.imgList.map((item) => {
         if (item.size && item.size.h) {
           wrapH += item.size.h;
