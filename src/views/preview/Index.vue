@@ -112,7 +112,7 @@ export default {
     },
     realUrl() {
       const { protocol, host } = window.location;
-      return `${protocol}://${host}/we/view?page_id=${this.pageId}`;
+      return `${protocol}//${host}/we/view?page_id=${this.pageId}`;
     },
   },
 };

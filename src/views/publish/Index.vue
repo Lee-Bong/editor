@@ -94,7 +94,7 @@ export default {
     },
     realUrl() {
       const { protocol, host } = window.location;
-      return `${protocol}://${host}/we/view?page_id=${this.pageId}&is_formal=1`;
+      return `${protocol}//${host}/we/view?page_id=${this.pageId}&is_formal=1`;
     },
   },
 };
