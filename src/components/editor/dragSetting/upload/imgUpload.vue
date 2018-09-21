@@ -49,6 +49,7 @@ export default {
       }
     },
     fileRemove() {
+      this.$refs.fileUpload.value = '';
       this.$emit('file-remove');
     },
     onFileSuccess() {

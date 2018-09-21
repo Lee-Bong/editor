@@ -171,7 +171,7 @@ export default {
   font: 400 11px system-ui;
   padding: 2px;
   z-index: -1;
-  /* visibility: hidden; */
+  visibility: hidden;
 }
 .input-record textarea {
   padding: 5px;
