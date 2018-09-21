@@ -123,6 +123,7 @@ export default {
           h: newH,
         };
         ele.fileDone(key, updateImg);
+        this.updateHeight();
       };
       dragImg.onerror = () => {
         this.onFileError(key);
@@ -183,6 +184,20 @@ export default {
       drag.imgList = this.imgList;
       imgLists[imgListActive] = drag;
       this.$set(this.$store.state.editor, 'dragImgLists', imgLists);
+    },
+    updateHeight() {
+      let wrapH = 0;
+      this.imgList.map((item) => {
+        if (item.size && item.size.h) {
+          wrapH += item.size.h;
+        }
+        return true;
+      });
+      if (wrapH > this.$store.state.page.phoneHeight) {
+        this.$store.commit('page_update', {
+          phoneHeight: wrapH,
+        });
+      }
     },
     imgListUpdated(evt) {
       const { oldIndex, newIndex } = evt;

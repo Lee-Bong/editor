@@ -1,9 +1,12 @@
 <template>
     <div class="qr-code-container">
       <div class="url">
-        <div class="text">
-          {{url}}
-        </div>
+        <el-input
+          :value="url"
+          :readonly="true"
+          @focus="onUrlFocus"
+          size="mini"
+        ></el-input>
         <div>
           <el-button
             class="copy-btn"
@@ -64,15 +67,23 @@ export default {
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H,
       };
-      const qr = new QRCode(this.$refs.qrCode, { ...defaultOption, ...this.qrOption });
+      const qr = new QRCode(this.$refs.qrCode, {
+        ...defaultOption,
+        ...this.qrOption,
+      });
       if (!this.footer) {
         setTimeout(() => {
           const ele = this;
           const url = ele.$refs.qrCode.children[1].getAttribute('src');
-          document.getElementsByClassName('qrcode-download')[0].setAttribute('href', url);
+          document
+            .getElementsByClassName('qrcode-download')[0]
+            .setAttribute('href', url);
         });
       }
       return qr;
+    },
+    onUrlFocus(e) {
+      e.srcElement.select();
     },
   },
 };
@@ -84,7 +95,11 @@ export default {
   .url {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-bottom: 40px;
+    .el-input {
+      margin-right: 5px;
+    }
     .text {
       padding: 2px;
       width: 200px;

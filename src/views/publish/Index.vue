@@ -93,7 +93,8 @@ export default {
       return this.$route.query.page_id;
     },
     realUrl() {
-      return `http://${window.location.host}/we/view?page_id=${this.pageId}&is_formal=1`;
+      const { protocol, host } = window.location;
+      return `${protocol}//${host}/we/view?page_id=${this.pageId}&is_formal=1`;
     },
   },
 };

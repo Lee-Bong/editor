@@ -20,7 +20,7 @@
         <img
             v-if="component.type === 2"
             :style="component.style"
-            :src="component.url"
+            :src="transformImgUrl(component.url)"
         />
         <div
             v-if="component.type === 3"
@@ -32,12 +32,11 @@
         <div
             v-if="component.type === 4"
             :style="component.style"
-            :src="component.url"
         >
             <img
                 v-for="(image, index) in component.imgList"
                 :key="index"
-                :src="image.url"
+                :src="transformImgUrl(image.url)"
                 :style="{
                     height: `${image.size.h * scale}px`,
                     width: `${image.size.w * scale}px`
@@ -108,6 +107,9 @@ export default {
   },
   props: ['component', 'scale'],
   methods: {
+    transformImgUrl(url) {
+      return url.replace(/^https?:\/\//, '');
+    },
     handleLinkClick() {
       // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
       const {
