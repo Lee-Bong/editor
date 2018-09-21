@@ -561,9 +561,6 @@ body {
   padding: 0 !important;
 }
 
-.el-button + .el-button:nth-child(2n + 1) {
-  margin-left: 0;
-}
 .el-card {
   border-top: 0;
 }

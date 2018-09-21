@@ -1,10 +1,8 @@
 <template>
-  <div :style="{marginTop: dragForm.location.y + 'px', zIndex: dragForm.zIndex}">
-    <div :isActive="dragForm.isActive" :w="dragForm.size.w" :h="dragForm.size.h" :sticks="[]"
-      :x="dragForm.location.x" :y="dragForm.location.y"
-      :z="dragForm.zIndex" :index="dragForm.dragIndex"
-      :parentLimitation="true" :listIndex="listIndex" :isDraggable="false" :isResizable="false"
-      :preventActiveBehavior="true" @click="dragTextClick(listIndex)" class="drag-img-list"
+  <div :style="{top: dragForm.location.y + 'px', width: '100%',
+  zIndex: dragForm.zIndex, position: 'absolute'}" :index="dragForm.dragIndex"
+  @click="dragTextClick(listIndex)">
+    <div class="drag-img-list"
       ref="imgListWrap"
       :class="[dragForm.isActive ? 'active': '',
        JSON.stringify(dragForm.imgList) === '[]' ? 'init': '']">
@@ -39,13 +37,6 @@ export default {
       beforeZ: 0,
       inputValue: '',
       input: '',
-      drag: {
-        width: 375,
-        height: 300,
-        top: 0,
-        left: 0,
-        layerActive: 0,
-      },
     };
   },
 
@@ -53,24 +44,9 @@ export default {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 4);
     },
-    onResezing(newRect) {
-      this.drag.width = newRect.width;
-      this.drag.height = newRect.height;
-      this.drag.top = newRect.top;
-      this.drag.left = newRect.left;
-    },
-    resize(newRect) {
-      this.drag.width = newRect.width;
-      this.drag.height = newRect.height;
-      this.drag.top = newRect.top;
-      this.drag.left = newRect.left;
-    },
     // 删除组件
     dragDel(index) {
       this.$emit('dragDel', 4, index, this.dragForm.dragIndex);
-    },
-    dragDeactivated(index) { // 点击组件外区域
-      this.$store.commit('inactive_drags', { index, arr: this.dragName, isAll: this.beforeZ });
     },
   },
 };
