@@ -1,6 +1,6 @@
 export default {
   state: {
-    layoutKey: 0, // 层级管理，从0累加
+    layoutKey: 1, // 层级管理，从1累加
     dragTexts: [], // 组件-文本
     dragImages: [], // 组件-图片
     dragLinks: [], // 热区

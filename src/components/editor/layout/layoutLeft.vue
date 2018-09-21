@@ -1,16 +1,16 @@
 <template>
-<el-aside width="200px" class="left-btns">
- <el-card v-for="(com, index) in edComponets" :key="index">
-    <div slot="header">
-    {{com.kind}}
-    </div>
-    <el-button v-for="(list, i) in com.list" :key="i" type="text" class="ed-com"
-      @click="dragItemClick(list.type)">
-      <i :class="['iconfont', list.icon]"></i>
-      <span class="el-com-text">{{list.text}}</span>
-    </el-button>
-</el-card>
-</el-aside>
+  <el-aside width="200px" class="left-btns">
+    <el-card v-for="(com, index) in edComponets" :key="index" class="left-btns-card">
+      <div slot="header">
+        {{com.kind}}
+      </div>
+      <el-button v-for="(list, i) in com.list" :key="i" type="text"
+       class="ed-com" @click="dragItemClick(list.type)">
+        <i :class="['iconfont', list.icon]"></i>
+        <span class="el-com-text">{{list.text}}</span>
+      </el-button>
+      </el-card>
+  </el-aside>
 </template>
 
 <script>
@@ -320,8 +320,11 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style>
 .ed-com.el-button.el-button--text {
   margin-left: 10px;
+}
+.left-btns-card .el-card__body {
+  padding-bottom: 10px !important;
 }
 </style>

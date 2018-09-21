@@ -12,8 +12,8 @@
         :class="['dargDiv', {active: $store.state.editor.layerActive==index},'layer-item']"
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
-        <span v-if="!layer.editing" class="layout-name" >{{layer.name}}</span>
-        <input v-if="layer.editing" v-model="layer.name"
+        <span v-show="!layer.editing" class="layout-name" >{{layer.name}}</span>
+        <input v-show="layer.editing" v-model="layer.name"
         ref='nameEditor'
         :key="index"
         :autofocus="layer.editing"
@@ -190,8 +190,9 @@ export default {
   margin-left: 50px;
 }
 .dargDiv {
-  background: #fff !important;
+  background: #fff;
 }
+
 .layer-item {
   height: 40px;
   line-height: 40px;
@@ -200,9 +201,13 @@ export default {
   color: #323232;
 }
 
-.layer-item:hover,
 .layer-item:active,
 .layer-item.active {
+  background: #1593ffc9;
+  color: #fff !important;
+}
+.layer-item:hover
+{
   color: #1593ff;
 }
 
@@ -213,8 +218,10 @@ export default {
 .layout-name{
     height: 24px;
     padding: 5px;
+    line-height: 24px
 }
 .name-editor{
+  width: 230px;
   transition: border .2s linear,box-shadow .2s linear;
   border-radius: 3px;
   color: #1593ff;

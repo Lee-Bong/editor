@@ -254,10 +254,14 @@ export default {
     },
   },
   mounted() {
-    this.imgList = this.dragForm.imgList;
+    this.$nextTick(() => {
+      this.imgList = this.dragForm.imgList || [];
+    });
   },
   updated() {
-    this.imgList = this.dragForm.imgList;
+    this.$nextTick(() => {
+      this.imgList = this.dragForm.imgList || [];
+    });
   },
 };
 </script>

@@ -10,8 +10,8 @@
     />
 
     <drag-img-setting
-      v-if="$store.state.editor.imgSet"
-      :dragForm="this.$store.state.editor.dragImages[this.$store.state.editor.isImgActive]"
+      v-if="$store.state.editor.isImgSet"
+      :dragForm="this.$store.state.editor.dragImages[this.$store.state.editor.imgActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -20,7 +20,7 @@
 
     <drag-video-setting
       v-if="$store.state.editor.videoSet"
-      :dragForm="this.$store.state.editor.dragVideos[this.$store.state.editor.isVideoActive]"
+      :dragForm="this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @videoSourceChange="sourceChange"
@@ -30,7 +30,7 @@
 
     <drag-audio-setting
       v-if="$store.state.editor.audioSet"
-      :dragForm="this.$store.state.editor.dragAudios[this.$store.state.editor.isAudioActive]"
+      :dragForm="this.$store.state.editor.dragAudios[this.$store.state.editor.audioActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @audioSourceChange="sourceChange"
@@ -40,7 +40,7 @@
 
     <drag-link-setting
       v-if="$store.state.editor.linkSet"
-      :dragForm="this.$store.state.editor.dragLinks[this.$store.state.editor.isLinkActive]"
+      :dragForm="this.$store.state.editor.dragLinks[this.$store.state.editor.linkActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -48,8 +48,8 @@
       @linkSourceChange="sourceChange"
     />
     <drag-img-list-setting
-      v-if="$store.state.editor.imgListSet"
-      :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.isImgListActive]"
+      v-if="$store.state.editor.isImgListSet"
+      :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.imgListActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"

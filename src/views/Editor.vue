@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <el-row class="header-flex">
-          <el-col :span="10" type="flex">
+          <el-col :span="14" type="flex">
             <el-breadcrumb separator="/" type="flex">
               <el-breadcrumb-item :to="{ path: '/manage' }">
                 微页面
@@ -13,7 +13,7 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
-          <el-col :span="14">
+          <el-col :span="10" type="flex" style="marginTop: -10px">
             <el-button @click="saveEditor">保存草稿</el-button>
             <el-button @click="reviewEditor">预览</el-button>
             <el-button type="primary" class="publish-btn" @click="publishEditor">发布</el-button>
@@ -93,7 +93,7 @@ export default {
       isFirst: true, // 空白编辑页
       now: '00:00 AM',
       nowTimer: null,
-      dataInit: '{"editor":{"layoutKey":0,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
+      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
     };
   },
 
@@ -475,7 +475,7 @@ export default {
     this.now = nowTime();
     this.nowTimer = setInterval(() => {
       this.now = nowTime();
-    }, 30000);
+    }, 2000);
   },
   destroyed() {
     clearInterval(this.nowTimer);
@@ -528,9 +528,6 @@ body {
   line-height: 56px;
 }
 
-.header-flex .el-col-14 {
-  margin-top: -10px;
-}
 .el-button.el-button--text {
   color: #333;
   width: 80px;
@@ -613,6 +610,7 @@ body {
 .el-card__header {
   padding: 5px 10px;
   line-height: 34px;
+  margin-top: 3px;
 }
 .fixed-right .el-card__header {
   padding: 0;
