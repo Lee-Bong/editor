@@ -36,7 +36,7 @@ export default function init(url, download) {
       if (!download.weixin) {
         return showTip();
       }
-      sharebar.downUrl = download.weixin;
+      sharebar.download = download.weixin;
     }
     sharebar.handleOpen();
   });

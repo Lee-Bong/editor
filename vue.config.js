@@ -1,5 +1,5 @@
 const { NODE_ENV } = process.env;
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const config = {
   baseUrl: NODE_ENV === 'production' ? 'https://static.seeyouyima.com/bfe/we/' : '/we',
@@ -11,12 +11,12 @@ const config = {
         { from: /^\/we\/view/, to: '/we/view.html' },
       ],
     },
-    proxy: {
-      '/api': {
-        target: 'https://test-bfe.meiyou.com',
-        changeOrigin: true,
-      },
-    },
+    // proxy: {
+    //   '/api': {
+    //     target: 'https://test-bfe.meiyou.com',
+    //     changeOrigin: true,
+    //   },
+    // },
   },
   configureWebpack: {
     plugins: [

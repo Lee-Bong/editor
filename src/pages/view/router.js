@@ -8,14 +8,9 @@ export default new Router({
   base: '/we/view',
   routes: [
     {
-      name: 'real',
-      path: '/real',
-      component: () => import('../../views/real/Index.vue'),
-    },
-    {
-      name: 'error',
-      path: '/error',
-      component: () => import('../../views/Error.vue'),
+      name: 'view',
+      path: '/',
+      component: () => import('../../views/h5/Index.vue'),
     },
   ],
 });

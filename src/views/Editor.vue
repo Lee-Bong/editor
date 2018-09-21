@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <el-row class="header-flex">
-          <el-col :span="10" type="flex">
+          <el-col :span="14" type="flex">
             <el-breadcrumb separator="/" type="flex">
               <el-breadcrumb-item :to="{ path: '/manage' }">
                 微页面
@@ -13,7 +13,7 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
-          <el-col :span="14">
+          <el-col :span="10" type="flex" style="marginTop: -10px">
             <el-button @click="saveEditor">保存草稿</el-button>
             <el-button @click="reviewEditor">预览</el-button>
             <el-button type="primary" class="publish-btn" @click="publishEditor">发布</el-button>
@@ -28,10 +28,11 @@
             <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
                 height: ($store.state.page.phoneHeight+64)+'px'}">
               <div class="top-banner" @click="topBannerClick">
+                <div class="now-show">{{this.now}}</div>
                 <div class="web-title">{{$store.state.page.title}}</div>
               </div>
+              <div class="screen-line" v-show="$store.state.page.phoneHeight > 667"></div>
               <layout-main />
-
             </div>
             <div class="phone-hidden" :style="{width: phoneWidth+'px',
                 top: ($store.state.page.phoneHeight + 64+ 37)+'px'}"></div>
@@ -51,14 +52,13 @@ import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
-import dragMxi from '@/util/dragMxi';
+import dragCom from '@/util/dragMxi';
+import { nowTime } from '@/util/tools';
 import merge from 'webpack-merge';
 import * as service from '../service';
-// import Icon from 'vue-awesome/components/Icon';
-
 
 export default {
-  mixins: [dragMxi.dragCom()],
+  mixins: [dragCom()],
   name: 'editor',
   components: {
     VueDragResize,
@@ -91,28 +91,13 @@ export default {
       },
       wrapHeight: 667,
       isFirst: true, // 空白编辑页
+      now: '00:00 AM',
+      nowTimer: null,
+      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
     };
   },
 
   methods: {
-    dragDel(s, n) { // 删除当前编辑组件
-      const { editor } = this.$store.state;
-      const { typeCat, layerActive } = editor;
-      let { layerLists } = editor;
-      if (layerLists.length) {
-        const sort = s || layerLists[layerActive].type;
-        const num = n || layerLists[layerActive].num;
-        const cat = typeCat[sort];
-        editor[cat[0]] = editor[cat[0]].filter((item, key) => key !== num);
-        editor[cat[2]] = false;
-        if (!editor[cat[0]].length) {
-          editor[cat[1]] = false;
-        }
-        layerLists = editor[cat[0]].filter((item, key) => key !== layerActive);
-        editor.layerLists = layerLists;
-        this.$store.commit('editor_update', editor);
-      }
-    },
     topBannerClick() { // 点击页面顶部，显示页面设置
       const { pageSet } = this.$store.state.page;
       if (!pageSet) {
@@ -129,6 +114,7 @@ export default {
       this.drag.left = newRect.left;
     },
     async saveEditor(isTrigger) { // 保存草稿
+      let { state, draft } = this.getEditorJson();
       const { isOk, msg } = this.checkSources();
       const ele = this;
       if (!isOk) {
@@ -139,7 +125,7 @@ export default {
         });
         return false;
       }
-      let { state, draft } = ele.getEditorJson();
+      // let { state, draft } = ele.getEditorJson();
       state = JSON.stringify(state);
       draft = JSON.stringify(draft);
       const params = {
@@ -200,7 +186,7 @@ export default {
           if (data) {
             ele.optSucsess('发布页面');
             ele.$router.push({
-              path: '/publish',
+              path: '/manage',
               query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
             });
           } else {
@@ -220,13 +206,14 @@ export default {
         phoneHeight: page.phoneHeight, // 可视区高度
         shareTitle: page.shareTitle,
         shareDec: page.shareDec,
-        shareImg: page.img.url,
+        shareImg: page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png',
         'background-color': page.backgroundColor,
       };
       const dragArr = [];
       // todo 多图组件未添加
       const {
         dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
+        dragImgLists,
       } = editor;
       if (dragTexts.length) {
         dragTexts.map((item) => {
@@ -246,7 +233,7 @@ export default {
               'text-align': item.textAlign,
               'text-color': item.textColor,
               'line-height': item.lineHeight,
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -266,7 +253,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -287,7 +274,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
             sourceType: item.sourceType, // 1.普通跳转 2. 唤起下载app
             awakeLink: item.awakeLink,
@@ -298,8 +285,8 @@ export default {
           return true;
         });
       }
-      if (dragLinks.length) {
-        dragLinks.map((item) => {
+      if (dragImgLists.length) {
+        dragImgLists.map((item) => {
           dragArr.push({
             type: 4,
             location: {
@@ -311,7 +298,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
             imgList: item.imgList,
           });
@@ -335,7 +322,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -358,7 +345,7 @@ export default {
               h: item.size.h,
             },
             style: {
-              'z-index': item.zIndex,
+              'z-index': item.dragIndex,
             },
           });
           return true;
@@ -375,8 +362,9 @@ export default {
       const { page, editor } = this.$store.state;
       const { typeCat } = editor;
       let isOk = true;
-      let msg = '请添加分享缩略图～';
-      if (!page.img || (page.img && !page.img.url)) {
+      let msg = '请添加页面名称～';
+      if (!page.title) {
+        msg = '请添加页面名称～';
         this.topBannerClick();
         isOk = false;
       } else {
@@ -439,6 +427,13 @@ export default {
       });
       return isOk;
     },
+    editorInit(data) {
+      let init = data;
+      init = data ? init : this.dataInit;
+      const state = JSON.parse(init);
+      this.$store.commit('editor_update', state.editor);
+      this.$store.commit('page_update', state.page);
+    },
   },
   async mounted() {
     if (this.$route.query.page_id) {
@@ -446,17 +441,17 @@ export default {
         this.isFirst = false;
         const { data } = await service.getPageInfo(this.$route.query.page_id);
         if (data) {
-          const state = JSON.parse(data.state);
-          this.$store.commit('editor_update', state.editor);
-          this.$store.commit('page_update', state.page);
+          this.editorInit(data.state);
         } else {
-          this.optError('获取编辑器数据');
+          this.optError('获取编辑器数据, 请重试～');
+          this.editorInit();
         }
       } catch (err) {
-        this.optError('获取编辑器数据');
+        this.optError('获取编辑器数据, 请重试～');
       }
-
       this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
+    } else {
+      this.editorInit();
     }
   },
   updated() {
@@ -464,11 +459,30 @@ export default {
       this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
     }
   },
+  created() {
+    const ele = this;
+    const classList = ['drag-text', 'el-textarea__inner', 'el-input__inner'];
+    document.onkeydown = (e) => {
+      if (e.keyCode && parseInt(e.keyCode, 10) === 8) {
+        if (!classList.includes(document.activeElement.className)) {
+          const { layerActive, layerLists } = ele.$store.state.editor;
+          if (layerLists.length && layerActive !== -1) {
+            this.dragDel();
+          }
+        }
+      }
+    };
+    this.now = nowTime();
+    this.nowTimer = setInterval(() => {
+      this.now = nowTime();
+    }, 2000);
+  },
+  destroyed() {
+    clearInterval(this.nowTimer);
+  },
 
 };
-
 </script>
-
 
 <style>
 html,
@@ -514,9 +528,6 @@ body {
   line-height: 56px;
 }
 
-.header-flex .el-col-14 {
-  margin-top: -10px;
-}
 .el-button.el-button--text {
   color: #333;
   width: 80px;
@@ -599,6 +610,7 @@ body {
 .el-card__header {
   padding: 5px 10px;
   line-height: 34px;
+  margin-top: 3px;
 }
 .fixed-right .el-card__header {
   padding: 0;
@@ -704,7 +716,7 @@ body {
 
 .top-banner {
   cursor: pointer;
-  background: url("../assets/images/page_banner.png") no-repeat center center;
+  background: url("../assets/images/page_banner1.png") no-repeat center center;
   background-size: 375px auto;
   z-index: 10;
   position: absolute;
@@ -737,5 +749,26 @@ body {
   position: absolute;
   bottom: 0;
   z-index: 1050;
+}
+.screen-line {
+  position: absolute;
+  width: 110%;
+  left:-5%;
+  top: 731px;
+  border: 0.5px dashed #eb5648;
+  z-index: 1001;
+}
+.now-show {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    line-height: 22px;
+    font-family: 'Arial';
+}
+.is-require .el-form-item__label:before {
+  content: '*';
+  color: #eb5648;
 }
 </style>

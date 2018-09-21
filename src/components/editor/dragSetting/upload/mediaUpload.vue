@@ -1,11 +1,14 @@
 <template>
   <div class="img-upload-item">
     <div v-if="!source||!source.name">
-      <el-button type="primary" size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
+      <el-button type="primary" size="mini" @click="uploadTrigger"
+        v-show="!isLoading">{{'选择文件'}}</el-button>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
        class="check-upload" :accept="source.accept"/>
-    <div v-if="source && source.name">
+    <el-progress :percentage="pre" v-show="pre"
+     class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
+    <div v-show="source && source.name">
       <div class="audio-name">{{source.name}}</div>
       <el-button class="file-remove--plain" plain @click="fileRemove">删除</el-button>
     </div>
@@ -22,6 +25,8 @@ export default {
   },
   data() {
     return {
+      pre: 0,
+      isLoading: false,
     };
   },
   methods: {
@@ -30,6 +35,7 @@ export default {
     },
     async fileChange(val) {
       try {
+        this.loadingPre();
         const file = val.currentTarget.files[0];
         const up = await oss(file);
         up.beforeName = file.name;
@@ -58,6 +64,33 @@ export default {
         type: 'error',
         duration: 2000,
       });
+      this.uplaodDone(true);
+    },
+    loadingPre() {
+      this.isLoading = true;
+      let i = 0;
+      const step = 7;
+      const loadingTime = setInterval(() => {
+        if (this.pre >= 89) {
+          clearInterval(loadingTime);
+          return false;
+        }
+        this.pre = i;
+        i += step;
+      }, 30);
+    },
+    uplaodDone(isError) {
+      if (!isError) {
+        this.pre = 100;
+        this.isLoading = false;
+        const clearTime = setTimeout(() => {
+          this.pre = 0;
+          clearTimeout(clearTime);
+        }, 3000);
+      } else {
+        this.isLoading = false;
+        this.pre = 0;
+      }
     },
   },
 };
@@ -123,6 +156,17 @@ export default {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.img-upload-item .modify-precent {
+  width: 280px;
+  margin-top: 0;
+  position: absolute;
+  top: -12px;
+}
+
+.img-upload-item .precent-in {
+  transition: opacity 0s;
 }
 
 </style>

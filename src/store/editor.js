@@ -1,8 +1,6 @@
 export default {
   state: {
-    phoneWidth: 375,
-    phoneHeight: 667,
-    layoutKey: 0, // 层级管理，从0累加
+    layoutKey: 1, // 层级管理，从1累加
     dragTexts: [], // 组件-文本
     dragImages: [], // 组件-图片
     dragLinks: [], // 热区
@@ -39,5 +37,6 @@ export default {
     },
     pageSet: true,
     mediaHeight: 300,
+    audioHeight: 82,
   },
 };

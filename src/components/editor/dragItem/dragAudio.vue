@@ -1,17 +1,20 @@
 <template>
     <vue-drag-resize
       :aspectRatio="true"
-      :isActive="isActive"
+      :isActive="dragForm.isActive"
       :w="dragForm.size.w"
       :h="dragForm.size.h"
       :sticks="['tl','tr','br','bl']"
       :x="dragForm.location.x"
       :y="dragForm.location.y"
-      :z="locationZ"
+      :z="dragForm.zIndex"
+      :isDraggable="isAction"
+      :isResizable="false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
       :preventActiveBehavior="true"
+      :parentH="parentH"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
@@ -25,14 +28,14 @@
       @click="dragDel(listIndex)">
       </i>
       <div>
-        <audio-play :play="dragForm.play"/>
+        <audio-play :play="this.dragForm.sourceType === '1' ? dragForm.play : dragForm.linePlay"/>
       </div>
     </vue-drag-resize>
 
 </template>
 <script>
 import VueDragResize from 'vue-drag-resize';
-import audioPlay from '@/components/editor/dragItem/image/audioPlay';
+import audioPlay from '@/components/editor/dragSetting/upload/audioPlay';
 
 export default {
   name: 'dragAudio',
@@ -42,25 +45,6 @@ export default {
   },
   props: {
     dragForm: Object,
-    isShow: Boolean,
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-    locationX: {
-      type: Number,
-      default: 0,
-    },
-    locationY: {
-      type: Number,
-      default: 0,
-    },
-    locationZ: {
-      type: Number,
-      default: 0,
-    },
-    tWidth: Number,
-    tHeight: Number,
     listIndex: Number,
   },
   data() {
@@ -79,7 +63,17 @@ export default {
       },
     };
   },
-  created() {
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
+    isAction() {
+      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.url)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.url);
+    },
   },
 
   methods: {

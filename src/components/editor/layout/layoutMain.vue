@@ -3,7 +3,7 @@
     :h="$store.state.page.phoneHeight" :isActive="true" :isDraggable="false"
     :isResizable="true" :parentLimitation="false" :preventActiveBehavior="true"
     :y="64" axis="y" @resizestop="resizestop" :style="{
-    width: $store.state.editor.phoneWidth+'px',
+    width: $store.state.page.phoneWidth+'px',
     backgroundColor:  $store.state.page.backgroundColor,
   }">
     <div class="phone-resize">
@@ -48,10 +48,10 @@ import dragLink from '@/components/editor/dragItem/dragLink';
 import dragImgLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
-import dragMxi from '@/util/dragMxi';
+import dragCom from '@/util/dragMxi';
 
 export default {
-  mixins: [dragMxi.dragCom()],
+  mixins: [dragCom()],
   name: 'layoutMain',
   props: {
   },
@@ -86,53 +86,6 @@ export default {
     },
     dragTextClick(index, type) { // 点击组件
       this.dragClick(index, type);
-    },
-
-    dragDel(s, n, dragIndex) { // 删除当前编辑组件
-      const { editor } = this.$store.state;
-      const { layerActive, layerLists, typeCat } = editor;
-      const lActive = layerActive === -1 ? this.getLayerActive(s, n) : layerActive;
-      if (layerLists.length) {
-        const sort = s !== undefined ? s : layerLists[lActive].type;
-        const num = n !== undefined ? n : layerLists[lActive].num;
-        for (const k in typeCat) {
-          if (editor[typeCat[k][0]].length) {
-            editor[typeCat[k][0]].map((item, i) => {
-              if (item.dragIndex > dragIndex) {
-                const ke = editor[typeCat[k][0]][i].dragIndex - 1;
-                editor[typeCat[k][0]][i].dragIndex = ke;
-                editor[typeCat[k][0]][i].zIndex = ke;
-              }
-              return true;
-            });
-          }
-        }
-
-        const cat = typeCat[sort];
-        editor[cat[0]] = editor[cat[0]].filter((item, key) => {
-          if (key !== num) {
-            return item;
-          }
-          return false;
-        });
-
-        editor[cat[2]] = false;
-        if (!editor[cat[0]].length) {
-          editor[cat[1]] = false;
-        }
-        editor.layerLists = layerLists.filter((item, key) => {
-          if (key !== lActive) {
-            if (item.type === sort && item.num > num) {
-              layerLists[key].num -= 1;
-            }
-            return item;
-          }
-          return false;
-        });
-        editor.layerActive = -1;
-        editor.layoutKey -= 1;
-        this.$store.commit('editor_update', editor);
-      }
     },
     resizestop(ev) {
       this.$store.commit('page_update', {
@@ -179,6 +132,8 @@ export default {
       });
     },
   },
+  updated() {
+  },
 };
 </script>
 
@@ -189,9 +144,9 @@ export default {
 .phone-content {
   position: absolute;
   top: 64px;
-  /* padding-top: 1px;  */
   left: 0;
-  width: 366px;
+  right: 0;
+  width: 375px;
   background-color: #fff;
 }
 .phone-content > .vdr-stick.vdr-stick-bm {

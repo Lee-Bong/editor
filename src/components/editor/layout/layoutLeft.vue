@@ -1,16 +1,16 @@
 <template>
-<el-aside width="200px" class="left-btns">
- <el-card v-for="(com, index) in edComponets" :key="index">
-    <div slot="header">
-    {{com.kind}}
-    </div>
-    <el-button v-for="(list, i) in com.list" :key="i" type="text" class="ed-com"
-      @click="dragItemClick(list.type)">
-      <icon :name="list.icon"></icon>
-      <span class="el-com-text">{{list.text}}</span>
-    </el-button>
-</el-card>
-</el-aside>
+  <el-aside width="200px" class="left-btns">
+    <el-card v-for="(com, index) in edComponets" :key="index" class="left-btns-card">
+      <div slot="header">
+        {{com.kind}}
+      </div>
+      <el-button v-for="(list, i) in com.list" :key="i" type="text"
+       class="ed-com" @click="dragItemClick(list.type)">
+        <i :class="['iconfont', list.icon]"></i>
+        <span class="el-com-text">{{list.text}}</span>
+      </el-button>
+      </el-card>
+  </el-aside>
 </template>
 
 <script>
@@ -26,17 +26,17 @@ export default {
         {
           kind: '基础组件',
           list: [
-            { text: '文本', icon: 'text-width', type: 1 },
-            { text: '图片', icon: 'image', type: 2 },
-            { text: '热区', icon: 'link', type: 3 },
-            { text: '多图拼接', icon: 'th-list', type: 4 },
+            { text: '文本', icon: 'iconfont ed-icon-text1', type: 1 },
+            { text: '图片', icon: 'iconfont ed-icon-i-img', type: 2 },
+            { text: '热区', icon: 'ed-icon-requ', type: 3 },
+            { text: '多图拼接', icon: 'ed-icon-gengduotupian', type: 4 },
           ],
         },
         {
           kind: '媒体组件',
           list: [
-            { text: '视频', icon: 'film', type: 5 },
-            { text: '音频', icon: 'music', type: 6 },
+            { text: '视频', icon: 'ed-icon-shipin1', type: 5 },
+            { text: '音频', icon: 'ed-icon-yinpin1', type: 6 },
           ],
         },
       ],
@@ -89,6 +89,7 @@ export default {
               w: 375,
               h: 90,
             },
+            position: 'relative',
           });
           newEditor = {
             textSet: true,
@@ -112,6 +113,7 @@ export default {
             isActive: true,
             dragIndex: zIndex,
             img: {},
+            imgList: [],
             location: {
               x: 0,
               y: 0,
@@ -121,6 +123,7 @@ export default {
               h: 300,
             },
             isUpload: false,
+            position: 'relative',
           });
           newEditor = {
             imgSet: true,
@@ -144,8 +147,8 @@ export default {
             y: textTop3,
             isActive: true,
             dragIndex: zIndex,
-            appLink: 'http://',
-            outLink: 'http://',
+            appLink: '',
+            outLink: '',
             location: {
               x: 0,
               y: 0,
@@ -159,7 +162,7 @@ export default {
             iosLink: '',
             andLink: '',
             yybLink: '',
-
+            position: 'relative',
           });
           newEditor = {
             linkSet: true,
@@ -230,7 +233,9 @@ export default {
               h: 300,
             },
             video: {},
+            lineVideo: {},
             isUpload: false,
+            position: 'relative',
           });
           newEditor = {
             videoSet: true,
@@ -273,6 +278,13 @@ export default {
               duration: '00:00',
               url: '',
             },
+            linePlay: {
+              title: '',
+              isUplaod: false,
+              duration: '00:00',
+              url: '',
+            },
+            position: 'relative',
           });
           newEditor = {
             audioSet: true,
@@ -308,8 +320,11 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style>
 .ed-com.el-button.el-button--text {
   margin-left: 10px;
+}
+.left-btns-card .el-card__body {
+  padding-bottom: 10px !important;
 }
 </style>

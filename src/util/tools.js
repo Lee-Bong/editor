@@ -31,7 +31,7 @@ export function nowTime() {
   const myDate = new Date();
   const hours = myDate.getHours();
   const minutes = myDate.getMinutes() < 10 ? `0${myDate.getMinutes()}` : myDate.getMinutes();
-  const am = hours > 12 ? ' AM' : ' PM';
+  const am = hours > 12 ? ' PM' : ' AM';
   return `${hours}:${minutes}${am}`;
 }
 
@@ -76,7 +76,7 @@ export function formatTableData(data) {
     title: '',
     createdAt: formatDate(data.createdAt),
     visit: 0,
-    online: 1, // TODO 上线|下线
+    online: data.public ? 1 : 0, // 上线|下线
   };
   if (data.state) {
     const json = JSON.parse(data.state);

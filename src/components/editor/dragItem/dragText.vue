@@ -11,6 +11,8 @@
       :listIndex="listIndex"
       :parentLimitation="true"
       :preventActiveBehavior="true"
+      :parentH="parentH"
+      contenteditable="true"
 
       @activated="activateEv"
       @clicked="dragTextClick(listIndex)"
@@ -35,7 +37,7 @@
           fontSize: dragForm.fontSize, lineHeight:dragForm.lineHeight,
           textAlign: dragForm.textAlign,
           color: dragForm.textColor}"
-        autofocus placeholder="请输入内容" />
+          placeholder="请输入内容" />
       <div class="input-record"
       ref="inputRecord"
       :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
@@ -71,10 +73,17 @@ export default {
       },
     };
   },
-
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
+  },
   methods: {
     activateEv() {
-      this.$refs.inputCont.focus();
+      // this.$refs.inputCont.focus();
     },
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
@@ -110,17 +119,29 @@ export default {
       // this.$store.commit('del_drag', {index, arr: this.dragName, active: 'isTextSet'});
     },
     dragstop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
+      const evs = ev;
+      if (this.dragForm.position !== 'relative') {
+        const maxTop = this.$store.state.page.screenHeight - this.dragForm.size.h;
+        if (evs.top > maxTop) {
+          evs.top = maxTop;
+        }
+      }
+      this.$emit('dragStop', this.dragName, evs, this.listIndex);
     },
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
 
   },
+  created() {
+  },
 };
 </script>
 
 <style>
+.drag-item textarea {
+  background-color: rgba(0, 0, 0, 0);
+}
 .drag-text {
   position: absolute;
     top: 0;

@@ -1,13 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import _ from '../util/tools';
+import { textActiveOff } from '../util/tools';
 import editor from './editor';
 import page from './page';
 
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
-    count: 1,
   },
   modules: {
     editor,
@@ -15,7 +14,7 @@ export default new Vuex.Store({
   },
   mutations: {
     inactive_drags(state, payload) {
-      state.editor[payload.arr] = _.textActiveOff(state.editor[payload.arr], payload);
+      state.editor[payload.arr] = textActiveOff(state.editor[payload.arr], payload);
     },
     del_drag(state, payload) {
       state.editor[payload.arr] = state.editor[payload.arr].filter((item, key) => key !== payload.index);
@@ -28,8 +27,9 @@ export default new Vuex.Store({
     },
     /* 图片组件操作 */
     add_drag_img(state) {
-      const textTop = state.editor.phoneHeight / 2 - 30 / 2;
-      const zIndex = state.editor.dragTexts.length ? state.editor.dragTexts[state.editor.dragTexts.length - 1].zIndex + 1 : 0;
+      const textTop = ((state.page.phoneHeight / 2) - 30) / 2;
+      const zIndex = state.editor.dragTexts.length
+        ? state.editor.dragTexts[state.editor.dragTexts.length - 1].zIndex + 1 : 0;
       state.editor.dragImages.push({
         isShow: true,
         zIndex,
@@ -44,10 +44,13 @@ export default new Vuex.Store({
       state.editor.layerActive = payload.newIndex;
     },
     editor_update(state, payload) {
-      state.editor = Object.assign({}, state.editor, payload);
+      state.editor = { ...state.editor, ...payload };
     },
     page_update(state, payload) { // 页面信息更新
-      state.page = Object.assign({}, state.page, payload);
+      state.page = { ...state.page, ...payload };
+    },
+    imgListUpdate(state, newlist) {
+      state.editor.dragImgLists = [...state.editor.dragImgLists, newlist];
     },
   },
   actions: {

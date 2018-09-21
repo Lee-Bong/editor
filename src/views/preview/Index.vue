@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     goEditor() {
-      this.$router.push('/');
+      this.$router.push(`/editor?page_id=${this.pageId}`);
     },
     async publish() {
       try {
@@ -111,7 +111,7 @@ export default {
       return this.$route.query.page_id;
     },
     realUrl() {
-      return `http://${window.location.host}/we/real?page_id=${this.pageId}`;
+      return `http://${window.location.host}/we/view?page_id=${this.pageId}`;
     },
   },
 };

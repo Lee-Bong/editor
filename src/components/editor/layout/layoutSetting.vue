@@ -1,7 +1,7 @@
 <template>
 <div class="setting-wrap">
     <drag-text-setting
-      v-if="$store.state.editor.textSet"
+      v-if="this.$store.state.editor.dragTexts.length && $store.state.editor.isTextSet"
       :dragForm="this.$store.state.editor.dragTexts[this.$store.state.editor.textActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
@@ -10,7 +10,7 @@
     />
 
     <drag-img-setting
-      v-if="$store.state.editor.imgSet"
+      v-if="$store.state.editor.isImgSet"
       :dragForm="this.$store.state.editor.dragImages[this.$store.state.editor.imgActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
@@ -48,7 +48,7 @@
       @linkSourceChange="sourceChange"
     />
     <drag-img-list-setting
-      v-if="$store.state.editor.imgListSet"
+      v-if="$store.state.editor.isImgListSet"
       :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.imgListActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
@@ -262,5 +262,4 @@ export default {
 .setting-content .el-input--mini .el-input__inner {
   padding: 0 8px;
 }
-
 </style>

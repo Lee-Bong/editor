@@ -14,12 +14,12 @@
       <el-form ref="form">
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
-            :disabled="!fileSuccess"
-            :min="location.xmin" :max="($store.state.editor.phoneWidth-dragForm.size.w)"
+            :disabled="!dragForm.imgList.length"
+            :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
             controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @change="locationChange"
-            :disabled="!fileSuccess"
-            :min="location.ymin" :max="($store.state.editor.phoneHeight-dragForm.size.h)"
+            :disabled="!dragForm.imgList.length"
+            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
@@ -39,11 +39,11 @@
             <div class="el-upload__text"><em>+ 点击上传图片</em> ,或把图片拖到此处</div>
             <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
           </el-upload>
-          <draggable class="upload-reviews">
+          <draggable class="upload-reviews" @update="imgListUpdated">
             <transition-group name="list-complete" >
-              <div v-for="(rev, index) in imgList" :key="index">
-                <img-review-item :imgObj='rev' @file-change="fileModify"
-                ref="imgReview" :index="index" />
+              <div v-for="(rev, index) in imgList" :key="index" :index="index">
+                <img-review-item :imgObj='rev' @file-change="fileModify" :isDel="true"
+                ref="imgReview" :index="index" @file-remove="updateImgList(true, index)" />
               </div>
             </transition-group>
           </draggable>
@@ -56,7 +56,7 @@
 
 <script>
 import oss from '@/util/oss';
-import imgReviewItem from '@/components/editor/dragItem/image/imgReviewItem';
+import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import draggable from 'vuedraggable';
 
 export default {
@@ -116,7 +116,7 @@ export default {
         if (key !== undefined) {
           ele.$refs.imgReview[key].uplaodDone();
         }
-        const newH = (dragImg.height * ele.$store.state.editor.phoneWidth) / dragImg.width;
+        const newH = (dragImg.height * ele.$store.state.page.phoneWidth) / dragImg.width;
         if (!ele.fileSuccess) ele.fileSuccess = true;
         updateImg.size = {
           w: 375,
@@ -184,9 +184,31 @@ export default {
       imgLists[imgListActive] = drag;
       this.$set(this.$store.state.editor, 'dragImgLists', imgLists);
     },
-
+    imgListUpdated(evt) {
+      const { oldIndex, newIndex } = evt;
+      const temp = this.imgList[newIndex];
+      this.imgList[newIndex] = this.imgList[oldIndex];
+      this.imgList[oldIndex] = temp;
+      this.updateImgList();
+    },
+    updateImgList(isRemove, index) {
+      const { dragImgLists, imgListActive } = this.$store.state.editor;
+      const drag = dragImgLists[imgListActive];
+      if (isRemove) {
+        this.imgList = drag.imgList.filter((item, key) => key !== index);
+      }
+      drag.imgList = this.imgList;
+      dragImgLists[imgListActive] = drag;
+      const newDrag = Object.assign([], drag);
+      this.$store.commit('imgListUpdate', newDrag);
+    },
   },
   mounted() {
+    this.$nextTick(() => {
+      this.imgList = this.dragForm.imgList;
+    });
+  },
+  update() {
     this.$nextTick(() => {
       this.imgList = this.dragForm.imgList;
     });

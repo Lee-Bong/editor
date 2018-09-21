@@ -17,7 +17,6 @@
         <div>
           <el-button type="primary" @click="newEditor">新建H5</el-button>
           <el-input
-            ref="searchInput"
             v-model.trim="searchValue"
             @keyup.native.enter="handleSearch"
             class="table-search"
@@ -29,10 +28,8 @@
           </button>
         </div>
         <transition name="fade" mode="out-in">
-          <keep-alive>
             <table-list ref="tableList" v-if="activeTab === 'pages'" />
             <table-draft ref="tableDraftList" v-if="activeTab === 'draft'" />
-          </keep-alive>
         </transition>
       </div>
     </div>
@@ -82,14 +79,10 @@ export default {
     },
     handleSearch() {
       const value = this.searchValue;
-      if (value) {
-        if (this.activeTab === 'pages') {
-          this.$refs.tableList.search(value);
-        } else if (this.activeTab === 'draft') {
-          this.$refs.tableDraftList.search(value);
-        }
-      } else { // focus on search input
-        this.$refs.searchInput.focus();
+      if (this.activeTab === 'pages') {
+        this.$refs.tableList.search(value);
+      } else if (this.activeTab === 'draft') {
+        this.$refs.tableDraftList.search(value);
       }
     },
   },
