@@ -49,9 +49,6 @@ export default new Vuex.Store({
     page_update(state, payload) { // 页面信息更新
       state.page = { ...state.page, ...payload };
     },
-    imgListUpdate(state, newlist) {
-      state.editor.dragImgLists = [...state.editor.dragImgLists, newlist];
-    },
   },
   actions: {
     layerMove({ commit }, payload) {

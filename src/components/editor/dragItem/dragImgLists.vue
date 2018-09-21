@@ -8,11 +8,12 @@
       ref="imgListWrap"
       :class="[dragForm.isActive ? 'active': '',
        JSON.stringify(dragForm.imgList) === '[]' ? 'init': '']">
-      <div class="drag-img" v-if="JSON.stringify(dragForm.imgList) === '[]'">
+      <div class="drag-img" v-if="!dragForm.imgList || !dragForm.imgList.length">
       </div>
       <div>
         <img v-for="(item, index) in dragForm.imgList" :key="item.url+index"
-          v-if="!!item.size && item.size.w" :src="item.url" :width="item.size.w" />
+          v-if="!!item.size && item.size.w" :src="item.url" :width="item.size.w"
+          class="review-list-item"/>
       </div>
     </div>
     <i class="el-icon-circle-close-outline drag-del" v-if="dragForm.isActive"
@@ -72,11 +73,6 @@ export default {
       this.$store.commit('inactive_drags', { index, arr: this.dragName, isAll: this.beforeZ });
     },
   },
-  updated() {
-    this.$nextTick(() => {
-
-    });
-  },
 };
 </script>
 
@@ -127,5 +123,8 @@ export default {
 }
 .drag-img-list.init {
   height: 300px;
+}
+.review-list-item {
+  display: block;
 }
 </style>
