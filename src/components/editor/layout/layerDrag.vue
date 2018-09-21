@@ -89,7 +89,7 @@ export default {
         layerLists: layouts,
       });
 
-      this.$nextTick(() => {
+      this.$nextTicknextTick(() => {
         this.$refs.nameEditor[0].focus();
       });
     },

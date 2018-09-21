@@ -1,0 +1,9 @@
+{
+  "src_dir"     : "dist/",
+  "bucket"      : "static",
+  "ignore_dir"  : false,
+  "key_prefix"  : "bfe/we/",
+  "overwrite"   : false,
+  "check_exists": true,
+  "rescan_local": true
+}

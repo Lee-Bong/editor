@@ -41,7 +41,7 @@
           </el-upload>
           <draggable class="upload-reviews" @update="imgListUpdated">
             <transition-group name="list-complete" >
-              <div v-for="(rev, index) in imgList" :key="index" :index="index">
+              <div v-for="(rev, index) in imgList" :key="rev.url + index" :index="index">
                 <img-review-item :imgObj='rev' @file-change="fileModify" :isDel="true"
                 ref="imgReview" :index="index" @file-remove="updateImgList(true, index)" />
               </div>
@@ -123,6 +123,7 @@ export default {
           h: newH,
         };
         ele.fileDone(key, updateImg);
+        this.updateHeight();
       };
       dragImg.onerror = () => {
         this.onFileError(key);
@@ -181,14 +182,33 @@ export default {
       this.imgList[key] = updateImg;
       const drag = imgLists[imgListActive];
       drag.imgList = this.imgList;
-      imgLists[imgListActive] = drag;
-      this.$set(this.$store.state.editor, 'dragImgLists', imgLists);
+      const newDrag = Object.assign({}, drag);
+      imgLists[imgListActive] = newDrag;
+      this.$store.commit('editor_update', {
+        dragImgLists: imgLists,
+      });
+    },
+    updateHeight() {
+      let wrapH = 0;
+      this.imgList.map((item) => {
+        if (item.size && item.size.h) {
+          wrapH += item.size.h;
+        }
+        return true;
+      });
+      if (wrapH > this.$store.state.page.phoneHeight) {
+        this.$store.commit('page_update', {
+          phoneHeight: wrapH,
+        });
+      }
     },
     imgListUpdated(evt) {
       const { oldIndex, newIndex } = evt;
+      const newList = Object.assign([], this.imgList);
       const temp = this.imgList[newIndex];
-      this.imgList[newIndex] = this.imgList[oldIndex];
-      this.imgList[oldIndex] = temp;
+      newList[newIndex] = this.imgList[oldIndex];
+      newList[oldIndex] = temp;
+      this.imgList = newList;
       this.updateImgList();
     },
     updateImgList(isRemove, index) {
@@ -198,17 +218,15 @@ export default {
         this.imgList = drag.imgList.filter((item, key) => key !== index);
       }
       drag.imgList = this.imgList;
-      dragImgLists[imgListActive] = drag;
-      const newDrag = Object.assign([], drag);
-      this.$store.commit('imgListUpdate', newDrag);
+      const newDrag = Object.assign({}, drag);
+      dragImgLists[imgListActive] = newDrag;
+      this.$store.commit('editor_update', {
+        dragImgLists,
+      });
+      // this.$store.commit('imgListUpdate', newDrag);
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      this.imgList = this.dragForm.imgList;
-    });
-  },
-  update() {
     this.$nextTick(() => {
       this.imgList = this.dragForm.imgList;
     });

@@ -1,41 +1,25 @@
 <template>
-<div :style="{marginTop: dragForm.location.y + 'px', zIndex: dragForm.zIndex}">
-    <div
-      :isActive="dragForm.isActive"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
-      :sticks="[]"
-      :x="dragForm.location.x"
-      :y="dragForm.location.y"
-      :z="dragForm.zIndex"
-      :index="dragForm.dragIndex"
-      :parentLimitation="true"
-      :listIndex="listIndex"
-      :isDraggable="false"
-      :isResizable="false"
-      :preventActiveBehavior="true"
-      @click="dragTextClick(listIndex)"
-      class="drag-img-list"
+  <div :style="{marginTop: dragForm.location.y + 'px', zIndex: dragForm.zIndex}">
+    <div :isActive="dragForm.isActive" :w="dragForm.size.w" :h="dragForm.size.h" :sticks="[]"
+      :x="dragForm.location.x" :y="dragForm.location.y"
+      :z="dragForm.zIndex" :index="dragForm.dragIndex"
+      :parentLimitation="true" :listIndex="listIndex" :isDraggable="false" :isResizable="false"
+      :preventActiveBehavior="true" @click="dragTextClick(listIndex)" class="drag-img-list"
+      ref="imgListWrap"
       :class="[dragForm.isActive ? 'active': '',
-       JSON.stringify(dragForm.imgList) === '[]' ? 'init': '']"
-      >
-      <div class="drag-img" v-if="JSON.stringify(dragForm.imgList) === '[]'">
+       JSON.stringify(dragForm.imgList) === '[]' ? 'init': '']">
+      <div class="drag-img" v-if="!dragForm.imgList || !dragForm.imgList.length">
       </div>
       <div>
-        <img v-for="(item, index) in dragForm.imgList"
-        :key="item.url+index"
-        v-if="!!item.size && item.size.w"
-        :src="item.url"
-        :width="item.size.w"
-       />
+        <img v-for="(item, index) in dragForm.imgList" :key="item.url+index"
+          v-if="!!item.size && item.size.w" :src="item.url" :width="item.size.w"
+          class="review-list-item"/>
       </div>
     </div>
-    <i class="el-icon-circle-close-outline drag-del"
-    v-if="dragForm.isActive"
-    @click="dragDel(listIndex)"
-    :style="{top: dragForm.location.y-10+ 'px'}">
+    <i class="el-icon-circle-close-outline drag-del" v-if="dragForm.isActive"
+      @click="dragDel(listIndex)" :style="{top: dragForm.location.y-10+ 'px'}">
     </i>
-</div>
+  </div>
 </template>
 <script>
 import VueDragResize from 'vue-drag-resize';
@@ -89,13 +73,10 @@ export default {
       this.$store.commit('inactive_drags', { index, arr: this.dragName, isAll: this.beforeZ });
     },
   },
-  update() {
-  },
 };
 </script>
 
 <style>
-
 .vdr-stick {
   background-color: #fff;
   border: 1px solid #59c7f9;
@@ -132,15 +113,18 @@ export default {
   width: 100%;
 }
 .drag-img-list.active::before {
-      content: "";
-right: 0;
-bottom: 0;
-    top: 0;
-    left: 0;
-        position: absolute;
+  content: "";
+  right: 0;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  position: absolute;
   border: 1px dashed #59c7f9;
 }
 .drag-img-list.init {
   height: 300px;
+}
+.review-list-item {
+  display: block;
 }
 </style>

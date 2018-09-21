@@ -45,7 +45,6 @@
     </vue-drag-resize>
 </template>
 <script>
-import $ from 'jquery';
 import VueDragResize from 'vue-drag-resize';
 
 export default {
@@ -103,12 +102,14 @@ export default {
       this.drag.left = newRect.left;
     },
     inputChange() {
-      const textHeight = $('.input-record').outerHeight();
-      if (textHeight > $('.drag-text').outerHeight() && textHeight < this.drag.height) {
-        $('.drag-text').height($('.input-record').height());
-        this.drag.height = $('.input-record').height();
-      }
-      this.$emit('inputChange', this.dragForm.content);
+      // const textHeight = this.$refs.inputRecord.$el.offsetHeight;
+      // if (textHeight > this.$refs.inputCont.offsetHeight && textHeight > this.dragForm.size.h) {
+      //   const { dragTexts } = this.$store.state.editor;
+      //   dragTexts[listIndex].size.h = textHeight;
+      //   this.$store.commit('editor_update', {
+      //     dragTexts,
+      //   });
+      // }
     },
     inputFocus() {
     },
@@ -153,11 +154,14 @@ export default {
   text-align: center;
   resize: none;
   box-sizing: border-box;
-  font-size: 14px;
-  font: 400 11px system-ui;
+  background: red;
+  padding: 5px;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .input-record {
-  position: absolute;
+  /* position: absolute;
   left: 0;
   width: 360px;
   top: 0;
@@ -167,7 +171,20 @@ export default {
   font: 400 11px system-ui;
   padding: 2px;
   z-index: -1;
-  visibility: hidden;
+  /* visibility: hidden; */
+}
+.input-record textarea {
+  padding: 5px;
+  height: 33px;
+  background: none;
+  padding: 5px;
+  border: 0;
+  outline: none;
+  line-height: 1.5;
+  min-height: 30px !important;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .vdr-stick {

@@ -186,7 +186,7 @@ export default {
           if (data) {
             ele.optSucsess('发布页面');
             ele.$router.push({
-              path: '/manage',
+              path: '/publish',
               query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
             });
           } else {
