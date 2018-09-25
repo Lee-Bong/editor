@@ -1,26 +1,13 @@
 <template>
   <div class="editor-box">
     <el-container>
-      <el-header>
-        <el-row class="header-flex">
-          <el-col :span="14" type="flex">
-            <el-breadcrumb separator="/" type="flex">
-              <el-breadcrumb-item :to="{ path: '/manage' }">
-                微页面
-              </el-breadcrumb-item>
-              <el-breadcrumb-item>
-                编辑微页面
-              </el-breadcrumb-item>
-            </el-breadcrumb>
-          </el-col>
-          <el-col :span="10" type="flex" style="marginTop: -10px">
+      <nav-bar pageName="编辑微页面">
+        <template slot="btnGroup">
             <el-button @click="saveEditor">保存草稿</el-button>
             <el-button @click="reviewEditor">预览</el-button>
             <el-button type="primary" class="publish-btn" @click="publishEditor">发布</el-button>
-            <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
-          </el-col>
-        </el-row>
-      </el-header>
+        </template>
+      </nav-bar>
       <layout-left />
       <el-main>
         <div class="flxed-main">
@@ -56,6 +43,7 @@ import dragCom from '@/util/dragMxi';
 import { nowTime } from '@/util/tools';
 import merge from 'webpack-merge';
 import * as service from '../service';
+import NavBar from '../components/NavBar';
 
 export default {
   mixins: [dragCom()],
@@ -66,6 +54,7 @@ export default {
     layer,
     layoutLeft,
     layoutSetting,
+    NavBar,
   },
   data() {
     return {
