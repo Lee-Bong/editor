@@ -74,50 +74,41 @@ const getWechatToken = () => new Promise((resolve, reject) => {
 const wxShare = (opt = {}) => {
   if (isWeixin) {
     getWechatToken().then((result) => {
-      try {
-        const { wx } = window;
-        wx.config({
-          debug: false,
-          appId: result.data.appId,
-          timestamp: parseInt(result.data.timestamp, 10),
-          nonceStr: result.data.nonceStr,
-          signature: result.data.signature,
-          jsApiList: [
-            'checkJsApi',
-            'onMenuShareTimeline',
-            'onMenuShareAppMessage',
-            'onMenuShareQQ',
-            'onMenuShareWeibo',
-            'onMenuShareQZone',
-          ],
-        });
+      const { wx } = window;
+      wx.config({
+        debug: true,
+        appId: result.data.appId,
+        timestamp: parseInt(result.data.timestamp, 10),
+        nonceStr: result.data.nonceStr,
+        signature: result.data.signature,
+        jsApiList: [
+          'checkJsApi',
+          'onMenuShareTimeline',
+          'onMenuShareAppMessage',
+          'onMenuShareQQ',
+          'onMenuShareWeibo',
+          'onMenuShareQZone',
+        ],
+      });
 
-        wx.ready(() => {
-          const defaultOptions = {
-            title: document.title,
-            desc: '',
-            link: document.location.href,
-            imgUrl: '',
-            success: () => {
-            },
-            cancel: () => {
-            },
-          };
-          const options = { ...defaultOptions, ...opt };
-          wx.updateAppMessageShareData(options);
-          wx.onMenuShareAppMessage(options);
-          wx.onMenuShareQQ(options);
-          wx.onMenuShareWeibo(options);
-          wx.onMenuShareQZone(options);
-        });
-
-        wx.error((res) => {
-          console.log(res);
-        });
-      } catch (e) {
-        /* eslint no-console: 0 */
-        console.log(e);
-      }
+      wx.ready(() => {
+        const defaultOptions = {
+          title: document.title,
+          desc: '',
+          link: document.location.href,
+          imgUrl: '',
+          success: () => {
+          },
+          cancel: () => {
+          },
+        };
+        const options = { ...defaultOptions, ...opt };
+        wx.updateAppMessageShareData(options);
+        wx.onMenuShareAppMessage(options);
+        wx.onMenuShareQQ(options);
+        wx.onMenuShareWeibo(options);
+        wx.onMenuShareQZone(options);
+      });
     });
   }
 };

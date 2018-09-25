@@ -479,17 +479,6 @@ body {
   height: 100%;
   width: 100%;
 }
-.el-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 56px;
-  background-color: #fafafa;
-  width: 100%;
-  overflow: hidden;
-  border-bottom: 1px solid #ccd5db;
-  z-index: 1020;
-}
 
 .el-aside {
   position: fixed;
@@ -505,31 +494,6 @@ body {
 
 .help-icon {
   color: #323232;
-}
-
-.header-flex {
-  height: 100%;
-  align-content: center;
-  justify-content: space-between;
-}
-
-.header-flex .el-breadcrumb__inner {
-  line-height: 56px;
-}
-
-.el-button.el-button--text {
-  color: #333;
-  width: 80px;
-  height: 60px;
-  padding: 0;
-  margin-top: 10px;
-}
-.el-button.el-button--text:hover {
-  border: 1px solid #409eff;
-}
-.el-button.el-button--text:active {
-  background-color: #1593ff;
-  color: #fff;
 }
 
 .ed-com i,
