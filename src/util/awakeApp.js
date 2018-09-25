@@ -83,6 +83,8 @@ const wxShare = (opt = {}) => {
         signature: result.data.signature,
         jsApiList: [
           'checkJsApi',
+          // 'updateAppMessageShareData',
+          // 'updateTimelineShareData',
           'onMenuShareTimeline',
           'onMenuShareAppMessage',
           'onMenuShareQQ',
@@ -103,7 +105,9 @@ const wxShare = (opt = {}) => {
           },
         };
         const options = { ...defaultOptions, ...opt };
-        wx.updateAppMessageShareData(options);
+        // wx.updateAppMessageShareData(options);
+        // wx.updateTimelineShareData(options);
+        wx.onMenuShareTimeline(options);
         wx.onMenuShareAppMessage(options);
         wx.onMenuShareQQ(options);
         wx.onMenuShareWeibo(options);
