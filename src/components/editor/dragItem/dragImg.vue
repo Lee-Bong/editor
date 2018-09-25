@@ -26,6 +26,7 @@
       @click="dragDel(listIndex)">
       </i>
       <div class="drag-img" v-if="JSON.stringify(dragForm.img) === '{}'">
+        <i class="iconfont ed-icon-image"></i>
       </div>
       <img v-if="JSON.stringify(dragForm.img) !== '{}'"
         :src="dragForm.img.url"
@@ -137,6 +138,14 @@ export default {
   width: 100%;
   height: 100%;
   max-height: 100%;
-  background-color: #bbb;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag-img i {
+  font-size: 50px;
+  color: #797878;
 }
 </style>

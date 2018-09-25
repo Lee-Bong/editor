@@ -163,7 +163,7 @@ export default {
 .video-play {
   width: 44px;
   height: 44px;
-  background-color: #211e1e82;
+  background-color: #211e1e61;
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -175,7 +175,7 @@ export default {
   margin-top: -22px;
 }
 .video-play i {
-  font-size: 30px;
+  font-size: 40px;
   color: #ffffffab;
 }
 </style>

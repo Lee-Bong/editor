@@ -5,13 +5,14 @@
   @update="datadragEnd"
   :options="{animation: 300,handle:'.dargDiv'}">
     <transition-group name="list-complete" >
-        <div
+      <div
         v-for="(layer, index) in $store.state.editor.layerLists"
         :key="index"
         :index="layer.zIndex"
         :class="['dargDiv', {active: $store.state.editor.layerActive==index},'layer-item']"
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
+        <i :class="['iconfont', layer.icon]"></i>
         <span v-show="!layer.editing" class="layout-name" >{{layer.name}}</span>
         <input v-show="layer.editing" v-model="layer.name"
         ref='nameEditor'
@@ -19,7 +20,7 @@
         :autofocus="layer.editing"
         class="layout-name name-editor"
         @blur="layoutNameBlur(index)"/>
-        </div>
+      </div>
     </transition-group>
   </draggable>
 </template>

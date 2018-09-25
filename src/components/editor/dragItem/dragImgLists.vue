@@ -7,6 +7,7 @@
       :class="[dragForm.isActive ? 'active': '',
        JSON.stringify(dragForm.imgList) === '[]' ? 'init': '']">
       <div class="drag-img" v-if="!dragForm.imgList || !dragForm.imgList.length">
+        <i class="iconfont ed-icon-duotu1" style="font-size: 60px"></i>
       </div>
       <div>
         <img v-for="(item, index) in dragForm.imgList" :key="item.url+index"
@@ -78,12 +79,6 @@ export default {
   top: 10px !important;
 }
 
-.drag-img {
-  width: 100%;
-  height: 100%;
-  max-height: 100%;
-  background-color: #bbb;
-}
 .drag-img-list {
   position: relative;
   width: 100%;
