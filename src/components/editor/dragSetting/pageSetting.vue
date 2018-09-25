@@ -104,10 +104,13 @@ export default {
 .page-setting .el-form-item__label {
   padding-right: 5px;
 }
-.page-setting .el-input--mini .el-input__inner {
+.page-setting .el-input--mini .el-input__inner{
   padding: 0 8px;
 }
 .page-setting .share-img.el-form-item--mini .el-form-item__content {
   width: 200px;
+}
+.page-setting .el-textarea__inner {
+  padding: 3px 8px;
 }
 </style>

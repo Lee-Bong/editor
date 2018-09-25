@@ -3,9 +3,8 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'https://test-bfe.meiyou.com';
-// const { NODE_ENV } = process.env;
 
-const api = window.location.host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
+const api = process.env.NODE_ENV === 'development' || window.location.host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
 const getPageInfo = pageId => axios.get(`${api}/api/we/page`, { params: { page_id: pageId } })
   .then(property('data'));
 

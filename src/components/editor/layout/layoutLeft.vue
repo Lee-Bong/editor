@@ -65,7 +65,12 @@ export default {
       switch (type) {
         case 1:
         {
-          const textTop = (this.$store.state.page.phoneHeight / 2) - (30 / 2);
+          const top = document.documentElement.scrollTop || document.body.scrollTop;
+          const isScroll = top > 56 && this.$store.state.page.phoneHeight
+           > this.$store.state.page.screenHeight;
+          const top1 = isScroll ?
+            (((((this.$store.state.page.phoneHeight - top) + 56) - 90) / 2) +
+             top) - 42 : (this.$store.state.page.screenHeight - 90) / 2;
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
@@ -73,7 +78,6 @@ export default {
           drag.push({
             isShow: true,
             zIndex: 1000,
-            y: textTop,
             isActive: true,
             dragIndex: zIndex,
             content: '',
@@ -83,7 +87,7 @@ export default {
             textColor: 'rgba(0, 0, 0, 1)',
             location: {
               x: 0,
-              y: (this.$store.state.page.phoneHeight / 2) - (30 / 2),
+              y: top1,
             },
             size: {
               w: 375,

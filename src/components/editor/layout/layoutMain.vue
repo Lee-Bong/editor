@@ -2,7 +2,9 @@
   <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
     :h="$store.state.page.phoneHeight" :isActive="true" :isDraggable="false"
     :isResizable="true" :parentLimitation="false" :preventActiveBehavior="true"
-    :y="64" axis="y" @resizestop="resizestop" :style="{
+    :y="64" axis="y" @resizestop="resizestop"
+    :minh='$store.state.page.screenHeight'
+    :style="{
     width: $store.state.page.phoneWidth+'px',
     backgroundColor:  $store.state.page.backgroundColor,
   }">
@@ -71,7 +73,6 @@ export default {
     inputChange() { // 组件-文本值改变
 
     },
-
     inputDragStop(form, ev, index) { // 拖动组件同步设置
       const dragItems = this.$store.state.editor[form];
       const dragItem = dragItems[index];
@@ -102,38 +103,8 @@ export default {
       });
       return k;
     },
-    getWePage() {
-      this.$http({
-        method: 'get',
-        url: 'https://test-bfe.meiyou.com/api/we/page',
-      }).then(() => {
-        //   alert(JSON.stringify(res));
-        // console.log(res);
-      }).catch(() => {
-        //   alert(JSON.stringify(err));
-        // console.log(err);
-      });
-    },
-    saveWePage() {
-      this.$http({
-        method: 'post',
-        url: 'https://test-bfe.meiyou.com/api/we/page',
-        data: {
-          state: 'ssss',
-          draft: '',
-          public: '',
-        },
-      }).then(() => {
-        alert(JSON.stringify(res));
-        // console.log(res);
-      }).catch(() => {
-        //   alert(JSON.stringify(err));
-        // console.log(err);
-      });
-    },
   },
   updated() {
-
 
   },
 };
@@ -159,7 +130,7 @@ export default {
   left: 0;
   margin-left: 0 !important;
   background-color: rgba(0, 0, 0, 0);
-  border: 1px solid #e4e4e4;
+  border: 0;
   box-shadow: none;
 }
 .phone-resize {
@@ -167,9 +138,9 @@ export default {
   width: 375px;
   position: absolute;
   bottom: -35px;
-  left: 0;
+  left: -1px;
   background-color: #fff;
-  /* border: 1px solid #e4e4e4; */
+  border: 1px solid #e4e4e4;
   font-size: 16px;
   line-height: 35px;
   color: #323232;

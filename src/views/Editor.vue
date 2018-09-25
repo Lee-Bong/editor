@@ -131,7 +131,7 @@ export default {
       const params = {
         state,
         draft,
-        piblic: '',
+        // piblic: '',
       };
       let data;
       if (this.isFirst) {
