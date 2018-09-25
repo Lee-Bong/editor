@@ -21,6 +21,7 @@
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
 import jssdk from 'meetyou.jssdk';
+import awakeApp from '../../util/awakeApp';
 import * as service from '../../service';
 import CustomComponent from './CustomComponent.vue';
 import Error from '../Error.vue';
@@ -112,9 +113,24 @@ export default {
       if (!this.pageJson) {
         this.showError = true;
       }
+
       this.finalComponentsJson = this.getFinalComponentsJson();
-      document.title = this.pageJson.page.title;
-      this.$nextTick(this.initShare);
+
+      const {
+        shareDec, shareImg, shareTitle, title,
+      } = this.pageJson.page;
+
+      document.title = title;
+
+      // 初始化app内分享
+      this.$nextTick(() => {
+        this.initShare();
+        awakeApp.wxShare({
+          title: shareTitle || title,
+          desc: shareDec,
+          imgUrl: shareImg,
+        });
+      });
     } catch (error) {
       console.error(error);
       this.showError = true;
