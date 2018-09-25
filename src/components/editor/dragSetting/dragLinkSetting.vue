@@ -1,5 +1,5 @@
 <template>
-  <div :class="['setting-content', $store.state.editor.isLinkSet
+  <div :class="['setting-content', editor.isLinkSet
     ? 'setting-show' : '', 'link-setting']"
     :style="{width: setForm.width+'px'}"
   >
@@ -82,10 +82,10 @@
 </template>
 
 <script>
-import dragCom from '@/util/dragMxi';
+import { dragCom, stateMxi } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom()],
+  mixins: [dragCom(), stateMxi()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -121,7 +121,7 @@ export default {
       this.$emit('linkSourceChange', type, 'dragLinks', 'linkActive');
     },
     positionChange() {
-      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
         location.y = maxBottom;

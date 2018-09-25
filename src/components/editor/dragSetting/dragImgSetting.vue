@@ -1,5 +1,5 @@
 <template>
-  <div :class="['setting-content', $store.state.editor.isImgSet ?
+  <div :class="['setting-content', editor.isImgSet ?
     'setting-show' : '']" :style="{width: setForm.width+'px',
   }">
     <div class="setting-box">
@@ -29,7 +29,7 @@
               ref="imgReview"/>
             <el-form-item label="位置：" size="mini">
               <el-input-number v-model="dragForm.location.x" @change="locationChange"
-                :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
+                :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
                 controls-position="right" class="num-input"></el-input-number>
               <el-input-number v-model="dragForm.location.y" @change="locationChange"
                 :min="location.ymin" :max="yMax"
@@ -41,10 +41,10 @@
             </div>
             <el-form-item label="尺寸：" size="mini">
               <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
-                :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
+                :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
                 controls-position="right" class="num-input"></el-input-number>
               <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
-                :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
+                :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">
@@ -63,13 +63,13 @@
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
               <el-input-number
                 v-model="fixedTop" @change="fixedTopChange"
-                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
               <el-input-number
                 v-model="fixedBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -82,10 +82,10 @@
 <script>
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import oss from '@/util/oss';
-import dragCom from '@/util/dragMxi';
+import { dragCom, stateMxi } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom()],
+  mixins: [dragCom(), stateMxi()],
   name: 'DragImgSetting',
   props: {
     dragForm: Object,
@@ -134,7 +134,7 @@ export default {
       if (type === 1) {
         let newW = size.w;
         let newH = (img.h * size.w) / img.w;
-        const maxH = this.$store.state.page.phoneHeight - this.dragForm.location.y;
+        const maxH = this.page.phoneHeight - this.dragForm.location.y;
         if (newH > maxH) {
           newH = maxH;
           newW = (img.w * newH) / img.h;
@@ -146,7 +146,7 @@ export default {
       } else {
         let newW = (img.w * size.h) / img.h;
         let newH = size.h;
-        const maxW = this.$store.state.page.phoneWidth - this.dragForm.location.x;
+        const maxW = this.page.phoneWidth - this.dragForm.location.x;
         if (newW > maxW) {
           newW = maxW;
           newH = (img.h * newW) / img.w;
@@ -172,14 +172,14 @@ export default {
         if (isModify) {
           this.$refs.imgReview.uplaodDone();
         }
-        const images = this.$store.state.editor.dragImages;
-        const drags = images[this.$store.state.editor.imgActive];
-        const newH = (dragImg.height * this.$store.state.page.phoneWidth) / dragImg.width;
+        const images = this.editor.dragImages;
+        const drags = images[this.editor.imgActive];
+        const newH = (dragImg.height * this.page.phoneWidth) / dragImg.width;
 
         drags.img = {
           title: file.oldName,
           url: file.url,
-          w: this.$store.state.page.phoneWidth,
+          w: this.page.phoneWidth,
           h: newH,
         };
         if (this.isFirst) {
@@ -190,13 +190,13 @@ export default {
         }
         drags.size = {
           h: newH,
-          w: this.$store.state.page.phoneWidth,
+          w: this.page.phoneWidth,
         };
         if (!isModify) {
           drags.notModify = true;
         }
         drags.isUpload = false;
-        images[this.$store.state.editor.imgActive] = drags;
+        images[this.editor.imgActive] = drags;
         this.$store.commit('editor_update', { dragImages: images });
         this.fileSuccess = true;
         const ableTime = setTimeout(() => {
@@ -207,7 +207,7 @@ export default {
         // todo 解决aspectRatio只根据初始值设定比例
         const loadTime = setTimeout(() => {
           drags.isUpload = true;
-          images[this.$store.state.editor.imgActive] = drags;
+          images[this.editor.imgActive] = drags;
           this.$store.commit('editor_update', { dragImages: images });
           clearTimeout(loadTime);
         }, 100);
@@ -245,7 +245,7 @@ export default {
       this.onFileChange(file, [], true);
     },
     positionChange() {
-      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
         location.y = maxBottom;

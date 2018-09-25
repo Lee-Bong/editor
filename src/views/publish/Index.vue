@@ -1,24 +1,11 @@
 <template>
   <div class="wrap">
     <el-container>
-      <el-header>
-        <el-row class="" type="flex" align="middle">
-          <el-col :span="10" >
-            <el-breadcrumb separator="/">
-              <el-breadcrumb-item>
-                微页面
-              </el-breadcrumb-item>
-              <el-breadcrumb-item>
-                发布微页面
-              </el-breadcrumb-item>
-            </el-breadcrumb>
-          </el-col>
-          <el-col :span="14" class="button-group">
+      <nav-bar pageName="发布微页面">
+        <template slot="btnGroup">
             <el-button type="primary" @click="goList">查看列表</el-button>
-            <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
-          </el-col>
-        </el-row>
-      </el-header>
+        </template>
+      </nav-bar>
       <el-main>
         <div class="content">
           <div class="main-container">
@@ -58,6 +45,7 @@
 import * as service from '../../service';
 import PhoneView from '../../components/PhoneView.vue';
 import QrCode from '../../components/QrCode.vue';
+import NavBar from '../../components/NavBar';
 
 export default {
   data() {
@@ -70,6 +58,7 @@ export default {
   components: {
     PhoneView,
     QrCode,
+    NavBar,
   },
   async mounted() {
     try {

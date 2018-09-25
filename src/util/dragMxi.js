@@ -1,4 +1,6 @@
-export default function dragCom() {
+import { mapState } from 'vuex';
+
+export function dragCom() {
   const drag = {
     methods: {
       dragClick(index, type) { // 点击组件  index=-1表示全部都取消，index=-2表示点击了网页标题
@@ -171,3 +173,19 @@ export default function dragCom() {
   };
   return drag;
 }
+
+export function stateMxi() {
+  return {
+    computed: {
+      ...mapState({
+        editor: state => state.editor,
+        page: state => state.page,
+      }),
+    },
+  };
+}
+
+export default {
+  dragCom,
+  stateMxi,
+};

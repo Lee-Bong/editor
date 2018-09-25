@@ -1,12 +1,12 @@
 <template>
   <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
-    :h="$store.state.page.phoneHeight" :isActive="true" :isDraggable="false"
+    :h="page.phoneHeight" :isActive="true" :isDraggable="false"
     :isResizable="true" :parentLimitation="false" :preventActiveBehavior="true"
     :y="64" axis="y" @resizestop="resizestop"
-    :minh='$store.state.page.screenHeight'
+    :minh='page.screenHeight'
     :style="{
-    width: $store.state.page.phoneWidth+'px',
-    backgroundColor:  $store.state.page.backgroundColor,
+    width: page.phoneWidth+'px',
+    backgroundColor:  page.backgroundColor,
   }">
     <div class="phone-resize">
       <i class="el-icon-back resize-icon resize-up"></i>
@@ -14,29 +14,29 @@
       <i class="el-icon-back resize-icon resize-down"></i>
     </div>
     <div class="drag-items" :style="{
-      height: $store.state.page.phoneHeight + 'px',
-      backgroundColor:  $store.state.page.backgroundColor}">
-      <drag-text v-for="(drag, index) in $store.state.editor.dragTexts" v-if="drag.isShow"
+      height: page.phoneHeight + 'px',
+      backgroundColor: page.backgroundColor}">
+      <drag-text v-for="(drag, index) in dragTexts" v-if="drag.isShow"
        :key="drag.zIndex" :list-index="index" :dragForm="drag" @inputChange="inputChange"
        @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-      <drag-img v-for="(drag, index) in $store.state.editor.dragImages" :key="drag.zIndex"
+      <drag-img v-for="(drag, index) in dragImages" :key="drag.zIndex"
        :list-index="index" :is-active="drag.isActive" v-if="drag.isShow" :dragForm="drag"
        @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-      <drag-link v-for="(drag, index) in $store.state.editor.dragLinks" v-if="drag.isShow"
+      <drag-link v-for="(drag, index) in dragLinks" v-if="drag.isShow"
        :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-      <drag-img-lists v-for="(drag, index) in $store.state.editor.dragImgLists" v-if="drag.isShow"
+      <drag-img-lists v-for="(drag, index) in dragImgLists" v-if="drag.isShow"
        :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragDel="dragDel"
        @dragTextClick="dragTextClick" />
 
-      <drag-video v-for="(drag, index) in $store.state.editor.dragVideos" v-if="drag.isShow"
+      <drag-video v-for="(drag, index) in dragVideos" v-if="drag.isShow"
        :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-      <drag-audio v-for="(drag, index) in $store.state.editor.dragAudios" v-if="drag.isShow"
+      <drag-audio v-for="(drag, index) in dragAudios" v-if="drag.isShow"
        :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
@@ -50,7 +50,8 @@ import dragLink from '@/components/editor/dragItem/dragLink';
 import dragImgLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
-import dragCom from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
+import { mapState } from 'vuex';
 
 export default {
   mixins: [dragCom()],
@@ -68,6 +69,17 @@ export default {
   data() {
     return {
     };
+  },
+  computed: {
+    ...mapState({
+      dragAudios: state => state.editor.dragAudios,
+      dragVideos: state => state.editor.dragVideos,
+      dragImgLists: state => state.editor.dragImgLists,
+      dragLinks: state => state.editor.dragLinks,
+      dragImages: state => state.editor.dragImages,
+      dragTexts: state => state.editor.dragTexts,
+      page: state => state.page,
+    }),
   },
   methods: {
     inputChange() { // 组件-文本值改变

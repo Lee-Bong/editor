@@ -26,7 +26,8 @@
 
 <script>
 import VueDraggable from 'vuedraggable';
-import dragCom from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
+import { mapState } from 'vuex';
 
 export default {
   mixins: [dragCom()],
@@ -48,6 +49,12 @@ export default {
       textAlign: 1,
       textColor: 'rgba(19, 206, 102, 0.8)',
     };
+  },
+  computed: {
+    ...mapState({
+      editor: state => state.editor,
+      page: state => state.page,
+    }),
   },
   methods: {
     textInputFocus() {

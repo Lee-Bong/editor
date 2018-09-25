@@ -1,26 +1,13 @@
 <template>
   <div class="editor-box">
     <el-container>
-      <el-header>
-        <el-row class="header-flex">
-          <el-col :span="14" type="flex">
-            <el-breadcrumb separator="/" type="flex">
-              <el-breadcrumb-item :to="{ path: '/manage' }">
-                微页面
-              </el-breadcrumb-item>
-              <el-breadcrumb-item>
-                编辑微页面
-              </el-breadcrumb-item>
-            </el-breadcrumb>
-          </el-col>
-          <el-col :span="10" type="flex" style="marginTop: -10px">
+      <nav-bar pageName="编辑微页面">
+        <template slot="btnGroup">
             <el-button @click="saveEditor">保存草稿</el-button>
             <el-button @click="reviewEditor">预览</el-button>
             <el-button type="primary" class="publish-btn" @click="publishEditor">发布</el-button>
-            <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
-          </el-col>
-        </el-row>
-      </el-header>
+        </template>
+      </nav-bar>
       <layout-left />
       <el-main>
         <div class="flxed-main">
@@ -52,10 +39,11 @@ import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
-import dragCom from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
 import { nowTime } from '@/util/tools';
 import merge from 'webpack-merge';
 import * as service from '../service';
+import NavBar from '../components/NavBar';
 
 export default {
   mixins: [dragCom()],
@@ -66,6 +54,7 @@ export default {
     layer,
     layoutLeft,
     layoutSetting,
+    NavBar,
   },
   data() {
     return {
@@ -490,17 +479,6 @@ body {
   height: 100%;
   width: 100%;
 }
-.el-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 56px;
-  background-color: #fafafa;
-  width: 100%;
-  overflow: hidden;
-  border-bottom: 1px solid #ccd5db;
-  z-index: 1020;
-}
 
 .el-aside {
   position: fixed;
@@ -516,31 +494,6 @@ body {
 
 .help-icon {
   color: #323232;
-}
-
-.header-flex {
-  height: 100%;
-  align-content: center;
-  justify-content: space-between;
-}
-
-.header-flex .el-breadcrumb__inner {
-  line-height: 56px;
-}
-
-.el-button.el-button--text {
-  color: #333;
-  width: 80px;
-  height: 60px;
-  padding: 0;
-  margin-top: 10px;
-}
-.el-button.el-button--text:hover {
-  border: 1px solid #409eff;
-}
-.el-button.el-button--text:active {
-  background-color: #1593ff;
-  color: #fff;
 }
 
 .ed-com i,

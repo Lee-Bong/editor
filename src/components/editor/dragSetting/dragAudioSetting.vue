@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['setting-content', $store.state.editor.isAudioSet ? 'setting-show' : '']"
+    :class="['setting-content', editor.isAudioSet ? 'setting-show' : '']"
     :style="{width: setForm.width+'px'
     }">
   <div class="setting-box">
@@ -39,11 +39,11 @@
           <el-checkbox v-model="dragForm.loop">开启循环播放</el-checkbox>
         </el-form-item>
         <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
-            :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
+          <el-input-number v-model="dragForm.location.x" @change="locationChange"
+            :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
             :disabled="!dragForm.isUpload" controls-position="right"
             class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+          <el-input-number v-model="dragForm.location.y" @change="locationChange"
             :min="location.ymin" :max="yMax"
             :disabled="!dragForm.isUpload" controls-position="right"
             class="num-input"></el-input-number>
@@ -60,13 +60,13 @@
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
               <el-input-number
                 v-model="fixedTop" @change="fixedTopChange"
-                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
               <el-input-number
                 v-model="fixedBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -80,10 +80,11 @@
 <script>
 import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
 import { formatSecond } from '@/util/tools';
-import dragCom from '@/util/dragMxi';
+import { dragCom, stateMxi } from '@/util/dragMxi';
+import { mapState } from 'vuex';
 
 export default {
-  mixins: [dragCom()],
+  mixins: [dragCom(), stateMxi()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -91,6 +92,12 @@ export default {
   },
   components: {
     mediaUpload,
+  },
+  computed: {
+    ...mapState({
+      editor: state => state.editor,
+      page: state => state.page,
+    }),
   },
   data() {
     return {
@@ -152,7 +159,7 @@ export default {
         duration: '00:00',
         isUplaod: false,
         loop: false,
-        w: this.$store.state.page.phoneWidth,
+        w: this.page.phoneWidth,
         h: 82,
         x: 0,
         y: 0,
@@ -178,7 +185,7 @@ export default {
           duration: formatSecond(se),
           isUplaod: true,
           loop: false,
-          w: ele.$store.state.page.phoneWidth,
+          w: ele.page.phoneWidth,
           h: 82,
           x: 0,
           y: 0,
@@ -216,8 +223,8 @@ export default {
       });
     },
     audioChange(play, ele, dragList, active, isRemove) {
-      const lists = ele.$store.state.editor[dragList];
-      let drags = lists[ele.$store.state.editor[active]];
+      const lists = ele.editor[dragList];
+      let drags = lists[ele.editor[active]];
       drags = Object.assign({}, drags, play);
       if (!isRemove) {
         drags.location = {
@@ -228,11 +235,11 @@ export default {
       } else {
         drags.isUpload = false;
       }
-      lists[ele.$store.state.editor[active]] = drags;
+      lists[ele.editor[active]] = drags;
       ele.$store.commit('editor_update', { [dragList]: lists });
       setTimeout(() => {
         drags.isUpload = true;
-        lists[ele.$store.state.editor[active]] = drags;
+        lists[ele.editor[active]] = drags;
         ele.$store.commit('editor_update', { [dragList]: lists });
       }, 100);
     },
@@ -248,7 +255,7 @@ export default {
       if (!msg) this.$refs.mediaUpload.uplaodDone(true);
     },
     positionChange() {
-      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
         location.y = maxBottom;
@@ -272,8 +279,8 @@ export default {
         sourceType: this.dragForm.sourceType,
         isUpload: false,
         size: {
-          w: this.$store.state.page.phoneWidth,
-          h: this.$store.state.editor.audioHeight,
+          w: this.page.phoneWidth,
+          h: this.editor.audioHeight,
         },
         location: {
           x: 0,
@@ -298,21 +305,21 @@ export default {
           newObj = Object.assign({}, newObj, { linePlay: init });
         }
       }
-      const medias = this.$store.state.editor.dragAudios;
-      let drags = medias[this.$store.state.editor.audioActive];
+      const medias = this.editor.dragAudios;
+      let drags = medias[this.editor.audioActive];
       drags = Object.assign({}, drags, newObj);
-      medias[this.$store.state.editor.audioActive] = drags;
+      medias[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: medias });
     },
     lineTitleBlur() {
       const isAction = this.dragForm.sourceType === '1';
       const obj = isAction ? 'play' : 'linePlay';
       const title = isAction ? this.title : this.lineTitle;
-      const medias = this.$store.state.editor.dragAudios;
-      let drags = medias[this.$store.state.editor.audioActive];
+      const medias = this.editor.dragAudios;
+      let drags = medias[this.editor.audioActive];
       const play = Object.assign({}, drags[obj], { title });
       drags = Object.assign({}, drags, { [obj]: play });
-      medias[this.$store.state.editor.audioActive] = drags;
+      medias[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: medias });
     },
   },

@@ -108,7 +108,7 @@ export default {
   props: ['component', 'scale'],
   methods: {
     transformImgUrl(url) {
-      return url.replace(/^https?:\/\//, '');
+      return url.replace(/^https?:/, '');
     },
     handleLinkClick() {
       // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
