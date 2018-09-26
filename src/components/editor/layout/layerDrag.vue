@@ -5,13 +5,14 @@
   @update="datadragEnd"
   :options="{animation: 300,handle:'.dargDiv'}">
     <transition-group name="list-complete" >
-        <div
+      <div
         v-for="(layer, index) in $store.state.editor.layerLists"
         :key="index"
         :index="layer.zIndex"
         :class="['dargDiv', {active: $store.state.editor.layerActive==index},'layer-item']"
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
+        <i :class="['iconfont', layer.icon]"></i>
         <span v-show="!layer.editing" class="layout-name" >{{layer.name}}</span>
         <input v-show="layer.editing" v-model="layer.name"
         ref='nameEditor'
@@ -19,14 +20,15 @@
         :autofocus="layer.editing"
         class="layout-name name-editor"
         @blur="layoutNameBlur(index)"/>
-        </div>
+      </div>
     </transition-group>
   </draggable>
 </template>
 
 <script>
 import VueDraggable from 'vuedraggable';
-import dragCom from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
+import { mapState } from 'vuex';
 
 export default {
   mixins: [dragCom()],
@@ -48,6 +50,12 @@ export default {
       textAlign: 1,
       textColor: 'rgba(19, 206, 102, 0.8)',
     };
+  },
+  computed: {
+    ...mapState({
+      editor: state => state.editor,
+      page: state => state.page,
+    }),
   },
   methods: {
     textInputFocus() {
@@ -89,7 +97,7 @@ export default {
         layerLists: layouts,
       });
 
-      this.$nextTicknextTick(() => {
+      this.$nextTick(() => {
         this.$refs.nameEditor[0].focus();
       });
     },

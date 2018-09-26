@@ -2,10 +2,13 @@
 import MeiyouAppBar from 'meetyou.sharebar/lib/MeiyouAppBar';
 import YunQiAppBar from 'meetyou.sharebar/lib/YoubaobaoAppBar';
 import querystring from 'meetyou.util/lib/querystring';
+import jsonp from 'jsonp';
+
+// const wx = require('../assets/javascript/jweixin-1.2.0');
 
 const ua = navigator.userAgent;
-const isWeixin = ua.indexOf('MicroMessenger') !== -1 || ua.indexOf('micromessenger') !== -1;
-const isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1;
+const isWeixin = !!ua.match(/MicroMessenger/i);
+const isAndroid = !!ua.match(/Android|Adr/i);
 const isIOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 
 const getDownLoadUrl = (downloadUrls) => {
@@ -57,6 +60,63 @@ const handleOpen = (sharebar) => {
   sharebar.handleOpen();
 };
 
+const getWechatToken = () => new Promise((resolve, reject) => {
+  const url = `https://view.seeyouyima.com/api/wechat?url=${encodeURIComponent(window.location.href)}`;
+  jsonp(url, null, (err, data) => {
+    if (err) {
+      reject(err);
+    }
+    resolve(data);
+  });
+});
+
+// 微信二次分享
+const wxShare = (opt = {}) => {
+  if (isWeixin) {
+    getWechatToken().then((result) => {
+      const { wx } = window;
+      wx.config({
+        debug: false,
+        appId: result.data.appId,
+        timestamp: parseInt(result.data.timestamp, 10),
+        nonceStr: result.data.nonceStr,
+        signature: result.data.signature,
+        jsApiList: [
+          'checkJsApi',
+          // 'updateAppMessageShareData',
+          // 'updateTimelineShareData',
+          'onMenuShareTimeline',
+          'onMenuShareAppMessage',
+          'onMenuShareQQ',
+          'onMenuShareWeibo',
+          'onMenuShareQZone',
+        ],
+      });
+
+      wx.ready(() => {
+        const defaultOptions = {
+          title: document.title,
+          desc: '',
+          link: document.location.href,
+          imgUrl: '',
+          success: () => {
+          },
+          cancel: () => {
+          },
+        };
+        const options = { ...defaultOptions, ...opt };
+        // wx.updateAppMessageShareData(options);
+        // wx.updateTimelineShareData(options);
+        wx.onMenuShareTimeline(options);
+        wx.onMenuShareAppMessage(options);
+        wx.onMenuShareQQ(options);
+        wx.onMenuShareWeibo(options);
+        wx.onMenuShareQZone(options);
+      });
+    });
+  }
+};
+
 export default {
-  init, handleOpen, showDownLoadTip, getDownLoadUrl,
+  init, handleOpen, showDownLoadTip, getDownLoadUrl, wxShare,
 };

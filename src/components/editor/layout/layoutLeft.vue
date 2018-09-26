@@ -27,9 +27,9 @@ export default {
           kind: '基础组件',
           list: [
             { text: '文本', icon: 'iconfont ed-icon-text1', type: 1 },
-            { text: '图片', icon: 'iconfont ed-icon-i-img', type: 2 },
+            { text: '图片', icon: 'iconfont ed-icon-image', type: 2 },
             { text: '热区', icon: 'ed-icon-requ', type: 3 },
-            { text: '多图拼接', icon: 'ed-icon-gengduotupian', type: 4 },
+            { text: '多图拼接', icon: 'ed-icon-images', type: 4 },
           ],
         },
         {
@@ -47,6 +47,7 @@ export default {
       const zIndex = this.$store.state.editor.layoutKey;
       let layerName;
       let num = 0; // 组件类型索引
+      let icon = 'ed-icon-text3';
       const updateEditor = {
         isTextSet: false,
         isImgSet: false,
@@ -65,7 +66,12 @@ export default {
       switch (type) {
         case 1:
         {
-          const textTop = (this.$store.state.page.phoneHeight / 2) - (30 / 2);
+          const top = document.documentElement.scrollTop || document.body.scrollTop;
+          const isScroll = top > 56 && this.$store.state.page.phoneHeight
+           > this.$store.state.page.screenHeight;
+          const top1 = isScroll ?
+            (((((this.$store.state.page.phoneHeight - top) + 56) - 90) / 2) +
+             top) - 42 : (this.$store.state.page.screenHeight - 90) / 2;
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
@@ -73,7 +79,6 @@ export default {
           drag.push({
             isShow: true,
             zIndex: 1000,
-            y: textTop,
             isActive: true,
             dragIndex: zIndex,
             content: '',
@@ -83,7 +88,7 @@ export default {
             textColor: 'rgba(0, 0, 0, 1)',
             location: {
               x: 0,
-              y: (this.$store.state.page.phoneHeight / 2) - (30 / 2),
+              y: top1,
             },
             size: {
               w: 375,
@@ -106,6 +111,7 @@ export default {
           const drag2 = this.$store.state.editor.dragImages;
           num = drag2.length;
           layerName = `图片${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tupian1';
           drag2.push({
             isShow: true,
             zIndex: 1000,
@@ -140,6 +146,7 @@ export default {
           let drag3 = this.$store.state.editor.dragLinks;
           num = drag3.length;
           layerName = `热区${!num ? '' : num + 1}`;
+          icon = 'ed-icon-requm';
           drag3 = textActiveOff(drag3, { index: 0, isAll: true });
           drag3.push({
             isShow: true,
@@ -180,6 +187,7 @@ export default {
           const drag4 = this.$store.state.editor.dragImgLists;
           num = drag4.length;
           layerName = `多图拼接${!num ? '' : num + 1}`;
+          icon = 'ed-icon-duotu';
           drag4.push({
             isUplaod: false,
             isShow: true,
@@ -213,6 +221,7 @@ export default {
           let drag5 = this.$store.state.editor.dragVideos;
           num = drag5.length;
           layerName = `视频${!num ? '' : num + 1}`;
+          icon = 'ed-icon-shipin';
           drag5 = textActiveOff(drag5, { index: 0, isAll: true });
           drag5.push({
             isShow: true,
@@ -253,6 +262,7 @@ export default {
           let drag6 = this.$store.state.editor.dragAudios;
           num = drag6.length;
           layerName = `音频${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tubiao-';
           drag6 = textActiveOff(drag6, { index: 0, isAll: true });
           drag6.push({
             isShow: true,
@@ -307,6 +317,7 @@ export default {
         num,
         zIndex,
         editing: false,
+        icon,
       });
       this.$store.commit('editor_update', Object.assign({}, updateEditor, newEditor, {
         layerLists,
@@ -326,5 +337,8 @@ export default {
 }
 .left-btns-card .el-card__body {
   padding-bottom: 10px !important;
+}
+.left-btns-card .ed-icon-images {
+  font-size: 26px;
 }
 </style>

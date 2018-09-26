@@ -1,5 +1,5 @@
 <template>
-  <div :class="['setting-content', $store.state.editor.isVideoSet
+  <div :class="['setting-content', editor.isVideoSet
     ? 'setting-show' : '', 'video-setting']"
     :style="{width: setForm.width+'px'}"
   >
@@ -33,7 +33,7 @@
           </el-form-item>
           <el-form-item label="位置：" size="mini">
             <el-input-number v-model="dragForm.location.x" @change="locationChange"
-              :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
+              :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="dragForm.location.y" @change="locationChange"
@@ -44,11 +44,11 @@
           <div class="dec-label"> <label>X</label> <label> Y</label></div>
           <el-form-item label="尺寸：" size="mini">
             <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
-              :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
+              :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
-              :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
+              :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
@@ -64,13 +64,13 @@
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
               <el-input-number
                 v-model="fixedTop" @change="fixedTopChange"
-                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
               <el-input-number
                 v-model="fixedBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -86,10 +86,10 @@
 import oss from '@/util/oss';
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
-import dragCom from '@/util/dragMxi';
+import { dragCom, stateMxi } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom()],
+  mixins: [dragCom(), stateMxi()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -124,8 +124,8 @@ export default {
     sourceChange(type) {
       const isActive = Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
        || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
-      if (!isActive && (this.dragForm.size.h !== this.$store.state.editor.mediaHeight
-        || this.dragForm.size.w !== this.$store.state.page.phoneWidth
+      if (!isActive && (this.dragForm.size.h !== this.editor.mediaHeight
+        || this.dragForm.size.w !== this.page.phoneWidth
         || !this.dragForm.isLineUpload)) {
         this.setVideoInit();
       } else {
@@ -155,7 +155,7 @@ export default {
       if (type === 1) {
         let newW = size.w;
         let newH = (videoObj.h * size.w) / videoObj.w;
-        const maxH = this.$store.state.page.phoneHeight - this.dragForm.location.y;
+        const maxH = this.page.phoneHeight - this.dragForm.location.y;
         if (newH > maxH) {
           newH = maxH;
           newW = (videoObj.w * newH) / videoObj.h;
@@ -167,7 +167,7 @@ export default {
       } else {
         let newW = (videoObj.w * size.h) / videoObj.h;
         let newH = size.h;
-        const maxW = this.$store.state.page.phoneWidth - this.dragForm.location.x;
+        const maxW = this.page.phoneWidth - this.dragForm.location.x;
         if (newW > maxW) {
           newW = maxW;
           newH = (videoObj.h * newW) / videoObj.w;
@@ -178,7 +178,7 @@ export default {
         };
       }
       const videos = Object.assign(
-        {}, this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive],
+        {}, this.editor.dragVideos[this.editor.videoActive],
         {
           size,
         },
@@ -223,13 +223,13 @@ export default {
             duration: 2000,
           });
         }
-        const videos = ele.$store.state.editor[dragList];
-        const drags = videos[ele.$store.state.editor[active]];
-        const newH = (this.videoHeight * ele.$store.state.page.phoneWidth) / this.videoWidth;
+        const videos = ele.editor[dragList];
+        const drags = videos[ele.editor[active]];
+        const newH = (this.videoHeight * ele.page.phoneWidth) / this.videoWidth;
         const video = {
           sourceW: this.videoWidth,
           sourceH: this.videoHeight,
-          w: ele.$store.state.page.phoneWidth,
+          w: ele.page.phoneWidth,
           h: newH,
           x: 0,
           y: 0,
@@ -255,8 +255,8 @@ export default {
       });
     },
     mediaChange(video, ele, dragList, active, isRemove, isChange) {
-      const lists = ele.$store.state.editor[dragList];
-      let drags = lists[ele.$store.state.editor[active]];
+      const lists = ele.editor[dragList];
+      let drags = lists[ele.editor[active]];
       let videoObj = {};
       if (!isChange) {
         videoObj = { video };
@@ -274,13 +274,13 @@ export default {
           y: 0,
         };
         clone.size = {
-          w: ele.$store.state.page.phoneWidth,
+          w: ele.page.phoneWidth,
           h: video.h,
         };
       } else {
         clone.size = {
-          w: ele.$store.state.page.phoneWidth,
-          h: ele.$store.state.editor.mediaHeight,
+          w: ele.page.phoneWidth,
+          h: ele.editor.mediaHeight,
         };
       }
       if (isChange) {
@@ -302,7 +302,7 @@ export default {
         }
       }
       drags = Object.assign({}, drags, clone);
-      lists[ele.$store.state.editor[active]] = drags;
+      lists[ele.editor[active]] = drags;
       ele.$store.commit('editor_update', { [dragList]: lists });
       this.ratioSet(ele, dragList, active);
     },
@@ -334,28 +334,28 @@ export default {
           isPoster: false,
         };
       }
-      const videos = this.$store.state.editor.dragVideos;
-      const drags = videos[this.$store.state.editor.videoActive];
+      const videos = this.editor.dragVideos;
+      const drags = videos[this.editor.videoActive];
       drags.poster = newFile.poster;
       drags.video = Object.assign({}, drags.video, newFile);
       drags.lineVideo = Object.assign({}, drags.lineVideo, newFile);
-      videos[this.$store.state.editor.videoActive] = drags;
+      videos[this.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
     },
     fileRemove() {
       this.uploadDone();
     },
     ratioSet(ele, dragList, active) {
-      const lists = ele.$store.state.editor[dragList];
-      let drags = lists[ele.$store.state.editor[active]];
+      const lists = ele.editor[dragList];
+      let drags = lists[ele.editor[active]];
       setTimeout(() => {
         drags = Object.assign({}, drags, { isUpload: true });
-        lists[ele.$store.state.editor[active]] = drags;
+        lists[ele.editor[active]] = drags;
         ele.$store.commit('editor_update', { [dragList]: lists });
       }, 100);
     },
     positionChange() {
-      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
         location.y = maxBottom;
@@ -386,8 +386,8 @@ export default {
         sourceType: this.dragForm.sourceType,
         isUpload: false,
         size: {
-          w: this.$store.state.page.phoneWidth,
-          h: this.$store.state.editor.mediaHeight,
+          w: this.page.phoneWidth,
+          h: this.editor.mediaHeight,
         },
         location: {
           x: 0,
@@ -404,10 +404,10 @@ export default {
           newObj = Object.assign({}, newObj, { lineVideo: { url: '' } });
         }
       }
-      const videos = this.$store.state.editor.dragVideos;
-      let drags = videos[this.$store.state.editor.videoActive];
+      const videos = this.editor.dragVideos;
+      let drags = videos[this.editor.videoActive];
       drags = Object.assign({}, drags, newObj);
-      videos[this.$store.state.editor.videoActive] = drags;
+      videos[this.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
     },
   },
