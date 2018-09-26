@@ -158,12 +158,20 @@ export function dragCom() {
 
     },
     computed: {
-      fixedBottom() {
-        return this.$store.state.page.screenHeight - this.dragForm.location.y
+      fixedBottom: {
+        get() {
+          return this.$store.state.page.screenHeight - this.dragForm.location.y
        - this.dragForm.size.h;
+        },
+        set() {
+        },
       },
-      fixedTop() {
-        return this.dragForm.location.y;
+      fixedTop: {
+        get() {
+          return this.dragForm.location.y;
+        },
+        set() {
+        },
       },
       yMax() {
         return this.dragForm.position === 'relative' ? this.$store.state.page.phoneHeight - this.dragForm.size.h
