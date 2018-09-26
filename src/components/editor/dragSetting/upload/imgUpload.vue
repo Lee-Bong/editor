@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 
 export default {
   name: 'HelloWorld',
@@ -37,8 +37,8 @@ export default {
       try {
         const file = val.currentTarget.files[0];
         const up = await oss(file);
+        // alert(up);
         up.beforeName = file.name;
-
         if (up && up.url) {
           this.$emit('upload-done', up);
         } else {

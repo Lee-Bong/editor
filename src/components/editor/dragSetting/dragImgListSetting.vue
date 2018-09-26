@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import draggable from 'vuedraggable';
 import { dragCom } from '@/util/dragMxi';

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 
 export default {
   name: 'HelloWorld',

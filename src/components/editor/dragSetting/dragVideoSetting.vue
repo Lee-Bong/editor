@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
 import { dragCom } from '@/util/dragMxi';

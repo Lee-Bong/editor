@@ -82,7 +82,7 @@
 
 <script>
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 import { dragCom } from '@/util/dragMxi';
 
 export default {
