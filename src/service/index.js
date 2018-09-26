@@ -1,12 +1,8 @@
 import property from 'lodash/property';
-import axios from 'axios';
+import axios from './request';
 
-
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'https://test-bfe.meiyou.com';
 const { host } = window.location;
 const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
-
 
 const getPageInfo = pageId => axios.get(`${api}/api/we/page`, { params: { page_id: pageId } })
   .then(property('data'));
