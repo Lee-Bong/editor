@@ -96,31 +96,7 @@ export default {
 </script>
 
 <style>
-
-.vdr-stick {
-  background-color: #fff;
-  border: 1px solid #59c7f9;
-}
-
-.vdr.active:before {
-  outline: 1px dashed #59c7f9;
-}
-
-.drag-del {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  color: #888;
-  border-radius: 20px;
-  right: -10px;
-  top: -10px;
-  z-index: 1090;
-  cursor: pointer;
-}
-
 .drag-link {
   background-color: rgba(22, 155, 213, 0.5);
 }
-
 </style>

@@ -125,6 +125,7 @@ export default {
 <style >
 .drag-item {
   position: absolute;
+  cursor: move;
 }
 .phone-content {
   position: absolute;

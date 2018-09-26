@@ -1,7 +1,7 @@
 <template>
   <div class="img-upload-item">
     <div v-if="!imgObj||!imgObj.url">
-      <el-button type="primary" size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
+      <el-button type="primary" plain size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
        class="check-upload" accept=".png,.gif,.jpeg, .jpg"/>

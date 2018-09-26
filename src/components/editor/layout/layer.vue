@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import sortable from 'sortable';
 import drag from './layerDrag';
 
 export default {
@@ -21,7 +20,6 @@ export default {
   props: {
   },
   components: {
-    sortable,
     drag,
   },
   data() {
@@ -79,24 +77,8 @@ export default {
   margin-top: 10px;
   border-right: 0;
 }
-
 .el-card__body {
   padding: 10px 0;
-}
-
-.layer-item {
-  position: relative;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 260px;
-  height: 36px;
-  background: #fff;
-  font-size: 12px;
-  color: #000;
-  border-bottom: 1px solid #ccd5db;
-  box-sizing: border-box;
-  cursor: pointer;
 }
 .el-card__header {
   text-align: center;

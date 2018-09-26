@@ -169,23 +169,15 @@ export function dragCom() {
         return this.dragForm.position === 'relative' ? this.$store.state.page.phoneHeight - this.dragForm.size.h
           : this.$store.state.page.screenHeight - this.dragForm.size.h;
       },
-    },
-  };
-  return drag;
-}
-
-export function stateMxi() {
-  return {
-    computed: {
       ...mapState({
         editor: state => state.editor,
         page: state => state.page,
       }),
     },
   };
+  return drag;
 }
 
 export default {
   dragCom,
-  stateMxi,
 };

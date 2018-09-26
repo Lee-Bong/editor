@@ -1,7 +1,7 @@
 <template>
   <div class="img-upload-item">
     <div v-if="!source||!source.name">
-      <el-button type="primary" size="mini" @click="uploadTrigger"
+      <el-button type="primary" plain size="mini" @click="uploadTrigger"
         v-show="!isLoading">{{'选择文件'}}</el-button>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"

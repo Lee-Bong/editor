@@ -10,7 +10,7 @@
         </span>
       </div>
       <div class="setting">
-        <el-form ref="form">
+        <el-form ref="form" label-width="80px">
           <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']"
             v-if="!dragForm.notModify">
             <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imgList"
@@ -27,7 +27,7 @@
           <div class="file-info" v-if="!!dragForm.notModify">
             <img-review-item :imgObj='dragForm.img' @file-change="fileModify"
               ref="imgReview"/>
-            <el-form-item label="位置：" size="mini">
+            <el-form-item label="位置：" size="mini" class="number-item">
               <el-input-number v-model="dragForm.location.x" @change="locationChange"
                 :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
                 controls-position="right" class="num-input"></el-input-number>
@@ -39,7 +39,7 @@
               <label>X</label>
               <label> Y</label>
             </div>
-            <el-form-item label="尺寸：" size="mini">
+            <el-form-item label="尺寸：" size="mini" class="number-item">
               <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
                 :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
                 controls-position="right" class="num-input"></el-input-number>
@@ -53,7 +53,7 @@
             </div>
           </div>
           <div v-if="!!dragForm.notModify">
-            <el-form-item label="固定位置：" size="mini">
+            <el-form-item label="固定位置：" size="mini" class="posotion-item">
             <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
             <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
               >相对顶部固定</el-radio>
@@ -66,7 +66,8 @@
                 :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
-            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'"
+              class="number-item">
               <el-input-number
                 v-model="fixedBottom" @change="fixedBottomChange"
                 :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
@@ -82,10 +83,10 @@
 <script>
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import oss from '@/util/oss';
-import { dragCom, stateMxi } from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom(), stateMxi()],
+  mixins: [dragCom()],
   name: 'DragImgSetting',
   props: {
     dragForm: Object,
@@ -96,10 +97,6 @@ export default {
   },
   data() {
     return {
-      // imgObj: {
-      //   source: 'http://pic30.photophoto.cn/20140310/0008020974539766_b.jpg',
-      //   alt: '这是图片标题',
-      // },
       imgPrecent: 1,
       fileSuccess: false,
       fileAble: false,
@@ -117,9 +114,6 @@ export default {
       },
       imgList: [],
     };
-  },
-  computed: {
-
   },
   methods: {
     settingClose() { // 关闭设置
@@ -295,9 +289,10 @@ export default {
 }
 .upload-wrap .el-upload-dragger {
   height: 160px;
-  width: 320px;
+  width: 350px;
   color: #409eff;
-  margin-left: 15px;
+  margin-left: 10px;
+  margin-top: 15px;
 }
 .upload-disabled .el-upload-dragger{
   background-color: #ddd;
@@ -314,8 +309,7 @@ export default {
 }
 .upload-wrap .el-upload__tip {
   position: absolute;
-  top: 120px;
-  /* left: 100px; */
+  top: 140px;
   width: 100%;
   text-align: center;
 }
