@@ -1,8 +1,9 @@
 import property from 'lodash/property';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from './request';
 
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'https://test-bfe.meiyou.com';
+// axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = 'https://test-bfe.meiyou.com';
 // const { NODE_ENV } = process.env;
 
 const api = window.location.host.indexOf('test-') === 0 || process.env.NODE_ENV === 'development' ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
