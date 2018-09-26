@@ -50,6 +50,9 @@ export default {
       this.$emit('dragDel', 4, index, this.dragForm.dragIndex);
     },
   },
+  updated() {
+
+  },
 };
 </script>
 

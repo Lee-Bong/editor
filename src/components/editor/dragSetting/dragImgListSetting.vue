@@ -18,7 +18,7 @@
             drag
             action=""
             :multiple="true"
-            :file-list="dragForm.imgList"
+            :file-list="imgList"
             :http-request="onFileChange"
             list-type="picture"
             :auto-upload="true"
@@ -97,7 +97,7 @@ export default {
         x: 0,
         y: 0,
       };
-      ele.fileDone(key, updateImg);
+      // ele.fileDone(key, updateImg);
       dragImg.onload = () => {
         ele.$message({
           message: '图片上传成功～',
@@ -217,9 +217,9 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      this.imgList = this.dragForm.imgList;
-    });
+    // this.$nextTick(() => {
+    //   this.imgList = this.dragForm.imgList;
+    // });
   },
 
 };
