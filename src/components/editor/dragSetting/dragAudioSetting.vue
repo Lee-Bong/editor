@@ -51,7 +51,8 @@
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <div v-if="dragForm.isUpload">
             <el-form-item label="固定位置：" size="mini" class="posotion-item">
-            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
+            <el-radio v-model="dragForm.position" label="relative"
+              @change="positionChange">不固定</el-radio>
             <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
               >相对顶部固定</el-radio>
             <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
@@ -249,11 +250,16 @@ export default {
     },
     positionChange() {
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom) {
+      if (this.dragForm.location.y > maxBottom && this.dragForm.position !== 'relative') {
         const { location } = this.dragForm;
         location.y = maxBottom;
         this.$emit('input-locationChange', 'dragAudios', location, 'audioActive');
       }
+      const audios = this.editor.dragAudios;
+      const drags = audios[this.editor.audioActive];
+      drags.position = this.dragForm.position;
+      audios[this.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragAudios: audios });
     },
     lineSourceBlur() {
       const val = this.lineSource;

@@ -173,9 +173,13 @@ export function dragCom() {
         set() {
         },
       },
-      yMax() {
-        return this.dragForm.position === 'relative' ? this.$store.state.page.phoneHeight - this.dragForm.size.h
-          : this.$store.state.page.screenHeight - this.dragForm.size.h;
+      yMax: {
+        get() {
+          return this.dragForm.position === 'relative' ? this.$store.state.page.phoneHeight - this.dragForm.size.h
+            : this.$store.state.page.screenHeight - this.dragForm.size.h;
+        },
+        set() {
+        },
       },
       ...mapState({
         editor: state => state.editor,

@@ -55,11 +55,12 @@
           <div class="dec-label"> <label>宽</label> <label>高</label></div>
           <div v-if="Boolean(dragForm.video && dragForm.video.url)">
             <el-form-item label="固定位置：" size="mini" class="posotion-item">
-            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
-              >相对顶部固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
-              >相对底部固定</el-radio>
+              <el-radio v-model="dragForm.position" label="relative"
+               @change="positionChange">不固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+                >相对顶部固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+                >相对底部固定</el-radio>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
               <el-input-number
@@ -356,11 +357,16 @@ export default {
     },
     positionChange() {
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom) {
+      if (this.dragForm.location.y > maxBottom && this.dragForm.position !== 'relative') {
         const { location } = this.dragForm;
         location.y = maxBottom;
         this.$emit('input-locationChange', 'dragVideos', location, 'videoActive');
       }
+      const videos = this.editor.dragVideos;
+      const drags = videos[this.editor.videoActive];
+      drags.position = this.dragForm.position;
+      videos[this.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragVideos: videos });
     },
     lineSourceBlur() {
       const val = this.lineSource;
