@@ -1,5 +1,5 @@
 <template>
-  <div :class="['setting-content', $store.state.editor.isImgListSet
+  <div :class="['setting-content', editor.isImgListSet
     ? 'setting-show' : '', 'link-setting']"
     :style="{width: setForm.width+'px'}"
   >
@@ -12,17 +12,6 @@
     </div>
     <div class="setting">
       <el-form ref="form">
-        <!-- <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @change="locationChange"
-            :disabled="!dragForm.imgList.length"
-            :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
-            controls-position="right" class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @change="locationChange"
-            :disabled="!dragForm.imgList.length"
-            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
-            controls-position="right" class="num-input"></el-input-number>
-        </el-form-item>
-        <div class="dec-label"> <label>X</label> <label> Y</label></div> -->
         <div class="upload-wrap upload-wrap--list">
           <el-upload
             class="upload-demo"
@@ -58,9 +47,11 @@
 import oss from '@/util/oss';
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import draggable from 'vuedraggable';
+import { stateMxi } from '@/util/dragMxi';
 
 export default {
   name: 'DragSetting',
+  mixins: [stateMxi()],
   props: {
     dragForm: Object,
     setForm: Object,
@@ -116,7 +107,7 @@ export default {
         if (key !== undefined) {
           ele.$refs.imgReview[key].uplaodDone();
         }
-        const newH = (dragImg.height * ele.$store.state.page.phoneWidth) / dragImg.width;
+        const newH = (dragImg.height * ele.page.phoneWidth) / dragImg.width;
         if (!ele.fileSuccess) ele.fileSuccess = true;
         updateImg.size = {
           w: 375,
@@ -177,7 +168,7 @@ export default {
       }
     },
     fileDone(key, updateImg) {
-      const { dragImgLists, imgListActive } = this.$store.state.editor;
+      const { dragImgLists, imgListActive } = this.editor;
       const imgLists = dragImgLists;
       this.imgList[key] = updateImg;
       const drag = imgLists[imgListActive];
@@ -196,7 +187,7 @@ export default {
         }
         return true;
       });
-      if (wrapH > this.$store.state.page.phoneHeight) {
+      if (wrapH > this.page.phoneHeight) {
         this.$store.commit('page_update', {
           phoneHeight: wrapH,
         });
@@ -212,7 +203,7 @@ export default {
       this.updateImgList();
     },
     updateImgList(isRemove, index) {
-      const { dragImgLists, imgListActive } = this.$store.state.editor;
+      const { dragImgLists, imgListActive } = this.editor;
       const drag = dragImgLists[imgListActive];
       if (isRemove) {
         this.imgList = drag.imgList.filter((item, key) => key !== index);
@@ -223,7 +214,6 @@ export default {
       this.$store.commit('editor_update', {
         dragImgLists,
       });
-      // this.$store.commit('imgListUpdate', newDrag);
     },
   },
   mounted() {

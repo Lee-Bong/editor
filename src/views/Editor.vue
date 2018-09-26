@@ -39,7 +39,7 @@ import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
-import dragCom from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
 import { nowTime } from '@/util/tools';
 import merge from 'webpack-merge';
 import * as service from '../service';
@@ -120,7 +120,7 @@ export default {
       const params = {
         state,
         draft,
-        piblic: '',
+        // piblic: '',
       };
       let data;
       if (this.isFirst) {

@@ -76,7 +76,7 @@ const wxShare = (opt = {}) => {
     getWechatToken().then((result) => {
       const { wx } = window;
       wx.config({
-        debug: true,
+        debug: false,
         appId: result.data.appId,
         timestamp: parseInt(result.data.timestamp, 10),
         nonceStr: result.data.nonceStr,

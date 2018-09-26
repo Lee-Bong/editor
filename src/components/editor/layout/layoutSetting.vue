@@ -1,8 +1,8 @@
 <template>
 <div class="setting-wrap">
     <drag-text-setting
-      v-if="this.$store.state.editor.dragTexts.length && $store.state.editor.isTextSet"
-      :dragForm="this.$store.state.editor.dragTexts[this.$store.state.editor.textActive]"
+      v-if="editor.dragTexts.length && editor.isTextSet"
+      :dragForm="editor.dragTexts[editor.textActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -10,8 +10,8 @@
     />
 
     <drag-img-setting
-      v-if="$store.state.editor.isImgSet"
-      :dragForm="this.$store.state.editor.dragImages[this.$store.state.editor.imgActive]"
+      v-if="editor.isImgSet"
+      :dragForm="editor.dragImages[editor.imgActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -19,8 +19,8 @@
     />
 
     <drag-video-setting
-      v-if="$store.state.editor.videoSet"
-      :dragForm="this.$store.state.editor.dragVideos[this.$store.state.editor.videoActive]"
+      v-if="editor.videoSet"
+      :dragForm="editor.dragVideos[editor.videoActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @videoSourceChange="sourceChange"
@@ -29,8 +29,8 @@
     />
 
     <drag-audio-setting
-      v-if="$store.state.editor.audioSet"
-      :dragForm="this.$store.state.editor.dragAudios[this.$store.state.editor.audioActive]"
+      v-if="editor.audioSet"
+      :dragForm="editor.dragAudios[editor.audioActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @audioSourceChange="sourceChange"
@@ -39,8 +39,8 @@
     />
 
     <drag-link-setting
-      v-if="$store.state.editor.linkSet"
-      :dragForm="this.$store.state.editor.dragLinks[this.$store.state.editor.linkActive]"
+      v-if="editor.linkSet"
+      :dragForm="editor.dragLinks[editor.linkActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -48,8 +48,8 @@
       @linkSourceChange="sourceChange"
     />
     <drag-img-list-setting
-      v-if="$store.state.editor.isImgListSet"
-      :dragForm="this.$store.state.editor.dragImgLists[this.$store.state.editor.imgListActive]"
+      v-if="editor.isImgListSet"
+      :dragForm="editor.dragImgLists[editor.imgListActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
@@ -57,8 +57,8 @@
       @linkSourceChange="sourceChange"
     />
     <page-setting
-      v-if="$store.state.page.pageSet"
-      :dragForm="$store.state.page"
+      v-if="page.pageSet"
+      :dragForm="page"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
     />
@@ -73,10 +73,20 @@ import dragImgListSetting from '@/components/editor/dragSetting/dragImgListSetti
 import dragVideoSetting from '@/components/editor/dragSetting/dragVideoSetting';
 import dragAudioSetting from '@/components/editor/dragSetting/dragAudioSetting';
 import pageSetting from '@/components/editor/dragSetting/pageSetting';
+import { mapState } from 'vuex';
 
 export default {
   name: 'layoutSetting',
   props: {
+  },
+  components: {
+    dragTextSetting,
+    dragImgSetting,
+    dragLinkSetting,
+    dragVideoSetting,
+    dragAudioSetting,
+    pageSetting,
+    dragImgListSetting,
   },
   data() {
     return {
@@ -88,6 +98,12 @@ export default {
         },
       },
     };
+  },
+  computed: {
+    ...mapState({
+      editor: state => state.editor,
+      page: state => state.page,
+    }),
   },
   methods: {
     sourceChange(type, form, active) {
@@ -115,15 +131,8 @@ export default {
       });
     },
   },
-  components: {
-    dragTextSetting,
-    dragImgSetting,
-    dragLinkSetting,
-    dragVideoSetting,
-    dragAudioSetting,
-    pageSetting,
-    dragImgListSetting,
-  },
+
+
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['setting-content', $store.state.editor.isTextSet ?
+    :class="['setting-content', editor.isTextSet ?
      'setting-show' : '', 'text-setting']"
     :style="{width: setForm.width+'px'}"
     @click="settingClick">
@@ -52,7 +52,7 @@
         </el-form-item>
         <el-form-item label="位置：" size="mini">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
-            :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
+            :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
             controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @change="locationChange"
             :min="location.ymin" :max="yMax"
@@ -61,10 +61,10 @@
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini">
           <el-input-number v-model="dragForm.size.w" @change="sizeChange"
-            :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
+            :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
             controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @change="sizeChange"
-            :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
+            :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
@@ -78,13 +78,13 @@
         <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
           <el-input-number
             :value="fixedTop" @change="fixedTopChange"
-            :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+            :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
           <el-input-number
             :value="fixedBottom" @change="fixedBottomChange"
-            :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+            :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         </el-form>
@@ -94,10 +94,10 @@
 </template>
 
 <script>
-import dragCom from '@/util/dragMxi';
+import { dragCom, stateMxi } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom()],
+  mixins: [dragCom(), stateMxi()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -140,7 +140,7 @@ export default {
 
     },
     textColorReset() { // 字体颜色重置
-      const { dragTexts, textActive } = this.$store.state.editor;
+      const { dragTexts, textActive } = this.editor;
       dragTexts[textActive].textColor = '#000';
       this.$store.commit('editor_update', {
         dragTexts,
@@ -153,14 +153,14 @@ export default {
       this.updateLineHieght(((pre * 3) / 100).toFixed(1));
     },
     updateLineHieght(num) {
-      const { dragTexts, textActive } = this.$store.state.editor;
+      const { dragTexts, textActive } = this.editor;
       dragTexts[textActive].lineHeight = num;
       this.$store.commit('editor_update', {
         dragTexts,
       });
     },
     positionChange() {
-      const maxBottom = this.$store.state.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
         location.y = maxBottom;
