@@ -8,9 +8,10 @@
      : 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
       <i v-if="!(imgObj && imgObj.url)" class="el-icon-loading"></i>
       <div class="modify-image">
-        <el-upload :disabled="isLoading" class="upload-modify" action=""
+        <el-upload :disabled="isLoading" class="upload-modify" action="string"
           :show-file-list="false" :limit="1" accept=".png,.gif,.jpeg, .jpg"
-          :on-change="onFileChange" :auto-upload="false">
+          :http-request="fileToUpload"
+          :auto-upload="true">
           <div class="el-upload__text">更换图片</div>
         </el-upload>
       </div>
@@ -39,9 +40,9 @@ export default {
     };
   },
   methods: {
-    onFileChange(file) {
+    fileToUpload(params) {
       this.loadingPre();
-      this.$emit('file-change', file, true, this.index || 0);
+      this.$emit('file-change', params.file, true, this.index || 0);
     },
     uplaodDone(isError) {
       if (!isError) {

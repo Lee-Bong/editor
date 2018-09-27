@@ -14,8 +14,9 @@
           <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']"
             v-if="!dragForm.notModify">
             <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imgList"
-              :on-change="onFileChange" list-type="picture" :limit="limit"
-              :auto-upload="true" action="" accept=".png,.gif,.jpeg, .jpg">
+              list-type="picture" :limit="limit"
+              :http-request="fileToUpload"
+              :auto-upload="true" action="string" accept=".png,.gif,.jpeg, .jpg">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
                 <em>+ 点击上传图片</em> ,或把图片拖到此处</div>
@@ -222,10 +223,13 @@ export default {
       if (this.fileAble) return false;
       this.fileAble = true;
       try {
-        const up = await oss(file.raw);
+        const up = await oss(file);
         up.oldName = file.name;
         if (up && up.url) {
-          this.imgList = [file];
+          this.imgList = [{
+            title: file.name,
+            url: up.url,
+          }];
           this.onFileSuccess(up, isModify);
         } else {
           this.onFileError(isModify);
@@ -233,6 +237,9 @@ export default {
       } catch (err) {
         this.onFileError(isModify);
       }
+    },
+    fileToUpload(item) {
+      this.onFileChange(item.file);
     },
     fileModify(file) { // 更换图片
       this.isFirst = true;
