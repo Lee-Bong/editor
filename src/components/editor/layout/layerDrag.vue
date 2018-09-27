@@ -81,8 +81,8 @@ export default {
       this.dragClick(num, type);
       this.$store.dispatch('layerMove', { layerLists, newIndex });
     },
-    layerclick(drag, index) { // 单击图层
-      if (this.$store.state.editor.layerActive === index) return false;
+    layerclick(drag) { // 单击图层
+      // if (this.$store.state.editor.layerActive === index) return false;
       const { type, num } = drag;
       this.dragClick(num, type);
     },

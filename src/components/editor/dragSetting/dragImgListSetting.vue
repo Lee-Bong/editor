@@ -217,9 +217,9 @@ export default {
     },
   },
   mounted() {
-    // this.$nextTick(() => {
-    //   this.imgList = this.dragForm.imgList;
-    // });
+    this.$nextTick(() => {
+      this.imgList = this.dragForm.imgList;
+    });
   },
 
 };
