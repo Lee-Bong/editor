@@ -190,6 +190,7 @@ export default {
       if (wrapH > this.page.phoneHeight) {
         this.$store.commit('page_update', {
           phoneHeight: wrapH,
+          clientHeight: wrapH + 64,
         });
       }
     },

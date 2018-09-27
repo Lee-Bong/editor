@@ -11,7 +11,7 @@
       <layout-left />
       <el-main>
         <div class="flxed-main">
-          <div class="phone-wrap" :style="{height: ($store.state.page.clientHeight + 37)+'px'}">
+          <div class="phone-wrap" :style="{height: ($store.state.page.clientHeight)+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
                 height: ($store.state.page.clientHeight)+'px'}">
               <div class="top-banner" @click="topBannerClick">
@@ -104,7 +104,6 @@ export default {
       this.drag.left = newRect.left;
     },
     async saveEditor(isTrigger) { // 保存草稿
-      let { state, draft } = this.getEditorJson();
       const { isOk, msg } = this.checkSources();
       const ele = this;
       if (!isOk) {
@@ -115,7 +114,7 @@ export default {
         });
         return false;
       }
-      // let { state, draft } = ele.getEditorJson();
+      let { state, draft } = ele.getEditorJson();
       state = JSON.stringify(state);
       draft = JSON.stringify(draft);
       const params = {
@@ -346,6 +345,7 @@ export default {
       eJson.editor.components = dragArr;
       const saveState = this.$store.state;
       saveState.page.pageSet = true;
+      saveState.editor.layerActive = -1;
 
       return { state: saveState, draft: eJson.editor };
     },
@@ -669,7 +669,7 @@ body {
 .phone-hidden {
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
   left: 1px;
   z-index: 1050;
 }
