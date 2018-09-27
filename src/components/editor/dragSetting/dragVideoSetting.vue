@@ -11,7 +11,7 @@
         </span>
       </div>
       <div class="setting">
-        <el-form ref="form" >
+        <el-form ref="form" label-width="80px">
           <el-form-item label="类型：" size="mini">
             <el-radio v-model="dragForm.sourceType"
               @change="sourceChange('1')" label="1">本地上传</el-radio>
@@ -31,7 +31,7 @@
           <el-form-item label="视频封面：" size="mini" class="is-require video-el">
             <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
           </el-form-item>
-          <el-form-item label="位置：" size="mini">
+          <el-form-item label="位置：" size="mini" class="number-item">
             <el-input-number v-model="dragForm.location.x" @change="locationChange"
               :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
@@ -42,7 +42,7 @@
               class="num-input"></el-input-number>
           </el-form-item>
           <div class="dec-label"> <label>X</label> <label> Y</label></div>
-          <el-form-item label="尺寸：" size="mini">
+          <el-form-item label="尺寸：" size="mini" class="number-item">
             <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
               :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
               :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
@@ -54,12 +54,13 @@
           </el-form-item>
           <div class="dec-label"> <label>宽</label> <label>高</label></div>
           <div v-if="Boolean(dragForm.video && dragForm.video.url)">
-            <el-form-item label="固定位置：" size="mini">
-            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
-              >相对顶部固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
-              >相对底部固定</el-radio>
+            <el-form-item label="固定位置：" size="mini" class="posotion-item">
+              <el-radio v-model="dragForm.position" label="relative"
+               @change="positionChange">不固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+                >相对顶部固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+                >相对底部固定</el-radio>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
               <el-input-number
@@ -83,13 +84,13 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
-import { dragCom, stateMxi } from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom(), stateMxi()],
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -356,11 +357,16 @@ export default {
     },
     positionChange() {
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom) {
+      if (this.dragForm.location.y > maxBottom && this.dragForm.position !== 'relative') {
         const { location } = this.dragForm;
         location.y = maxBottom;
         this.$emit('input-locationChange', 'dragVideos', location, 'videoActive');
       }
+      const videos = this.editor.dragVideos;
+      const drags = videos[this.editor.videoActive];
+      drags.position = this.dragForm.position;
+      videos[this.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragVideos: videos });
     },
     lineSourceBlur() {
       const val = this.lineSource;
@@ -431,5 +437,8 @@ export default {
 }
 .video-setting .el-input__inner {
   padding: 0 8px;
+}
+.video-setting .el-form-item__content {
+  margin-left: 0 !important;
 }
 </style>

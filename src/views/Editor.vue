@@ -542,21 +542,6 @@ body {
   border-left: 1px solid #ccd5db;
   box-sizing: content-box;
 }
-
-.layer-item {
-  position: relative;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 260px;
-  height: 36px;
-  background: #fff;
-  font-size: 12px;
-  color: #000;
-  border-bottom: 1px solid #ccd5db;
-  box-sizing: border-box;
-  cursor: pointer;
-}
 .el-card__header {
   padding: 5px 10px;
   line-height: 34px;
@@ -568,24 +553,6 @@ body {
 .layer-header {
   height: 50px;
   line-height: 50px;
-}
-.layer-item {
-  height: 40px;
-  line-height: 40px;
-  padding: 0 10px;
-  border-bottom: 1px solid #ddd;
-  color: #323232;
-}
-
-.layer-item:hover,
-.layer-item:active,
-.layer-item.active {
-  color: #1593ff;
-}
-
-.layer-item > i,
-.layer-item .fa-icon {
-  margin-right: 10px;
 }
 .flxed-main {
   background-color: #eee;
@@ -720,5 +687,8 @@ body {
 .is-require .el-form-item__label:before {
   content: '*';
   color: #eb5648;
+}
+.el-breadcrumb__inner.is-link {
+  color: #409EFFf9;
 }
 </style>

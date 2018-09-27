@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['setting-content', editor.isAudioSet ? 'setting-show' : '']"
+    :class="['setting-content', editor.isAudioSet ? 'setting-show' : '', 'audio-setting']"
     :style="{width: setForm.width+'px'
     }">
   <div class="setting-box">
@@ -11,7 +11,7 @@
       </span>
     </div>
     <div class="setting">
-      <el-form ref="form" >
+      <el-form ref="form" label-width="80px" >
         <el-form-item label="类型：" size="mini">
           <el-radio v-model="dragForm.sourceType" label="1"
             @change="audioSourceChange('1')">本地上传</el-radio>
@@ -36,9 +36,9 @@
            :disabled="!dragForm.linePlay.url" @blur="lineTitleBlur"></el-input>
         </el-form-item>
         <el-form-item label="循环：" size="mini">
-          <el-checkbox v-model="dragForm.loop">开启循环播放</el-checkbox>
+          <el-checkbox v-model="dragForm.loop" @change="loopChange">开启循环播放</el-checkbox>
         </el-form-item>
-        <el-form-item label="位置：" size="mini">
+        <el-form-item label="位置：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
             :disabled="!dragForm.isUpload" controls-position="right"
@@ -50,8 +50,9 @@
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <div v-if="dragForm.isUpload">
-            <el-form-item label="固定位置：" size="mini">
-            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
+            <el-form-item label="固定位置：" size="mini" class="posotion-item">
+            <el-radio v-model="dragForm.position" label="relative"
+              @change="positionChange">不固定</el-radio>
             <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
               >相对顶部固定</el-radio>
             <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
@@ -80,24 +81,17 @@
 <script>
 import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
 import { formatSecond } from '@/util/tools';
-import { dragCom, stateMxi } from '@/util/dragMxi';
-import { mapState } from 'vuex';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom(), stateMxi()],
   name: 'DragSetting',
+  mixins: [dragCom()],
   props: {
     dragForm: Object,
     setForm: Object,
   },
   components: {
     mediaUpload,
-  },
-  computed: {
-    ...mapState({
-      editor: state => state.editor,
-      page: state => state.page,
-    }),
   },
   data() {
     return {
@@ -158,7 +152,7 @@ export default {
         second: 0,
         duration: '00:00',
         isUplaod: false,
-        loop: false,
+        loop: this.dragForm.loop,
         w: this.page.phoneWidth,
         h: 82,
         x: 0,
@@ -184,7 +178,7 @@ export default {
           second: se,
           duration: formatSecond(se),
           isUplaod: true,
-          loop: false,
+          loop: ele.dragForm.loop,
           w: ele.page.phoneWidth,
           h: 82,
           x: 0,
@@ -256,11 +250,16 @@ export default {
     },
     positionChange() {
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom) {
+      if (this.dragForm.location.y > maxBottom && this.dragForm.position !== 'relative') {
         const { location } = this.dragForm;
         location.y = maxBottom;
         this.$emit('input-locationChange', 'dragAudios', location, 'audioActive');
       }
+      const audios = this.editor.dragAudios;
+      const drags = audios[this.editor.audioActive];
+      drags.position = this.dragForm.position;
+      audios[this.editor.audioActive] = drags;
+      this.$store.commit('editor_update', { dragAudios: audios });
     },
     lineSourceBlur() {
       const val = this.lineSource;
@@ -322,9 +321,20 @@ export default {
       medias[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: medias });
     },
+    loopChange() {
+      const audios = this.editor.dragAudios;
+      let drags = audios[this.editor.audioActive];
+      drags.loop = this.dragForm.loop;
+      const play = Object.assign({}, drags.play, { loop: this.dragForm.loop });
+      const linePlay = Object.assign({}, drags.linePlay, { loop: this.dragForm.loop });
+      drags.play = play;
+      drags.linePlay = linePlay;
+      drags = Object.assign({}, drags);
+      audios[this.editor.audioActive] = drags;
+      this.$store.commit('editor_update', { dragAudios: audios });
+    },
   },
   updated() {
-
   },
 };
 </script>
@@ -336,5 +346,8 @@ export default {
 }
 .audio-el .el-input__inner {
   padding: 0 8px;
+}
+.audio-setting .el-form-item__content {
+  margin-left: 0 !important;
 }
 </style>

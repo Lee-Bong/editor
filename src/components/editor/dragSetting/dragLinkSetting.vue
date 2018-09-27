@@ -11,8 +11,8 @@
       </span>
     </div>
     <div class="setting">
-      <el-form ref="form">
-        <el-form-item label="位置：" size="mini">
+      <el-form ref="form" label-width="90px">
+        <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
             :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
             controls-position="right" class="num-input"></el-input-number>
@@ -21,7 +21,7 @@
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini">
+        <el-form-item label="尺寸：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
             :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
             controls-position="right" class="num-input"></el-input-number>
@@ -30,7 +30,7 @@
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
-        <el-form-item size="mini">
+        <el-form-item size="mini" class="link-setting-item">
           <el-radio v-model="dragForm.sourceType"
             @change="sourceChange('1')" label="1">设置跳转链接</el-radio>
           <el-radio v-model="dragForm.sourceType"
@@ -55,20 +55,22 @@
           <el-input type="text" v-model="dragForm.yybLink"></el-input>
         </el-form-item>
         <div>
-            <el-form-item label="固定位置：" size="mini">
+            <el-form-item label="固定位置：" size="mini" class="posotion-item">
             <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
             <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
               >相对顶部固定</el-radio>
             <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
               >相对底部固定</el-radio>
             </el-form-item>
-            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'"
+              class="number-item">
               <el-input-number
                 v-model="fixedTop" @change="fixedTopChange"
                 :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
-            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'"
+              class="number-item">
               <el-input-number
                 v-model="fixedBottom" @change="fixedBottomChange"
                 :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
@@ -82,10 +84,10 @@
 </template>
 
 <script>
-import { dragCom, stateMxi } from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom(), stateMxi()],
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -135,13 +137,19 @@ export default {
 </script>
 <style>
 .link-el.el-form-item--mini .el-form-item__content {
-    display: inline-block;
-    width: 255px;
+  display: inline-block;
+  width: 255px;
 }
 .link-setting .el-form-item__label {
-    padding-right: 5px;
+  padding-right: 5px;
 }
 .link-setting .el-input--mini .el-input__inner {
   padding: 0 8px;
+}
+.link-setting .el-form-item__content {
+  margin-left: 0 !important;
+}
+.link-setting-item {
+  margin-left: 25px !important;
 }
 </style>

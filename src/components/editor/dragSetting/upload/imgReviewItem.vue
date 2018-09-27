@@ -1,5 +1,5 @@
 <template>
-  <div class="img-review-item" v-if="imgObj && imgObj.url">
+  <div class="img-review-item" v-if="imgObj && imgObj.url" :class="{'img-review-move': isDel}">
     <div @click="onFileRemove" class="review-del" v-if="isDel">
       <i class="el-icon-circle-close"></i>
     </div>
@@ -91,6 +91,8 @@ export default {
   padding: 10px;
   margin: 10px;
   position: relative;
+}
+.img-review-move {
   cursor: move;
 }
 .image-review {

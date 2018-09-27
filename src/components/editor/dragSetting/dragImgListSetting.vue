@@ -44,14 +44,14 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import draggable from 'vuedraggable';
-import { stateMxi } from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
   name: 'DragSetting',
-  mixins: [stateMxi()],
+  mixins: [dragCom()],
   props: {
     dragForm: Object,
     setForm: Object,
@@ -225,21 +225,8 @@ export default {
 };
 </script>
 <style>
-.link-el.el-form-item--mini .el-form-item__content {
-    display: inline-block;
-    width: 255px;
-}
-.link-setting .el-form-item__label {
-    padding-right: 5px;
-}
 .upload-wrap {
   position: relative;
-}
-.upload-wrap .el-upload-dragger {
-  height: 160px;
-  width: 320px;
-  color: #409eff;
-  margin-left: 15px;
 }
 .upload-dec {
   font-size: 12px;
@@ -256,18 +243,5 @@ export default {
 }
 .upload-wrap--list .el-upload-list {
   display: none;
-}
-.drag-del {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  color: #888;
-  border-radius: 20px;
-  right: -10px;
-  top: -10px;
-  cursor: pointer;
-      background-color: #ddd;
-      z-index: 1090;
 }
 </style>

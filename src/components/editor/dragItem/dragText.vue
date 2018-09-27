@@ -24,7 +24,7 @@
       ref="dragItem"
       >
 
-      <i class="el-icon-circle-close-outline drag-del"
+      <i class="el-icon-close drag-del"
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
@@ -143,12 +143,12 @@ export default {
   background-color: rgba(0, 0, 0, 0);
 }
 .drag-text {
+  cursor: move;
   position: absolute;
-    top: 0;
+  top: 0;
   height: 30px;
   width: 360px;
   line-height: 30px;
-  /* min-height: 30px !important; */
   border: 0;
   outline: 0;
   text-align: center;
@@ -161,12 +161,6 @@ export default {
   word-wrap: break-word;
 }
 .input-record {
-  /* position: absolute;
-  left: 0;
-  width: 360px;
-  top: 0;
-  line-height: 30px;
-  /* min-height: 30px !important; */
   font-size: 14px;
   font: 400 11px system-ui;
   padding: 2px;
@@ -200,12 +194,17 @@ export default {
   position: absolute;
   width: 20px;
   height: 20px;
-  font-size: 20px;
+  font-size: 18px;
   color: #888;
   border-radius: 20px;
   right: -10px;
   top: -10px;
   cursor: pointer;
   z-index: 1001;
+  background-color: #ddd;
+  text-align: center;
+}
+.drag-del.el-icon-close:before {
+  font-size: 18px;
 }
 </style>

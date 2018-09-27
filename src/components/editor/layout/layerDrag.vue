@@ -26,9 +26,10 @@
 </template>
 
 <script>
+import sortable from 'sortable';
 import VueDraggable from 'vuedraggable';
+
 import { dragCom } from '@/util/dragMxi';
-import { mapState } from 'vuex';
 
 export default {
   mixins: [dragCom()],
@@ -36,6 +37,7 @@ export default {
   props: {},
   components: {
     draggable: VueDraggable,
+    sortable,
   },
   data() {
     return {
@@ -50,12 +52,6 @@ export default {
       textAlign: 1,
       textColor: 'rgba(19, 206, 102, 0.8)',
     };
-  },
-  computed: {
-    ...mapState({
-      editor: state => state.editor,
-      page: state => state.page,
-    }),
   },
   methods: {
     textInputFocus() {
@@ -150,10 +146,6 @@ export default {
 .el-form-item {
   margin-bottom: 8px;
 }
-.el-radio + .el-radio,
-.el-form-item--mini.el-form-item {
-  margin-left: 5px;
-}
 .el-radio__label {
   padding-left: 2px;
 }
@@ -172,42 +164,28 @@ export default {
 .el-select.el-select--mini {
   width: 100px;
 }
-
-.dec-label {
-  padding-left: 80px;
-  height: 30px;
-  line-height: 30px;
-  color: #323232;
-  font-size: 14px;
-  margin-top: -18px;
-}
-
-.dec-label label {
-  display: inline-block;
-  width: 80px;
-  text-align: center;
-  margin-top: -20px;
-}
-
-.dec-label label:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: auto;
-}
-.dec-label label:last-child {
-  margin-left: 50px;
-}
 .dargDiv {
   background: #fff;
 }
 
 .layer-item {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 260px;
+  background: #fff;
+  font-size: 12px;
+  color: #000;
+  color: #323232;
   height: 40px;
   line-height: 40px;
   padding: 0 10px;
-  border-bottom: 1px solid #ddd;
-  color: #323232;
+  border-bottom: 1px solid #ccd5db;
+  box-sizing: border-box;
+  cursor: move;
 }
+
 
 .layer-item:active,
 .layer-item.active {
@@ -226,7 +204,9 @@ export default {
 .layout-name{
     height: 24px;
     padding: 5px;
-    line-height: 24px
+    line-height: 24px;
+    width: 170px;
+    cursor: pointer;
 }
 .name-editor{
   width: 230px;

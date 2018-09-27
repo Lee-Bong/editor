@@ -12,11 +12,12 @@
       </span>
     </div>
     <div class="setting">
-      <el-form ref="form" :rules="formRules">
+      <el-form ref="form" :rules="formRules" label-width="80px">
         <el-form-item label="" label-width="0">
-          文本内容：
+          <label class="el-form-item__label">文本内容：</label>
           <el-input
           type="textarea"
+          resize=false
           :autosize="{ minRows: 2, maxRows: 4}"
           placeholder="请输入内容"
           label-width='0'
@@ -50,7 +51,7 @@
           <el-color-picker v-model="dragForm.textColor" :show-alpha="true"></el-color-picker>
           <el-button type="text" class="bg-reset" @click="textColorReset">重置</el-button>
         </el-form-item>
-        <el-form-item label="位置：" size="mini">
+        <el-form-item label="位置：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
             controls-position="right" class="num-input"></el-input-number>
@@ -59,7 +60,7 @@
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini">
+        <el-form-item label="尺寸：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.size.w" @change="sizeChange"
             :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
             controls-position="right" class="num-input"></el-input-number>
@@ -68,20 +69,22 @@
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
-        <el-form-item label="固定位置：" size="mini">
+        <el-form-item label="固定位置：" size="mini" class="posotion-item">
           <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
           <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
              >相对顶部固定</el-radio>
           <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
             >相对底部固定</el-radio>
         </el-form-item>
-        <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
+        <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'"
+          class="number-item">
           <el-input-number
             :value="fixedTop" @change="fixedTopChange"
             :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
-        <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+        <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'"
+          class="number-item">
           <el-input-number
             :value="fixedBottom" @change="fixedBottomChange"
             :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
@@ -94,10 +97,10 @@
 </template>
 
 <script>
-import { dragCom, stateMxi } from '@/util/dragMxi';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
-  mixins: [dragCom(), stateMxi()],
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -188,10 +191,9 @@ export default {
 </script>
 
 <style>
-
 .el-input-number.is-controls-right .el-input__inner {
-      padding-left: 5px!important;
-    padding-right: 34px!important;
+  padding-left: 5px!important;
+  padding-right: 34px!important;
 }
 .line-item .el-slider__runway, .ine-item .el-slider__bar {
   height: 4px;
@@ -215,5 +217,35 @@ export default {
 }
 .text-setting .el-textarea__inner {
   padding: 5px;
+}
+.posotion-item .el-radio+.el-radio {
+  margin-left: 10px;
+}
+.text-setting .el-form-item__label {
+  padding-right: 5px;
+}
+.number-item .el-input-number--mini:nth-child(2)  {
+  margin-left: 30px;
+}
+.number-item .el-input-number--mini:nth-child(1),
+.num-input.el-input-number--mini {
+  margin-left: 0;
+}
+.dec-label {
+  padding-left: 80px;
+  height: 30px;
+  line-height: 30px;
+  color: #606266;
+  font-size: 13px;
+  margin-top: -18px;
+}
+.dec-label label {
+  display: inline-block;
+  width: 80px;
+  text-align: center;
+  margin-top: -20px;
+}
+.dec-label label:last-child {
+  margin-left: 50px;
 }
 </style>

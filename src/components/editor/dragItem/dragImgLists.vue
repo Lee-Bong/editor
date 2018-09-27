@@ -57,31 +57,6 @@ export default {
 </script>
 
 <style>
-.vdr-stick {
-  background-color: #fff;
-  border: 1px solid #59c7f9;
-}
-
-.vdr.active:before {
-  outline: 1px dashed #59c7f9;
-}
-
-.drag-del {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  color: #888;
-  border-radius: 20px;
-  right: -10px;
-  top: -10px;
-  cursor: pointer;
-  z-index: 1090;
-}
-.drag-del-bottom {
-  top: 10px !important;
-}
-
 .drag-img-list {
   position: relative;
   width: 100%;
@@ -93,7 +68,7 @@ export default {
   top: 0;
   left: 0;
   position: absolute;
-  border: 1px dashed #59c7f9;
+  outline: 1px dashed #59c7f9;
 }
 .drag-img-list.init {
   height: 300px;
