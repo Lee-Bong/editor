@@ -36,7 +36,7 @@
            :disabled="!dragForm.linePlay.url" @blur="lineTitleBlur"></el-input>
         </el-form-item>
         <el-form-item label="循环：" size="mini">
-          <el-checkbox v-model="dragForm.loop">开启循环播放</el-checkbox>
+          <el-checkbox v-model="dragForm.loop" @change="loopChange">开启循环播放</el-checkbox>
         </el-form-item>
         <el-form-item label="位置：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
@@ -152,7 +152,7 @@ export default {
         second: 0,
         duration: '00:00',
         isUplaod: false,
-        loop: false,
+        loop: this.dragForm.loop,
         w: this.page.phoneWidth,
         h: 82,
         x: 0,
@@ -178,7 +178,7 @@ export default {
           second: se,
           duration: formatSecond(se),
           isUplaod: true,
-          loop: false,
+          loop: ele.dragForm.loop,
           w: ele.page.phoneWidth,
           h: 82,
           x: 0,
@@ -258,7 +258,7 @@ export default {
       const audios = this.editor.dragAudios;
       const drags = audios[this.editor.audioActive];
       drags.position = this.dragForm.position;
-      audios[this.editor.videoActive] = drags;
+      audios[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: audios });
     },
     lineSourceBlur() {
@@ -321,9 +321,20 @@ export default {
       medias[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: medias });
     },
+    loopChange() {
+      const audios = this.editor.dragAudios;
+      let drags = audios[this.editor.audioActive];
+      drags.loop = this.dragForm.loop;
+      const play = Object.assign({}, drags.play, { loop: this.dragForm.loop });
+      const linePlay = Object.assign({}, drags.linePlay, { loop: this.dragForm.loop });
+      drags.play = play;
+      drags.linePlay = linePlay;
+      drags = Object.assign({}, drags);
+      audios[this.editor.audioActive] = drags;
+      this.$store.commit('editor_update', { dragAudios: audios });
+    },
   },
   updated() {
-
   },
 };
 </script>

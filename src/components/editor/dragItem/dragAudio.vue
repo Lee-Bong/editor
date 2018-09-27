@@ -106,5 +106,7 @@ export default {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
   },
+  updated() {
+  },
 };
 </script>
