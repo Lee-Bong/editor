@@ -21,6 +21,7 @@
             v-if="component.type === 2"
             :style="component.style"
             v-lazy="transformImgUrl(component.url)"
+            class="image"
         />
         <div
             v-if="component.type === 3"
@@ -39,8 +40,9 @@
                 v-lazy="transformImgUrl(image.url)"
                 :style="{
                     height: `${image.size.h * scale}px`,
-                    width: `${image.size.w * scale}px`
+                    width: `${image.size.w * scale}px`,
                 }"
+                class="image"
                 alt=""
             />
         </div>
@@ -153,6 +155,9 @@ export default {
 .container {
   .link {
     cursor: pointer;
+  }
+  .image[lazy=loading] {
+    background-color: #ddd
   }
 }
 </style>
