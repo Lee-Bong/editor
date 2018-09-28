@@ -121,6 +121,7 @@ export default {
       } = this.pageJson.page;
 
       document.title = title;
+      jssdk.callNative('topbar/title', { title });
 
       // 初始化app内分享
       this.$nextTick(() => {
