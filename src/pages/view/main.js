@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Button from 'element-ui/lib/button';
 import Slider from 'element-ui/lib/slider';
+import VueLazyload from 'vue-lazyload';
 import './element-ui.scss';
 import '../../assets/icons/iconfont.css';
 
@@ -9,6 +10,7 @@ import router from './router';
 
 Vue.config.productionTip = false;
 
+Vue.use(VueLazyload);
 Vue.use(Button);
 Vue.use(Slider);
 new Vue({

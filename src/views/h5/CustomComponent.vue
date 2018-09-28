@@ -20,7 +20,7 @@
         <img
             v-if="component.type === 2"
             :style="component.style"
-            :src="transformImgUrl(component.url)"
+            v-lazy="transformImgUrl(component.url)"
         />
         <div
             v-if="component.type === 3"
@@ -36,7 +36,7 @@
             <img
                 v-for="(image, index) in component.imgList"
                 :key="index"
-                :src="transformImgUrl(image.url)"
+                v-lazy="transformImgUrl(image.url)"
                 :style="{
                     height: `${image.size.h * scale}px`,
                     width: `${image.size.w * scale}px`
