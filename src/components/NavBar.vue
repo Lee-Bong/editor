@@ -13,7 +13,8 @@
           </el-col>
           <el-col :span="10" type="flex" style="marginTop: 10px">
             <slot name="btnGroup" />
-            <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
+            <el-button type="text" icon="el-icon-question" class="help-icon"
+            @click="goHelpWeb">使用帮助</el-button>
           </el-col>
         </el-row>
       </el-header>
@@ -22,6 +23,11 @@
 <script>
 export default {
   props: ['pageName'],
+  methods: {
+    goHelpWeb() {
+      window.open('https://shimo.im/docs/2kUQsVrZgTIn1yk3');
+    },
+  },
 };
 </script>
 

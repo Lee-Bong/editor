@@ -739,4 +739,7 @@ body {
 .el-breadcrumb__inner.is-link {
   color: #409EFFf9;
 }
+.el-color-picker__panel .el-color-dropdown__link-btn {
+  display: none
+}
 </style>

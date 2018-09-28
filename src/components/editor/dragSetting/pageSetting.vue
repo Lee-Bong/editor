@@ -27,7 +27,7 @@
           </el-form-item>
           <el-form-item label="背景颜色：" size="mini">
             <el-color-picker v-model="dragForm.backgroundColor"
-             :show-alpha="true"></el-color-picker>
+             :show-alpha="true" class="color-item"></el-color-picker>
             <el-button type="text" class="bg-reset" @click="pageBgReset">重置</el-button>
           </el-form-item>
         </el-form>
