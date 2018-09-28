@@ -4,7 +4,7 @@
       <div slot="header">
         {{com.kind}}
       </div>
-      <el-button v-for="(list, i) in com.list" :key="i" type="text"
+      <el-button v-for="(list, i) in com.list" :key="i"
        class="ed-com" @click="dragItemClick(list.type)">
         <i :class="['iconfont', list.icon]"></i>
         <span class="el-com-text">{{list.text}}</span>
@@ -346,5 +346,22 @@ export default {
 }
 .left-btns-card .ed-icon-images {
   font-size: 26px;
+}
+.left-btns .el-button {
+  width: 80px;
+  height: 60px;
+  padding: 0;
+  margin-top: 10px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  margin-left: 10px;
+  background: none;
+}
+
+.left-btns .el-button:hover {
+  border: 1px solid #409eff;
+}
+.left-btns .el-button:active {
+  background-color: #1593ff;
+  color: #fff;
 }
 </style>

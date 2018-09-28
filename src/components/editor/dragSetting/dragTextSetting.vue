@@ -248,4 +248,8 @@ export default {
 .dec-label label:last-child {
   margin-left: 50px;
 }
+.bg-reset{
+  border: 0;
+}
+
 </style>

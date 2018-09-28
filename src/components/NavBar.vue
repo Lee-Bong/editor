@@ -11,7 +11,7 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
-          <el-col :span="10" type="flex" style="marginTop: -10px">
+          <el-col :span="10" type="flex" style="marginTop: 10px">
             <slot name="btnGroup" />
             <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
           </el-col>
@@ -48,19 +48,11 @@ export default {
   line-height: 56px;
 }
 
-.el-button.el-button--text {
-  color: #333;
-  width: 80px;
-  height: 60px;
-  padding: 0;
-  margin-top: 10px;
-}
 .el-button.el-button--text:hover {
-  border: 1px solid #409eff;
+  color: #489df5;
 }
 .el-button.el-button--text:active {
-  background-color: #1593ff;
-  color: #fff;
+  color: #409eff;
 }
 .el-breadcrumb__inner.is-link {
   color: #409eff;

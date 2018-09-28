@@ -627,6 +627,7 @@ body {
 
 .el-button.el-button--text {
   color: #606266;
+  padding: 5px;
 }
 
 .publish-btn {
