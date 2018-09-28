@@ -83,7 +83,8 @@ export default {
       isFirst: true, // 空白编辑页
       now: '00:00 AM',
       nowTimer: null,
-      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"clientHeight":731,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"expired":false}}',
+      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"clientHeight":731,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
+      beforeState: null,
     };
   },
 
@@ -128,6 +129,7 @@ export default {
       } else {
         data = await service.patchPageInfo(ele.$route.query.page_id, params);
       }
+      this.beforeState = JSON.stringify(this.$store.state);
       if (data && data.status === 'ok' && data.data) {
         if (isTrigger) {
           ele.optSucsess('保存草稿');
@@ -422,8 +424,28 @@ export default {
       let init = data;
       init = data ? init : this.dataInit;
       const state = JSON.parse(init);
+      this.beforeState = init;
       this.$store.commit('editor_update', state.editor);
       this.$store.commit('page_update', state.page);
+    },
+    delCheck() {
+      const { className } = document.activeElement;
+      const classList = ['drag-text', 'el-textarea__inner', 'el-input__inner', 'name-editor'];
+      let isContain = false;
+      if (className.indexOf(' ') >= 0) {
+        const list = className.split(' ');
+        const fList = list.filter(item => classList.includes(item));
+        isContain = !!fList.length;
+      } else if (classList.includes(className)) {
+        isContain = true;
+      }
+      return isContain;
+    },
+    goCheck() {
+      const curState = JSON.stringify(this.$store.state);
+      let isOk = true;
+      if (curState !== this.beforeState) isOk = false;
+      return isOk;
     },
   },
   async mounted() {
@@ -444,21 +466,23 @@ export default {
     } else {
       this.editorInit();
     }
+    const ele = this;
+    this.$nextTick(() => {
+      window.onbeforeunload = function cb(e) {
+        const event = window.event || e;
+        if (!ele.goCheck()) {
+          event.returnValue = ('确定离开当前页面吗？');
+        }
+      };
+    });
   },
   updated() {
-    // if (this.$store.state.page.phoneHeight > this.wrapHeight) {
-    //   this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
-    // }
-    // if (this.$store.state.page.phoneHeight > this.clientHeight) {
-    //   this.clientHeight = this.$store.state.page.phoneHeight + 64;
-    // }
   },
   created() {
     const ele = this;
-    const classList = ['drag-text', 'el-textarea__inner', 'el-input__inner'];
     document.onkeydown = (e) => {
       if (e.keyCode && parseInt(e.keyCode, 10) === 8) {
-        if (!classList.includes(document.activeElement.className)) {
+        if (!this.delCheck()) {
           const { layerActive, layerLists } = ele.$store.state.editor;
           if (layerLists.length && layerActive !== -1) {
             this.dragDel();
@@ -471,10 +495,27 @@ export default {
       this.now = nowTime();
     }, 2000);
   },
-  destroyed() {
+  beforeDestroy() {
     clearInterval(this.nowTimer);
   },
-
+  beforeRouteLeave(to, from, next) {
+    if (!this.goCheck()) {
+      this.$confirm('检测到有未保存的内容，如果离开将丢失内容，是否继续？', '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '狠心离开',
+        cancelButtonText: '取消',
+        callback: (action) => {
+          if (action === 'confirm') {
+            next(true);
+          } else {
+            next(false);
+          }
+        },
+      });
+    } else {
+      next(true);
+    }
+  },
 };
 </script>
 

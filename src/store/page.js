@@ -12,6 +12,5 @@ export default {
     backgroundColor: '#fff',
     img: {
     },
-    expired: false, // 用户信息过期
   },
 };
