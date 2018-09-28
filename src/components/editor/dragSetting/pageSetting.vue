@@ -9,8 +9,8 @@
         </span>
       </div>
       <div class="setting">
-        <el-form ref="form">
-          <el-form-item label="页面名称：" size="mini" class="is-require">
+        <el-form ref="form" label-width="90px">
+          <el-form-item label="页面名称：" size="mini" class="is-require" >
             <el-input type="text" v-model="dragForm.title" placeholder="H5标题，最多输入10个字"></el-input>
           </el-form-item>
           <el-form-item label="分享标题：" size="mini">
@@ -100,6 +100,7 @@ export default {
 .page-setting .el-form-item--mini .el-form-item__content {
   display: inline-block;
   width: 260px;
+  margin-left: 0 !important;
 }
 .page-setting .el-form-item__label {
   padding-right: 5px;

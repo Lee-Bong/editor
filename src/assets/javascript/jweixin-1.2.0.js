@@ -34,7 +34,7 @@
   function h(a, b, c) {
     a == 'openEnterpriseChat' && (b.errCode = b.err_code), delete b.err_code, delete b.err_desc, delete b.err_detail;
     let d = b.errMsg;
-    d || (d = b.err_msg, delete b.err_msg, d = i(a, d), b.errMsg = d), c = c || {}, c._complete && (c._complete(b), delete c._complete), d = b.errMsg || '', D.debug && !c.isInnerInvoke && alert(JSON.stringify(b));
+    d || (d = b.err_msg, delete b.err_msg, d = i(a, d), b.errMsg = d), c = c || {}, c._complete && (c._complete(b), delete c._complete), d = b.errMsg || '', D.debug && !c.isInnerInvoke && (JSON.stringify(b));
     let e = d.indexOf(':'),
       f = d.substring(e + 1);
     switch (f) {

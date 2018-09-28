@@ -73,10 +73,11 @@ import dragImgListSetting from '@/components/editor/dragSetting/dragImgListSetti
 import dragVideoSetting from '@/components/editor/dragSetting/dragVideoSetting';
 import dragAudioSetting from '@/components/editor/dragSetting/dragAudioSetting';
 import pageSetting from '@/components/editor/dragSetting/pageSetting';
-import { mapState } from 'vuex';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
   name: 'layoutSetting',
+  mixins: [dragCom()],
   props: {
   },
   components: {
@@ -91,19 +92,13 @@ export default {
   data() {
     return {
       settingForm: {
-        width: 360,
+        width: 380,
         location: {
           x: 700,
           y: 65,
         },
       },
     };
-  },
-  computed: {
-    ...mapState({
-      editor: state => state.editor,
-      page: state => state.page,
-    }),
   },
   methods: {
     sourceChange(type, form, active) {
@@ -131,23 +126,19 @@ export default {
       });
     },
   },
-
-
 };
 </script>
 
 <style lang="scss" scoped>
 .setting-wrap {
   position: relative;
-  width: 360px;
-  // height: 800px;
+  width: 380px;
   margin-top: 20px;
   margin-left: 25px;
   border-radius: 5px;
-    overflow: hidden;
-    z-index: 80;
+  overflow: hidden;
+  z-index: 80;
 }
-
 .setting-content {
   width: 260px;
   background-color: #fff;
@@ -158,9 +149,8 @@ export default {
 }
 .setting-show{
   visibility: visible;
-    position: absolute;
-    top: 0;
-
+  position: absolute;
+  top: 0;
 }
 .setting-title {
   height: 31px;
@@ -196,9 +186,6 @@ export default {
   .el-form-item--mini.el-form-item {
     margin-left: 5px;
   }
-  .el-radio__label {
-    padding-left: 2px;
-  }
   .el-input-number--mini,
   .num-input.el-input-number--mini {
     width: 180px!important;
@@ -217,30 +204,6 @@ export default {
     width: 100px;
   }
 
-  .dec-label {
-    padding-left: 80px;
-    height: 30px;
-    line-height: 30px;
-    color: #323232;
-    font-size: 14px;
-    margin-top: -18px;
-  }
-
-  .dec-label label {
-    display: inline-block;
-    width: 80px;
-    text-align: center;
-    margin-top: -20px;
-  }
-
-  .dec-label label:first-child {
-    padding-right: 10px;
-    padding-left: 2px;
-    width: auto;
-  }
-  .dec-label label:last-child {
-    margin-left: 80px;
-  }
   .el-input-number--mini {
     width: 100px!important;
   }

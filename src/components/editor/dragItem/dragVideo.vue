@@ -21,7 +21,7 @@
       @dragging="resize"
       @dragstop="dragstop"
       @resizestop="resizestop"
-      class="drag-item"
+      :class="{ 'drag-item': isAction }"
       >
       <i class="el-icon-circle-close-outline drag-del drag-del-bottom"
       v-if="dragForm.isActive"
@@ -136,30 +136,6 @@ export default {
 </script>
 
 <style>
-.vdr-stick {
-  background-color: #fff;
-  border: 1px solid #59c7f9;
-}
-
-.vdr.active:before {
-  outline: 1px dashed #59c7f9;
-}
-
-.drag-del {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  color: #888;
-  border-radius: 20px;
-  right: -10px;
-  top: -10px;
-  cursor: pointer;
-  z-index: 1090;
-}
-.drag-del-bottom {
-  top: 10px !important;
-}
 .video-play {
   width: 44px;
   height: 44px;
@@ -177,5 +153,8 @@ export default {
 .video-play i {
   font-size: 40px;
   color: #ffffffab;
+}
+.video-show {
+  cursor: move !important;
 }
 </style>

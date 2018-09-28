@@ -11,9 +11,9 @@
       <layout-left />
       <el-main>
         <div class="flxed-main">
-          <div class="phone-wrap" :style="{height: wrapHeight+'px'}">
+          <div class="phone-wrap" :style="{height: ($store.state.page.clientHeight)+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
-                height: ($store.state.page.phoneHeight+64)+'px'}">
+                height: ($store.state.page.clientHeight)+'px'}">
               <div class="top-banner" @click="topBannerClick">
                 <div class="now-show">{{this.now}}</div>
                 <div class="web-title">{{$store.state.page.title}}</div>
@@ -78,11 +78,12 @@ export default {
         top: 0,
         left: 0,
       },
-      wrapHeight: 667,
+      wrapHeight: 667, // 包括头部的高度x
+      clientHeight: 667, // 编辑内容高度
       isFirst: true, // 空白编辑页
       now: '00:00 AM',
       nowTimer: null,
-      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
+      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"clientHeight":731,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"expired":false}}',
     };
   },
 
@@ -103,7 +104,6 @@ export default {
       this.drag.left = newRect.left;
     },
     async saveEditor(isTrigger) { // 保存草稿
-      let { state, draft } = this.getEditorJson();
       const { isOk, msg } = this.checkSources();
       const ele = this;
       if (!isOk) {
@@ -114,7 +114,7 @@ export default {
         });
         return false;
       }
-      // let { state, draft } = ele.getEditorJson();
+      let { state, draft } = ele.getEditorJson();
       state = JSON.stringify(state);
       draft = JSON.stringify(draft);
       const params = {
@@ -193,6 +193,7 @@ export default {
         title: page.title,
         phoneWidth: page.phoneWidth,
         phoneHeight: page.phoneHeight, // 可视区高度
+        clientHeight: page.clientHeight, // 总体内容高度
         shareTitle: page.shareTitle,
         shareDec: page.shareDec,
         shareImg: page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png',
@@ -344,6 +345,7 @@ export default {
       eJson.editor.components = dragArr;
       const saveState = this.$store.state;
       saveState.page.pageSet = true;
+      saveState.editor.layerActive = -1;
 
       return { state: saveState, draft: eJson.editor };
     },
@@ -444,9 +446,12 @@ export default {
     }
   },
   updated() {
-    if (this.$store.state.page.phoneHeight > this.wrapHeight) {
-      this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
-    }
+    // if (this.$store.state.page.phoneHeight > this.wrapHeight) {
+    //   this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
+    // }
+    // if (this.$store.state.page.phoneHeight > this.clientHeight) {
+    //   this.clientHeight = this.$store.state.page.phoneHeight + 64;
+    // }
   },
   created() {
     const ele = this;
@@ -542,21 +547,6 @@ body {
   border-left: 1px solid #ccd5db;
   box-sizing: content-box;
 }
-
-.layer-item {
-  position: relative;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 260px;
-  height: 36px;
-  background: #fff;
-  font-size: 12px;
-  color: #000;
-  border-bottom: 1px solid #ccd5db;
-  box-sizing: border-box;
-  cursor: pointer;
-}
 .el-card__header {
   padding: 5px 10px;
   line-height: 34px;
@@ -568,24 +558,6 @@ body {
 .layer-header {
   height: 50px;
   line-height: 50px;
-}
-.layer-item {
-  height: 40px;
-  line-height: 40px;
-  padding: 0 10px;
-  border-bottom: 1px solid #ddd;
-  color: #323232;
-}
-
-.layer-item:hover,
-.layer-item:active,
-.layer-item.active {
-  color: #1593ff;
-}
-
-.layer-item > i,
-.layer-item .fa-icon {
-  margin-right: 10px;
 }
 .flxed-main {
   background-color: #eee;
@@ -697,7 +669,8 @@ body {
 .phone-hidden {
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
+  left: 1px;
   z-index: 1050;
 }
 .screen-line {
@@ -720,5 +693,8 @@ body {
 .is-require .el-form-item__label:before {
   content: '*';
   color: #eb5648;
+}
+.el-breadcrumb__inner.is-link {
+  color: #409EFFf9;
 }
 </style>

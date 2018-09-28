@@ -101,9 +101,16 @@ export default {
       this.dragClick(index, type);
     },
     resizestop(ev) {
-      this.$store.commit('page_update', {
-        phoneHeight: ev.height,
-      });
+      if (ev.height > this.page.phoneHeight && ev.height > this.page.clientHeight - 64) {
+        this.$store.commit('page_update', {
+          phoneHeight: ev.height,
+          clientHeight: ev.height + 64,
+        });
+      } else {
+        this.$store.commit('page_update', {
+          phoneHeight: ev.height,
+        });
+      }
     },
     getLayerActive(sort, num) {
       let k;
@@ -125,6 +132,7 @@ export default {
 <style >
 .drag-item {
   position: absolute;
+  cursor: move;
 }
 .phone-content {
   position: absolute;
@@ -138,7 +146,7 @@ export default {
   height: 35px !important;
   width: 375px !important;
   z-index: 2001 !important;
-  bottom: -35px !important;
+  bottom: -36px !important;
   left: 0;
   margin-left: 0 !important;
   background-color: rgba(0, 0, 0, 0);
@@ -149,7 +157,7 @@ export default {
   height: 35px;
   width: 375px;
   position: absolute;
-  bottom: -35px;
+  bottom: -36px;
   left: -1px;
   background-color: #fff;
   border: 1px solid #e4e4e4;

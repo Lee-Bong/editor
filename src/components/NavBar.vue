@@ -62,5 +62,8 @@ export default {
   background-color: #1593ff;
   color: #fff;
 }
+.el-breadcrumb__inner.is-link {
+  color: #409eff;
+}
 </style>
 

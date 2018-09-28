@@ -95,6 +95,7 @@ export default {
               h: 90,
             },
             position: 'relative',
+            icon,
           });
           newEditor = {
             textSet: true,
@@ -130,6 +131,7 @@ export default {
             },
             isUpload: false,
             position: 'relative',
+            icon,
           });
           newEditor = {
             imgSet: true,
@@ -170,6 +172,7 @@ export default {
             andLink: '',
             yybLink: '',
             position: 'relative',
+            icon,
           });
           newEditor = {
             linkSet: true,
@@ -204,6 +207,7 @@ export default {
               h: 300,
             },
             imgList: [],
+            icon,
           });
           newEditor = {
             imgListSet: true,
@@ -245,6 +249,7 @@ export default {
             lineVideo: {},
             isUpload: false,
             position: 'relative',
+            icon,
           });
           newEditor = {
             videoSet: true,
@@ -295,6 +300,7 @@ export default {
               url: '',
             },
             position: 'relative',
+            icon,
           });
           newEditor = {
             audioSet: true,

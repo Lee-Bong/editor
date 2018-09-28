@@ -1,7 +1,7 @@
 <template>
   <div class="img-upload-item">
     <div v-if="!imgObj||!imgObj.url">
-      <el-button type="primary" size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
+      <el-button type="primary" plain size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
        class="check-upload" accept=".png,.gif,.jpeg, .jpg"/>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import oss from '@/util/oss';
+import oss from '@/service/oss';
 
 export default {
   name: 'HelloWorld',
@@ -37,8 +37,8 @@ export default {
       try {
         const file = val.currentTarget.files[0];
         const up = await oss(file);
+        // (up);
         up.beforeName = file.name;
-
         if (up && up.url) {
           this.$emit('upload-done', up);
         } else {
