@@ -221,12 +221,13 @@ export default {
               h: item.size.h,
             },
             style: {
-              'font-size': parseInt(item.fontSize, 10),
+              'font-size': item.fontSize,
               'text-align': item.textAlign,
               'text-color': item.textColor,
               'line-height': item.lineHeight,
               'z-index': item.dragIndex,
             },
+            isFixed: item.position !== 'relative',
           });
           return true;
         });
@@ -247,6 +248,7 @@ export default {
             style: {
               'z-index': item.dragIndex,
             },
+            isFixed: item.position !== 'relative',
           });
           return true;
         });
@@ -273,6 +275,7 @@ export default {
             iosLink: item.iosLink,
             andLink: item.andLink,
             yybLink: item.yybLink,
+            isFixed: item.position !== 'relative',
           });
           return true;
         });
@@ -293,6 +296,7 @@ export default {
               'z-index': item.dragIndex,
             },
             imgList: item.imgList,
+            isFixed: false,
           });
           return true;
         });
@@ -316,6 +320,7 @@ export default {
             style: {
               'z-index': item.dragIndex,
             },
+            isFixed: item.position !== 'relative',
           });
           return true;
         });
@@ -327,7 +332,8 @@ export default {
             source: item.play.url,
             title: item.play.title,
             second: item.play.second,
-            play: item.play,
+            isFixed: item.sourceType === 1 ? item.play.position !== 'relative' : item.linePlay.position !== 'relative',
+            play: item.sourceType === 1 ? item.play : item.linePlay,
             location: {
               x: item.location.x,
               y: item.location.y,

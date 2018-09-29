@@ -195,11 +195,11 @@ export default {
     },
     mediaUploadDone(file) {
       this.$refs.mediaUpload.uplaodDone();
-      this.mediaSource = Object.assign({}, this.mediaSource, { name: file.beforeName });
+      this.mediaSource = Object.assign({}, this.mediaSource, { name: file.beforeName, title: file.beforeName });
       this.onMediaFileSuccess(file, 'dragVideos', 'videoActive');
     },
     mediaFileRemove() {
-      this.mediaSource = Object.assign({}, this.mediaSource, { name: '', url: '' });
+      this.mediaSource = Object.assign({}, this.mediaSource, { name: '', url: '', title: '' });
       this.mediaChange({
         poster: '',
         url: '',
