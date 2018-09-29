@@ -5,8 +5,8 @@
       :w="dragForm.size.w"
       :h="dragForm.size.h"
       :sticks="['tl','tr','br','bl']"
-      :x="dragForm.location.x"
-      :y="dragForm.location.y"
+      :x="locationX"
+      :y="locationY"
       :z="dragForm.zIndex"
       :isDraggable="isAction"
       :isResizable="false"
@@ -74,6 +74,26 @@ export default {
       return Boolean(this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.url)
        || Boolean(this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.url);
     },
+    locationX: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.location ? curPlay.location.x : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    locationY: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.location ? curPlay.location.y : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
   },
 
   methods: {
@@ -100,13 +120,42 @@ export default {
       this.$store.commit('inactive_drags', { index, arr: this.dragName, isAll: this.beforeZ });
     },
     dragstop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
+      this.locationChange({
+        x: ev.left,
+        y: ev.top,
+      });
+      const evs = ev;
+      if (this.dragForm.position !== 'relative') {
+        const maxTop = this.$store.state.page.screenHeight - this.dragForm.size.h;
+        if (evs.top > maxTop) {
+          evs.top = maxTop;
+        }
+      }
     },
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
+    locationChange(location) { // 位置值发生改变
+      const isAction = this.dragForm.sourceType === '1';
+      const curPlay = isAction ? this.dragForm.play : this.dragForm.linePlay;
+      curPlay.location = location;
+      let playObj = {};
+      if (isAction) {
+        playObj = { play: curPlay };
+      } else {
+        playObj = { linePlay: curPlay };
+      }
+      const { dragAudios, audioActive } = this.$store.state.editor;
+      let drags = dragAudios[audioActive];
+      drags = Object.assign({}, drags, playObj);
+      dragAudios[audioActive] = drags;
+      const lists = Object.assign([], dragAudios);
+      this.$store.commit('editor_update', { dragAudios: lists });
+    },
   },
   updated() {
+  },
+  created() {
   },
 };
 </script>

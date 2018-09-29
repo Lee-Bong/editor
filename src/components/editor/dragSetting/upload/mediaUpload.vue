@@ -1,6 +1,6 @@
 <template>
   <div class="img-upload-item">
-    <div v-if="!source||!source.name">
+    <div v-if="!(source && source.title)">
       <el-button type="primary" plain size="mini" @click="uploadTrigger"
         v-show="!isLoading">{{'选择文件'}}</el-button>
     </div>
@@ -8,7 +8,7 @@
        class="check-upload" :accept="source.accept"/>
     <el-progress :percentage="pre" v-show="pre"
      class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
-    <div v-show="source && source.name">
+    <div v-show="source && source.title">
       <div class="audio-name">{{source.name}}</div>
       <el-button class="file-remove--plain" plain @click="fileRemove">删除</el-button>
     </div>
@@ -65,6 +65,7 @@ export default {
         type: 'error',
         duration: 2000,
       });
+      this.$refs.fileUpload.value = '';
       this.uplaodDone(true);
     },
     loadingPre() {

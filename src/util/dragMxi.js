@@ -80,13 +80,13 @@ export function dragCom() {
       fixedTopChange(val) {
         const curTop = this.getDistan(val);
         this.dragForm.location.y = curTop;
-        this.locationChange();
+        this.locationChange(this.dragForm.location);
       },
       fixedBottomChange(val) {
         const curBottom = this.getDistan(val);
         const y = this.$store.state.page.screenHeight - curBottom - this.dragForm.size.h;
         this.dragForm.location.y = y;
-        this.locationChange();
+        this.locationChange(this.dragForm.location);
       },
       getDistan(val) {
         let dis;
@@ -160,6 +160,10 @@ export function dragCom() {
     computed: {
       fixedBottom: {
         get() {
+          if (this.dragForm.type === 6) {
+            return this.$store.state.page.screenHeight - this.locationY
+            - this.dragForm.size.h;
+          }
           return this.$store.state.page.screenHeight - this.dragForm.location.y
        - this.dragForm.size.h;
         },
@@ -168,6 +172,9 @@ export function dragCom() {
       },
       fixedTop: {
         get() {
+          if (this.dragForm.type === 6) {
+            return this.locationX;
+          }
           return this.dragForm.location.y;
         },
         set() {

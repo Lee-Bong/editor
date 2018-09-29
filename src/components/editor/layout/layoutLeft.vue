@@ -245,8 +245,10 @@ export default {
               w: 375,
               h: 300,
             },
-            video: {},
-            lineVideo: {},
+            video: {
+            },
+            lineVideo: {
+            },
             isUpload: false,
             position: 'relative',
             icon,
@@ -292,12 +294,14 @@ export default {
               isUplaod: false,
               duration: '00:00',
               url: '',
+              accept: '.mp3',
             },
             linePlay: {
               title: '',
               isUplaod: false,
               duration: '00:00',
               url: '',
+              accept: '.mp3',
             },
             position: 'relative',
             icon,

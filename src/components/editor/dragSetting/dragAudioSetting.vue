@@ -39,17 +39,17 @@
           <el-checkbox v-model="dragForm.loop" @change="loopChange">开启循环播放</el-checkbox>
         </el-form-item>
         <el-form-item label="位置：" size="mini" class="number-item">
-          <el-input-number v-model="dragForm.location.x" @change="locationChange"
+          <el-input-number v-model="locationX" @change="locationXchange"
             :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
-            :disabled="!dragForm.isUpload" controls-position="right"
+            :disabled="!isAction" controls-position="right"
             class="num-input"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @change="locationChange"
+          <el-input-number v-model="locationY" @change="locationYchange"
             :min="location.ymin" :max="yMax"
-            :disabled="!dragForm.isUpload" controls-position="right"
+            :disabled="!isAction" controls-position="right"
             class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <div v-if="dragForm.isUpload">
+        <div v-if="isAction">
             <el-form-item label="固定位置：" size="mini" class="posotion-item">
             <el-radio v-model="dragForm.position" label="relative"
               @change="positionChange">不固定</el-radio>
@@ -60,13 +60,13 @@
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
               <el-input-number
-                v-model="fixedTop" @change="fixedTopChange"
+                v-model="locationY" @change="fixedTopChange"
                 :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
               <el-input-number
-                v-model="fixedBottom" @change="fixedBottomChange"
+                v-model="locationBottom" @change="fixedBottomChange"
                 :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
@@ -104,20 +104,67 @@ export default {
         wmin: 0,
         hmin: 0,
       },
-      mediaSource: {
-        accept: '.mp3',
-      },
+      // mediaSource: {
+      //   accept: '.mp3',
+      // },
       lastCont: '',
       lineSource: '',
       lineTitle: '',
       title: '',
     };
   },
+  computed: {
+    isAction() {
+      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.url)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.url);
+    },
+    locationAble() {
+      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.location)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.location);
+    },
+    locationX: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.location ? curPlay.location.x : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    locationY: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.location ? curPlay.location.y : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    locationBottom: {
+      get() {
+        return this.$store.state.page.screenHeight - this.locationY
+            - this.dragForm.size.h;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    mediaSource: {
+      get() {
+        return this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
   methods: {
     audioSourceChange(type) {
-      const isActive = Boolean(this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.url)
-       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.url);
-      if (!isActive) {
+      if (!this.isActive) {
         this.setMediaInit();
       } else {
         const playObj = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
@@ -137,8 +184,35 @@ export default {
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isAudioSet: false });
     },
-    locationChange() { // 位置值发生改变
-      this.$emit('input-locationChange', 'dragAudios', this.dragForm.location, 'audioActive');
+    locationXchange(val) {
+      this.locationChange({
+        x: val,
+        y: this.locationY,
+      });
+    },
+    locationYchange(val) {
+      this.locationChange({
+        x: this.locationX,
+        y: val,
+      });
+    },
+    locationChange(location) { // 位置值发生改变
+      const isAction = this.dragForm.sourceType === '1';
+      const curPlay = isAction ? this.dragForm.play : this.dragForm.linePlay;
+      curPlay.location = location;
+      let playObj = {};
+      if (isAction) {
+        playObj = { play: curPlay };
+      } else {
+        playObj = { linePlay: curPlay };
+      }
+      const { dragAudios, audioActive } = this.editor;
+      let drags = dragAudios[audioActive];
+      drags = Object.assign({}, drags, playObj);
+      dragAudios[audioActive] = drags;
+      const lists = Object.assign([], dragAudios);
+      this.$store.commit('editor_update', { dragAudios: lists });
+      // this.$emit('input-locationChange', 'dragAudios', this.dragForm.location, 'audioActive');
     },
     uploadDone(file) {
       this.onFileSuccess(file, 'dragAudios', 'audioActive');
@@ -174,6 +248,7 @@ export default {
         const se = this.duration;
         const play = {
           title: name,
+          name,
           url: file.url,
           second: se,
           duration: formatSecond(se),
@@ -249,15 +324,14 @@ export default {
       if (!msg) this.$refs.mediaUpload.uplaodDone(true);
     },
     positionChange() {
+      const curPlay = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom && this.dragForm.position !== 'relative') {
-        const { location } = this.dragForm;
-        location.y = maxBottom;
-        this.$emit('input-locationChange', 'dragAudios', location, 'audioActive');
-      }
       const audios = this.editor.dragAudios;
-      const drags = audios[this.editor.audioActive];
-      drags.position = this.dragForm.position;
+      let drags = audios[this.editor.audioActive];
+      if (drags[curPlay].location.y > maxBottom) {
+        drags[curPlay].location.y = maxBottom;
+      }
+      drags = Object.assign({}, drags, drags[curPlay]);
       audios[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: audios });
     },
@@ -335,6 +409,13 @@ export default {
     },
   },
   updated() {
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.title = this.dragForm.play.title || '';
+      this.lineTitle = this.dragForm.linePlay.title || '';
+      this.lineSource = this.dragForm.linePlay.url || '';
+    });
   },
 };
 </script>

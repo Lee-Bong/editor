@@ -19,7 +19,6 @@ request.interceptors.response.use(
         window.location.href = '/we/admin/login';
       }, 3000);
     }
-    return Promise.reject(error);
   },
 );
 

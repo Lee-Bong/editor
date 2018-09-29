@@ -37,7 +37,8 @@
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
       <drag-audio v-for="(drag, index) in dragAudios" v-if="drag.isShow"
-       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
+       :key="drag.zIndex" :list-index="parseInt(index, 10)" :dragForm="drag" 
+       @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
   </vue-drag-resize>
