@@ -295,6 +295,7 @@ export default {
               duration: '00:00',
               url: '',
               accept: '.mp3',
+              position: 'relative',
             },
             linePlay: {
               title: '',
@@ -302,6 +303,7 @@ export default {
               duration: '00:00',
               url: '',
               accept: '.mp3',
+              position: 'relative',
             },
             position: 'relative',
             icon,

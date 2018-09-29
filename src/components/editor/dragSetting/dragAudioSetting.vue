@@ -51,20 +51,21 @@
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <div v-if="isAction">
             <el-form-item label="固定位置：" size="mini" class="posotion-item">
-            <el-radio v-model="dragForm.position" label="relative"
-              @change="positionChange">不固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
+            <el-radio v-model="playPositon" label="relative"
+              @change="positionChange('relative')">不固定</el-radio>
+            <el-radio v-model="playPositon" label="fixedTop" @change="positionChange('fixedTop')"
               >相对顶部固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
+            <el-radio v-model="playPositon" label="fixedBottom"
+              @change="positionChange('fixedBottom')"
               >相对底部固定</el-radio>
             </el-form-item>
-            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
+            <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedTop'">
               <el-input-number
                 v-model="locationY" @change="fixedTopChange"
                 :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
-            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'">
+            <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedBottom'">
               <el-input-number
                 v-model="locationBottom" @change="fixedBottomChange"
                 :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
@@ -161,6 +162,16 @@ export default {
       immediate: true,
       deep: true,
     },
+    playPositon: {
+      get() {
+        const position = this.dragForm.sourceType === '1' ? this.dragForm.play.position : this.dragForm.linePlay.position;
+        return position;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   methods: {
     audioSourceChange(type) {
@@ -177,6 +188,7 @@ export default {
             x: playObj.x,
             y: playObj.y,
           },
+          position: playObj.position,
         });
       }
       this.$emit('audioSourceChange', type, 'dragAudios', 'audioActive');
@@ -212,7 +224,6 @@ export default {
       dragAudios[audioActive] = drags;
       const lists = Object.assign([], dragAudios);
       this.$store.commit('editor_update', { dragAudios: lists });
-      // this.$emit('input-locationChange', 'dragAudios', this.dragForm.location, 'audioActive');
     },
     uploadDone(file) {
       this.onFileSuccess(file, 'dragAudios', 'audioActive');
@@ -229,8 +240,12 @@ export default {
         loop: this.dragForm.loop,
         w: this.page.phoneWidth,
         h: 82,
-        x: 0,
-        y: 0,
+        location: {
+          x: 0,
+          y: 0,
+        },
+        accept: '.mp3',
+        position: 'relative',
       };
       let playObj = { play };
       if (this.dragForm.sourceType === '2') {
@@ -246,7 +261,9 @@ export default {
         const name = ele.dragForm.sourceType === '1' ? beforeName : file.url;
         if (ele.dragForm.sourceType === '1') ele.mediaSource = { name, accept: '.mp3' };
         const se = this.duration;
-        const play = {
+        const isAction = ele.dragForm.sourceType === '1';
+        const curPlay = isAction ? ele.dragForm.play : ele.dragForm.linePlay;
+        const play = Object.assign({}, curPlay, {
           title: name,
           name,
           url: file.url,
@@ -256,9 +273,11 @@ export default {
           loop: ele.dragForm.loop,
           w: ele.page.phoneWidth,
           h: 82,
-          x: 0,
-          y: 0,
-        };
+          location: {
+            x: 0,
+            y: 0,
+          },
+        });
         let playObj = { play };
         if (ele.dragForm.sourceType === '2') {
           playObj = { linePlay: play };
@@ -323,7 +342,7 @@ export default {
       });
       if (!msg) this.$refs.mediaUpload.uplaodDone(true);
     },
-    positionChange() {
+    positionChange(val) {
       const curPlay = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       const audios = this.editor.dragAudios;
@@ -331,6 +350,7 @@ export default {
       if (drags[curPlay].location.y > maxBottom) {
         drags[curPlay].location.y = maxBottom;
       }
+      drags[curPlay].position = val;
       drags = Object.assign({}, drags, drags[curPlay]);
       audios[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: audios });
