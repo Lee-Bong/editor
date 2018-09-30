@@ -34,44 +34,44 @@
           <el-form-item label="位置：" size="mini" class="number-item">
             <el-input-number v-model="dragForm.location.x" @change="locationChange"
               :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
-              :disabled="!isAction" controls-position="right"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="dragForm.location.y" @change="locationChange"
               :min="location.ymin" :max="yMax"
-              :disabled="!isAction" controls-position="right"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
           <div class="dec-label"> <label>X</label> <label> Y</label></div>
           <el-form-item label="尺寸：" size="mini" class="number-item">
             <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
               :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
-              :disabled="!isAction" controls-position="right"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
               :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
-              :disabled="!isAction" controls-position="right"
+              :disabled="!Boolean(dragForm.video && dragForm.video.url)" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
           <div class="dec-label"> <label>宽</label> <label>高</label></div>
           <div v-if="isAction">
             <el-form-item label="固定位置：" size="mini" class="posotion-item">
               <el-radio v-model="playPositon" label="relative"
-               @change="positionChange('relative')">不固定</el-radio>
-              <el-radio v-model="playPositon" label="fixedTop" @change="positionChange('fixedTop')"
+               @change="positionChange">不固定</el-radio>
+              <el-radio v-model="playPositon" label="fixedTop" @change="positionChange"
                 >相对顶部固定</el-radio>
-              <el-radio v-model="playPositon" label="fixedBottom" @change="positionChange('fixedBottom')"
+              <el-radio v-model="playPositon" label="fixedBottom" @change="positionChange"
                 >相对底部固定</el-radio>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedTop'">
               <el-input-number
-                v-model="locationY" @change="fixedTopChange"
+                v-model="fixedTop" @change="fixedTopChange"
                 :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedBottom'">
               <el-input-number
-                v-model="locationBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
+                v-model="fixedBottom" @change="fixedBottomChange"
+                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -265,9 +265,6 @@ export default {
       this.mediaChange({
         poster: '',
         url: '',
-        name: '',
-        position: 'relative',
-        title: '',
       }, this, 'dragVideos', 'videoActive', true);
     },
     onMediaFileSuccess(file, dragList, active) {
@@ -292,7 +289,6 @@ export default {
         const videos = ele.editor[dragList];
         const drags = videos[ele.editor[active]];
         const newH = (this.videoHeight * ele.page.phoneWidth) / this.videoWidth;
-        debugger;
         const video = {
           sourceW: this.videoWidth,
           sourceH: this.videoHeight,
@@ -324,13 +320,10 @@ export default {
         }
       });
     },
-    mediaChange(play, ele, dragList, active, isRemove, isChange) {
+    mediaChange(video, ele, dragList, active, isRemove, isChange) {
       const lists = ele.editor[dragList];
       let drags = lists[ele.editor[active]];
       let videoObj = {};
-      const isAction = ele.dragForm.sourceType === '1';
-      const curPlay = isAction ? ele.dragForm.video : ele.dragForm.lineVideo;
-      const video = Object.assign({}, curPlay, play);
       if (!isChange) {
         videoObj = { video };
         if (this.dragForm.sourceType === '2') {
@@ -427,16 +420,16 @@ export default {
         ele.$store.commit('editor_update', { [dragList]: lists });
       }, 100);
     },
-    positionChange(val) {
-      const curPlay = this.dragForm.sourceType === '1' ? 'video' : 'lineVideo';
+    positionChange() {
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      const videos = this.editor.dragVideos;
-      let drags = videos[this.editor.videoActive];
-      if (drags[curPlay].location.y > maxBottom && val !== 'relative') {
-        drags[curPlay].location.y = maxBottom;
+      if (this.dragForm.location.y > maxBottom && this.dragForm.position !== 'relative') {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragVideos', location, 'videoActive');
       }
-      drags[curPlay].position = val;
-      drags = Object.assign({}, drags, drags[curPlay]);
+      const videos = this.editor.dragVideos;
+      const drags = videos[this.editor.videoActive];
+      drags.position = this.dragForm.position;
       videos[this.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
     },

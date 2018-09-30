@@ -1,6 +1,6 @@
 <template>
   <div class="img-upload-item">
-    <div v-if="!(source && source.title)">
+    <div v-if="!(source && source.url)">
       <el-button type="primary" plain size="mini" @click="uploadTrigger"
         v-show="!isLoading">{{'选择文件'}}</el-button>
     </div>

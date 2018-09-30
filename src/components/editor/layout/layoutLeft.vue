@@ -246,8 +246,11 @@ export default {
               h: 300,
             },
             video: {
+              position: 'relative',
+              accept: '.mp4',
             },
             lineVideo: {
+              position: 'relative',
             },
             isUpload: false,
             position: 'relative',
@@ -302,7 +305,6 @@ export default {
               isUplaod: false,
               duration: '00:00',
               url: '',
-              accept: '.mp3',
               position: 'relative',
             },
             position: 'relative',

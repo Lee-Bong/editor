@@ -68,7 +68,7 @@
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedBottom'">
               <el-input-number
                 v-model="locationBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -229,7 +229,6 @@ export default {
       this.onFileSuccess(file, 'dragAudios', 'audioActive');
     },
     fileRemove() {
-      this.mediaSource.name = '';
       this.title = '';
       const play = {
         title: '',
@@ -347,7 +346,7 @@ export default {
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       const audios = this.editor.dragAudios;
       let drags = audios[this.editor.audioActive];
-      if (drags[curPlay].location.y > maxBottom) {
+      if (drags[curPlay].location.y > maxBottom && val !== 'relative') {
         drags[curPlay].location.y = maxBottom;
       }
       drags[curPlay].position = val;
