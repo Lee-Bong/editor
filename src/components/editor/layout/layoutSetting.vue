@@ -19,7 +19,7 @@
     />
 
     <drag-video-setting
-      v-if="editor.videoSet"
+      v-if="editor.dragVideos.length && editor.isVideoSet"
       :dragForm="editor.dragVideos[editor.videoActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
@@ -29,7 +29,7 @@
     />
 
     <drag-audio-setting
-      v-if="editor.audioSet"
+      v-if="editor.dragAudios.length && editor.isAudioSet"
       :dragForm="editor.dragAudios[editor.audioActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
