@@ -400,7 +400,7 @@ export default {
           videoObj = { lineVideo: video };
         }
       }
-      drags = Object.assign({}, drags, videoObj);
+      drags = Object.assign({}, drags, videoObj, { isUpload: false });
       lists[ele.editor[active]] = drags;
       ele.$store.commit('editor_update', { [dragList]: lists });
       this.ratioSet(ele, dragList, active);
