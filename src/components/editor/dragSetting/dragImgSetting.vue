@@ -16,6 +16,7 @@
             <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imgList"
               list-type="picture" :limit="limit"
               :http-request="fileToUpload"
+              :before-upload="beforeAvatarUpload"
               :auto-upload="true" action="string" accept=".png,.gif,.jpeg, .jpg">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -252,6 +253,17 @@ export default {
         location.y = maxBottom;
         this.$emit('input-locationChange', 'dragImages', location, 'imgActive');
       }
+    },
+    beforeAvatarUpload(file) { // 图片上传大小限制
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        this.$message({
+          message: '上传图片大小不能超过 5MB!',
+          type: 'error',
+          duration: 2000,
+        });
+      }
+      return isLt5M;
     },
   },
   mounted() {

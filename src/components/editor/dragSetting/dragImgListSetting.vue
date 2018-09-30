@@ -20,6 +20,7 @@
             :multiple="true"
             :file-list="imgList"
             :http-request="onFileChange"
+            :before-upload="beforeAvatarUpload"
             list-type="picture"
             :auto-upload="true"
             :show-file-list="false"
@@ -215,6 +216,17 @@ export default {
       this.$store.commit('editor_update', {
         dragImgLists,
       });
+    },
+    beforeAvatarUpload(file) { // 图片上传大小限制
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        this.$message({
+          message: '上传图片大小不能超过 5MB!',
+          type: 'error',
+          duration: 2000,
+        });
+      }
+      return isLt5M;
     },
   },
   mounted() {
