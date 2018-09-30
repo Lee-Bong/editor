@@ -59,7 +59,8 @@
                @change="positionChange('relative')">不固定</el-radio>
               <el-radio v-model="playPositon" label="fixedTop" @change="positionChange('fixedTop')"
                 >相对顶部固定</el-radio>
-              <el-radio v-model="playPositon" label="fixedBottom" @change="positionChange('fixedBottom')"
+              <el-radio v-model="playPositon" label="fixedBottom"
+                @change="positionChange('fixedBottom')"
                 >相对底部固定</el-radio>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedTop'">
@@ -292,7 +293,7 @@ export default {
         const videos = ele.editor[dragList];
         const drags = videos[ele.editor[active]];
         const newH = (this.videoHeight * ele.page.phoneWidth) / this.videoWidth;
-        debugger;
+
         const video = {
           sourceW: this.videoWidth,
           sourceH: this.videoHeight,
