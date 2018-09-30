@@ -388,50 +388,25 @@ export default {
       const isAction = ele.dragForm.sourceType === '1';
       const curPlay = isAction ? ele.dragForm.video : ele.dragForm.lineVideo;
       const video = Object.assign({}, curPlay, play);
+      if (isRemove) {
+        video.size = {
+          w: ele.page.phoneWidth,
+          h: ele.editor.mediaHeight,
+        };
+      }
+      if (isChange || isRemove) {
+        video.location = {
+          x: 0,
+          y: 0,
+        };
+      }
       if (!isChange) {
         videoObj = { video };
         if (this.dragForm.sourceType === '2') {
           videoObj = { lineVideo: video };
         }
       }
-      const clone = Object.assign({}, videoObj);
-      clone.isUpload = false;
-      clone.isPoster = !!drags.poster;
-      clone.poster = drags.poster ? drags.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png';
-      if (!isRemove) {
-        clone.location = {
-          x: 0,
-          y: 0,
-        };
-        clone.size = {
-          w: ele.page.phoneWidth,
-          h: video.h,
-        };
-      } else {
-        clone.size = {
-          w: ele.page.phoneWidth,
-          h: ele.editor.mediaHeight,
-        };
-      }
-      if (isChange) {
-        clone.location = {
-          x: 0,
-          y: 0,
-        };
-
-        if (this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url) {
-          clone.size = {
-            w: this.dragForm.video.w,
-            h: this.dragForm.video.h,
-          };
-        } else if (this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url) {
-          clone.size = {
-            w: this.dragForm.lineVideo.w,
-            h: this.dragForm.lineVideo.h,
-          };
-        }
-      }
-      drags = Object.assign({}, drags, clone);
+      drags = Object.assign({}, drags, videoObj);
       lists[ele.editor[active]] = drags;
       ele.$store.commit('editor_update', { [dragList]: lists });
       this.ratioSet(ele, dragList, active);
