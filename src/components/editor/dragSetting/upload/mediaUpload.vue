@@ -1,8 +1,8 @@
 <template>
   <div class="img-upload-item">
-    <div v-if="!(source && source.url)">
+    <div v-if="!(this.source && this.source.url) && !isLoading">
       <el-button type="primary" plain size="mini" @click="uploadTrigger"
-        v-show="!isLoading">{{'选择文件'}}</el-button>
+      >{{'选择文件'}}</el-button>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
        class="check-upload" :accept="source.accept"/>
@@ -88,7 +88,7 @@ export default {
         const clearTime = setTimeout(() => {
           this.pre = 0;
           clearTimeout(clearTime);
-        }, 3000);
+        }, 1000);
       } else {
         this.isLoading = false;
         this.pre = 0;

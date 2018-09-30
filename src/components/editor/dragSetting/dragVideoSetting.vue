@@ -306,15 +306,9 @@ export default {
       }
     },
     mediaUploadDone(file) {
-      this.$refs.mediaUpload.uplaodDone();
-      // this.mediaSource = Object.assign({}, this.mediaSource, {
-      //   name: file.beforeName,
-      //   title: file.beforeName,
-      // });
       this.onMediaFileSuccess(file, 'dragVideos', 'videoActive');
     },
     mediaFileRemove() {
-      // this.mediaSource = Object.assign({}, this.mediaSource, { name: '', url: '', title: '' });
       this.mediaChange({
         poster: '',
         url: '',
@@ -324,11 +318,11 @@ export default {
       }, this, 'dragVideos', 'videoActive', true);
     },
     onMediaFileSuccess(file, dragList, active) {
-      // this.$refs.videoLoad.setAttribute('src', file.url);
       this.$refs.videoLoad.src = file.url;
       const ele = this;
       this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
         if (ele.$refs.videoLoad.currentSrc !== file.url) return false;
+        ele.$refs.mediaUpload.uplaodDone();
         if (ele.dragForm.sourceType === '1') {
           ele.$message({
             message: '视频上传成功～',
