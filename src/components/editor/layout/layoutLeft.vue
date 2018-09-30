@@ -248,9 +248,17 @@ export default {
             video: {
               position: 'relative',
               accept: '.mp4',
+              size: {
+                w: 375,
+                h: 300,
+              },
             },
             lineVideo: {
               position: 'relative',
+              size: {
+                w: 375,
+                h: 300,
+              },
             },
             isUpload: false,
             position: 'relative',

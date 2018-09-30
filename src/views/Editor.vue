@@ -303,16 +303,14 @@ export default {
       }
       if (dragVideos.length) {
         dragVideos.map((item) => {
+          const curVideo = item.sourceType === '1' ? item.video : item.lineVideo;
           dragArr.push({
             type: 5,
-            source: item.video.url,
-            title: item.video.title,
+            source: curVideo.url,
+            title: curVideo.title,
             loop: item.loop,
-            poster: item.video.poster,
-            location: {
-              x: item.location.x,
-              y: item.location.y,
-            },
+            poster: curVideo.poster,
+            location: curVideo.location,
             size: {
               w: item.size.w,
               h: item.size.h,
@@ -327,17 +325,15 @@ export default {
       }
       if (dragAudios.length) {
         dragAudios.map((item) => {
+          const curPlay = item.sourceType === '1' ? item.play : item.linePlay;
           dragArr.push({
             type: 6,
             source: item.play.url,
             title: item.play.title,
             second: item.play.second,
-            isFixed: item.sourceType === 1 ? item.play.position !== 'relative' : item.linePlay.position !== 'relative',
-            play: item.sourceType === 1 ? item.play : item.linePlay,
-            location: {
-              x: item.location.x,
-              y: item.location.y,
-            },
+            isFixed: curPlay.position !== 'relative',
+            play: curPlay,
+            location: curPlay.location,
             size: {
               w: item.size.w,
               h: item.size.h,

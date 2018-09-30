@@ -430,10 +430,11 @@ export default {
   updated() {
   },
   mounted() {
+    const ele = this;
     this.$nextTick(() => {
-      this.title = this.dragForm.play.title || '';
-      this.lineTitle = this.dragForm.linePlay.title || '';
-      this.lineSource = this.dragForm.linePlay.url || '';
+      ele.title = ele.dragForm.play.title || '';
+      ele.lineTitle = ele.dragForm.linePlay.title || '';
+      ele.lineSource = ele.dragForm.linePlay.url || '';
     });
   },
 };
