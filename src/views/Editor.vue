@@ -311,10 +311,7 @@ export default {
             loop: item.loop,
             poster: curVideo.poster,
             location: curVideo.location,
-            size: {
-              w: item.size.w,
-              h: item.size.h,
-            },
+            size: curVideo.size,
             style: {
               'z-index': item.dragIndex,
             },
