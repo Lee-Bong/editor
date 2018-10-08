@@ -139,6 +139,9 @@ export default {
   padding: 5px;
   background-color: #fff;
   text-align: left;
+  overflow: auto;
+  box-sizing: border-box;
+  padding-bottom: 15px;
 }
 .el-form-item__label {
   padding-right: 0;

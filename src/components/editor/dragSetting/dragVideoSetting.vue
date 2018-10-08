@@ -10,7 +10,7 @@
             <i class="el-icon-close" @click="settingClose"></i>
         </span>
       </div>
-      <div class="setting">
+      <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
         <el-form ref="form" label-width="80px">
           <el-form-item label="类型：" size="mini">
             <el-radio v-model="dragForm.sourceType"
@@ -21,8 +21,7 @@
           <el-form-item v-if="dragForm.sourceType === '1'"
             label="选择视频：" size="mini" class="is-require video-el">
             <media-upload :source="mediaSource" @upload-done="mediaUploadDone"
-            @file-remove="mediaFileRemove" ref="mediaUpload"/>
-            <span class="label-dec" style="right: 85px">仅支持MP4格式</span>
+            @file-remove="mediaFileRemove" ref="mediaUpload" :dec="mediaDec"/>
           </el-form-item>
           <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
             size="mini" class="is-require video-el">
@@ -30,8 +29,8 @@
                v-model="lineSource" @blur="lineSourceBlur"></el-input>
           </el-form-item>
           <el-form-item label="视频封面：" size="mini" class="is-require video-el">
-            <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"/>
-            <span class="label-dec" style="right: 95px">图片尺寸16:9</span>
+            <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"
+              :dec="String('图片尺寸16:9')"/>
           </el-form-item>
           <el-form-item label="位置：" size="mini" class="number-item">
             <el-input-number v-model="locationX" @change="locationXchange"
@@ -208,6 +207,7 @@ export default {
       lineSource: '',
       isLineUpload: false,
       lastCont: '', // 标记二次在线url是否一致
+      mediaDec: '仅支持MP4格式',
     };
   },
   methods: {

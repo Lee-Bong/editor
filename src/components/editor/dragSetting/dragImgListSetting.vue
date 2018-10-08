@@ -10,7 +10,7 @@
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
-    <div class="setting">
+    <div class="setting" ref="contentRef" :style="{ maxHeight: setForm.maxHeight + 'px'}">
       <el-form ref="form">
         <div class="upload-wrap upload-wrap--list">
           <el-upload
@@ -193,6 +193,8 @@ export default {
           clientHeight: wrapH + 64,
         });
       }
+      this.$refs.contentRef.scrollTop = this.$refs.contentRef.scrollHeight;
+      this.$refs.contentRef.scrollIntoView();
     },
     imgListUpdated(evt) {
       const { oldIndex, newIndex } = evt;

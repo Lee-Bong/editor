@@ -37,7 +37,7 @@
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
       <drag-audio v-for="(drag, index) in dragAudios" v-if="drag.isShow"
-       :key="drag.zIndex" :list-index="parseInt(index, 10)" :dragForm="drag" 
+       :key="drag.zIndex" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
@@ -107,6 +107,10 @@ export default {
           phoneHeight: ev.height,
           clientHeight: ev.height + 64,
         });
+        const scrollTime = setTimeout(() => {
+          window.scrollTo(0, (ev.height + 264) - document.body.clientHeight);
+          clearTimeout(scrollTime);
+        }, 300);
       } else {
         this.$store.commit('page_update', {
           phoneHeight: ev.height,

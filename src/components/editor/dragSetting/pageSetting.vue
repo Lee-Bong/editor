@@ -8,7 +8,7 @@
           <i class="el-icon-close" @click="settingClose"></i>
         </span>
       </div>
-      <div class="setting">
+      <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
         <el-form ref="form" label-width="90px">
           <el-form-item label="页面名称：" size="mini" class="is-require" >
             <el-input type="text" v-model="dragForm.title" placeholder="H5标题，最多输入10个字"></el-input>
@@ -23,8 +23,7 @@
           </el-form-item>
           <el-form-item label="分享缩略图：" size="mini" class="share-img">
             <img-uplaod :imgObj="dragForm.img" @upload-done="uploadDone"
-             @file-remove="fileRemove" />
-            <span class="label-dec">图片尺寸200X200</span>
+             @file-remove="fileRemove" :dec="String('图片尺寸200X200')"/>
           </el-form-item>
           <el-form-item label="背景颜色：" size="mini">
             <el-color-picker v-model="dragForm.backgroundColor"
@@ -119,8 +118,6 @@ export default {
   font-size: 10px;
   color: #999;
   display: inline-block;
-  position: absolute;
-  top: 0;
-  right: 20px;
+  margin-left: 5px;
 }
 </style>

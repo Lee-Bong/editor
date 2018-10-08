@@ -60,7 +60,7 @@ export default {
     loadingPre() {
       this.isLoading = true;
       let i = 0;
-      const step = 7;
+      const step = 6;
       const loadingTime = setInterval(() => {
         if (this.pre >= 91) {
           clearInterval(loadingTime);
@@ -68,7 +68,7 @@ export default {
         }
         this.pre = i;
         i += step;
-      }, 15);
+      }, 30);
     },
     onFileRemove() {
       this.$emit('file-remove', this.index || 0);
