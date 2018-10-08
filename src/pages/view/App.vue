@@ -17,6 +17,9 @@ body {
         constant(safe-area-inset-bottom)
         constant(safe-area-inset-left);
 }
+#cnzz_stat_icon_1274994316 {
+  display: none;
+}
 .opentip {
   position: absolute;
   left: 0;
