@@ -16,6 +16,8 @@
       :preventActiveBehavior="true"
       :parentH="parentH"
       :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
+      :minh="minh"
+      :minw="minw"
 
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"
@@ -65,6 +67,8 @@ export default {
         left: 0,
         layerActive: 0,
       },
+      minh: 0,
+      minw: 0,
     };
   },
   computed: {

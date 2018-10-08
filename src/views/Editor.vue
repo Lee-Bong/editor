@@ -386,11 +386,12 @@ export default {
                 msg = '请添加视频～';
                 isOk = false;
                 break;
-              } else if (drag.video && drag.video.url && !drag.video.isPoster) {
-                msg = '请添加视频封面';
-                isOk = false;
-                break;
               }
+              //  else if (drag.video && drag.video.url && !drag.video.isPoster) {
+              //   msg = '请添加视频封面';
+              //   isOk = false;
+              //   break;
+              // }
             }
             if (item.type === 4) {
               if (!drag.imgList) {
