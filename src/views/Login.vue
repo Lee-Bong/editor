@@ -98,10 +98,11 @@ export default {
     text-align: center;
     line-height: 40px;
     cursor: pointer;
-    margin-top: 90px;
+    margin-top: 84px;
 
     a {
       color: #fff;
+      text-decoration: none;
     }
   }
 }

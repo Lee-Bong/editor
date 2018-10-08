@@ -39,7 +39,7 @@
         <el-form-item class="link-el" v-if="dragForm.sourceType==='1'" label="App内跳转：" size="mini">
           <el-input type="text" v-model="dragForm.appLink"></el-input>
         </el-form-item>
-        <el-form-item class="link-el" v-if="dragForm.sourceType==='1'" label="App内跳转：" size="mini">
+        <el-form-item class="link-el" v-if="dragForm.sourceType==='1'" label="App外跳转：" size="mini">
           <el-input type="text" v-model="dragForm.outLink"></el-input>
         </el-form-item>
         <el-form-item class="link-el" v-if="dragForm.sourceType==='2'" label="唤起链接：" size="mini">

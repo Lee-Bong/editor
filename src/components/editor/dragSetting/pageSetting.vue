@@ -24,6 +24,7 @@
           <el-form-item label="分享缩略图：" size="mini" class="share-img">
             <img-uplaod :imgObj="dragForm.img" @upload-done="uploadDone"
              @file-remove="fileRemove" />
+            <span class="label-dec">图片尺寸200X200</span>
           </el-form-item>
           <el-form-item label="背景颜色：" size="mini">
             <el-color-picker v-model="dragForm.backgroundColor"
@@ -113,5 +114,13 @@ export default {
 }
 .page-setting .el-textarea__inner {
   padding: 3px 8px;
+}
+.label-dec {
+  font-size: 10px;
+  color: #999;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 20px;
 }
 </style>

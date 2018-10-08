@@ -1,77 +1,39 @@
 <template>
-<div>
-  <el-table
-    class="table-box"
-    style="width: 100%"
-    v-loading="loading"
-    :row-class-name="tableRowClassName"
-    :data="tableData"
-    :default-sort="{prop: 'createdAt', order: 'descending'}"
-    @sort-change="handleSortChange"
-    >
-    <el-table-column
-      prop="title"
-      label="标题"
-      min-width="200"
-      max-height=50
-    >
-    </el-table-column>
-    <el-table-column
-      prop="createdAt"
-      label="创建时间"
-      sortable
-      min-width="180">
-    </el-table-column>
-    <el-table-column
-      prop="visit"
-      label="浏览量"
-      sortable
-      min-width="180">
-    </el-table-column>
-    <el-table-column label="操作" min-width="280">
-      <template slot-scope="scope">
-          <el-button
-          size="mini"
-          type="primary" plain
-          @click="handleAdd(scope.$index, scope.row)">复制</el-button>
-        <el-button
-          size="mini"
-          type="primary" plain
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-popover
-          placement="bottom"
-          width="220"
-          trigger="click"
-          @show="popverShow(scope.$index, scope.row)"
-        >
-          <div class="spread" v-if="scope.$index === tip.index">
-            <qr-code :url="tip.url"/>
-          </div>
-          <el-button
-            size="mini"
-            type="primary" plain
-            slot="reference"
-            >推广</el-button>
-        </el-popover>
-        <el-button
-          size="mini"
-          :type="scope.row.online === 1 ? '' : 'primary'"
-          plain
-          @click="handlePublish(scope.$index, scope.row)">
-          {{ scope.row.online | isOnline }}
-        </el-button>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-pagination
-    class="table-page"
-    layout="total, prev, pager, next, jumper"
-    @current-change="handlePageChange"
-    :current-page="pager.page"
-    :page-size="pager.size"
-    :total="pageTotal">
-  </el-pagination>
-</div>
+  <div>
+    <el-table class="table-box" style="width: 100%" v-loading="loading"
+      :row-class-name="tableRowClassName" :data="tableData"
+      :default-sort="{prop: 'createdAt', order: 'descending'}" @sort-change="handleSortChange">
+      <el-table-column prop="title" label="标题" min-width="200" max-height=50>
+      </el-table-column>
+      <el-table-column prop="createdAt" label="创建时间" sortable min-width="180">
+      </el-table-column>
+      <el-table-column prop="visit" label="浏览量" sortable min-width="180">
+      </el-table-column>
+      <el-table-column label="操作" min-width="280">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" plain
+            @click="handleAdd(scope.$index, scope.row)">复制</el-button>
+          <el-button size="mini" type="primary" plain
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-popover placement="bottom" width="220" trigger="click"
+            @show="popverShow(scope.$index, scope.row)">
+            <div class="spread" v-if="scope.$index === tip.index">
+              <qr-code :url="tip.url" />
+            </div>
+            <el-button size="mini" type="primary" plain slot="reference">推广</el-button>
+          </el-popover>
+          <el-button size="mini" :type="scope.row.online === 1 ? '' : 'primary'"
+            plain @click="handlePublish(scope.$index, scope.row)">
+            {{ scope.row.online | isOnline }}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination class="table-page" layout="total, prev, pager, next, jumper"
+      @current-change="handlePageChange" :current-page="pager.page"
+      :page-size="pager.size" :total="pageTotal">
+    </el-pagination>
+  </div>
 </template>
 
 <script>
@@ -229,10 +191,11 @@ export default {
   height: 40px;
   text-align: right;
 }
-.el-table th, .el-table tr.table-row-new {
+.el-table th,
+.el-table tr.table-row-new {
   background-color: #ecf5ff;
 }
-.spread{
+.spread {
   height: auto;
   width: 225px;
 }

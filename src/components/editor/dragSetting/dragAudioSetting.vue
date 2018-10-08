@@ -22,6 +22,7 @@
           class="is-require audio-el">
           <media-upload :source="mediaSource" @upload-done="uploadDone"
           @file-remove="fileRemove" ref="mediaUpload"/>
+          <span class="label-dec" style="right: 85px">仅支持MP3格式</span>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'" label="标题：" size="mini" class="audio-el">
           <el-input type="text" v-model="title"
