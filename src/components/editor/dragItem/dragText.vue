@@ -24,7 +24,7 @@
       ref="dragItem"
       >
 
-      <i class="el-icon-close drag-del"
+      <i class="el-icon-circle-close-outline drag-del"
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>

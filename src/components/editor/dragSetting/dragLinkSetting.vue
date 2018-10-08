@@ -10,7 +10,7 @@
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
-    <div class="setting">
+    <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
       <el-form ref="form" label-width="90px">
         <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"

@@ -93,6 +93,7 @@ export default {
     return {
       settingForm: {
         width: 380,
+        maxHeight: document.documentElement.clientHeight - 150,
         location: {
           x: 700,
           y: 65,
@@ -150,8 +151,9 @@ export default {
 }
 .setting-show{
   visibility: visible;
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 75px;
+  // max-height: maxHeight;
 }
 .setting-title {
   height: 31px;
@@ -177,6 +179,7 @@ export default {
   padding: 5px;
   background-color: #fff;
   text-align: left;
+  overflow: auto;
   .el-form-item__label {
     padding-right: 0;
   }

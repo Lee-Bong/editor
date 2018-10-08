@@ -3,6 +3,7 @@
     <div v-if="!(this.source && this.source.url) && !isLoading">
       <el-button type="primary" plain size="mini" @click="uploadTrigger"
       >{{'选择文件'}}</el-button>
+      <span class="label-dec" style="right: 85px">{{dec || ''}}</span>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
        class="check-upload" :accept="source.accept"/>
@@ -22,6 +23,7 @@ export default {
   name: 'HelloWorld',
   props: {
     source: Object,
+    dec: String,
   },
   data() {
     return {
@@ -71,7 +73,7 @@ export default {
     loadingPre() {
       this.isLoading = true;
       let i = 0;
-      const step = 7;
+      const step = 4;
       const loadingTime = setInterval(() => {
         if (this.pre >= 89) {
           clearInterval(loadingTime);

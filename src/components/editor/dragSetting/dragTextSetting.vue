@@ -11,7 +11,7 @@
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
-    <div class="setting">
+    <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
       <el-form ref="form" :rules="formRules" label-width="80px">
         <el-form-item label="" label-width="0">
           <label class="el-form-item__label">文本内容：</label>

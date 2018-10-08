@@ -105,5 +105,11 @@ export default {
   align-content: center;
   justify-content: center;
 }
+.layer-list {
+  overflow: auto;
+  position: absolute;
+  bottom: 20px;
+  top: 55px;
+}
 
 </style>

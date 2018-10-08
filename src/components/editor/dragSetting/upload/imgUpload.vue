@@ -2,6 +2,7 @@
   <div class="img-upload-item">
     <div v-if="!imgObj||!imgObj.url">
       <el-button type="primary" plain size="mini" @click="uploadTrigger">{{'选择文件'}}</el-button>
+      <span class="label-dec">{{dec || ''}}</span>
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
        class="check-upload" accept=".png,.gif,.jpeg, .jpg"/>
@@ -24,6 +25,7 @@ export default {
   name: 'HelloWorld',
   props: {
     imgObj: Object,
+    dec: String,
   },
   data() {
     return {

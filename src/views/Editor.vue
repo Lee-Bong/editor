@@ -574,11 +574,11 @@ body {
 }
 
 .fixed-right {
-  position: relative;
+  position: fixed;
   float: right;
-  /* right: 0; */
-  /* top: 56px; */
-  /* bottom: 0; */
+  right: 20px;
+  bottom: 0;
+  top: 20px;
   width: 260px;
   z-index: 98;
   margin-top: 40px;

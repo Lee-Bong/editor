@@ -7,10 +7,10 @@
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-close" @click="settingClose"></i>
+        <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
-    <div class="setting">
+    <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
       <el-form ref="form" label-width="80px" >
         <el-form-item label="类型：" size="mini">
           <el-radio v-model="dragForm.sourceType" label="1"
@@ -21,8 +21,7 @@
         <el-form-item v-if="dragForm.sourceType === '1'" label="上传音频：" size="mini"
           class="is-require audio-el">
           <media-upload :source="mediaSource" @upload-done="uploadDone"
-          @file-remove="fileRemove" ref="mediaUpload"/>
-          <span class="label-dec" style="right: 85px">仅支持MP3格式</span>
+          @file-remove="fileRemove" ref="mediaUpload" :dec="mediaDec"/>
         </el-form-item>
         <el-form-item v-if="dragForm.sourceType === '1'" label="标题：" size="mini" class="audio-el">
           <el-input type="text" v-model="title"
@@ -113,6 +112,7 @@ export default {
       lineSource: '',
       lineTitle: '',
       title: '',
+      mediaDec: '仅支持MP3格式',
     };
   },
   computed: {

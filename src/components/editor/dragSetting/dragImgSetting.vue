@@ -9,7 +9,7 @@
           <i class="el-icon-close" @click="settingClose"></i>
         </span>
       </div>
-      <div class="setting">
+      <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
         <el-form ref="form" label-width="80px">
           <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']"
             v-if="!dragForm.notModify">
