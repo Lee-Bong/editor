@@ -85,7 +85,6 @@ export default {
     },
     onFileSuccess(file, key) {
       const dragImg = new Image();
-      dragImg.src = file.url;
       const ele = this;
       const updateImg = {
         title: file.oldName,
@@ -98,7 +97,6 @@ export default {
         x: 0,
         y: 0,
       };
-      // ele.fileDone(key, updateImg);
       dragImg.onload = () => {
         ele.$message({
           message: '图片上传成功～',
@@ -117,6 +115,7 @@ export default {
         ele.fileDone(key, updateImg);
         this.updateHeight();
       };
+      dragImg.src = file.url;
       dragImg.onerror = () => {
         this.onFileError(key);
       };
