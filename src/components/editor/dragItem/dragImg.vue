@@ -31,6 +31,7 @@
       <div class="drag-img" v-if="JSON.stringify(dragForm.img) === '{}'">
         <i class="iconfont ed-icon-image"></i>
       </div>
+      <div v-if="JSON.stringify(dragForm.img) !== '{}'" class="img-before"></div>
       <img v-if="JSON.stringify(dragForm.img) !== '{}'"
         :src="dragForm.img.url"
         :width="dragForm.size.w"
@@ -128,5 +129,13 @@ export default {
 .drag-img i {
   font-size: 50px;
   color: #797878;
+}
+.img-before {
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 </style>

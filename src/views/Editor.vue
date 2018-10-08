@@ -474,6 +474,9 @@ export default {
           event.returnValue = ('确定离开当前页面吗？');
         }
       };
+      document.getElementsByTagName('img')[0].onmousedown = function cb(e) {
+        e.preventDefault();
+      };
     });
   },
   updated() {
