@@ -35,8 +35,8 @@
       <video v-if="dragForm.sourceType === '1' &&  dragForm.video.url"
         ref="videoPlay"
         class="video-show"
-        :width="dragForm.video.size.w"
-        :height="dragForm.video.size.h"
+        width="100%"
+        height="100%"
         :poster="dragForm.video.poster" controls>
           <source :src="dragForm.video.url"
            type="video/mp4">
@@ -44,8 +44,8 @@
         <video v-if="dragForm.sourceType === '2' &&  dragForm.lineVideo.url"
         ref="lineVideoPlay"
         class="video-show"
-        :width="dragForm.lineVideo.size.w"
-        :height="dragForm.lineVideo.size.h"
+        width="100%"
+        height="100%"
         :poster="dragForm.lineVideo.poster" controls>
           <source :src="dragForm.lineVideo.url">
         </video>
@@ -188,6 +188,7 @@ export default {
       const isAction = this.dragForm.sourceType === '1';
       const curPlay = isAction ? this.dragForm.video : this.dragForm.lineVideo;
       curPlay.location = location;
+
       let playObj = {};
       if (isAction) {
         playObj = { video: curPlay };
