@@ -73,6 +73,7 @@ export default {
     height: 85px;
     background: url("../assets/images/logo.png") center no-repeat;
     background-size: 100%;
+    margin-top: -60px;
   }
   .login-form {
     text-align: center;
@@ -98,8 +99,7 @@ export default {
     text-align: center;
     line-height: 40px;
     cursor: pointer;
-    margin-top: 84px;
-
+    margin-top: 64px;
     a {
       color: #fff;
       text-decoration: none;
