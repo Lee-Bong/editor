@@ -114,7 +114,7 @@ export default {
   methods: {
     transformImgUrl(url, h, w) {
       let optUrl = url.replace(/^https?:/, '');
-      optUrl += `?x-oss-process=image/resize,m_fixed,h_${Math.ceil(h)},w_${Math.ceil(w)}`;
+      optUrl += `?x-oss-process=image/resize,m_fixed,h_${Math.ceil(h * 2)},w_${Math.ceil(w * 2)}`;
       return optUrl;
     },
     handleLinkClick() {
