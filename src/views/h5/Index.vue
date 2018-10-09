@@ -3,7 +3,8 @@
   <div
     v-if="pageJson && !showError"
     class="wrap"
-    :style='{ height: `${scale * parseInt(pageJson.page.phoneHeight)}px` }'
+    :style='{ height: `${scale * parseInt(pageJson.page.phoneHeight)}px`,
+    backgroundColor: pageJson.page.backgroundColor || "#fff" }'
   >
       <custom-component
         v-if="finalComponentsJson"
