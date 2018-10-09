@@ -34,22 +34,26 @@
           </el-form-item>
           <el-form-item label="位置：" size="mini" class="number-item">
             <el-input-number v-model="locationX" @change="locationXchange"
-              :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
+              :min="location.xmin"
+              :max="mediaSource.size ? (page.phoneWidth-mediaSource.size.w) : 375"
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="locationY" @change="locationYchange"
-              :min="location.ymin" :max="yMax"
+              :min="location.ymin"
+              :max="mediaSource.size ? (page.phoneHeight-mediaSource.size.h) : 667"
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
           <div class="dec-label"> <label>X</label> <label> Y</label></div>
           <el-form-item label="尺寸：" size="mini" class="number-item">
-            <el-input-number v-model="videoW" @change="sizeChange(1)"
-              :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
+            <el-input-number v-model="videoW" @change="sizeWChange"
+              :min="size.wmin"
+              :max="mediaSource.location ? (page.phoneWidth-mediaSource.location.x) : 375"
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
-            <el-input-number v-model="videoH" @change="sizeChange(2)"
-              :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
+            <el-input-number v-model="videoH" @change="sizeHChange"
+              :min="size.hmin"
+              :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 667"
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
@@ -265,13 +269,28 @@ export default {
       const lists = Object.assign([], dragVideos);
       this.$store.commit('editor_update', { dragVideos: lists });
     },
-    sizeChange(type) { // 大小值发生改变
-      let { size } = this.dragForm;
-      const videoObj = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+    sizeWChange(val) {
+      this.sizeChange({
+        w: val,
+        h: this.dragForm.size.h,
+      }, 1);
+    },
+    sizeHChange(val) {
+      this.sizeChange({
+        w: this.dragForm.size.w,
+        h: val,
+      }, 2);
+    },
+    sizeChange(sizeObj, type) { // 大小值发生改变
+      let size = sizeObj;
+      const curVideo = this.dragForm.sourceType === '1' ? 'video' : 'lineVideo';
+      const videoObj = this.dragForm[curVideo];
+      const maxW = this.page.phoneWidth - this.dragForm.location.x;
+      const maxH = this.page.phoneHeight - this.dragForm.location.y;
+
       if (type === 1) {
-        let newW = size.w;
+        let newW = size.w > maxW ? maxW : size.w;
         let newH = (videoObj.h * size.w) / videoObj.w;
-        const maxH = this.page.phoneHeight - this.dragForm.location.y;
         if (newH > maxH) {
           newH = maxH;
           newW = (videoObj.w * newH) / videoObj.h;
@@ -282,8 +301,7 @@ export default {
         };
       } else {
         let newW = (videoObj.w * size.h) / videoObj.h;
-        let newH = size.h;
-        const maxW = this.page.phoneWidth - this.dragForm.location.x;
+        let newH = size.h > maxH ? maxH : size.h;
         if (newW > maxW) {
           newW = maxW;
           newH = (videoObj.h * newW) / videoObj.w;
@@ -293,13 +311,16 @@ export default {
           h: newH,
         };
       }
+      videoObj.size = size;
+      const videoList = this.editor.dragVideos;
       const videos = Object.assign(
-        {}, this.editor.dragVideos[this.editor.videoActive],
+        {}, videoList[this.editor.videoActive],
         {
-          size,
+          curVideo: videoObj,
         },
       );
-      this.$store.commit('editor_update', { dragVideos: videos });
+      videoList[this.editor.videoActive] = videos;
+      this.$store.commit('editor_update', { dragVideos: videoList });
     },
     async onFileChange(file) {
       const up = await oss(file.raw);
