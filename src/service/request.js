@@ -8,7 +8,11 @@ const request = axios.create({
 });
 
 const isAdmin = () => !!window.location.pathname.match(/^\/we\/admin/);
-
+// request.interceptors.request.use(res => res, (err) => {
+//   debugger;
+//   Message.error({ message: '请求超时!' });
+//   return Promise.resolve(err);
+// });
 request.interceptors.response.use(
   res => res,
   (error) => {

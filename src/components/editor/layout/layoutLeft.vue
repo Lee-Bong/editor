@@ -63,20 +63,22 @@ export default {
         }
       }
       let newEditor = {};
+      const top = document.documentElement.scrollTop || document.body.scrollTop;
+      const isScroll = top > 56 && this.$store.state.page.phoneHeight
+           > this.$store.state.page.screenHeight;
+      const top1 = isScroll ?
+        (((((this.$store.state.page.phoneHeight - top) + 56) - 90) / 2) +
+        top) - 42 : (this.$store.state.page.screenHeight - 90) / 2;
+      const top2 = isScroll ? top - 56 - 24 : 0;
       switch (type) {
         case 1:
         {
-          const top = document.documentElement.scrollTop || document.body.scrollTop;
-          const isScroll = top > 56 && this.$store.state.page.phoneHeight
-           > this.$store.state.page.screenHeight;
-          const top1 = isScroll ?
-            (((((this.$store.state.page.phoneHeight - top) + 56) - 90) / 2) +
-             top) - 42 : (this.$store.state.page.screenHeight - 90) / 2;
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
           drag = textActiveOff(drag, { index: 0, isAll: true });
           drag.push({
+            id: this.getId(),
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -108,22 +110,21 @@ export default {
         }
         case 2:
         {
-          const textTop2 = 0;
           const drag2 = this.$store.state.editor.dragImages;
           num = drag2.length;
           layerName = `图片${!num ? '' : num + 1}`;
           icon = 'ed-icon-tupian1';
           drag2.push({
+            id: this.getId(),
             isShow: true,
             zIndex: 1000,
-            y: textTop2,
             isActive: true,
             dragIndex: zIndex,
             img: {},
             imgList: [],
             location: {
               x: 0,
-              y: 0,
+              y: top2,
             },
             size: {
               w: 375,
@@ -144,23 +145,22 @@ export default {
         }
         case 3:
         {
-          const textTop3 = 0;
           let drag3 = this.$store.state.editor.dragLinks;
           num = drag3.length;
           layerName = `热区${!num ? '' : num + 1}`;
           icon = 'ed-icon-requm';
           drag3 = textActiveOff(drag3, { index: 0, isAll: true });
           drag3.push({
+            id: this.getId(),
             isShow: true,
             zIndex: 1000,
-            y: textTop3,
             isActive: true,
             dragIndex: zIndex,
             appLink: '',
             outLink: '',
             location: {
-              x: 0,
-              y: 0,
+              x: (375 - 100) / 2,
+              y: top1,
             },
             size: {
               w: 100,
@@ -185,17 +185,15 @@ export default {
         }
         case 4:
         {
-          const textTop4 = 0;
-          // const zIndex4 = this.$store.state.editor.dragImgLists.length;
           const drag4 = this.$store.state.editor.dragImgLists;
           num = drag4.length;
           layerName = `多图拼接${!num ? '' : num + 1}`;
           icon = 'ed-icon-duotu';
           drag4.push({
+            id: this.getId(),
             isUplaod: false,
             isShow: true,
             zIndex: 1000,
-            y: textTop4,
             isActive: true,
             dragIndex: zIndex,
             location: {
@@ -220,17 +218,15 @@ export default {
         }
         case 5:
         {
-          const textTop5 = 0;
-          // const zIndex5 = this.$store.state.editor.dragVideos.length;
           let drag5 = this.$store.state.editor.dragVideos;
           num = drag5.length;
           layerName = `视频${!num ? '' : num + 1}`;
           icon = 'ed-icon-shipin';
           drag5 = textActiveOff(drag5, { index: 0, isAll: true });
           drag5.push({
+            id: this.getId(),
             isShow: true,
             zIndex: 1000,
-            y: textTop5,
             isActive: true,
             dragIndex: zIndex,
             sourceType: '1', // 1.本地视频 2.在线视频
@@ -239,7 +235,7 @@ export default {
             loop: true,
             location: {
               x: 0,
-              y: 0,
+              y: top2,
             },
             size: {
               w: 375,
@@ -252,12 +248,20 @@ export default {
                 w: 375,
                 h: 300,
               },
+              location: {
+                x: 0,
+                y: top2,
+              },
             },
             lineVideo: {
               position: 'relative',
               size: {
                 w: 375,
                 h: 300,
+              },
+              location: {
+                x: 0,
+                y: top2,
               },
             },
             isUpload: false,
@@ -275,17 +279,15 @@ export default {
         }
         default:
         {
-          const textTop6 = 0;
-          // const zIndex6 = this.$store.state.editor.dragAudios.length;
           let drag6 = this.$store.state.editor.dragAudios;
           num = drag6.length;
           layerName = `音频${!num ? '' : num + 1}`;
           icon = 'ed-icon-tubiao-';
           drag6 = textActiveOff(drag6, { index: 0, isAll: true });
           drag6.push({
+            id: this.getId(),
             isShow: true,
             zIndex: 1000,
-            y: textTop6,
             isActive: true,
             dragIndex: zIndex + 1,
             sourceType: '1', // 1.本地音频 2.在线音频
@@ -294,7 +296,7 @@ export default {
             loop: true,
             location: {
               x: 0,
-              y: 0,
+              y: top2,
             },
             size: {
               w: 375,
@@ -307,6 +309,10 @@ export default {
               url: '',
               accept: '.mp3',
               position: 'relative',
+              location: {
+                x: 0,
+                y: top2,
+              },
             },
             linePlay: {
               title: '',
@@ -314,6 +320,10 @@ export default {
               duration: '00:00',
               url: '',
               position: 'relative',
+              location: {
+                x: 0,
+                y: top2,
+              },
             },
             position: 'relative',
             icon,
@@ -348,6 +358,13 @@ export default {
       if (this.$store.state.page.pageSet) {
         this.$store.commit('page_update', { pageSet: false });
       }
+    },
+    getId() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16;
+        const v = (c === 'x') ? r : ((r && 0x3) || 0x8);
+        return v.toString(16);
+      });
     },
   },
 };
