@@ -71,13 +71,13 @@
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedTop'">
               <el-input-number
                 v-model="locationY" @change="fixedTopChange"
-                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-mediaSource.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedBottom'">
               <el-input-number
                 v-model="locationBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-mediaSource.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -285,8 +285,8 @@ export default {
       let size = sizeObj;
       const curVideo = this.dragForm.sourceType === '1' ? 'video' : 'lineVideo';
       const videoObj = this.dragForm[curVideo];
-      const maxW = this.page.phoneWidth - this.dragForm.location.x;
-      const maxH = this.page.phoneHeight - this.dragForm.location.y;
+      const maxW = this.page.phoneWidth - videoObj.location.x;
+      const maxH = this.page.phoneHeight - videoObj.location.y;
 
       if (type === 1) {
         let newW = size.w > maxW ? maxW : size.w;
@@ -312,15 +312,18 @@ export default {
         };
       }
       videoObj.size = size;
+      videoObj.location = videoObj.location;
       const videoList = this.editor.dragVideos;
       const videos = Object.assign(
         {}, videoList[this.editor.videoActive],
         {
           curVideo: videoObj,
+          isUpload: false,
         },
       );
       videoList[this.editor.videoActive] = videos;
       this.$store.commit('editor_update', { dragVideos: videoList });
+      this.ratioSet(this, 'dragVideos', 'videoActive');
     },
     async onFileChange(file) {
       const up = await oss(file.raw);
@@ -470,10 +473,11 @@ export default {
     ratioSet(ele, dragList, active) {
       const lists = ele.editor[dragList];
       let drags = lists[ele.editor[active]];
-      setTimeout(() => {
+      const ratioTime = setTimeout(() => {
         drags = Object.assign({}, drags, { isUpload: true });
         lists[ele.editor[active]] = drags;
         ele.$store.commit('editor_update', { [dragList]: lists });
+        clearTimeout(ratioTime);
       }, 100);
     },
     positionChange(val) {

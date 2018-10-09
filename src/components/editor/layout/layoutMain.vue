@@ -89,8 +89,8 @@ export default {
     inputDragStop(form, ev, index) { // 拖动组件同步设置
       const dragItems = this.$store.state.editor[form];
       const dragItem = dragItems[index];
-      // dragItem.size.w = ev.width;
-      // dragItem.size.h = ev.height;
+      dragItem.size.w = ev.width;
+      dragItem.size.h = ev.height;
       dragItem.location.y = ev.top;
       dragItem.location.x = ev.left;
       dragItems[index] = dragItem;

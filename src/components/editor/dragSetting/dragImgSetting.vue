@@ -152,8 +152,12 @@ export default {
           h: newH,
         };
       }
-      this.$emit('input-sizeChange', 'dragImages', size, 'imgActive');
-      // this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
+      const lists = this.editor.dragImages;
+      let drags = lists[this.editor.imgActive];
+      drags = Object.assign({}, drags, { size, isUpload: false });
+      lists[this.editor.imgActive] = drags;
+      this.$store.commit('editor_update', { dragImages: lists });
+      this.ratioSet(this, 'dragImages', 'imgActive');
     },
     onFileSuccess(file, isModify) {
       const dragImg = new Image();
@@ -264,6 +268,16 @@ export default {
         });
       }
       return isLt5M;
+    },
+    ratioSet(ele, dragList, active) {
+      const lists = ele.editor[dragList];
+      let drags = lists[ele.editor[active]];
+      const ratioTime = setTimeout(() => {
+        drags = Object.assign({}, drags, { isUpload: true });
+        lists[ele.editor[active]] = drags;
+        ele.$store.commit('editor_update', { [dragList]: lists });
+        clearTimeout(ratioTime);
+      }, 100);
     },
   },
   mounted() {
