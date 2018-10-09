@@ -55,12 +55,15 @@
           <el-input type="text" v-model="dragForm.yybLink"></el-input>
         </el-form-item>
         <div>
-            <el-form-item label="固定位置：" size="mini" class="posotion-item">
-            <el-radio v-model="dragForm.position" label="relative">不固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedTop" @change="positionChange"
-              >相对顶部固定</el-radio>
-            <el-radio v-model="dragForm.position" label="fixedBottom" @change="positionChange"
-              >相对底部固定</el-radio>
+           <el-form-item label="固定位置：" size="mini" class="posotion-item">
+              <el-radio v-model="dragForm.position" label="relative"
+                @change="positionChange('relative')">不固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedTop"
+                @change="positionChange('fixedTop')"
+                >相对顶部固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedBottom"
+                @change="positionChange('fixedBottom')"
+                >相对底部固定</el-radio>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'"
               class="number-item">
@@ -122,7 +125,20 @@ export default {
     sourceChange(type) {
       this.$emit('linkSourceChange', type, 'dragLinks', 'linkActive');
     },
-    positionChange() {
+    positionChange(val) {
+      if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
+        this.$message({
+          message: '组件高度大于一屏，无法设置固定位置～',
+          type: 'error',
+          duration: 2000,
+        });
+        const { dragLinks, imgActive } = this.editor;
+        dragLinks[imgActive].position = 'relative';
+        this.$store.commit('editor_update', {
+          dragLinks,
+        });
+        return false;
+      }
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
