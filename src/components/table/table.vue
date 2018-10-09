@@ -8,6 +8,10 @@
       <el-table-column prop="createdAt" label="创建时间" sortable min-width="180">
       </el-table-column>
       <el-table-column prop="visit" label="浏览量" sortable min-width="180">
+        <template slot-scope="scope">
+          <el-button size="mini" type="text"
+            @click="goTotalWeb">访问CNZZ</el-button>
+        </template>
       </el-table-column>
       <el-table-column label="操作" min-width="280">
         <template slot-scope="scope">
@@ -172,6 +176,9 @@ export default {
     popverShow(index, { id }) {
       this.tip.index = index;
       this.tip.url = getTipUrl(id);
+    },
+    goTotalWeb() {
+      window.open('https://web.umeng.com');
     },
   },
 };
