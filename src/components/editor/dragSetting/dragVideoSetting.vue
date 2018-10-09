@@ -484,6 +484,19 @@ export default {
       const curPlay = this.dragForm.sourceType === '1' ? 'video' : 'lineVideo';
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       const videos = this.editor.dragVideos;
+      if (val !== 'relative' && curPlay.size.h > this.page.screenHeight) {
+        this.$message({
+          message: '组件高度大于一屏，无法设置固定位置～',
+          type: 'error',
+          duration: 2000,
+        });
+        const { dragVideos, videoActive } = this.editor;
+        dragVideos[videoActive].position = 'relative';
+        this.$store.commit('editor_update', {
+          dragVideos,
+        });
+        return false;
+      }
       let drags = videos[this.editor.videoActive];
       if (drags[curPlay].location.y > maxBottom && val !== 'relative') {
         drags[curPlay].location.y = maxBottom;
