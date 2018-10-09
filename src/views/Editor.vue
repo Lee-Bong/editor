@@ -199,7 +199,7 @@ export default {
         shareTitle: page.shareTitle,
         shareDec: page.shareDec,
         shareImg: page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png',
-        'background-color': page.backgroundColor,
+        backgroundColor: page.backgroundColor,
       };
       const dragArr = [];
       // todo 多图组件未添加
