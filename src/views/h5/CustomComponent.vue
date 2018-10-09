@@ -156,6 +156,9 @@ export default {
   .link {
     cursor: pointer;
   }
+  .image {
+    display: block;
+  }
   .image[lazy=loading] {
     background-color: #ddd
   }
