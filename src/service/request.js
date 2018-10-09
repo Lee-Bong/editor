@@ -3,7 +3,7 @@ import Message from 'element-ui/lib/message';
 
 const request = axios.create({
   baseURL: 'https://test-bfe.meiyou.com',
-  timeout: 10000,
+  timeout: 60000,
   withCredentials: true, // 是否允许带cookie
 });
 
