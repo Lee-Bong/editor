@@ -37,9 +37,12 @@ export default {
     },
     async fileChange(val) {
       try {
-        this.loadingPre();
+        this.isLoading = true;
         const file = val.currentTarget.files[0];
-        const up = await oss(file);
+        const ele = this;
+        const up = await oss(file, (progress) => {
+          ele.pre = parseInt((progress.loaded / progress.total) * 100, 10);
+        });
         up.beforeName = file.name;
         if (up && up.url) {
           this.$emit('upload-done', up);
@@ -69,19 +72,6 @@ export default {
       });
       this.$refs.fileUpload.value = '';
       this.uplaodDone(true);
-    },
-    loadingPre() {
-      this.isLoading = true;
-      let i = 0;
-      const step = 4;
-      const loadingTime = setInterval(() => {
-        if (this.pre >= 89) {
-          clearInterval(loadingTime);
-          return false;
-        }
-        this.pre = i;
-        i += step;
-      }, 30);
     },
     uplaodDone(isError) {
       if (!isError) {
