@@ -20,7 +20,7 @@
         <img
             v-if="component.type === 2"
             :style="component.style"
-            v-lazy="transformImgUrl(component.url)"
+            v-lazy="transformImgUrl(component.url, component.size.h, component.size.w)"
             class="image"
         />
         <div
@@ -37,7 +37,7 @@
             <img
                 v-for="(image, index) in component.imgList"
                 :key="index"
-                v-lazy="transformImgUrl(image.url)"
+                v-lazy="transformImgUrl(image.url, image.size.h * scale, image.size.w * scale)"
                 :style="{
                     height: `${image.size.h * scale}px`,
                     width: `${image.size.w * scale}px`,
@@ -53,6 +53,9 @@
             :poster="component.poster"
             :loop="component.loop"
             controls="controls"
+            webkit-playsinline
+            playsinline
+            x5-playsinline
         />
         <audio-play
             v-if="component.type === 6"
@@ -109,8 +112,10 @@ export default {
   },
   props: ['component', 'scale'],
   methods: {
-    transformImgUrl(url) {
-      return url.replace(/^https?:/, '');
+    transformImgUrl(url, h, w) {
+      let optUrl = url.replace(/^https?:/, '');
+      optUrl += `?x-oss-process=image/resize,m_fixed,h_${Math.ceil(h)},w_${Math.ceil(w)}`;
+      return optUrl;
     },
     handleLinkClick() {
       // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
