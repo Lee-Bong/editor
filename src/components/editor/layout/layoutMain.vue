@@ -17,27 +17,27 @@
       height: page.phoneHeight + 'px',
       backgroundColor: page.backgroundColor}">
       <drag-text v-for="(drag, index) in dragTexts" v-if="drag.isShow"
-       :key="drag.zIndex" :list-index="index" :dragForm="drag" @inputChange="inputChange"
+       :key="drag.id" :list-index="index" :dragForm="drag" @inputChange="inputChange"
        @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-      <drag-img v-for="(drag, index) in dragImages" :key="drag.zIndex"
+      <drag-img v-for="(drag, index) in dragImages" :key="drag.id"
        :list-index="index" :is-active="drag.isActive" v-if="drag.isShow" :dragForm="drag"
        @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
       <drag-link v-for="(drag, index) in dragLinks" v-if="drag.isShow"
-       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
+       :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
       <drag-img-lists v-for="(drag, index) in dragImgLists" v-if="drag.isShow"
-       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragDel="dragDel"
+       :key="drag.id" :list-index="index" :dragForm="drag" @dragDel="dragDel"
        @dragTextClick="dragTextClick" />
 
       <drag-video v-for="(drag, index) in dragVideos" v-if="drag.isShow"
-       :key="drag.zIndex" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
+       :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
       <drag-audio v-for="(drag, index) in dragAudios" v-if="drag.isShow"
-       :key="drag.zIndex" :list-index="parseInt(index, 10)" :dragForm="drag"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>

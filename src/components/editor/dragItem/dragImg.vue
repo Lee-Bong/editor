@@ -7,10 +7,9 @@
       :isDraggable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
       :isResizable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
       :w="dragForm.size.w"
-      :h="dragForm.size.h"
+      :h="300"
       :sticks="['tl','tr','br','bl']"
       :parentLimitation="true"
-      :aspectRatio="dragForm.isUpload ? true: false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :preventActiveBehavior="true"
@@ -119,7 +118,7 @@ export default {
 
 .drag-img {
   width: 100%;
-  height: 100%;
+  height: 300px;
   max-height: 100%;
   background-color: #ddd;
   display: flex;
