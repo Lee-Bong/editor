@@ -9,6 +9,7 @@
        class="check-upload" :accept="source.accept"/>
     <el-progress :percentage="pre" v-show="pre"
      class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
+    <span class="loadding-tip" v-show="isLoading">文件上传中，请耐心等待，期间编辑页面将打断上传</span>
     <div v-show="source && source.title">
       <div class="audio-name">{{source.name}}</div>
       <el-button class="file-remove--plain" plain @click="fileRemove">删除</el-button>
@@ -156,11 +157,18 @@ export default {
   width: 280px;
   margin-top: 0;
   position: absolute;
-  top: -12px;
+  top: 0;
 }
 
 .img-upload-item .precent-in {
   transition: opacity 0s;
+}
+.loadding-tip {
+  color: red;
+  width: 290px;
+  display: block;
+  font-size: 12px;
+  padding-top: 12px;
 }
 
 </style>

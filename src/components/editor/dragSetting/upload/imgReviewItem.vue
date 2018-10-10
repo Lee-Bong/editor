@@ -22,6 +22,7 @@
       <el-progress :percentage="pre" class="modify-precent"
       v-show="isLoading || pre"
         ></el-progress>
+        <span class="loadding-tip img-tip" v-show="isLoading">文件上传中，请耐心等待，期间编辑页面将打断上传</span>
     </div>
   </div>
 </template>
@@ -166,5 +167,8 @@ export default {
   color: #999999ba;
   cursor: pointer;
   font-size: 18px;
+}
+.loadding-tip.img-tip {
+  width: 220px;
 }
 </style>

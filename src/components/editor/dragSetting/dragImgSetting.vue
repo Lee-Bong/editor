@@ -253,9 +253,9 @@ export default {
     fileToUpload(item) {
       this.onFileChange(item.file);
     },
-    fileModify(file) { // 更换图片
+    fileModify(params) { // 更换图片
       this.isFirst = true;
-      this.onFileChange(file, [], true);
+      this.onFileChange(params.file, [], true);
     },
     positionChange(val) {
       if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {

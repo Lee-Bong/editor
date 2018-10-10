@@ -7,7 +7,7 @@
       </el-table-column>
       <el-table-column prop="createdAt" label="创建时间" sortable min-width="180">
       </el-table-column>
-      <el-table-column prop="visit" label="浏览量" sortable min-width="180">
+      <el-table-column prop="visit" label="浏览量" min-width="180">
         <template slot-scope="scope">
           <el-button size="mini" type="text"
             @click="goTotalWeb">访问CNZZ</el-button>

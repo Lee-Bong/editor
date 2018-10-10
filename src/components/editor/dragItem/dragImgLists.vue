@@ -9,11 +9,9 @@
       <div class="drag-img" v-if="!dragForm.imgList || !dragForm.imgList.length">
         <i class="iconfont ed-icon-duotu1" style="font-size: 60px"></i>
       </div>
-      <div>
         <img v-for="(item, index) in dragForm.imgList" :key="item.url+index"
           v-if="!!item.size && item.size.w" :src="item.url" :width="item.size.w"
           class="review-list-item"/>
-      </div>
     </div>
     <i class="el-icon-circle-close-outline drag-del" v-if="dragForm.isActive"
       @click="dragDel(listIndex)" :style="{top: dragForm.location.y-10+ 'px'}">
@@ -40,7 +38,6 @@ export default {
       input: '',
     };
   },
-
   methods: {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 4);
@@ -49,9 +46,9 @@ export default {
     dragDel(index) {
       this.$emit('dragDel', 4, index, this.dragForm.dragIndex);
     },
-  },
-  updated() {
-
+    forceUpdate() {
+      this.$forceUpdate();
+    },
   },
 };
 </script>

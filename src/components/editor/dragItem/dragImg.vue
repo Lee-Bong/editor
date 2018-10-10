@@ -1,6 +1,6 @@
 <template>
     <vue-drag-resize
-      :isActive="isActive"
+      :isActive="dragForm.isActive"
       :y="dragForm.location.y"
       :x="dragForm.location.x"
       :z="dragForm.zIndex"
