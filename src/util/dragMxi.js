@@ -12,8 +12,8 @@ export function dragCom() {
         } else {
           newEditor = this.deActiveArr(index, type, true);
         }
-
         newEditor.layerActive = layerActive;
+        newEditor = Object.assign({}, this.editor, newEditor);
         this.$store.commit('editor_update', newEditor);
         if (this.$store.state.page.pageSet && index !== -2) {
           this.$store.commit('page_update', { pageSet: false });

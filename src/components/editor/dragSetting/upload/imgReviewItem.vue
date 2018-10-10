@@ -20,7 +20,8 @@
       <el-input :disabled="isLoading" v-model="imgObj.title" :title="imgObj.title"
         class="alt-input" clearable></el-input>
       <el-progress :percentage="pre" class="modify-precent"
-        :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
+      v-show="isLoading || pre"
+        ></el-progress>
     </div>
   </div>
 </template>
@@ -41,34 +42,41 @@ export default {
   },
   methods: {
     fileToUpload(params) {
-      this.loadingPre();
-      this.$emit('file-change', params.file, true, this.index || 0);
+      this.isLoading = true;
+      this.$emit('file-change', params, true, this.index || 0);
     },
     uplaodDone(isError) {
+      this.isLoading = false;
+      this.pre = 100;
+      this.hackReset = false;
+      this.$nextTick(() => {
+        this.hackReset = true;
+      });
+      this.$forceUpdate();
       if (!isError) {
-        this.pre = 100;
-        this.isLoading = false;
-        const clearTime = setTimeout(() => {
-          this.pre = 0;
-          clearTimeout(clearTime);
-        }, 3000);
+        this.hidePre();
       } else {
-        this.isLoading = false;
-        this.pre = 0;
+        this.hidePre();
       }
     },
-    loadingPre() {
-      this.isLoading = true;
-      let i = 0;
+    hidePre() {
+      const ele = this;
+      const clearTime = setTimeout(() => {
+        ele.pre = 0;
+        ele.isLoading = false;
+        clearTimeout(clearTime);
+      }, 3000);
+    },
+    loadingPre(precent, key) {
       const step = 6;
-      const loadingTime = setInterval(() => {
-        if (this.pre >= 91) {
-          clearInterval(loadingTime);
+      window[`clear${key}`] = setInterval(() => {
+        if (this.pre >= precent) {
+          this.pre = precent;
+          clearInterval(window[`clear${key}`]);
           return false;
         }
-        this.pre = i;
-        i += step;
-      }, 30);
+        this.pre += step;
+      }, 10);
     },
     onFileRemove() {
       this.$emit('file-remove', this.index || 0);
@@ -77,9 +85,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.isLoading = this.imgObj && this.imgObj.isLoading ? this.imgObj.isLoading : false;
-      if (this.isLoading) {
-        this.loadingPre();
-      }
     });
   },
 };
@@ -144,7 +149,7 @@ export default {
 }
 .modify-precent {
   margin-top: 20px;
-  opacity: 0;
+  opacity: 1;
 }
 .precent-out {
   opacity: 1;
