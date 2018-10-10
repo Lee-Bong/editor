@@ -39,7 +39,6 @@ export default {
       try {
         const file = val.currentTarget.files[0];
         const up = await oss(file);
-        // (up);
         up.beforeName = file.name;
         if (up && up.url) {
           this.$emit('upload-done', up);
