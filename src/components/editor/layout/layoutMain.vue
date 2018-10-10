@@ -29,8 +29,8 @@
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
       <drag-img-lists v-for="(drag, index) in dragImgLists" v-if="drag.isShow"
-       :key="drag.id" :list-index="index" :dragForm="drag" @dragDel="dragDel"
-       @dragTextClick="dragTextClick" />
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag" @dragDel="dragDel"
+       @dragTextClick="dragTextClick" ref="imgListRef"/>
 
       <drag-video v-for="(drag, index) in dragVideos" v-if="drag.isShow"
        :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
@@ -129,7 +129,13 @@ export default {
     },
   },
   updated() {
-
+    if (this.$refs.imgListRef && this.$store.state.editor.dragImgLists &&
+      this.$store.state.editor.dragImgLists.length) {
+      this.$refs.imgListRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
   },
 };
 </script>
