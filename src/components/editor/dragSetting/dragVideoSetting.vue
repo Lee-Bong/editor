@@ -28,9 +28,9 @@
             <el-input type="text" ref="lineVideo"
                v-model="lineSource" @blur="lineSourceBlur"></el-input>
           </el-form-item>
-          <el-form-item label="视频封面：" size="mini" class="is-require video-el">
+          <el-form-item label="视频封面：" size="mini" class="video-el">
             <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"
-              :dec="String('图片尺寸16:9')"/>
+              :dec="String('图片尺寸16:9, 不传即为透明')"/>
           </el-form-item>
           <el-form-item label="位置：" size="mini" class="number-item">
             <el-input-number v-model="locationX" @change="locationXchange"

@@ -31,7 +31,7 @@
           </el-upload>
           <draggable class="upload-reviews" @update="imgListUpdated">
             <transition-group name="list-complete" >
-              <div v-for="(rev, index) in imgList" :key="rev.url + index" :index="index">
+              <div v-for="(rev, index) in imgList" :key="rev.url + index+new Date()" :index="index">
                 <img-review-item :imgObj='rev' @file-change="fileModify" :isDel="true"
                 ref="imgReview" :index="index" @file-remove="updateImgList(true, index)" />
               </div>
@@ -104,7 +104,7 @@ export default {
           duration: 2000,
         });
         if (key !== undefined) {
-          ele.$refs.imgReview[key].uplaodDone();
+          ele.$refs.imgReview[key].uplaodDone(false, key);
         }
         const newH = (dragImg.height * ele.page.phoneWidth) / dragImg.width;
         if (!ele.fileSuccess) ele.fileSuccess = true;
@@ -127,13 +127,13 @@ export default {
         type: 'error',
         duration: 2000,
       });
+      this.$refs.imgReview[key].uplaodDone(true);
       if (!isModify) {
-        this.$refs.imgReview[key].uplaodDone(true);
         this.imgList.splice(key, 1);
       }
     },
     onFileChange(params, isModify, key) {
-      const file = isModify ? params : params.file;
+      const { file } = params;
       const addItem = {
         title: file.name,
         url: '',
@@ -154,8 +154,13 @@ export default {
     },
     async fileUploading(item, k, isModify) {
       try {
-        const upItem = isModify ? item.raw : item;
-        const up = await oss(upItem);
+        const ele = this;
+        const up = await oss(item, (progress) => {
+          ele.imgList[k].pre = parseInt((progress.loaded / progress.total) * 100, 10);
+          if (ele.imgList[k].pre === 100) {
+            ele.$refs.imgReview[k].loadingPre(100);
+          }
+        });
         up.oldName = item.name;
         if (up && up.url) {
           this.imgList[k].url = up.url;
