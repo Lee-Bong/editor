@@ -81,15 +81,19 @@ export default {
     getList() { // 获取页面数据
       const q = { ...this.pager, ...this.query };
       this.loading = true;
-
       API.getPageList(q)
         .then((res) => {
           if (res.status === 'ok') {
-            let list = res.data.pages;
+            const list = res.data.pages;
+            let newList = [];
             if (list && list.length) {
-              list = list.map(formatTableData).filter(e => !!e);
+              list.map((item) => {
+                newList.push(formatTableData(item));
+                return true;
+              });
+              newList = newList.filter(e => !!e);
             }
-            this.tableData = list;
+            this.tableData = newList;
             this.pageTotal = res.data.count;
           }
           this.loading = false;
@@ -135,7 +139,7 @@ export default {
     handleEdit(index, { id }) {
       this.$router.push({
         path: '/editor',
-        query: { page_id: id },
+        query: { page_id: id, public: 1 },
       });
     },
     handlePublish(index, { id, online }) {

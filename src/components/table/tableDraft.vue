@@ -56,11 +56,17 @@ export default {
       API.getPageList(q)
         .then((res) => {
           if (res.status === 'ok') {
-            let list = res.data.pages;
+            const list = res.data.pages;
+            let newList = [];
             if (list && list.length) {
-              list = list.map(formatTableData).filter(e => !!e);
+              list.map((item) => {
+                newList.push(formatTableData(item, true));
+                return true;
+              });
+              console.log('this.tableData', newList);
+              newList = newList.filter(e => !!e);
             }
-            this.tableData = list;
+            this.tableData = newList;
             this.pageTotal = res.data.count;
           }
           this.loading = false;
