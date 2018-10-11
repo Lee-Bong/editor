@@ -348,7 +348,7 @@ export default {
       const ele = this;
       this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
         if (ele.$refs.videoLoad.currentSrc !== file.url) return false;
-        ele.$refs.mediaUpload.uplaodDone();
+        if (ele.$refs.mediaUpload) ele.$refs.mediaUpload.uplaodDone();
         if (ele.dragForm.sourceType === '1') {
           ele.$message({
             message: '视频上传成功～',
