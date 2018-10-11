@@ -1,5 +1,5 @@
 <template>
-  <div class="audio-upload-item">
+  <div class="audio-upload-item" :class="[isBorder ?  'isBorder' : '']">
     <span class="audio-title">{{play.title}}</span>
     <div class="paly-control">
       <div class="icons">
@@ -28,6 +28,7 @@ export default {
   name: 'HelloWorld',
   props: {
     play: Object,
+    isBorder: Boolean,
   },
   data() {
     return {
@@ -91,6 +92,8 @@ export default {
 .audio-upload-item {
   position: relative;
   min-height: 80px;
+}
+.isBorder {
   border: 1px solid #ddd;
 }
 .audio-title {

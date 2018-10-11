@@ -35,12 +35,19 @@
           <el-input type="text" v-model="lineTitle"
            :disabled="!dragForm.linePlay.url" @blur="lineTitleBlur"></el-input>
         </el-form-item>
+        <el-form-item label="选择样式：" size="mini">
+          <el-radio v-model="dragForm.isBorder" label="1" @change="borderChange('1')"
+            >带边框</el-radio>
+          <el-radio v-model="dragForm.isBorder" label="2" @change="borderChange('2')"
+           >不带边框</el-radio>
+        </el-form-item>
         <el-form-item label="循环：" size="mini">
           <el-checkbox v-model="dragForm.loop" @change="loopChange">开启循环播放</el-checkbox>
         </el-form-item>
         <el-form-item label="位置：" size="mini" class="number-item">
           <el-input-number v-model="locationX" @change="locationXchange"
-            :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
+            :min="location.xmin"
+            :max="mediaSource.size ? (page.phoneWidth-mediaSource.size.w) : 375"
             :disabled="!isAction" controls-position="right"
             class="num-input"></el-input-number>
           <el-input-number v-model="locationY" @change="locationYchange"
@@ -49,6 +56,19 @@
             class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
+        <el-form-item label="尺寸：" size="mini" class="number-item">
+            <el-input-number v-model="playW" @change="sizeWChange"
+              :min="size.wmin"
+              :max="mediaSource.location ? (page.phoneWidth-mediaSource.location.x) : 375"
+              :disabled="!isAction" controls-position="right"
+              class="num-input"></el-input-number>
+            <el-input-number v-model="playH" @change="sizeHChange"
+              :min="size.hmin"
+              :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 667"
+              :disabled="!isAction" controls-position="right"
+              class="num-input"></el-input-number>
+          </el-form-item>
+        <div class="dec-label"> <label>宽</label> <label> 高</label></div>
         <div v-if="isAction">
             <el-form-item label="固定位置：" size="mini" class="posotion-item">
             <el-radio v-model="playPositon" label="relative"
@@ -167,6 +187,26 @@ export default {
       get() {
         const position = this.dragForm.sourceType === '1' ? this.dragForm.play.position : this.dragForm.linePlay.position;
         return position;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    playW: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.size ? curPlay.size.w : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    playH: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.size ? curPlay.size.h : 0;
       },
       set() {
       },
@@ -347,6 +387,19 @@ export default {
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       const audios = this.editor.dragAudios;
       let drags = audios[this.editor.audioActive];
+      if (val !== 'relative' && drags[curPlay].size.h > this.page.screenHeight) {
+        this.$message({
+          message: '组件高度大于一屏，无法设置固定位置～',
+          type: 'error',
+          duration: 2000,
+        });
+        const { dragAudios, audioActive } = this.editor;
+        dragAudios[audioActive].position = 'relative';
+        this.$store.commit('editor_update', {
+          dragAudios,
+        });
+        return false;
+      }
       if (drags[curPlay].location.y > maxBottom && val !== 'relative') {
         drags[curPlay].location.y = maxBottom;
       }
@@ -427,7 +480,43 @@ export default {
       audios[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: audios });
     },
+    sizeWChange(val) {
+      this.sizeChange({
+        w: val,
+        h: this.dragForm.size.h,
+      });
+    },
+    sizeHChange(val) {
+      this.sizeChange({
+        w: this.dragForm.size.w,
+        h: val,
+      });
+    },
+    sizeChange(size) { // 大小值发生改变
+      const curVideo = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
+      const videoObj = this.dragForm[curVideo];
+      videoObj.size = size;
+      videoObj.location = videoObj.location;
+      const videoList = this.editor.dragAudios;
+      const videos = Object.assign(
+        {}, videoList[this.editor.audioActive],
+        {
+          curVideo: videoObj,
+          isUpload: false,
+        },
+      );
+      videoList[this.editor.audioActive] = videos;
+      this.$store.commit('editor_update', { dragAudios: videoList });
+    },
+    borderChange(val) {
+      const videoList = this.editor.dragAudios;
+      const videos = videoList[this.editor.audioActive];
+      videos.isBorder = val;
+      videoList[this.editor.audioActive] = videos;
+      this.$store.commit('editor_update', { dragAudios: videoList });
+    },
   },
+
   updated() {
   },
   mounted() {

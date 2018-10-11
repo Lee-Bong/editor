@@ -1,15 +1,15 @@
 <template>
     <vue-drag-resize
-      :aspectRatio="true"
       :isActive="dragForm.isActive"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
-      :sticks="['tl','tr','br','bl']"
+      :w="playW"
+      :h="playH"
+      :sticks="['tm','bm','ml','mr']"
       :x="locationX"
       :y="locationY"
       :z="dragForm.zIndex"
       :isDraggable="isAction"
-      :isResizable="false"
+      :isResizable="isAction"
+      :aspectRatio="false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
@@ -28,7 +28,8 @@
       @click="dragDel(listIndex)">
       </i>
       <div>
-        <audio-play :play="this.dragForm.sourceType === '1' ? dragForm.play : dragForm.linePlay"/>
+        <audio-play :isBorder="(this.dragForm.isBorder === '1')"
+          :play="this.dragForm.sourceType === '1' ? dragForm.play : dragForm.linePlay"/>
       </div>
     </vue-drag-resize>
 
@@ -94,6 +95,26 @@ export default {
       immediate: true,
       deep: true,
     },
+    playW: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.size ? curPlay.size.w : 375;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    playH: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
+        return curPlay.size ? curPlay.size.h : 82;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
   },
 
   methods: {
@@ -133,7 +154,31 @@ export default {
       }
     },
     resizestop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
+      const isAction = this.dragForm.sourceType === '1';
+      const curPlay = isAction ? this.dragForm.play : this.dragForm.linePlay;
+      curPlay.size = {
+        w: ev.width,
+        h: ev.height,
+      };
+      curPlay.location = {
+        x: ev.left,
+        y: ev.top,
+      };
+      let playObj = {};
+      if (isAction) {
+        playObj = { play: curPlay };
+      } else {
+        playObj = { linePlay: curPlay };
+      }
+      this.updateAudio(playObj);
+    },
+    updateAudio(playObj) {
+      const { dragAudios, audioActive } = this.$store.state.editor;
+      let drags = dragAudios[audioActive];
+      drags = Object.assign({}, drags, playObj);
+      dragAudios[audioActive] = drags;
+      const lists = Object.assign([], dragAudios);
+      this.$store.commit('editor_update', { dragAudios: lists });
     },
     locationChange(location) { // 位置值发生改变
       const isAction = this.dragForm.sourceType === '1';
