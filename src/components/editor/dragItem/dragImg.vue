@@ -14,10 +14,10 @@
       :listIndex="listIndex"
       :preventActiveBehavior="true"
       :parentH="parentH"
-      :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
       :minh="minh"
       :minw="minw"
-
+      :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
+      :aspectRatio="dragForm.isUpload ? true: false"
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"
       @resizestop="resizestop"
@@ -31,7 +31,7 @@
         <i class="iconfont ed-icon-image"></i>
       </div>
       <div v-if="JSON.stringify(dragForm.img) !== '{}'" class="img-preview"
-      :style="{background: 'url('+ dragForm.img.url +') center center / cover no-repeat'}"></div>
+      :style="{background: 'url('+ dragForm.img.url +') center center / contain no-repeat'}"></div>
       <!-- <img v-if="JSON.stringify(dragForm.img) !== '{}', width: "
         :src="dragForm.img.url"
         :width="dragForm.size.w"
@@ -106,6 +106,9 @@ export default {
     // 删除组件
     dragDel(index) {
       this.$emit('dragDel', 2, index, this.dragForm.dragIndex);
+    },
+    forceUpdate() {
+      this.$forceUpdate();
     },
   },
 };

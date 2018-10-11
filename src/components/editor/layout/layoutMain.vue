@@ -22,7 +22,7 @@
 
       <drag-img v-for="(drag, index) in dragImages" :key="drag.id"
        :list-index="index" :is-active="drag.isActive" v-if="drag.isShow" :dragForm="drag"
-       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
+       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" ref="imgRef"/>
 
       <drag-link v-for="(drag, index) in dragLinks" v-if="drag.isShow"
        :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
@@ -132,6 +132,13 @@ export default {
     if (this.$refs.imgListRef && this.$store.state.editor.dragImgLists &&
       this.$store.state.editor.dragImgLists.length) {
       this.$refs.imgListRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.imgRef && this.$store.state.editor.dragImages &&
+      this.$store.state.editor.dragImages.length) {
+      this.$refs.imgRef.map((item) => {
         item.forceUpdate();
         return true;
       });

@@ -280,16 +280,16 @@ export default {
         loop: this.dragForm.loop,
         w: this.page.phoneWidth,
         h: 82,
-        location: {
-          x: 0,
-          y: 0,
-        },
+        // location: {
+        //   x: 0,
+        //   y: 0,
+        // },
         accept: '.mp3',
         position: 'relative',
       };
-      let playObj = { play };
+      let playObj = { play: Object.assign({}, this.dragForm.play, play) };
       if (this.dragForm.sourceType === '2') {
-        playObj = { linePlay: play };
+        playObj = { linePlay: Object.assign({}, this.dragForm.linePlay, play) };
       }
       this.audioChange(playObj, this, 'dragAudios', 'audioActive', true);
     },
@@ -313,10 +313,10 @@ export default {
           loop: ele.dragForm.loop,
           w: ele.page.phoneWidth,
           h: 82,
-          location: {
-            x: 0,
-            y: 0,
-          },
+          // location: {
+          //   x: 0,
+          //   y: 0,
+          // },
         });
         let playObj = { play };
         if (ele.dragForm.sourceType === '2') {
@@ -355,10 +355,10 @@ export default {
       let drags = lists[ele.editor[active]];
       drags = Object.assign({}, drags, play);
       if (!isRemove) {
-        drags.location = {
-          x: 0,
-          y: 0,
-        };
+        // drags.location = {
+        //   x: 0,
+        //   y: 0,
+        // };
         drags.isUpload = true;
       } else {
         drags.isUpload = false;
@@ -428,10 +428,10 @@ export default {
           w: this.page.phoneWidth,
           h: this.editor.audioHeight,
         },
-        location: {
-          x: 0,
-          y: 0,
-        },
+        // location: {
+        //   x: 0,
+        //   y: 0,
+        // },
       };
       if (newMedia) {
         newObj = Object.assign({}, newObj, newMedia);

@@ -3,7 +3,16 @@
     <div @click="onFileRemove" class="review-del" v-if="isDel">
       <i class="el-icon-circle-close"></i>
     </div>
+    <input type="file" ref="fileUpload" @change="fileToUpload"
+       class="check-upload" accept=".png,.gif,.jpeg, .jpg"/>
     <div class="image-review">
+      <div class="srouce-image"
+      :style="{background: !imgObj.url ? '#ddd'
+      : 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
+      <i v-if="!(imgObj && imgObj.url)" class="el-icon-loading"></i>
+      <div class="modify-image" @click="uploadTrigger">更换图片</div>
+    </div>
+    <!-- <div class="image-review">
       <div class="srouce-image" :style="{background: !(imgObj && imgObj.url) ? '#ddd'
      : 'url('+ imgObj.url +') center center / cover no-repeat'}"></div>
       <i v-if="!(imgObj && imgObj.url)" class="el-icon-loading"></i>
@@ -15,7 +24,7 @@
           <div class="el-upload__text">更换图片</div>
         </el-upload>
       </div>
-    </div>
+    </div> -->
     <div class="image-alt">
       <el-input :disabled="isLoading" v-model="imgObj.title" :title="imgObj.title"
         class="alt-input" clearable></el-input>
@@ -42,9 +51,12 @@ export default {
     };
   },
   methods: {
+    uploadTrigger() {
+      this.$refs.fileUpload.click();
+    },
     fileToUpload(params) {
       this.isLoading = true;
-      this.$emit('file-change', params, true, this.index || 0);
+      this.$emit('file-change', params.currentTarget.files[0], true, this.index || 0);
     },
     uplaodDone(isError) {
       this.isLoading = false;

@@ -157,6 +157,7 @@ export default {
       }
       const lists = this.editor.dragImages;
       let drags = lists[this.editor.imgActive];
+      debugger;
       drags = Object.assign({}, drags, { size, isUpload: false });
       lists[this.editor.imgActive] = drags;
       this.$store.commit('editor_update', { dragImages: lists });
@@ -183,12 +184,14 @@ export default {
           newW = this.page.phoneWidth;
           newH = (dragImg.height * this.page.phoneWidth) / dragImg.width;
         }
+        debugger;
         drags.img = {
           title: file.oldName,
           url: file.url,
           w: newW,
           h: newH,
         };
+        drags.location.x = 0;
         // if (this.isFirst) {
         //   drags.location = {
         //     x: 0,
@@ -255,7 +258,7 @@ export default {
     },
     fileModify(params) { // 更换图片
       this.isFirst = true;
-      this.onFileChange(params.file, [], true);
+      this.onFileChange(params, [], true);
     },
     positionChange(val) {
       if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
