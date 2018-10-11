@@ -371,10 +371,10 @@ export default {
           sourceH: this.videoHeight,
           w: ele.page.phoneWidth,
           h: newH,
-          location: {
-            x: 0,
-            y: 0,
-          },
+          // location: {
+          //   x: 0,
+          //   y: 0,
+          // },
           size: {
             w: ele.page.phoneWidth,
             h: newH,
@@ -414,12 +414,14 @@ export default {
           h: ele.editor.mediaHeight,
         };
       }
-      if (isChange || isRemove) {
-        video.location = {
-          x: 0,
-          y: 0,
-        };
+      if (isChange) {
+        alert('isChange');
+        // video.location = {
+        //   x: 0,
+        //   y: 0,
+        // };
       }
+      if (isRemove) video.location.x = 0;
       if (!isChange) {
         videoObj = { video };
         if (this.dragForm.sourceType === '2') {

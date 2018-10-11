@@ -133,7 +133,12 @@ export default {
       }
     },
     onFileChange(params, isModify, key) {
-      const { file } = params;
+      let file;
+      if (isModify) {
+        file = params;
+      } else {
+        file = params.file;
+      }
       const addItem = {
         title: file.name,
         url: '',
