@@ -532,13 +532,19 @@ export default {
 
 <style>
 .audio-el.el-form-item--mini .el-form-item__content {
-    display: inline-block;
-    width: 255px;
+  display: inline-block;
+  width: 255px;
 }
 .audio-el .el-input__inner {
   padding: 0 8px;
 }
 .audio-setting .el-form-item__content {
   margin-left: 0 !important;
+}
+.setting-content .el-checkbox__label {
+  padding-left: 5px;
+}
+.setting-content .el-radio__label {
+  padding-left: 5px;
 }
 </style>
