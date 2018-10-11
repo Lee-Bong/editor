@@ -12,6 +12,8 @@
       :parentLimitation="true"
       :preventActiveBehavior="true"
       :parentH="parentH"
+      :minh="20"
+      :minw="50"
 
       @clicked="dragTextClick(listIndex)"
       @dragstop="dragstop"

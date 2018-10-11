@@ -87,6 +87,8 @@ export default {
       beforeState: null,
       gobalState: null,
       isPublish: false,
+      curState: null,
+      initState: null,
     };
   },
 
@@ -350,10 +352,12 @@ export default {
         this.gobalState.publish = this.$store.state;
         this.gobalState.publish.page.pageSet = true;
         this.gobalState.publish.editor.layerActive = -1;
+        this.gobalState.draft = JSON.parse(this.initState);
       } else {
         this.gobalState.draft = this.$store.state;
         this.gobalState.draft.page.pageSet = true;
         this.gobalState.draft.editor.layerActive = -1;
+        this.gobalState.publish = JSON.parse(this.initState);
       }
       const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
@@ -437,10 +441,11 @@ export default {
         this.gobalState = JSON.parse(data);
       }
       this.isPublish = !!this.$route.query.public;
-      const state = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
-      this.beforeState = state;
-      this.$store.commit('editor_update', state.editor);
-      this.$store.commit('page_update', state.page);
+      const curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
+      this.initState = JSON.stringify(curState);
+      this.beforeState = JSON.stringify(curState);
+      this.$store.commit('editor_update', curState.editor);
+      this.$store.commit('page_update', curState.page);
     },
     delCheck() {
       const { className } = document.activeElement;

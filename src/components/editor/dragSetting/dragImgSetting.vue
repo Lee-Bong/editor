@@ -189,12 +189,12 @@ export default {
           w: newW,
           h: newH,
         };
-        if (this.isFirst) {
-          drags.location = {
-            x: 0,
-            y: 0,
-          };
-        }
+        // if (this.isFirst) {
+        //   drags.location = {
+        //     x: 0,
+        //     y: 0,
+        //   };
+        // }
         drags.size = {
           h: newH,
           w: newW,
