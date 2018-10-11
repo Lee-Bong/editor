@@ -294,6 +294,7 @@ export default {
             source: '',
             audioTitle: '',
             loop: true,
+            isBorder: '2',
             location: {
               x: 0,
               y: top2,
@@ -313,6 +314,10 @@ export default {
                 x: 0,
                 y: top2,
               },
+              size: {
+                w: 375,
+                h: 82,
+              },
             },
             linePlay: {
               title: '',
@@ -323,6 +328,10 @@ export default {
               location: {
                 x: 0,
                 y: top2,
+              },
+              size: {
+                w: 375,
+                h: 82,
               },
             },
             position: 'relative',

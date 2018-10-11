@@ -1,13 +1,15 @@
 <template>
-  <div class="audio-upload-item">
+  <div class="audio-upload-item" :class="[isBorder ?  'isBorder' : '']">
     <span class="audio-title">{{play.title}}</span>
     <div class="paly-control">
       <div class="icons">
         <el-button class="paly-icon paly" v-if="!isPlay || !play.isUplaod"
           :type="!play.isUplaod ? 'info' : 'primary'" icon="iconfont ed-icon-paly"
           circle :disabled="!play.isUplaod" plain @click="audioPlay"></el-button>
-          <el-button class="paly-icon" v-if="isPlay && play.isUplaod" type="primary"
+          <el-button class="paly-icon" v-if="isPlay && play.isUplaod && isLoad" type="primary"
         icon="iconfont ed-icon-zanting" circle @click="audioPause"></el-button>
+        <el-button class="paly-icon" v-if="isPlay && play.isUplaod && !isLoad" type="primary"
+        icon="el-icon-loading" circle @click="audioPause"></el-button>
       </div>
       <div class="paly-precent">
         <el-slider v-model="playPrecent" :format-tooltip="formatTooltip"
@@ -28,6 +30,7 @@ export default {
   name: 'HelloWorld',
   props: {
     play: Object,
+    isBorder: Boolean,
   },
   data() {
     return {
@@ -35,6 +38,7 @@ export default {
       playPrecent: 1,
       showPre: '00:00',
       isEnd: false,
+      isLoad: false,
     };
   },
   mounted() {
@@ -72,6 +76,15 @@ export default {
           ele.showPre = '00:00';
         }
       }, false);
+      this.$refs.aduioObj.addEventListener('loadeddata', () => {
+        this.isLoad = true;
+      });
+      this.$refs.aduioObj.addEventListener('waiting', () => {
+        if (this.isLoad) this.isLoad = false;
+      });
+      this.$refs.aduioObj.addEventListener('playing', () => {
+        if (!this.isLoad) this.isLoad = true;
+      });
     },
     formatTooltip(val) {
       return formatSecond((this.play.second * val) / 100);
@@ -91,6 +104,8 @@ export default {
 .audio-upload-item {
   position: relative;
   min-height: 80px;
+}
+.isBorder {
   border: 1px solid #ddd;
 }
 .audio-title {
@@ -110,6 +125,9 @@ export default {
   overflow: hidden;
   position: absolute;
   z-index: 12;
+}
+.paly-icon .el-icon-loading {
+  font-size: 16px
 }
 .icons {
   height: 40px;

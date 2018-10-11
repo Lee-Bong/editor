@@ -113,7 +113,7 @@ export default {
     videoW: {
       get() {
         const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
-        return curPlay.size ? curPlay.size.w : 0;
+        return curPlay.size ? curPlay.size.w : 375;
       },
       set() {
       },
@@ -123,7 +123,7 @@ export default {
     videoH: {
       get() {
         const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
-        return curPlay.size ? curPlay.size.h : 0;
+        return curPlay.size ? curPlay.size.h : 300;
       },
       set() {
       },
@@ -182,7 +182,6 @@ export default {
         playObj = { lineVideo: curPlay };
       }
       this.updateVideo(playObj);
-      // this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
     locationChange(location) { // 位置值发生改变
       const isAction = this.dragForm.sourceType === '1';
