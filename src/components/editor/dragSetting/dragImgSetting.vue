@@ -157,7 +157,7 @@ export default {
       }
       const lists = this.editor.dragImages;
       let drags = lists[this.editor.imgActive];
-      debugger;
+
       drags = Object.assign({}, drags, { size, isUpload: false });
       lists[this.editor.imgActive] = drags;
       this.$store.commit('editor_update', { dragImages: lists });
@@ -184,7 +184,7 @@ export default {
           newW = this.page.phoneWidth;
           newH = (dragImg.height * this.page.phoneWidth) / dragImg.width;
         }
-        debugger;
+
         drags.img = {
           title: file.oldName,
           url: file.url,
