@@ -85,6 +85,8 @@ export default {
       nowTimer: null,
       dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"clientHeight":731,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
       beforeState: null,
+      gobalState: null,
+      isPublish: false,
     };
   },
 
@@ -104,7 +106,7 @@ export default {
       this.drag.top = newRect.top;
       this.drag.left = newRect.left;
     },
-    async saveEditor(isTrigger) { // 保存草稿
+    async saveEditor(isTrigger, isPublish) { // 保存草稿
       const { isOk, msg } = this.checkSources();
       const ele = this;
       if (!isOk) {
@@ -115,7 +117,7 @@ export default {
         });
         return false;
       }
-      let { state, draft } = ele.getEditorJson();
+      let { state, draft } = ele.getEditorJson(isPublish);
       state = JSON.stringify(state);
       draft = JSON.stringify(draft);
       const params = {
@@ -171,7 +173,7 @@ export default {
     async publishEditor() { // 发布
       try {
         const ele = this;
-        const isOk = await this.saveEditor(false);
+        const isOk = await this.saveEditor(false, true);
         if (isOk) {
           const { data } = await service.publishPage(this.$route.query.page_id);
           if (data) {
@@ -188,7 +190,7 @@ export default {
         this.optError('发布页面');
       }
     },
-    getEditorJson() { // 生成预览与发布的json
+    getEditorJson(isPublish) { // 生成预览与发布的json
       const eJson = { editor: {} };
       const { editor, page } = this.$store.state;
       eJson.editor.page = {
@@ -202,7 +204,6 @@ export default {
         backgroundColor: page.backgroundColor,
       };
       const dragArr = [];
-      // todo 多图组件未添加
       const {
         dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
         dragImgLists,
@@ -344,10 +345,17 @@ export default {
       }
       this.topBannerClick();
       eJson.editor.components = dragArr;
-      const saveState = this.$store.state;
-      saveState.page.pageSet = true;
-      saveState.editor.layerActive = -1;
 
+      if (isPublish) {
+        this.gobalState.publish = this.$store.state;
+        this.gobalState.publish.page.pageSet = true;
+        this.gobalState.publish.editor.layerActive = -1;
+      } else {
+        this.gobalState.draft = this.$store.state;
+        this.gobalState.draft.page.pageSet = true;
+        this.gobalState.draft.editor.layerActive = -1;
+      }
+      const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
     },
     checkSources() { // 检测是否所有资源都上传
@@ -421,10 +429,16 @@ export default {
       return isOk;
     },
     editorInit(data) {
-      let init = data;
-      init = data ? init : this.dataInit;
-      const state = JSON.parse(init);
-      this.beforeState = init;
+      this.gobalState = {
+        draft: JSON.parse(this.dataInit),
+        publish: JSON.parse(this.dataInit),
+      };
+      if (data) {
+        this.gobalState = JSON.parse(data);
+      }
+      this.isPublish = !!this.$route.query.public;
+      const state = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
+      this.beforeState = state;
       this.$store.commit('editor_update', state.editor);
       this.$store.commit('page_update', state.page);
     },

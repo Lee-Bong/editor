@@ -70,7 +70,7 @@ export function formatDate(date) {
  * 格式化表格数据
  * @param {array} data 表格数据数组
  */
-export function formatTableData(data) {
+export function formatTableData(data, isDraft) {
   const output = {
     id: data.id,
     title: '',
@@ -80,7 +80,12 @@ export function formatTableData(data) {
   };
   if (data.state) {
     const json = JSON.parse(data.state);
-    const pageData = json.page;
+    let pageData;
+    if (json.page) {
+      pageData = json.page;
+    } else {
+      pageData = isDraft ? json.draft.page : json.publish.page;
+    }
     if (pageData && pageData.title) {
       output.title = pageData.title;
     }
