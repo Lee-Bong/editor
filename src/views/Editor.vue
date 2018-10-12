@@ -226,7 +226,7 @@ export default {
             style: {
               'font-size': item.fontSize,
               'text-align': item.textAlign,
-              'text-color': item.textColor,
+              color: item.textColor,
               'line-height': item.lineHeight,
               'z-index': item.dragIndex,
             },
@@ -334,10 +334,7 @@ export default {
             isFixed: curPlay.position !== 'relative',
             play: curPlay,
             location: curPlay.location,
-            size: {
-              w: item.size.w,
-              h: item.size.h,
-            },
+            size: curPlay.size,
             style: {
               'z-index': item.dragIndex,
             },
