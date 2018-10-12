@@ -380,6 +380,7 @@ export default {
               if (JSON.stringify(drag.img) === '{}' || !drag.img.url) {
                 msg = '请添加图片～';
                 isOk = false;
+                this.dragClick(item.num, item.type);
                 break;
               }
             }
@@ -387,6 +388,7 @@ export default {
               if (!drag.play || !drag.play.url) {
                 msg = '请添加音频～';
                 isOk = false;
+                this.dragClick(item.num, item.type);
                 break;
               }
             }
@@ -394,23 +396,21 @@ export default {
               if (!drag.video || !drag.video.url) {
                 msg = '请添加视频～';
                 isOk = false;
+                this.dragClick(item.num, item.type);
                 break;
               }
-              //  else if (drag.video && drag.video.url && !drag.video.isPoster) {
-              //   msg = '请添加视频封面';
-              //   isOk = false;
-              //   break;
-              // }
             }
             if (item.type === 4) {
               if (!drag.imgList) {
                 msg = '请添加多图组件的图片资源～';
                 isOk = false;
+                this.dragClick(item.num, item.type);
                 break;
               }
               if (JSON.stringify(drag.imgList) === '[]' || !this.imgListFilter(drag.imgList)) {
                 msg = '请添加多图组件的图片资源～';
                 isOk = false;
+                this.dragClick(item.num, item.type);
                 break;
               }
             }

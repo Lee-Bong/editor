@@ -204,6 +204,9 @@ export default {
       const lists = Object.assign([], dragVideos);
       this.$store.commit('editor_update', { dragVideos: lists });
     },
+    forceUpdate() {
+      this.$forceUpdate();
+    },
   },
   updated() {
     const ele = this;
