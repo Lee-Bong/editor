@@ -14,8 +14,9 @@
         <div
           v-if="component.type === 1"
           :style="component.style"
+          v-html="component.content"
+          style="white-space: pre-wrap"
         >
-            {{component.content}}
         </div>
         <img
             v-if="component.type === 2"
