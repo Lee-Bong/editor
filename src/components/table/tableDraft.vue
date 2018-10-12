@@ -63,7 +63,6 @@ export default {
                 newList.push(formatTableData(item, true));
                 return true;
               });
-              console.log('this.tableData', newList);
               newList = newList.filter(e => !!e);
             }
             this.tableData = newList;
@@ -95,26 +94,24 @@ export default {
     handleDelete(index, row) {
       this.$confirm('删除后将无法复原！是否确认删除？')
         .then(() => {
-          const { id } = row;
-          this.deletePage(id);
+          this.deletePage(row);
         })
         .catch(() => {
-
         });
     },
-    deletePage(id) {
-      API.deletePage(id)
-        .then((res) => {
-          if (res.status === 'ok') {
-            this.$message.success('删除成功');
-            this.getList();
-          } else {
-            this.$message.warning('未删除成功，请稍后重试~');
-          }
-        })
-        .catch(() => {
-          this.$message.error('出错了，请稍后重试~');
-        });
+    deletePage(row) {
+      API.patchPageInfo(row.id, {
+        state: row.state, draft: '',
+      }).then((res) => {
+        if (res.status === 'ok') {
+          this.$message.success('删除成功');
+          this.getList();
+        } else {
+          this.$message.warning('未删除成功，请稍后重试~');
+        }
+      }).catch(() => {
+        this.$message.error('出错了，请稍后重试~');
+      });
     },
     search(value) {
       this.query.dk = value;

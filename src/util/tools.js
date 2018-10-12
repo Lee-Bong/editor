@@ -77,6 +77,8 @@ export function formatTableData(data, isDraft) {
     createdAt: formatDate(data.createdAt),
     visit: 0,
     online: data.public ? 1 : 0, // 上线|下线
+    draft: data.draft,
+    state: data.state,
   };
   if (data.state) {
     const json = JSON.parse(data.state);
