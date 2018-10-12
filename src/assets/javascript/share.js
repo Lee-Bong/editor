@@ -5,8 +5,6 @@ const querystring = require('meetyou.util/lib/querystring');
 const query = querystring.parse();
 const browser = navigator.userAgent.toLowerCase();
 const uWeixin = browser.indexOf('micromessenger') > -1;
-const uQQ = browser.indexOf('mqqbrowser') > -1 || browser.indexOf('qq') > -1;
-const uWeibo = browser.indexOf('weibo') > -1;
 const u = navigator.userAgent;
 const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; // android终端
 
@@ -19,7 +17,6 @@ if ((appid === 2 || appid === 8 || appid === 14)) {
   MeiyouAppBar = YunQiAppBar;
 }
 
-const shareParm = {};
 let sharebar = null;
 
 export default function init(url, download) {

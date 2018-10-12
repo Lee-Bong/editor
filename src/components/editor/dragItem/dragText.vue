@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     activateEv() {
-      // this.$refs.inputCont.focus();
+      this.$refs.inputCont.blur();
     },
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 1);
