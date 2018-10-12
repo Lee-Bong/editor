@@ -168,4 +168,7 @@ export default {
 .link-setting-item {
   margin-left: 25px !important;
 }
+.link-setting .posotion-item .el-radio+.el-radio {
+  margin-left: 5px;
+}
 </style>

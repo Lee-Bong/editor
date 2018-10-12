@@ -15,6 +15,8 @@
       :parentLimitation="true"
       :preventActiveBehavior="true"
       :parentH="parentH"
+      :minh="80"
+      :minw="186"
 
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
@@ -196,6 +198,9 @@ export default {
       dragAudios[audioActive] = drags;
       const lists = Object.assign([], dragAudios);
       this.$store.commit('editor_update', { dragAudios: lists });
+    },
+    forceUpdate() {
+      this.$forceUpdate();
     },
   },
   updated() {

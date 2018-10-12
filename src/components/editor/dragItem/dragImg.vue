@@ -14,8 +14,8 @@
       :listIndex="listIndex"
       :preventActiveBehavior="true"
       :parentH="parentH"
-      :minh="minh"
-      :minw="minw"
+      :minh="1"
+      :minw="1"
       :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
       :aspectRatio="dragForm.isUpload ? true: false"
       @clicked="dragTextClick(listIndex)"
@@ -61,15 +61,6 @@ export default {
       dragName: 'dragImages',
       inputValue: '',
       input: '',
-      drag: {
-        width: 360,
-        height: 300,
-        top: 0,
-        left: 0,
-        layerActive: 0,
-      },
-      minh: 0,
-      minw: 0,
     };
   },
   computed: {
@@ -91,17 +82,9 @@ export default {
     resizestop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
-    onResezing(newRect) {
-      this.drag.width = newRect.width;
-      this.drag.height = newRect.height;
-      this.drag.top = newRect.top;
-      this.drag.left = newRect.left;
+    onResezing() {
     },
-    resize(newRect) {
-      this.drag.width = newRect.width;
-      this.drag.height = newRect.height;
-      this.drag.top = newRect.top;
-      this.drag.left = newRect.left;
+    resize() {
     },
     // 删除组件
     dragDel(index) {

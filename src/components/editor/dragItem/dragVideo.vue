@@ -15,7 +15,7 @@
       :aspectRatio="dragForm.isUpload ? true: false"
       :preventActiveBehavior="true"
       :parentH="parentH"
-
+      :minw="218"
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
       @dragging="resize"
@@ -37,6 +37,8 @@
         class="video-show"
         width="100%"
         height="100%"
+        :src="dragForm.video.url"
+        controlsList="nodownload"
         :poster="dragForm.video.poster" controls>
           <source :src="dragForm.video.url"
            type="video/mp4">

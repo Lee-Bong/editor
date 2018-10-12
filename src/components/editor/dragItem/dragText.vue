@@ -13,6 +13,8 @@
       :preventActiveBehavior="true"
       :parentH="parentH"
       contenteditable="true"
+      :minh="1"
+      :minw="1"
 
       @activated="activateEv"
       @clicked="dragTextClick(listIndex)"
