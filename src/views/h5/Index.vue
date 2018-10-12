@@ -141,7 +141,6 @@ export default {
         });
       });
     } catch (error) {
-      console.error(error);
       this.showError = true;
     }
   },
