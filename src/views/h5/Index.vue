@@ -81,7 +81,7 @@ export default {
       return finalComponentsJson;
     },
     initShare() {
-      const fromURL = `${window.location.host}/we/view?page_id=${
+      const fromURL = `${window.location.protocol}//${window.location.host}/we/view?page_id=${
         this.pageId
       }&is_formal=${this.isFormal}&isShare=1`;
       const {

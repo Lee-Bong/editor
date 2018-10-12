@@ -18,7 +18,7 @@
       backgroundColor: page.backgroundColor}">
       <drag-text v-for="(drag, index) in dragTexts" v-if="drag.isShow"
        :key="drag.id" :list-index="index" :dragForm="drag" @inputChange="inputChange"
-       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" />
+       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" ref="textRef"/>
 
       <drag-img v-for="(drag, index) in dragImages" :key="drag.id"
        :list-index="index" :is-active="drag.isActive" v-if="drag.isShow" :dragForm="drag"
@@ -26,7 +26,7 @@
 
       <drag-link v-for="(drag, index) in dragLinks" v-if="drag.isShow"
        :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+       @dragDel="dragDel" @dragTextClick="dragTextClick" ref="linkRef"/>
 
       <drag-img-lists v-for="(drag, index) in dragImgLists" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag" @dragDel="dragDel"
@@ -34,11 +34,11 @@
 
       <drag-video v-for="(drag, index) in dragVideos" v-if="drag.isShow"
        :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+       @dragDel="dragDel" @dragTextClick="dragTextClick" ref="videoRef"/>
 
       <drag-audio v-for="(drag, index) in dragAudios" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop"
+       @dragStop="inputDragStop" ref="audioRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
   </vue-drag-resize>
@@ -139,6 +139,20 @@ export default {
     if (this.$refs.imgRef && this.$store.state.editor.dragImages &&
       this.$store.state.editor.dragImages.length) {
       this.$refs.imgRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.videoRef && this.$store.state.editor.dragVideos &&
+      this.$store.state.editor.dragVideos.length) {
+      this.$refs.videoRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.audioRef && this.$store.state.editor.dragAudios &&
+      this.$store.state.editor.dragAudios.length) {
+      this.$refs.audioRef.map((item) => {
         item.forceUpdate();
         return true;
       });
