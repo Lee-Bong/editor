@@ -1,14 +1,16 @@
 <template>
-    <div class="wrap">
-        <div class="logo">
-            <img src="../assets/images/error.png" />
-        </div>
-        <div class="text">
-            <div class="code">
-                404
+    <div class="wrap wrap-error">
+        <div>
+            <div class="logo">
+                <img src="../assets/images/error.png" />
             </div>
-            <div class="tip">
-                抱歉，您访问的页面不存在
+            <div class="text">
+                <!-- <div class="code">
+                    404
+                </div> -->
+                <div class="tip">
+                    抱歉，您访问的页面不存在
+                </div>
             </div>
         </div>
     </div>
@@ -20,7 +22,10 @@
   .logo {
     display: flex;
     justify-content: center;
-    margin: 40px 0;
+    margin-bottom: 20px;
+    img {
+        height: 100px;
+    }
   }
   .text {
       text-align: center;
@@ -29,8 +34,19 @@
       }
       .tip {
         font-size: 1rem;
-        color: rgba(0, 0, 0, 0.427);
+        line-height: 3.4rem;
+        color: #888;
       }
   }
+}
+.wrap-error {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

@@ -110,10 +110,10 @@ export default {
   async mounted() {
     try {
       const {
-        data: { draft, public: formal },
+        data: { draft, public: formal, visible },
       } = await service.getPageInfo(this.pageId);
       this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
-      if (!this.pageJson) {
+      if (!visible) {
         this.showError = true;
       }
 
