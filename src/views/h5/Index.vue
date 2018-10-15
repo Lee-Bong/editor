@@ -113,7 +113,7 @@ export default {
         data: { draft, public: formal, visible },
       } = await service.getPageInfo(this.pageId);
       this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
-      if (!visible) {
+      if (this.isFormal === '1' && !visible) {
         this.showError = true;
       }
 
