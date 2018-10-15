@@ -19,11 +19,6 @@ export default {
   name: 'HelloWorld',
   props: {
   },
-  data() {
-    return {
-
-    };
-  },
   methods: {
     async getUserInfo() {
       try {

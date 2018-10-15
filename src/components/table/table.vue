@@ -144,7 +144,7 @@ export default {
     },
     handlePublish(index, { id, online }) {
       if (online) { // 已上线
-        API.unpublishPage(id)
+        API.markPage(id, 0)
           .then((res) => {
             if (res.status === 'ok') {
               const updatedData = formatTableData(res.data);
@@ -158,7 +158,8 @@ export default {
             this.$message.error('出错了，请稍后再试~');
           });
       } else { // 未上线
-        API.publishPage(id)
+        // API.publishPage(id)
+        API.markPage(id, 1)
           .then((res) => {
             if (res.status === 'ok') {
               const updatedData = formatTableData(res.data);

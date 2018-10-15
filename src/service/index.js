@@ -11,12 +11,12 @@ const getPageInfo = pageId => axios.get(`${api}/api/we/page`, { params: { page_i
 const getPageList = params => axios.get(`${api}/api/we/pages`, { params })
   .then(property('data'));
 
-// 上线
+// 发布
 const publishPage = pageId => axios.post(`${api}/api/we/page-pub?page_id=${pageId}`)
   .then(property('data'));
 
-// 下线
-const unpublishPage = pageId => axios.post(`${api}/api/we/page-unp?page_id=${pageId}`)
+// 上线 & 下线
+const markPage = (pageId, online) => axios.post(`${api}/api/we/page-mark?page_id=${pageId}`, { online })
   .then(property('data'));
 
 // 复制
@@ -41,10 +41,10 @@ export {
   getPageInfo,
   getPageList,
   publishPage,
-  unpublishPage,
   duplicatePage,
   deletePage,
   postPageInfo,
   patchPageInfo,
   getUserInfo,
+  markPage,
 };

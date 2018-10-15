@@ -76,7 +76,7 @@ export function formatTableData(data, isDraft) {
     title: '',
     createdAt: formatDate(data.createdAt),
     visit: 0,
-    online: data.public ? 1 : 0, // 上线|下线
+    online: data.visible ? 1 : 0, // 上线|下线
     draft: data.draft,
     state: data.state,
   };

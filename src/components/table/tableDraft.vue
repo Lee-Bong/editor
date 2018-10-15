@@ -67,6 +67,10 @@ export default {
             }
             this.tableData = newList;
             this.pageTotal = res.data.count;
+            const page = Math.ceil(this.pageTotal / 10);
+            if (page && page < this.pager.page) {
+              this.pager.page = page;
+            }
           }
           this.loading = false;
         })
