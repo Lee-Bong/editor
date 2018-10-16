@@ -7,7 +7,7 @@
     </div>
     <input type="file" ref="fileUpload" @change="fileChange"
        class="check-upload" :accept="source.accept"/>
-    <el-progress :percentage="pre" v-show="pre"
+    <el-progress :percentage="pre" v-show="isLoading"
      class="modify-precent" :class="[isLoading?'precent-out' : 'precent-in']"></el-progress>
     <span class="loadding-tip" v-show="isLoading">文件上传中，请耐心等待，期间编辑页面将打断上传</span>
     <div v-show="source && source.title">

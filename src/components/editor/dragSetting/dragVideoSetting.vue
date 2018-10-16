@@ -52,7 +52,7 @@
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
             <el-input-number v-model="videoH" @change="sizeHChange"
-              :min="size.hmin"
+              :min="mediaSource.location ? size.wmin * videoH / videoW : size.hmin"
               :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 667"
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
@@ -205,7 +205,7 @@ export default {
         ymin: 0,
       },
       size: {
-        wmin: 0,
+        wmin: 218,
         hmin: 0,
       },
       lineSource: '',
