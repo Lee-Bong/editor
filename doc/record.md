@@ -8,3 +8,9 @@
 drag: index: 图层zIndex(决定最终生成)
 listIndex: 该组件在组件数组里面的序列
 zIndex: 作用于展示的zIndex
+
++ 交互文档地址
+
+https://axhub.im/pro/2aa8447594400b26  密码：meiyou123
+
++ API

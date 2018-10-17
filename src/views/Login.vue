@@ -5,9 +5,9 @@
     </div>
     <div class="login-form">
       <h1>编辑器管理后台</h1>
-      <div class="login-oa">
-        <a ref="oaLogin" class="oa">OA一键登录</a>
-      </div>
+      <a ref="oaLogin" class="login-oa">
+        OA一键登录
+      </a>
     </div>
   </div>
 </template>
@@ -87,6 +87,7 @@ export default {
     }
   }
   .login-oa {
+    display: block;
     width: 216px;
     height: 40px;
     background: #ff5375;
@@ -95,10 +96,8 @@ export default {
     line-height: 40px;
     cursor: pointer;
     margin-top: 64px;
-    a {
-      color: #fff;
-      text-decoration: none;
-    }
+    color: #fff;
+    text-decoration: none;
   }
 }
 </style>
