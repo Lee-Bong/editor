@@ -25,7 +25,7 @@ export default {
   props: ['pageName'],
   methods: {
     goHelpWeb() {
-      window.open('https://shimo.im/docs/2kUQsVrZgTIn1yk3');
+      window.open('https://www.yuque.com/evan/vvgcu9/bl0dq3');
     },
   },
 };
