@@ -14,7 +14,7 @@
       <el-form ref="form" label-width="90px">
         <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
           <el-input-number v-model="dragForm.location.x" @blur="locationChange"
-            :min="location.xmin" :max="($store.state.page.phoneWidth-dragForm.size.w)"
+            :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
             controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.location.y" @blur="locationChange"
             :min="location.ymin" :max="yMax"
@@ -23,10 +23,10 @@
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
-            :min="size.wmin" :max="$store.state.page.phoneWidth-dragForm.location.x"
+            :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
             controls-position="right" class="num-input"></el-input-number>
           <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
-            :min="size.hmin" :max="$store.state.page.phoneHeight-dragForm.location.y"
+            :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
@@ -69,14 +69,14 @@
               class="number-item">
               <el-input-number
                 v-model="fixedTop" @change="fixedTopChange"
-                :min="location.ymin" :max="($store.state.page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'"
               class="number-item">
               <el-input-number
                 v-model="fixedBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="($store.state.page.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -107,8 +107,8 @@ export default {
         ymin: 0,
       },
       size: {
-        wmin: 0,
-        hmin: 0,
+        wmin: 15,
+        hmin: 15,
       },
     };
   },

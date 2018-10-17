@@ -43,10 +43,10 @@
             </div>
             <el-form-item label="尺寸：" size="mini" class="number-item">
               <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
-                :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
+                :min="size.wmin" :max="maxW"
                 controls-position="right" class="num-input"></el-input-number>
               <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
-                :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
+                :min="size.hmin" :max="maxH"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">
@@ -114,11 +114,41 @@ export default {
         ymin: 0,
       },
       size: {
-        wmin: 0,
-        hmin: 0,
+        wmin: 15,
+        hmin: 15,
       },
       imgList: [],
     };
+  },
+  computed: {
+    maxW: {
+      get() {
+        let mW = this.page.phoneWidth - this.dragForm.location.x;
+        const mH = this.page.phoneHeight - this.dragForm.location.y;
+        if ((mW * this.dragForm.size.h) / this.dragForm.size.w > mH) {
+          mW = (this.dragForm.size.w * mH) / this.dragForm.size.h;
+        }
+        return mW;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    maxH: {
+      get() {
+        const mW = this.page.phoneWidth - this.dragForm.location.x;
+        let mH = this.page.phoneHeight - this.dragForm.location.y;
+        if ((this.dragForm.size.w * mH) / this.dragForm.size.h > mW) {
+          mH = (mW * this.dragForm.size.h) / this.dragForm.size.w;
+        }
+        return mH;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   methods: {
     settingClose() { // 关闭设置
@@ -261,19 +291,23 @@ export default {
       this.onFileChange(params, [], true);
     },
     positionChange(val) {
+      const { dragImages, imgActive } = this.editor;
       if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
         this.$message({
           message: '组件高度大于一屏，无法设置固定位置～',
           type: 'error',
           duration: 2000,
         });
-        const { dragImages, imgActive } = this.editor;
         dragImages[imgActive].position = 'relative';
         this.$store.commit('editor_update', {
           dragImages,
         });
         return false;
       }
+      dragImages[imgActive].position = val;
+      this.$store.commit('editor_update', {
+        dragImages,
+      });
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;

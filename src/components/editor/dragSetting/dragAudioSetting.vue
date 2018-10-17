@@ -122,8 +122,8 @@ export default {
         ymin: 0,
       },
       size: {
-        wmin: 0,
-        hmin: 0,
+        wmin: 186,
+        hmin: 80,
       },
       // mediaSource: {
       //   accept: '.mp3',

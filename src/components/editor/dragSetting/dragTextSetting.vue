@@ -117,8 +117,8 @@ export default {
         ymin: 0,
       },
       size: {
-        wmin: 0,
-        hmin: 0,
+        wmin: 15,
+        hmin: 15,
       },
       lineNum: 0,
       formRules: {

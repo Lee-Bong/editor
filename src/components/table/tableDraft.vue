@@ -70,6 +70,7 @@ export default {
             const page = Math.ceil(this.pageTotal / 10);
             if (page && page < this.pager.page) {
               this.pager.page = page;
+              this.getList();
             }
           }
           this.loading = false;
