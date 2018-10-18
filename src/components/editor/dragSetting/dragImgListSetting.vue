@@ -20,6 +20,7 @@
             :multiple="true"
             :file-list="imgList"
             :http-request="onFileChange"
+            :on-change="onFileChecked"
             :before-upload="beforeAvatarUpload"
             list-type="picture"
             :auto-upload="true"
@@ -83,6 +84,14 @@ export default {
     locationChange() { // 位置值发生改变
       this.$emit('input-locationChange', 'dragImgLists', this.dragForm.location, 'imgListActive');
     },
+    onFileChecked(params) {
+      const addItem = {
+        title: params.raw.name,
+        url: '',
+        isLoading: true,
+      };
+      this.imgList.push(addItem);
+    },
     onFileSuccess(file, key) {
       const dragImg = new Image();
       const ele = this;
@@ -133,26 +142,24 @@ export default {
       }
     },
     onFileChange(params, isModify, key) {
-      let file;
+      let addFile;
       if (isModify) {
-        file = params;
+        addFile = params;
       } else {
-        file = params.file;
+        addFile = params.file;
       }
       const addItem = {
-        title: file.name,
+        title: addFile.name,
         url: '',
         isLoading: true,
       };
-      if (!isModify) {
-        this.imgList.push(addItem);
-      } else {
-        addItem.url = file.url;
+      if (isModify) {
+        addItem.url = addFile.url;
         this.imgList[key] = addItem;
       }
       this.fileAble = true;
       const curKey = key !== undefined ? key : this.imgList.length - 1;
-      this.fileUploading(file, curKey, isModify);
+      this.fileUploading(addFile, curKey, isModify);
     },
     fileModify(file, isModify, key) {
       this.onFileChange(file, isModify, key);

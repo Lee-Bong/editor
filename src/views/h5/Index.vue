@@ -154,6 +154,18 @@ export default {
     } catch (error) {
       this.showError = true;
     }
+    if (!this.$route.query.isShare) {
+      jssdk.callNative('ga', {
+        path: '/bfe_event',
+        params: {
+          page_id: this.$route.query.page_id,
+          label: '',
+          category: '',
+          type: 'pv',
+          value: '',
+        },
+      });
+    }
   },
 };
 </script>

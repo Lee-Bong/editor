@@ -110,9 +110,6 @@ export default {
         downloadUrls: this.downloadUrls,
       });
     }
-    if (!this.$route.query.isShare) {
-      this.gaReport('pv', '');
-    }
   },
   props: ['component', 'scale'],
   methods: {
