@@ -140,7 +140,7 @@ export default {
             url: appLink,
           });
         } */
-        
+
         window.location.href = this.$route.query.isShare ? outLink : appLink;
       } else if (this.$route.query.isShare) {
         // 分享页面唤起app

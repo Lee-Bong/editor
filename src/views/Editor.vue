@@ -208,7 +208,7 @@ export default {
       const dragArr = [];
       const {
         dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
-        dragImgLists, layerLists, 
+        dragImgLists, layerLists,
       } = editor;
       if (dragTexts.length) {
         dragTexts.map((item) => {
@@ -363,7 +363,7 @@ export default {
     getLinkName(type, num, layerLists) {
       let linkName = '热区';
       for (let i = 0; i < layerLists.length; i++) {
-        if (layerLists[i].type === type && layerLists[i].num == num && layerLists[i].name) {
+        if (layerLists[i].type === type && layerLists[i].num === num && layerLists[i].name) {
           linkName = layerLists[i].name;
           break;
         }
