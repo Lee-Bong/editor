@@ -124,9 +124,7 @@ export default {
     viewMonth() {},
     viewPageChange() {},
     btnsPageChange() {},
-    pickViewDate(date) {
-      console.log('minD', date);
-
+    pickViewDate() {
     },
   },
 };

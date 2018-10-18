@@ -98,6 +98,17 @@ export default {
             content: shareDec,
             imageURL: shareImg,
             fromURL,
+          }, () => {
+            jssdk.callNative('ga', {
+              path: '/bfe_event',
+              params: {
+                page_id: this.$route.query.page_id,
+                label: '',
+                category: '',
+                type: 'share',
+                value: '',
+              },
+            });
           });
         },
       );

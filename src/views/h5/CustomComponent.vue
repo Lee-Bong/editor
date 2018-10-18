@@ -28,7 +28,7 @@
             v-if="component.type === 3"
             class="link"
             :style="component.style"
-            @click="handleLinkClick()"
+            @click="handleLinkClick(component.name)"
         >
         </div>
         <div
@@ -110,6 +110,9 @@ export default {
         downloadUrls: this.downloadUrls,
       });
     }
+    if (!this.$route.query.isShare) {
+      this.gaReport('pv', '');
+    }
   },
   props: ['component', 'scale'],
   methods: {
@@ -118,12 +121,14 @@ export default {
       optUrl += `?x-oss-process=image/resize,m_fixed,h_${Math.ceil(h * 2)},w_${Math.ceil(w * 2)}`;
       return optUrl;
     },
-    handleLinkClick() {
+    handleLinkClick(name) {
       // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
       const {
         sourceType, awakeLink, outLink, appLink,
       } = this.component;
-
+      if (!this.$route.query.isShare) {
+        this.gaReport('click', name || '热区');
+      }
       if (sourceType === '1') {
         // 普通跳转
         /* if (this.$route.query.isShare) {
@@ -135,6 +140,7 @@ export default {
             url: appLink,
           });
         } */
+        
         window.location.href = this.$route.query.isShare ? outLink : appLink;
       } else if (this.$route.query.isShare) {
         // 分享页面唤起app
@@ -152,6 +158,19 @@ export default {
           }
         });
       }
+    },
+    gaReport(type, value) {
+      jssdk.callNative('ga', {
+        path: '/bfe_event',
+        params: Object.assign({
+          page_id: this.$route.query.page_id,
+          label: '',
+          category: '',
+        }, {
+          type,
+          value,
+        }),
+      });
     },
   },
 };

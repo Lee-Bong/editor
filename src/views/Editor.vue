@@ -208,7 +208,7 @@ export default {
       const dragArr = [];
       const {
         dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
-        dragImgLists,
+        dragImgLists, layerLists, 
       } = editor;
       if (dragTexts.length) {
         dragTexts.map((item) => {
@@ -257,9 +257,10 @@ export default {
         });
       }
       if (dragLinks.length) {
-        dragLinks.map((item) => {
+        dragLinks.map((item, key) => {
           dragArr.push({
             type: 3,
+            name: this.getLinkName(3, key, layerLists),
             appLink: item.appLink,
             outLink: item.outLink,
             location: {
@@ -358,6 +359,16 @@ export default {
       }
       const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
+    },
+    getLinkName(type, num, layerLists) {
+      let linkName = '热区';
+      for (let i = 0; i < layerLists.length; i++) {
+        if (layerLists[i].type === type && layerLists[i].num == num && layerLists[i].name) {
+          linkName = layerLists[i].name;
+          break;
+        }
+      }
+      return linkName;
     },
     checkSources() { // 检测是否所有资源都上传
       const { page, editor } = this.$store.state;
