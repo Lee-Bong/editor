@@ -11,6 +11,9 @@
             <i class="el-icon-edit"></i>草稿箱</span>
         </el-tab-pane>
       </el-tabs>
+      <div class="help-btn">
+      <help />
+      </div>
     </div>
     <div class="main-wrap">
       <div class="content-wrap">
@@ -41,6 +44,7 @@
 <script>
 import tableList from '@/components/table/table';
 import tableDraft from '@/components/table/tableDraft';
+import help from '@/components/editor/layout/help';
 
 export default {
   name: 'manage',
@@ -49,6 +53,7 @@ export default {
   components: {
     tableList,
     tableDraft,
+    help,
   },
   watch: {
     $route: 'changeTab',
@@ -97,10 +102,10 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
   height: 56px;
   padding: 0 20px;
   background-color: #fafafa;
-  width: 100%;
   overflow: hidden;
   border-bottom: 1px solid #ccd5db;
   z-index: 1020;
@@ -143,5 +148,10 @@ export default {
 }
 .search-submit:hover {
   color: #0875e4;
+}
+.help-btn {
+  position: absolute;
+  right: 40px;
+  top: 10px;
 }
 </style>
