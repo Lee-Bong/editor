@@ -11,18 +11,18 @@
       <layout-left />
       <el-main>
         <div class="flxed-main">
-          <div class="phone-wrap" :style="{height: ($store.state.page.clientHeight)+'px'}">
-            <div class="phone-container" ref="phoneContainer" :style="{width: phoneWidth+'px',
-                height: ($store.state.page.clientHeight)+'px'}">
+          <div class="phone-wrap" :style="{height: (page.clientHeight)+'px'}">
+            <div class="phone-container" ref="phoneContainer" :style="{width: page.phoneWidth+'px',
+                height: (page.clientHeight)+'px'}">
               <div class="top-banner" @click="topBannerClick">
                 <div class="now-show">{{this.now}}</div>
-                <div class="web-title">{{$store.state.page.title}}</div>
+                <div class="web-title">{{page.title}}</div>
               </div>
-              <div class="screen-line" v-show="$store.state.page.phoneHeight > 667"></div>
+              <div class="screen-line" v-show="page.phoneHeight > 667"></div>
               <layout-main />
             </div>
-            <div class="phone-hidden" :style="{width: phoneWidth+'px',
-                top: ($store.state.page.phoneHeight + 64+ 37)+'px'}"></div>
+            <div class="phone-hidden" :style="{width: page.phoneWidth+'px',
+                top: (page.phoneHeight + 64+ 37)+'px'}"></div>
           </div>
           <layout-setting />
         </div>
@@ -34,22 +34,20 @@
   </div>
 </template>
 <script>
-import VueDragResize from 'vue-drag-resize';
+import merge from 'webpack-merge';
 import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
+import NavBar from '@/components/NavBar';
 import { dragCom } from '@/util/dragMxi';
 import { nowTime } from '@/util/tools';
-import merge from 'webpack-merge';
-import * as service from '../service';
-import NavBar from '../components/NavBar';
+import * as service from '@/service';
 
 export default {
   mixins: [dragCom()],
   name: 'editor',
   components: {
-    VueDragResize,
     layoutMain,
     layer,
     layoutLeft,
@@ -58,7 +56,6 @@ export default {
   },
   data() {
     return {
-      phoneWidth: 375, // 可视区宽高
       phoneHeight: 667 + 65,
       dragText: {
         width: 375,
@@ -94,7 +91,7 @@ export default {
 
   methods: {
     topBannerClick() { // 点击页面顶部，显示页面设置
-      const { pageSet } = this.$store.state.page;
+      const { pageSet } = this.page;
       if (!pageSet) {
         this.$store.dispatch('setting_tap', { pageSet: true });
       }
@@ -102,65 +99,43 @@ export default {
         this.dragClick(-2);
       }
     },
-    resize(newRect) {
-      this.drag.width = newRect.width;
-      this.drag.height = newRect.height;
-      this.drag.top = newRect.top;
-      this.drag.left = newRect.left;
-    },
     async saveEditor(isTrigger, isPublish) { // 保存草稿
-      const { isOk, msg } = this.checkSources();
-      const ele = this;
-      if (!isOk) {
-        ele.$message({
-          message: msg,
-          type: 'error',
-          duration: 2000,
-        });
-        return false;
-      }
-      let { state, draft } = ele.getEditorJson(isPublish);
-      state = JSON.stringify(state);
-      draft = JSON.stringify(draft);
-      const params = {
-        state,
-        draft,
-        // piblic: '',
-      };
-      let data;
-      if (this.isFirst) {
-        data = await service.postPageInfo(params);
-      } else {
-        data = await service.patchPageInfo(ele.$route.query.page_id, params);
-      }
-      this.beforeState = JSON.stringify(this.$store.state);
-      if (data && data.status === 'ok' && data.data) {
-        if (isTrigger) {
-          ele.optSucsess('保存草稿');
+      try {
+        const { isOk, msg } = this.checkSources();
+        if (!isOk) {
+          this.$message.error(msg);
+          return false;
         }
+        let { state, draft } = this.getEditorJson(isPublish);
+        state = JSON.stringify(state);
+        draft = JSON.stringify(draft);
+        const params = {
+          state,
+          draft,
+        };
+        let data;
         if (this.isFirst) {
-          ele.$router.push({
-            query: merge(ele.$route.query, { page_id: data.data.id }),
-          });
-          this.isFirst = false;
+          data = await service.postPageInfo(params);
+        } else {
+          data = await service.patchPageInfo(this.$route.query.page_id, params);
         }
-        return true;
-      } else if (isTrigger)ele.optError('保存草稿');
-      return false;
-    },
-    optError(msg) {
-      this.$message({
-        message: `${msg}失败，请重试～`,
-        type: 'error',
-        duration: 2000,
-      });
-    },
-    optSucsess(msg) {
-      this.$message({
-        message: `${msg}成功～`,
-        type: 'success',
-        duration: 2000,
-      });
+        this.beforeState = JSON.stringify(this.$store.state);
+        if (data && data.status === 'ok' && data.data) {
+          if (isTrigger) {
+            this.optSucsess('保存草稿');
+          }
+          if (this.isFirst) {
+            this.$router.push({
+              query: merge(this.$route.query, { page_id: data.data.id }),
+            });
+            this.isFirst = false;
+          }
+          return true;
+        } else if (isTrigger) this.optError('保存草稿');
+        return false;
+      } catch (err) {
+        this.optError('保存草稿');
+      }
     },
     async reviewEditor() { // 预览
       const ele = this;
@@ -192,19 +167,30 @@ export default {
         this.optError('发布页面');
       }
     },
+    optError(msg) {
+      this.$message({
+        message: `${msg}失败，请重试～`,
+        type: 'error',
+        duration: 2000,
+      });
+    },
+    optSucsess(msg) {
+      this.$message({
+        message: `${msg}成功～`,
+        type: 'success',
+        duration: 2000,
+      });
+    },
     getEditorJson(isPublish) { // 生成预览与发布的json
       const eJson = { editor: {} };
       const { editor, page } = this.$store.state;
+      const {
+        title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor,
+      } = page;
       eJson.editor.page = {
-        title: page.title,
-        phoneWidth: page.phoneWidth,
-        phoneHeight: page.phoneHeight, // 可视区高度
-        clientHeight: page.clientHeight, // 总体内容高度
-        shareTitle: page.shareTitle,
-        shareDec: page.shareDec,
-        shareImg: page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png',
-        backgroundColor: page.backgroundColor,
+        title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor,
       };
+      eJson.editor.page.shareImg = page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png';
       const dragArr = [];
       const {
         dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
@@ -212,94 +198,82 @@ export default {
       } = editor;
       if (dragTexts.length) {
         dragTexts.map((item) => {
+          const {
+            size, location, content, position,
+          } = item;
           dragArr.push({
             type: 1,
-            content: item.content,
-            location: {
-              x: item.location.x,
-              y: item.location.y,
-            },
-            size: {
-              w: item.size.w,
-              h: item.size.h,
-            },
+            size,
+            location,
+            isFixed: position !== 'relative',
+            content,
             style: {
               'font-size': item.fontSize,
               'text-align': item.textAlign,
-              color: item.textColor,
               'line-height': item.lineHeight,
+              color: item.textColor,
               'z-index': item.dragIndex,
             },
-            isFixed: item.position !== 'relative',
           });
           return true;
         });
       }
       if (dragImages.length) {
         dragImages.map((item) => {
+          const {
+            size, location, img, dragIndex, position,
+          } = item;
           dragArr.push({
             type: 2,
-            url: item.img.url,
-            location: {
-              x: item.location.x,
-              y: item.location.y,
-            },
-            size: {
-              w: item.size.w,
-              h: item.size.h,
-            },
+            size,
+            location,
+            isFixed: position !== 'relative',
+            url: img.url,
             style: {
-              'z-index': item.dragIndex,
+              'z-index': dragIndex,
             },
-            isFixed: item.position !== 'relative',
           });
           return true;
         });
       }
       if (dragLinks.length) {
         dragLinks.map((item, key) => {
+          const {
+            size, location, appLink, outLink, sourceType, awakeLink, iosLink, andLink, yybLink,
+          } = item;
           dragArr.push({
             type: 3,
+            size,
+            location,
+            isFixed: item.position !== 'relative',
             name: this.getLinkName(3, key, layerLists),
-            appLink: item.appLink,
-            outLink: item.outLink,
-            location: {
-              x: item.location.x,
-              y: item.location.y,
-            },
-            size: {
-              w: item.size.w,
-              h: item.size.h,
-            },
+            appLink,
+            outLink,
+            sourceType, // 1.普通跳转 2. 唤起下载app
+            awakeLink,
+            iosLink,
+            andLink,
+            yybLink,
             style: {
               'z-index': item.dragIndex,
             },
-            sourceType: item.sourceType, // 1.普通跳转 2. 唤起下载app
-            awakeLink: item.awakeLink,
-            iosLink: item.iosLink,
-            andLink: item.andLink,
-            yybLink: item.yybLink,
-            isFixed: item.position !== 'relative',
           });
           return true;
         });
       }
       if (dragImgLists.length) {
         dragImgLists.map((item) => {
+          const {
+            size, location, imgList, dragIndex,
+          } = item;
           dragArr.push({
             type: 4,
-            location: {
-              x: item.location.x,
-              y: item.location.y,
-            },
-            size: {
-              w: item.size.w,
-              h: item.size.h,
-            },
+            location,
+            size,
             style: {
-              'z-index': item.dragIndex,
+              'z-index': dragIndex,
             },
-            imgList: item.imgList,
+            imgList,
             isFixed: false,
           });
           return true;
@@ -308,18 +282,21 @@ export default {
       if (dragVideos.length) {
         dragVideos.map((item) => {
           const curVideo = item.sourceType === '1' ? item.video : item.lineVideo;
+          const {
+            loop, poster, location, size, dragIndex, position,
+          } = curVideo;
           dragArr.push({
             type: 5,
             source: curVideo.url,
             title: curVideo.title,
-            loop: item.loop,
-            poster: curVideo.poster,
-            location: curVideo.location,
-            size: curVideo.size,
+            loop,
+            poster,
+            location,
+            size,
             style: {
-              'z-index': item.dragIndex,
+              'z-index': dragIndex,
             },
-            isFixed: item.position !== 'relative',
+            isFixed: position !== 'relative',
           });
           return true;
         });
@@ -329,9 +306,6 @@ export default {
           const curPlay = item.sourceType === '1' ? item.play : item.linePlay;
           dragArr.push({
             type: 6,
-            source: item.play.url,
-            title: item.play.title,
-            second: item.play.second,
             isFixed: curPlay.position !== 'relative',
             play: curPlay,
             location: curPlay.location,
@@ -345,17 +319,17 @@ export default {
       }
       this.topBannerClick();
       eJson.editor.components = dragArr;
-
+      const ele = this;
+      function setPageData(m, n) {
+        ele.gobalState[m] = ele.$store.state;
+        ele.gobalState[m].page.pageSet = true;
+        ele.gobalState[m].editor.layerActive = -1;
+        ele.gobalState[n] = JSON.parse(ele.initState);
+      }
       if (isPublish) {
-        this.gobalState.publish = this.$store.state;
-        this.gobalState.publish.page.pageSet = true;
-        this.gobalState.publish.editor.layerActive = -1;
-        this.gobalState.draft = JSON.parse(this.initState);
+        setPageData('publish', 'draft');
       } else {
-        this.gobalState.draft = this.$store.state;
-        this.gobalState.draft.page.pageSet = true;
-        this.gobalState.draft.editor.layerActive = -1;
-        this.gobalState.publish = JSON.parse(this.initState);
+        setPageData('draft', 'publish');
       }
       const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
@@ -373,62 +347,52 @@ export default {
     checkSources() { // 检测是否所有资源都上传
       const { page, editor } = this.$store.state;
       const { typeCat } = editor;
-      let isOk = true;
-      let msg = '请添加页面名称～';
+      const msgObj = {
+        isOk: true,
+        msg: '请添加页面名称～',
+      };
+      const ele = this;
+      const layItemCheck = (msg, item) => {
+        msgObj.isOk = false;
+        msgObj.msg = msg;
+        ele.dragClick(item.num, item.type);
+      };
       if (!page.title) {
-        msg = '请添加页面名称～';
+        msgObj.isOk = false;
         this.topBannerClick();
-        isOk = false;
       } else {
-        const {
-          layerLists,
-        } = editor;
+        const { layerLists } = editor;
         if (layerLists.length) {
           for (let i = 0; i < layerLists.length; i++) {
             const item = layerLists[i];
             const drag = editor[typeCat[item.type][0]][item.num];
-            if (item.type === 2) {
-              if (JSON.stringify(drag.img) === '{}' || !drag.img.url) {
-                msg = '请添加图片～';
-                isOk = false;
-                this.dragClick(item.num, item.type);
-                break;
-              }
+            // Todo if the interatcion isunified,just one logic
+            if (item.type === 2 && (JSON.stringify(drag.img) === '{}' || !drag.img.url)) {
+              layItemCheck('请添加图片～', item);
+              break;
             }
             if (item.type === 6) {
-              if (!drag.play || !drag.play.url) {
-                msg = '请添加音频～';
-                isOk = false;
-                this.dragClick(item.num, item.type);
+              const curPlay = drag.sourceType === '1' ? drag.play : drag.linePlay;
+              if ((!curPlay || !curPlay.url)) {
+                layItemCheck('请添加音频～', item);
                 break;
               }
             }
             if (item.type === 5) {
-              if (!drag.video || !drag.video.url) {
-                msg = '请添加视频～';
-                isOk = false;
-                this.dragClick(item.num, item.type);
+              const curVideo = drag.sourceType === '1' ? drag.video : drag.lineVideo;
+              if ((!curVideo || !curVideo.url)) {
+                layItemCheck('请添加视频～', item);
                 break;
               }
             }
-            if (item.type === 4) {
-              if (!drag.imgList) {
-                msg = '请添加多图组件的图片资源～';
-                isOk = false;
-                this.dragClick(item.num, item.type);
-                break;
-              }
-              if (JSON.stringify(drag.imgList) === '[]' || !this.imgListFilter(drag.imgList)) {
-                msg = '请添加多图组件的图片资源～';
-                isOk = false;
-                this.dragClick(item.num, item.type);
-                break;
-              }
+            if (item.type === 4 && (!drag.imgList || (JSON.stringify(drag.imgList) === '[]' || !this.imgListFilter(drag.imgList)))) {
+              layItemCheck('请添加多图组件的图片资源～', item);
+              break;
             }
           }
         }
       }
-      return { isOk, msg };
+      return msgObj;
     },
     imgListFilter(list) {
       let isOk = true;
@@ -468,7 +432,7 @@ export default {
       }
       return isContain;
     },
-    goCheck() {
+    goCheck() { // 离开页面，检测是否操作都保存
       const curState = JSON.stringify(this.$store.state);
       let isOk = true;
       if (curState !== this.beforeState) isOk = false;
@@ -480,43 +444,38 @@ export default {
       try {
         this.isFirst = false;
         const { data } = await service.getPageInfo(this.$route.query.page_id);
-        if (data) {
-          this.editorInit(data.state);
-        } else {
-          this.optError('获取编辑器数据, 请重试～');
-          this.editorInit();
-        }
+        this.editorInit(data.state);
       } catch (err) {
-        this.optError('获取编辑器数据, 请重试～');
+        this.optError('获取编辑器数据');
+        this.editorInit();
       }
-      this.wrapHeight = this.$store.state.page.phoneHeight + 64 + 37;
+      this.wrapHeight = this.page.phoneHeight + 64 + 37;
     } else {
       this.editorInit();
     }
-    const ele = this;
-    this.$nextTick(() => {
-      window.onbeforeunload = function cb(e) {
-        const event = window.event || e;
-        if (!ele.goCheck()) {
-          event.returnValue = ('确定离开当前页面吗？');
-        }
-      };
-    });
   },
   updated() {
   },
   created() {
     const ele = this;
-    document.onkeydown = (e) => {
+    window.onbeforeunload = (e) => { // 离开验证1: 点击浏览器刷新、前进、后退
+      const event = window.event || e;
+      if (!ele.goCheck()) {
+        event.returnValue = ('确定离开当前页面吗？');
+      }
+    };
+    document.onkeydown = (e) => { // 键盘点击就del键删除组件
       if (e.keyCode && parseInt(e.keyCode, 10) === 8) {
-        if (!this.delCheck()) {
+        if (!ele.delCheck()) {
           const { layerActive, layerLists } = ele.$store.state.editor;
           if (layerLists.length && layerActive !== -1) {
-            this.dragDel();
+            ele.dragDel();
           }
         }
       }
     };
+
+    // time
     this.now = nowTime();
     this.nowTimer = setInterval(() => {
       this.now = nowTime();
@@ -526,7 +485,7 @@ export default {
     clearInterval(this.nowTimer);
   },
   beforeRouteLeave(to, from, next) {
-    if (!this.goCheck()) {
+    if (!this.goCheck()) { // 离开验证2: 路由跳转
       this.$confirm('检测到有未保存的内容，如果离开将丢失内容，是否继续？', '确认信息', {
         distinguishCancelAndClose: true,
         confirmButtonText: '狠心离开',

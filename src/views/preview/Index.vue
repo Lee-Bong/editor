@@ -91,7 +91,6 @@ export default {
         }, 3000);
       } catch (error) {
         this.$message.error(error.message);
-        console.log(error);
       }
     },
   },
