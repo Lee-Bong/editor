@@ -1,41 +1,23 @@
 <template>
-    <vue-drag-resize
-      :isActive="dragForm.isActive"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
-      :sticks="['tm','bm','ml','mr']"
-      :x="dragForm.location.x"
-      :y="dragForm.location.y"
-      :z="dragForm.zIndex"
-      :index="dragForm.dragIndex"
-      :listIndex="listIndex"
-      :parentLimitation="true"
-      :preventActiveBehavior="true"
-      :parentH="parentH"
-      :minh="15"
-      :minw="15"
-
-      @clicked="dragTextClick(listIndex)"
-      @dragstop="dragstop"
-      @resizestop="resizestop"
-      @resizing="resize"
-      @dragging="resize"
-      class="drag-item drag-link"
-      >
-      <i class="el-icon-circle-close-outline drag-del"
-      v-if="dragForm.isActive"
-      @click="dragDel(listIndex)">
-      </i>
-    </vue-drag-resize>
+  <drag-resize
+    :dragForm="dragForm"
+    :infoForm="{dragName: 'dragLinks', type: 3, listIndex, minH: 15, minW: 15}"
+    :sticks="['tm','bm','ml','mr']"
+    :class="'drag-item drag-link'"
+    ref="dragItem"
+    :dragstop="dragstop"
+    :resizestop="resizestop"
+    >
+  </drag-resize>
 
 </template>
 <script>
-import VueDragResize from 'vue-drag-resize';
+import dragResize from '@/components/editor/dragItem/dragResize';
 
 export default {
   name: 'dragItem',
   components: {
-    'vue-drag-resize': VueDragResize,
+    dragResize,
   },
   props: {
     dragForm: Object,
@@ -64,28 +46,6 @@ export default {
     },
   },
   methods: {
-    dragTextClick(index) {
-      this.$emit('dragTextClick', index, 3);
-    },
-    onResezing(newRect) {
-      this.drag.width = newRect.width;
-      this.drag.height = newRect.height;
-      this.drag.top = newRect.top;
-      this.drag.left = newRect.left;
-    },
-    resize(newRect) {
-      this.drag.width = newRect.width;
-      this.drag.height = newRect.height;
-      this.drag.top = newRect.top;
-      this.drag.left = newRect.left;
-    },
-    // 删除组件
-    dragDel(index) {
-      this.$emit('dragDel', 3, index, this.dragForm.dragIndex);
-    },
-    dragDeactivated(index) { // 点击组件外区域
-      this.$store.commit('inactive_drags', { index, arr: this.dragName, isAll: this.beforeZ });
-    },
     dragstop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },

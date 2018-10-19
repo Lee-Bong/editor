@@ -138,7 +138,6 @@ export default {
     settingClick() {
       this.$store.commit('editor_update', {
         textSet: true,
-        isClick: true,
       });
     },
     remoteMethod() { // 字体输入监听
