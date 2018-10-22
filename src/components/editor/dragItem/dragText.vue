@@ -2,11 +2,9 @@
     <drag-resize
       :dragForm="dragForm"
       :infoForm="{dragName: 'dragTexts', type: 1, listIndex, minH: 15, minW: 15}"
-      :sticks="['tm','bm','ml','mr']"
       :class="'drag-item'"
       ref="dragItem"
-      :dragstop="dragstop"
-      :resizestop="resizestop"
+      :dragStop="dragStop"
       >
     </drag-resize>
 </template>
@@ -32,7 +30,7 @@ export default {
       this.$emit('dragTextClick', this.listIndex, 1);
       if (this.$refs.inputCont) this.$refs.inputCont.focus();
     },
-    dragstop(ev) {
+    dragStop(ev) {
       const evs = ev;
       if (this.dragForm.position !== 'relative') {
         const maxTop = this.$store.state.page.screenHeight - this.dragForm.size.h;
@@ -41,9 +39,6 @@ export default {
         }
       }
       this.$emit('dragStop', this.dragName, evs, this.listIndex);
-    },
-    resizestop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
   },
   updated() {

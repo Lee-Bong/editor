@@ -2,11 +2,8 @@
   <drag-resize
     :dragForm="dragForm"
     :infoForm="{dragName: 'dragLinks', type: 3, listIndex, minH: 15, minW: 15}"
-    :sticks="['tm','bm','ml','mr']"
     :class="'drag-item drag-link'"
     ref="dragItem"
-    :dragstop="dragstop"
-    :resizestop="resizestop"
     >
   </drag-resize>
 
@@ -46,13 +43,9 @@ export default {
     },
   },
   methods: {
-    dragstop(ev) {
+    dragStop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
-    resizestop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
-    },
-
   },
 };
 </script>
