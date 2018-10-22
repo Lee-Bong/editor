@@ -135,7 +135,18 @@ export default {
       this.dragStop.call(this, ev);
     },
     dragResize(ev) {
-      this.$emit('dragStop', this.infoForm.dragName, ev, this.listIndex);
+      const form = this.infoForm.dragName;
+      const index = this.infoForm.listIndex;
+      const dragItems = this.$store.state.editor[form];
+      const dragItem = dragItems[index];
+      dragItem.size.w = ev.width;
+      dragItem.size.h = ev.height;
+      dragItem.location.y = ev.top;
+      dragItem.location.x = ev.left;
+      dragItems[index] = dragItem;
+      this.$store.commit('editor_update', {
+        [form]: dragItems,
+      });
     },
   },
   updated() {
