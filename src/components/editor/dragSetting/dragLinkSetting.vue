@@ -20,7 +20,7 @@
             :min="location.ymin" :max="yMax"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
-        <div class="dec-label"> <label>X</label> <label> Y</label></div>
+        <div class="dec-label" style="padding-left: 90px"> <label>X</label> <label> Y</label></div>
         <el-form-item label="尺寸：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
             :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
@@ -29,7 +29,7 @@
             :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
-        <div class="dec-label"> <label>宽</label> <label>高</label></div>
+        <div class="dec-label" style="padding-left: 90px"> <label>宽</label> <label>高</label></div>
         <el-form-item size="mini" class="link-setting-item">
           <el-radio v-model="dragForm.sourceType"
             @change="sourceChange('1')" label="1">设置跳转链接</el-radio>

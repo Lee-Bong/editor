@@ -16,34 +16,25 @@
 import * as service from '../service';
 
 export default {
-  name: 'HelloWorld',
-  props: {
-  },
   methods: {
     async getUserInfo() {
       try {
-        const ele = this;
-        await service.getUserInfo().then((data) => {
-          if (data && data.status === 'ok' && data.data) {
-            ele.$router.push({
-              path: '/manage',
-            });
-          }
-        }).catch((err) => {
-          if (err.request.status === 401) {
-            // console.log('未登陆');
-          }
-        });
+        const data = await service.getUserInfo();
+        if (data && data.status === 'ok' && data.data) {
+          this.$router.push({
+            path: '/manage',
+          });
+        }
       } catch (err) {
         // console.log('未登陆');
       }
     },
   },
   mounted() {
+    this.getUserInfo();
     this.$nextTick(() => {
       this.$refs.oaLogin.setAttribute('href', 'https://bfe.meiyou.com/we/oa');
     });
-    this.getUserInfo();
   },
 };
 </script>

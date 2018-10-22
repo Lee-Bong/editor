@@ -13,16 +13,20 @@
           </el-col>
           <el-col :span="10" type="flex" style="marginTop: 10px">
             <slot name="btnGroup" />
-            <el-button type="text" icon="el-icon-question" class="help-icon"
-            @click="goHelpWeb">使用帮助</el-button>
+            <help />
           </el-col>
         </el-row>
       </el-header>
 </template>
 
 <script>
+import help from '@/components/editor/layout/help';
+
 export default {
   props: ['pageName'],
+  components: {
+    help,
+  },
   methods: {
     goHelpWeb() {
       window.open('https://www.yuque.com/evan/vvgcu9/bl0dq3');
