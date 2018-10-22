@@ -13,13 +13,13 @@
       :preventActiveBehavior="true"
       :parentH="parentH"
       contenteditable="true"
-      :minh="infoForm.minH"
-      :minw="infoForm.minW"
+      :minh="infoForm.minH || 15"
+      :minw="infoForm.minW || 15"
 
       @activated="activateEv"
       @clicked="dragTextClick(infoForm.listIndex, infoForm.type)"
-      @dragstop="dragstop"
-      @resizestop="resizestop"
+      @dragstop="dragEvent"
+      @resizestop="resizeEvent"
       @resizing="resize"
       @dragging="resize"
       class="drag-item"
@@ -59,14 +59,25 @@ export default {
   props: {
     dragForm: Object,
     infoForm: Object,
-    sticks: Array,
+    sticks: {
+      type: Array,
+      default: () => ['tm', 'bm', 'ml', 'mr'],
+    },
     activated: Function,
-    dragstop: Function,
-    resizestop: {
+    dragStop: {
       type: Function,
-      default: function resizeStop(ev) {
+      default(ev) {
+        this.dragResize(ev);
       },
     },
+    resizeStop: {
+      type: Function,
+      default(ev) {
+        this.dragResize(ev);
+      },
+    },
+  },
+  beforeUpdate() {
   },
   computed: {
     parentH() {
@@ -86,11 +97,15 @@ export default {
       this.dragClick(index, type);
       if (this.$refs.inputCont) this.$refs.inputCont.focus();
     },
-    resizeStop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
+    resizeEvent(ev) {
+      this.resizeStop.call(this, ev);
     },
-  },
-  created() {
+    dragEvent(ev) {
+      this.dragStop.call(this, ev);
+    },
+    dragResize(ev) {
+      this.$emit('dragStop', this.infoForm.dragName, ev, this.listIndex);
+    },
   },
   updated() {
   },
