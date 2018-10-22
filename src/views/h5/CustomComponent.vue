@@ -28,7 +28,7 @@
             v-if="component.type === 3"
             class="link"
             :style="component.style"
-            @click="handleLinkClick(component.name)"
+            @click="handleLinkClick(component.key)"
         >
         </div>
         <div
@@ -118,13 +118,13 @@ export default {
       optUrl += `?x-oss-process=image/resize,m_fixed,h_${Math.ceil(h * 2)},w_${Math.ceil(w * 2)}`;
       return optUrl;
     },
-    handleLinkClick(name) {
+    handleLinkClick(index) {
       // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
       const {
         sourceType, awakeLink, outLink, appLink,
       } = this.component;
       if (!this.$route.query.isShare) {
-        this.gaReport('click', name || '热区');
+        this.gaReport('click', `${index}` || '0');
       }
       if (sourceType === '1') {
         // 普通跳转
