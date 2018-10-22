@@ -2,7 +2,7 @@
     <drag-resize
       :dragForm="dragForm"
       :infoForm="{dragName: 'dragTexts', type: 1, listIndex, minH: 15, minW: 15}"
-      :class="'drag-item'"
+      :classList="'drag-item'"
       ref="dragItem"
       :dragStop="dragStop"
       >

@@ -1,28 +1,28 @@
 <template>
-    <!-- <vue-drag-resize
-      :isActive="dragForm.isActive"
-      :y="dragForm.location.y"
-      :x="dragForm.location.x"
-      :z="dragForm.zIndex"
-      :isDraggable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
-      :isResizable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
-      :sticks="['tl','tr','br','bl']"
-      :parentLimitation="true"
-      :index="dragForm.dragIndex"
-      :listIndex="listIndex"
-      :preventActiveBehavior="true"
-      :parentH="parentH"
-      :minh="15"
-      :minw="15"
-      :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
-      :aspectRatio="dragForm.isUpload ? true: false"
-      @clicked="dragTextClick(listIndex)"
-      @dragstop="dragstop"
-      @resizestop="resizestop"
-      @resizing="resize"
-      @dragging="resize">
+    <!-- <vue-drag-resize -->
+      <!-- :isActive="dragForm.isActive" -->
+      <!-- :y="dragForm.location.y" -->
+      <!-- :x="dragForm.location.x" -->
+      <!-- :z="dragForm.zIndex" -->
+      <!-- :isDraggable="JSON.stringify(dragForm.img) !== '{}' ? true : false" -->
+      <!-- :isResizable="JSON.stringify(dragForm.img) !== '{}' ? true : false" -->
+      <!-- :w="dragForm.size.w" -->
+      <!-- :h="dragForm.size.h" -->
+      <!-- :sticks="['tl','tr','br','bl']" -->
+      <!-- :parentLimitation="true" -->
+      <!-- :index="dragForm.dragIndex" -->
+      <!-- :listIndex="listIndex" -->
+      <!-- :preventActiveBehavior="true" -->
+      <!-- :parentH="parentH" -->
+      <!-- :minh="15" -->
+      <!-- :minw="15" -->
+      <!-- :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }" -->
+      <!-- :aspectRatio="dragForm.isUpload ? true: false" -->
+      <!-- @clicked="dragTextClick(listIndex)" -->
+      <!-- @dragstop="dragstop" -->
+      <!-- @resizestop="resizestop" -->
+      <!-- @resizing="resize" -->
+      <!-- @dragging="resize"> -->
       <i class="el-icon-circle-close-outline drag-del drag-del-bottom"
       v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
@@ -32,28 +32,29 @@
       </div>
       <div v-if="JSON.stringify(dragForm.img) !== '{}'" class="img-preview"
       :style="{background: 'url('+ dragForm.img.url +') center center / contain no-repeat'}"></div>
+      <!-- <img v-if="JSON.stringify(dragForm.img) !== '{}', width: "
+        :src="dragForm.img.url"
+        :width="dragForm.size.w"
+        :height="dragForm.size.h"/> -->
 
-    </vue-drag-resize> -->
-    <drag-resize
-      :dragForm="dragForm"
-      :infoForm="{dragName: 'dragImages', type: 2, listIndex, minH: 15, minW: 15}"
-      :classList="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
-      ref="dragItem"
-      :sticks="['tl','tr','br','bl']"
-      >
-    </drag-resize>
+    </vue-drag-resize>
 </template>
 <script>
-import dragResize from '@/components/editor/dragItem/dragResize';
+import VueDragResize from 'vue-drag-resize';
 
 export default {
-  name: 'dragImages',
+  name: 'dragItem',
   components: {
-    dragResize,
+    'vue-drag-resize': VueDragResize,
   },
   props: {
-    listIndex: Number,
+    isShow: Boolean,
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     dragForm: Object,
+    listIndex: Number,
   },
   data() {
     return {
@@ -75,7 +76,7 @@ export default {
     dragTextClick(index) {
       this.$emit('dragTextClick', index, 2);
     },
-    dragStop(ev) {
+    dragstop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
     resizestop(ev) {
@@ -102,8 +103,8 @@ export default {
 }
 
 .drag-img {
-  width: 375px;
-  height: 300px;
+  width: 100%;
+  height: 100%;
   max-height: 100%;
   background-color: #ddd;
   display: flex;
