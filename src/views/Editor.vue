@@ -243,6 +243,7 @@ export default {
           } = item;
           dragArr.push({
             type: 3,
+            key,
             size,
             location,
             isFixed: item.position !== 'relative',

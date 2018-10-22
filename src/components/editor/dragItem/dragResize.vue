@@ -62,7 +62,11 @@ export default {
     sticks: Array,
     activated: Function,
     dragstop: Function,
-    resizestop: Function,
+    resizestop: {
+      type: Function,
+      default: function resizeStop(ev) {
+      },
+    },
   },
   computed: {
     parentH() {
@@ -81,6 +85,9 @@ export default {
     dragTextClick(index, type) { // 点击组件
       this.dragClick(index, type);
       if (this.$refs.inputCont) this.$refs.inputCont.focus();
+    },
+    resizeStop(ev) {
+      this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
   },
   created() {
