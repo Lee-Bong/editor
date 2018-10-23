@@ -214,6 +214,9 @@ export default {
           newW = this.page.phoneWidth;
           newH = (dragImg.height * this.page.phoneWidth) / dragImg.width;
         }
+        if (isModify && newH > this.page.phoneHeight - drags.location.y) {
+          drags.location.y = this.page.phoneHeight - newH;
+        }
 
         drags.img = {
           title: file.oldName,
