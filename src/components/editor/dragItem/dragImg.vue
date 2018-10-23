@@ -37,7 +37,7 @@
     </vue-drag-resize> -->
     <drag-resize
       :dragForm="dragForm"
-      :infoForm="{dragName: 'dragImages', type: 2, listIndex, minH: 15, minW: 15}"
+      :infoForm="{dragName: 'dragImages', type: 2, listIndex, minH: minH, minW: 15}"
       :classList="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
       ref="dragItem"
       :sticks="['tl','tr','br','bl']"
@@ -69,6 +69,10 @@ export default {
         return this.$store.state.page.phoneHeight;
       }
       return this.$store.state.page.screenHeight;
+    },
+    minH() {
+      return JSON.stringify(this.dragForm.img) !== '{}' && this.dragForm.img.h ?
+        (this.dragForm.img.h * 15) / this.dragForm.img.w : 15;
     },
   },
 
