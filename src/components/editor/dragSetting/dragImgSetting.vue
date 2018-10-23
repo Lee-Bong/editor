@@ -215,20 +215,28 @@ export default {
         const newDrag = {
           location: {
             x: 0,
-            y: 0,
+            y: drags.location.y,
           },
         };
         if (dragImg.width > ele.page.phoneWidth) {
           newW = ele.page.phoneWidth;
           newH = (dragImg.height * ele.page.phoneWidth) / dragImg.width;
         }
+        newDrag.isUpload = false;
+        drags = Object.assign({}, drags, newDrag);
+        ele.$store.commit('editor_update', { dragImages: images });
         const phoneH = drags.position === 'relative' ? ele.page.phoneHeight : ele.page.screenHeight;
-        if (isModify && newH > phoneH - drags.location.y) {
-          newDrag.location.y = phoneH - newH;
+        if (newH > phoneH - drags.location.y) {
+          newDrag.location = {
+            x: 0,
+            y: phoneH - newH,
+          };
         } else {
-          newDrag.location.y = drags.location.y;
+          newDrag.location = {
+            x: 0,
+            y: drags.location.y,
+          };
         }
-
         newDrag.img = {
           title: file.oldName,
           url: file.url,
@@ -236,13 +244,16 @@ export default {
           h: newH,
         };
         newDrag.size = {
-          h: newH,
-          w: newW,
+          h: 0,
+          w: 0,
         };
         if (!isModify) {
           newDrag.notModify = true;
         }
-        newDrag.isUpload = false;
+        newDrag.size = {
+          h: newH,
+          w: newW,
+        };
         drags = Object.assign({}, drags, newDrag);
         images[ele.editor.imgActive] = drags;
         ele.$store.commit('editor_update', { dragImages: images });

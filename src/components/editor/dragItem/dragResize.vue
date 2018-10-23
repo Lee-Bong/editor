@@ -138,11 +138,11 @@ export default {
       const form = this.infoForm.dragName;
       const index = this.infoForm.listIndex;
       const dragItems = this.$store.state.editor[form];
-      const dragItem = dragItems[index];
-      dragItem.size.w = ev.width;
-      dragItem.size.h = ev.height;
-      dragItem.location.y = ev.top;
-      dragItem.location.x = ev.left;
+      let dragItem = dragItems[index];
+      dragItem = Object.assign({}, dragItem, {
+        size: { w: ev.width, h: ev.height },
+        location: { x: ev.left, y: ev.top },
+      });
       dragItems[index] = dragItem;
       this.$store.commit('editor_update', {
         [form]: dragItems,
