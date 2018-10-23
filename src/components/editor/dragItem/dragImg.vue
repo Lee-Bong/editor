@@ -14,7 +14,8 @@
       :listIndex="listIndex"
       :preventActiveBehavior="true"
       :parentH="parentH"
-      :minh="15"
+      :minh="JSON.stringify(dragForm.img) !== '{}' && dragForm.img.h ?
+       dragForm.img.h * 15 / dragForm.img.w : 15"
       :minw="15"
       :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
       :aspectRatio="dragForm.isUpload ? true: false"

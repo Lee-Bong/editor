@@ -46,7 +46,7 @@
                 :min="size.wmin" :max="maxW"
                 controls-position="right" class="num-input"></el-input-number>
               <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
-                :min="size.hmin" :max="maxH"
+                :min="hmin" :max="maxH"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <div class="dec-label">
@@ -115,7 +115,6 @@ export default {
       },
       size: {
         wmin: 15,
-        hmin: 15,
       },
       imgList: [],
     };
@@ -148,6 +147,11 @@ export default {
       },
       immediate: true,
       deep: true,
+    },
+    hmin: {
+      get() {
+        return JSON.stringify(this.dragForm.img) !== '{}' && this.dragForm.img.h ? (this.dragForm.img.h * 15) / this.dragForm.img.w : 15;
+      },
     },
   },
   methods: {
@@ -254,7 +258,7 @@ export default {
           images[this.editor.imgActive] = drags;
           this.$store.commit('editor_update', { dragImages: images });
           clearTimeout(loadTime);
-        }, 100);
+        }, 300);
       };
       dragImg.onerror = () => {
         ele.onFileError();
@@ -308,26 +312,21 @@ export default {
         });
         return false;
       }
-
-      let drag = dragImages[imgActive];
-      let newDrag = { position: val };
-      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (val !== 'relative' && this.dragForm.location.y > maxBottom) {
-        newDrag = Object.assign(newDrag, {
-          location: {
-            x: this.dragForm.location.x,
-            y: maxBottom,
-          },
-          isUpload: false,
-          size: this.dragForm.size,
-        });
-      }
-      drag = Object.assign({}, drag, newDrag);
-      dragImages[imgActive] = drag;
+      dragImages[imgActive].position = val;
+      dragImages[imgActive].isUpload = false;
       this.$store.commit('editor_update', {
         dragImages,
       });
-      this.ratioSet();
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        let { location } = this.dragForm;
+        location = {
+          x: location.x,
+          y: maxBottom,
+        };
+        this.$emit('input-locationChange', 'dragImages', location, 'imgActive');
+      }
+      this.ratioSet(this, 'dragImages', 'imgActive');
     },
     beforeAvatarUpload(file) { // 图片上传大小限制
       const isLt5M = file.size / 1024 / 1024 < 5;
