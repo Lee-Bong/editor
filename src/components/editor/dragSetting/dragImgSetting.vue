@@ -120,7 +120,8 @@ export default {
     maxW: {
       get() {
         let mW = this.page.phoneWidth - this.dragForm.location.x;
-        const mH = this.page.phoneHeight - this.dragForm.location.y;
+        const phoneH = this.dragForm.position === 'relative' ? this.page.phoneHeight : this.page.screenHeight;
+        const mH = phoneH - this.dragForm.location.y;
         if ((mW * this.dragForm.size.h) / this.dragForm.size.w > mH) {
           mW = (this.dragForm.size.w * mH) / this.dragForm.size.h;
         }
