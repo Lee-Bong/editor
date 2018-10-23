@@ -1,40 +1,4 @@
 <template>
-    <!-- <vue-drag-resize
-      :isActive="dragForm.isActive"
-      :y="dragForm.location.y"
-      :x="dragForm.location.x"
-      :z="dragForm.zIndex"
-      :isDraggable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
-      :isResizable="JSON.stringify(dragForm.img) !== '{}' ? true : false"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
-      :sticks="['tl','tr','br','bl']"
-      :parentLimitation="true"
-      :index="dragForm.dragIndex"
-      :listIndex="listIndex"
-      :preventActiveBehavior="true"
-      :parentH="parentH"
-      :minh="JSON.stringify(dragForm.img) !== '{}' && dragForm.img.h ?
-       dragForm.img.h * 15 / dragForm.img.w : 15"
-      :minw="15"
-      :class="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
-      :aspectRatio="dragForm.isUpload ? true: false"
-      @clicked="dragTextClick(listIndex)"
-      @dragstop="dragstop"
-      @resizestop="resizestop"
-      @resizing="resize"
-      @dragging="resize">
-      <i class="el-icon-circle-close-outline drag-del drag-del-bottom"
-      v-if="dragForm.isActive"
-      @click="dragDel(listIndex)">
-      </i>
-      <div class="drag-img" v-if="JSON.stringify(dragForm.img) === '{}'">
-        <i class="iconfont ed-icon-image"></i>
-      </div>
-      <div v-if="JSON.stringify(dragForm.img) !== '{}'" class="img-preview"
-      :style="{background: 'url('+ dragForm.img.url +') center center / contain no-repeat'}"></div>
-
-    </vue-drag-resize> -->
     <drag-resize
       :dragForm="dragForm"
       :infoForm="{dragName: 'dragImages', type: 2, listIndex, minH: minH, minW: 15}"
