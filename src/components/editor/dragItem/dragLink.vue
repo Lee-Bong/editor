@@ -2,7 +2,7 @@
   <drag-resize
     :dragForm="dragForm"
     :infoForm="{dragName: 'dragLinks', type: 3, listIndex, minH: 15, minW: 15}"
-    :class="'drag-item drag-link'"
+    :classList="'drag-item drag-link'"
     ref="dragItem"
     >
   </drag-resize>
@@ -33,14 +33,6 @@ export default {
         left: 0,
       },
     };
-  },
-  computed: {
-    parentH() {
-      if (this.dragForm.position === 'relative') {
-        return this.$store.state.page.phoneHeight;
-      }
-      return this.$store.state.page.screenHeight;
-    },
   },
   methods: {
     dragStop(ev) {

@@ -15,6 +15,10 @@
       contenteditable="true"
       :minh="infoForm.minH || 15"
       :minw="infoForm.minW || 15"
+      :isResizable="isResizable"
+      :isDraggable="isResizable"
+      :aspectRatio="aspectRatio"
+      :class="classList"
 
       @activated="activateEv"
       @clicked="dragTextClick(infoForm.listIndex, infoForm.type)"
@@ -22,13 +26,13 @@
       @resizestop="resizeEvent"
       @resizing="resize"
       @dragging="resize"
-      class="drag-item"
       ref="dragItem"
       >
       <i class="el-icon-circle-close-outline drag-del"
       v-if="dragForm.isActive"
       @click="dragDel(infoForm.type, infoForm.listIndex, dragForm.dragIndex)">
       </i>
+      <!-- drag text -->
       <div v-if="infoForm.type === 1">
         <textarea class="drag-text"
           v-model="dragForm.content"
@@ -42,6 +46,14 @@
         ref="inputRecord"
         :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
         >{{dragForm.content}}</div>
+      </div>
+      <!-- drag img -->
+      <div v-if="infoForm.type === 2">
+        <div class="drag-img" v-if="JSON.stringify(dragForm.img) === '{}'">
+        <i class="iconfont ed-icon-image"></i>
+      </div>
+      <div v-if="JSON.stringify(dragForm.img) !== '{}'" class="img-preview"
+      :style="{background: 'url('+ dragForm.img.url +') center center / contain no-repeat'}"></div>
       </div>
       <!-- <slot name="content" /> -->
     </vue-drag-resize>
@@ -76,6 +88,11 @@ export default {
         this.dragResize(ev);
       },
     },
+    classList: { // 接收string、object
+      validator(value) {
+        return typeof (value) === 'string' || value instanceof Object;
+      },
+    },
   },
   beforeUpdate() {
   },
@@ -85,6 +102,20 @@ export default {
         return this.$store.state.page.phoneHeight;
       }
       return this.$store.state.page.screenHeight;
+    },
+    isResizable() {
+      let isResize = true;
+      if (this.infoForm.type === 2) {
+        isResize = JSON.stringify(this.dragForm.img) !== '{}' ? Boolean(true) : false;
+      }
+      return isResize;
+    },
+    aspectRatio() {
+      let isRatio = false;
+      if (this.infoForm.type === 2) {
+        isRatio = this.dragForm.isUpload ? Boolean(true) : false;
+      }
+      return isRatio;
     },
   },
   methods: {
@@ -119,6 +150,7 @@ export default {
     },
   },
   updated() {
+    // console.log('update', this.dragForm);
   },
 };
 </script>
