@@ -199,31 +199,33 @@ export default {
       dragImg.src = file.url;
       const ele = this;
       dragImg.onload = () => {
-        this.$message({
+        ele.$message({
           message: '图片上传成功～',
           type: 'success',
           duration: 2000,
         });
         if (isModify) {
-          this.$refs.imgReview.uplaodDone();
+          ele.$refs.imgReview.uplaodDone();
         }
-        const images = this.editor.dragImages;
-        let drags = images[this.editor.imgActive];
+        const images = ele.editor.dragImages;
+        let drags = images[ele.editor.imgActive];
         let newH = dragImg.height;
         let newW = dragImg.width;
         const newDrag = {
           location: {
             x: 0,
-            y: drags.location.y,
+            y: 0,
           },
         };
-        if (dragImg.width > this.page.phoneWidth) {
-          newW = this.page.phoneWidth;
-          newH = (dragImg.height * this.page.phoneWidth) / dragImg.width;
+        if (dragImg.width > ele.page.phoneWidth) {
+          newW = ele.page.phoneWidth;
+          newH = (dragImg.height * ele.page.phoneWidth) / dragImg.width;
         }
-        const phoneH = drags.position === 'relative' ? this.page.phoneHeight : this.page.screenHeight;
+        const phoneH = drags.position === 'relative' ? ele.page.phoneHeight : ele.page.screenHeight;
         if (isModify && newH > phoneH - drags.location.y) {
           newDrag.location.y = phoneH - newH;
+        } else {
+          newDrag.location.y = drags.location.y;
         }
 
         newDrag.img = {
@@ -232,7 +234,6 @@ export default {
           w: newW,
           h: newH,
         };
-        newDrag.location.x = 0;
         newDrag.size = {
           h: newH,
           w: newW,
@@ -242,13 +243,13 @@ export default {
         }
         newDrag.isUpload = false;
         drags = Object.assign({}, drags, newDrag);
-        images[this.editor.imgActive] = drags;
-        this.$store.commit('editor_update', { dragImages: images });
+        images[ele.editor.imgActive] = drags;
+        ele.$store.commit('editor_update', { dragImages: images });
         const ableTime = setTimeout(() => {
-          this.fileAble = false;
+          ele.fileAble = false;
           clearTimeout(ableTime);
         }, 1000);
-        this.ratioSet(this, 'dragImages', 'imgActive');
+        ele.ratioSet(ele, 'dragImages', 'imgActive');
         // todo 解决aspectRatio只根据初始值设定比例
         // const loadTime = setTimeout(() => {
         //   drags.isUpload = true;
