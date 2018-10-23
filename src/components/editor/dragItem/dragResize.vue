@@ -113,7 +113,7 @@ export default {
     aspectRatio() {
       let isRatio = false;
       if (this.infoForm.type === 2) {
-        isRatio = JSON.stringify(this.dragForm.isUpload) !== '{}' ? Boolean(true) : false;
+        isRatio = this.dragForm.isUpload ? Boolean(true) : false;
       }
       return isRatio;
     },

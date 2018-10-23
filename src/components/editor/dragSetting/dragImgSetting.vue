@@ -228,6 +228,7 @@ export default {
         //     y: 0,
         //   };
         // }
+
         drags.size = {
           h: newH,
           w: newW,
