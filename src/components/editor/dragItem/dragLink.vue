@@ -34,14 +34,6 @@ export default {
       },
     };
   },
-  computed: {
-    parentH() {
-      if (this.dragForm.position === 'relative') {
-        return this.$store.state.page.phoneHeight;
-      }
-      return this.$store.state.page.screenHeight;
-    },
-  },
   methods: {
     dragStop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);

@@ -1,7 +1,7 @@
 <template>
     <drag-resize
       :dragForm="dragForm"
-      :infoForm="{dragName: 'dragImages', type: 2, listIndex, minH: minH, minW: 15}"
+      :infoForm="{dragName: 'dragImages', type: 2, listIndex, minH, minW: 15}"
       :classList="{ 'drag-item': JSON.stringify(dragForm.img) !== '{}' }"
       ref="dragItem"
       :sticks="['tl','tr','br','bl']"
@@ -20,44 +20,13 @@ export default {
     listIndex: Number,
     dragForm: Object,
   },
-  data() {
-    return {
-      dragName: 'dragImages',
-      inputValue: '',
-      input: '',
-    };
-  },
   computed: {
-    parentH() {
-      if (this.dragForm.position === 'relative') {
-        return this.$store.state.page.phoneHeight;
-      }
-      return this.$store.state.page.screenHeight;
-    },
     minH() {
       return JSON.stringify(this.dragForm.img) !== '{}' && this.dragForm.img.h ?
         (this.dragForm.img.h * 15) / this.dragForm.img.w : 15;
     },
   },
-
   methods: {
-    dragTextClick(index) {
-      this.$emit('dragTextClick', index, 2);
-    },
-    dragStop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
-    },
-    resizestop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
-    },
-    onResezing() {
-    },
-    resize() {
-    },
-    // 删除组件
-    dragDel(index) {
-      this.$emit('dragDel', 2, index, this.dragForm.dragIndex);
-    },
     forceUpdate() {
       this.$forceUpdate();
     },
