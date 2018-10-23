@@ -78,7 +78,7 @@ export default {
     };
   },
   methods: {
-    getList() { // 获取页面数据
+    getList(isCope) { // 获取页面数据, isCope 复制引起的刷新
       const q = { ...this.pager, ...this.query };
       this.loading = true;
       API.getPageList(q)
@@ -92,6 +92,9 @@ export default {
                 return true;
               });
               newList = newList.filter(e => !!e);
+            }
+            if (isCope) {
+              newList[0].isNew = true;
             }
             this.tableData = newList;
             this.pageTotal = res.data.count;
@@ -119,17 +122,15 @@ export default {
       }
     },
     handleAdd(index, { id }) { // 复制
+      const ele = this;
       API.duplicatePage(id)
         .then((res) => {
           if (res.status === 'ok') {
-            this.$message.success('复制成功');
-
-            const newData = formatTableData(res.data);
-            newData.isNew = true; // 新复制的页面高亮选中
-
-            this.tableData.splice(index, 0, newData);
+            ele.$message.success('复制成功');
+            this.pager.page = 1;
+            this.getList(true);
           } else {
-            this.$message.warning('未复制成功，请稍后重试~');
+            ele.$message.warning('未复制成功，请稍后重试~');
           }
         })
         .catch(() => {
