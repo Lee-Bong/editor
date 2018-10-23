@@ -308,16 +308,26 @@ export default {
         });
         return false;
       }
-      dragImages[imgActive].position = val;
+
+      let drag = dragImages[imgActive];
+      let newDrag = { position: val };
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      if (val !== 'relative' && this.dragForm.location.y > maxBottom) {
+        newDrag = Object.assign(newDrag, {
+          location: {
+            x: this.dragForm.location.x,
+            y: maxBottom,
+          },
+          isUpload: false,
+          size: this.dragForm.size,
+        });
+      }
+      drag = Object.assign({}, drag, newDrag);
+      dragImages[imgActive] = drag;
       this.$store.commit('editor_update', {
         dragImages,
       });
-      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom) {
-        const { location } = this.dragForm;
-        location.y = maxBottom;
-        this.$emit('input-locationChange', 'dragImages', location, 'imgActive');
-      }
+      this.ratioSet();
     },
     beforeAvatarUpload(file) { // 图片上传大小限制
       const isLt5M = file.size / 1024 / 1024 < 5;

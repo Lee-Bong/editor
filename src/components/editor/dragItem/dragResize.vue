@@ -27,6 +27,7 @@
       @resizing="resize"
       @dragging="resize"
       ref="dragItem"
+      :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"
       >
       <i class="el-icon-circle-close-outline drag-del"
       v-if="dragForm.isActive"
@@ -53,7 +54,7 @@
         <i class="iconfont ed-icon-image"></i>
       </div>
       <div v-if="JSON.stringify(dragForm.img) !== '{}'" class="img-preview"
-      :style="{background: 'url('+ dragForm.img.url +') center center / contain no-repeat'}"></div>
+      :style="{background: 'url('+ dragForm.img.url +') center center / contain no-repeat', width: dragForm.size.w+'px', height: dragForm.size.h+'px'}"></div>
       </div>
       <!-- <slot name="content" /> -->
     </vue-drag-resize>
@@ -150,6 +151,7 @@ export default {
     },
   },
   updated() {
+    console.log('update', this.dragForm);
   },
 };
 </script>
