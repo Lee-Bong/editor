@@ -103,11 +103,8 @@ export default {
   data() {
     return {
       imgPrecent: 1,
-      fileSuccess: false,
       fileAble: false,
       isFirst: false, // 是否是更换图片
-      files: [],
-      sHeight: 500,
       limit: 1,
       location: {
         xmin: 0,
@@ -211,54 +208,54 @@ export default {
           this.$refs.imgReview.uplaodDone();
         }
         const images = this.editor.dragImages;
-        const drags = images[this.editor.imgActive];
+        let drags = images[this.editor.imgActive];
         let newH = dragImg.height;
         let newW = dragImg.width;
+        const newDrag = {
+          location: {
+            x: 0,
+            y: drags.location.y,
+          },
+        };
         if (dragImg.width > this.page.phoneWidth) {
           newW = this.page.phoneWidth;
           newH = (dragImg.height * this.page.phoneWidth) / dragImg.width;
         }
-        if (isModify && newH > this.page.phoneHeight - drags.location.y) {
-          drags.location.y = this.page.phoneHeight - newH;
+        const phoneH = drags.position === 'relative' ? this.page.phoneHeight : this.page.screenHeight;
+        if (isModify && newH > phoneH - drags.location.y) {
+          newDrag.location.y = phoneH - newH;
         }
 
-        drags.img = {
+        newDrag.img = {
           title: file.oldName,
           url: file.url,
           w: newW,
           h: newH,
         };
-        drags.location.x = 0;
-        // if (this.isFirst) {
-        //   drags.location = {
-        //     x: 0,
-        //     y: 0,
-        //   };
-        // }
-
-        drags.size = {
+        newDrag.location.x = 0;
+        newDrag.size = {
           h: newH,
           w: newW,
         };
         if (!isModify) {
-          drags.notModify = true;
+          newDrag.notModify = true;
         }
-        drags.isUpload = false;
+        newDrag.isUpload = false;
+        drags = Object.assign({}, drags, newDrag);
         images[this.editor.imgActive] = drags;
         this.$store.commit('editor_update', { dragImages: images });
-        this.fileSuccess = true;
         const ableTime = setTimeout(() => {
           this.fileAble = false;
           clearTimeout(ableTime);
         }, 1000);
-
+        this.ratioSet(this, 'dragImages', 'imgActive');
         // todo 解决aspectRatio只根据初始值设定比例
-        const loadTime = setTimeout(() => {
-          drags.isUpload = true;
-          images[this.editor.imgActive] = drags;
-          this.$store.commit('editor_update', { dragImages: images });
-          clearTimeout(loadTime);
-        }, 300);
+        // const loadTime = setTimeout(() => {
+        //   drags.isUpload = true;
+        //   images[this.editor.imgActive] = drags;
+        //   this.$store.commit('editor_update', { dragImages: images });
+        //   clearTimeout(loadTime);
+        // }, 300);
       };
       dragImg.onerror = () => {
         ele.onFileError();
