@@ -197,7 +197,7 @@ export default {
   line-height: 35px;
   color: #323232;
   cursor: ns-resize;
-  z-index: 2000;
+  z-index: 999;
   text-align: center;
 }
 .resize-icon {
