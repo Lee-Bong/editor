@@ -11,10 +11,10 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
-          <el-col :span="10" type="flex" style="marginTop: 10px">
+          <el-col :span="8" type="flex" style="marginTop: 10px">
             <slot name="btnGroup" />
-            <help />
           </el-col>
+          <el-col :span="2" type="flex" style="marginTop: 15px"><help /></el-col>
         </el-row>
       </el-header>
 </template>
