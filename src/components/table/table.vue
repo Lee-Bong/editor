@@ -10,7 +10,7 @@
       <el-table-column prop="visit" label="浏览量" min-width="180">
         <template slot-scope="scope">
           <el-button size="mini" type="text"
-            @click="goTotalWeb">访问CNZZ</el-button>
+            @click="goTotalWeb(scope.row)">查看报表</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="280">
@@ -183,8 +183,14 @@ export default {
       this.tip.index = index;
       this.tip.url = getTipUrl(id);
     },
-    goTotalWeb() {
-      window.open('https://web.umeng.com');
+    goTotalWeb({ id, clickArr }) {
+      this.$router.push({
+        name: 'total',
+        query: { page_id: `weditor_${id}` },
+        params: {
+          clickArr,
+        },
+      });
     },
   },
 };
