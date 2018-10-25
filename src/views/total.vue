@@ -18,6 +18,7 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
+                :picker-options="pickerOptions"
                 @change="pickDate">
               </el-date-picker>
               <div @click="viewToday(1)" class="total-search"
@@ -56,6 +57,7 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
+                :picker-options="pickerOptions"
                 @change="pickDate1">
               </el-date-picker>
               <div class="total-search" @click="clicTotal"
@@ -120,6 +122,13 @@ export default {
       monthActive: false,
       timeArr: [],
       clickArr: [],
+      pickerOptions: {
+        disabledDate(time) {
+          const curDate = (new Date()).getTime();
+          const oneMonths = curDate - (30 * 24 * 3600 * 1000);
+          return time.getTime() > Date.now() || time.getTime() < oneMonths;
+        },
+      },
     };
   },
   mounted() {
@@ -181,7 +190,7 @@ export default {
       try {
         this[`loading${type}`] = true;
         const data = await service.stateBI(
-          this.$route.query.page_id,
+          `weditor_${this.$route.query.page_id}`,
           s,
           n,
         );
