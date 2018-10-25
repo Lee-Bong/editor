@@ -181,7 +181,7 @@ export default {
       try {
         this[`loading${type}`] = true;
         const data = await service.stateBI(
-          this.$route.query.page_id,
+          `weditor_${this.$route.query.page_id}`,
           s,
           n,
         );

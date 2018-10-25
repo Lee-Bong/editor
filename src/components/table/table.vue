@@ -186,7 +186,7 @@ export default {
     goTotalWeb({ id, clickArr }) {
       this.$router.push({
         name: 'total',
-        query: { page_id: `weditor_${id}` },
+        query: { page_id: id },
         params: {
           clickArr,
         },
