@@ -35,6 +35,10 @@ const patchPageInfo = (pageId, data) => axios.patch(`${api}/api/we/page?page_id=
 
 const getUserInfo = () => axios.get(`${api}/api/we/me`).then(property('data'));
 
+const stateBI = (pageId, start, end) => axios.get(`${api}/api/stat-bi?page_id=${pageId}&from=${start}&to=${end}`)
+  .then(property('data'));
+
+
 export {
   axios,
   api,
@@ -47,4 +51,5 @@ export {
   patchPageInfo,
   getUserInfo,
   markPage,
+  stateBI,
 };

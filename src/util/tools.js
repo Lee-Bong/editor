@@ -91,8 +91,33 @@ export function formatTableData(data, isDraft) {
     if (pageData && pageData.title) {
       output.title = pageData.title;
     }
+    const { layerLists } = json.publish.editor;
+    const clickArr = [];
+    if (layerLists && layerLists.length) {
+      layerLists.map((item) => {
+        if (item.type === 3) {
+          clickArr[item.num] = item.name;
+        }
+        return true;
+      });
+    }
+    output.clickArr = clickArr;
   }
   return output;
+}
+
+export function timeForMat(count, date) {
+  const time2 = date ? new Date(date) : new Date();
+  if (count > 0) {
+    time2.setTime(time2.getTime() + (24 * 60 * 60 * 1000 * count));
+  } else {
+    time2.setTime(time2.getTime() - (24 * 60 * 60 * 1000 * Math.abs(count)));
+  }
+  const Y2 = time2.getFullYear();
+  const M2 = ((time2.getMonth() + 1) >= 10 ? (time2.getMonth() + 1) : `0${time2.getMonth() + 1}`);
+  const D2 = (time2.getDate() >= 10 ? time2.getDate() : `0${time2.getDate()}`);
+  const timer2 = `${Y2}-${M2}-${D2}`; // 之前几天或者之后的几天
+  return timer2;
 }
 
 export default {
@@ -102,4 +127,5 @@ export default {
   formatSecond,
   formatDate,
   formatTableData,
+  timeForMat,
 };

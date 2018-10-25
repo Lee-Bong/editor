@@ -160,7 +160,7 @@ export default {
       jssdk.callNative('ga', {
         path: '/bfe_event',
         params: Object.assign({
-          page_id: this.$route.query.page_id,
+          page_id: `weditor_${this.$route.query.page_id}`,
           label: '',
           category: '',
         }, {
