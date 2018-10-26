@@ -34,7 +34,7 @@
                   <span style="margin-left: 10px">{{ scope.row.date }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="pv" label="PV" sortable min-width="200">
+              <el-table-column prop="pv" label="PV" min-width="200">
               </el-table-column>
               <el-table-column prop="uv" label="UV" min-width="200">
               </el-table-column>
