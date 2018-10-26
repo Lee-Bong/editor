@@ -14,10 +14,7 @@
           <div class="phone-wrap" :style="{height: (page.clientHeight)+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: page.phoneWidth+'px',
                 height: (page.clientHeight)+'px'}">
-              <div class="top-banner" @click="topBannerClick">
-                <div class="now-show">{{this.now}}</div>
-                <div class="web-title">{{page.title}}</div>
-              </div>
+              <phone-banner :title="page.title" :topBannerClick="topBannerClick"/>
               <div class="screen-line" v-show="page.phoneHeight > 667"></div>
               <layout-main />
             </div>
@@ -40,8 +37,8 @@ import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
 import NavBar from '@/components/NavBar';
+import phoneBanner from '@/components/editor/layout/phoneBanner';
 import { dragCom } from '@/util/dragMxi';
-import { nowTime } from '@/util/tools';
 import * as service from '@/service';
 
 export default {
@@ -53,6 +50,7 @@ export default {
     layoutLeft,
     layoutSetting,
     NavBar,
+    phoneBanner,
   },
   data() {
     return {
@@ -78,8 +76,6 @@ export default {
       wrapHeight: 667, // 包括头部的高度x
       clientHeight: 667, // 编辑内容高度
       isFirst: true, // 空白编辑页
-      now: '00:00 AM',
-      nowTimer: null,
       dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"clientHeight":731,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
       beforeState: null,
       gobalState: null,
@@ -475,15 +471,6 @@ export default {
         }
       }
     };
-
-    // time
-    this.now = nowTime();
-    this.nowTimer = setInterval(() => {
-      this.now = nowTime();
-    }, 2000);
-  },
-  beforeDestroy() {
-    clearInterval(this.nowTimer);
   },
   beforeRouteLeave(to, from, next) {
     if (!this.goCheck()) { // 离开验证2: 路由跳转
@@ -664,31 +651,6 @@ body {
 .el-card.is-always-shadow {
   margin-top: 0;
 }
-
-.top-banner {
-  cursor: pointer;
-  background: url("../assets/images/page_banner1.png") no-repeat center center;
-  background-size: 375px auto;
-  z-index: 10;
-  position: absolute;
-  width: 375px;
-  height: 64px;
-}
-
-.web-title {
-  height: 42px;
-  color: #fff;
-  font-size: 16px;
-  margin-top: 23px;
-  line-height: 42px;
-  padding-left: 60px;
-  padding-right: 40px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: center;
-}
-
 .phone-wrap {
   position: relative;
   margin-top: 20px;
@@ -709,15 +671,6 @@ body {
   top: 731px;
   border: 0.5px dashed #eb5648;
   z-index: 1001;
-}
-.now-show {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    color: #fff;
-    font-size: 12px;
-    line-height: 22px;
-    font-family: 'Arial';
 }
 .is-require .el-form-item__label:before {
   content: '*';
