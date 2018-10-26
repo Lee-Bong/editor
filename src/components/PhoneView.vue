@@ -1,8 +1,10 @@
 <template>
     <div>
-        <div class="header" :style='{ height: `${HeadHeight}px` }'>
+        <!-- <div class="header" :style='{ height: `${HeadHeight}px` }'>
             <div class="title">{{pageJson.page.title}}</div>
-        </div>
+        </div> -->
+        <phone-banner :title="pageJson.page.title"/>
+
         <div
             class="content-container"
             :style="{ height: `${pageJson.page.phoneHeight}px` }"
@@ -13,7 +15,11 @@
 </template>
 
 <script>
+import phoneBanner from '@/components/editor/layout/phoneBanner';
+
+
 export default {
+  components: { phoneBanner },
   props: ['pageJson', 'HeadHeight', 'url'],
 };
 </script>
@@ -32,6 +38,7 @@ export default {
 .content-container {
   position: relative;
   overflow: hidden;
+  padding-top: 64px;
   .frame {
       width: 100%;
       height: 100%;
