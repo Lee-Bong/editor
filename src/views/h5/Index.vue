@@ -99,19 +99,22 @@ export default {
             imageURL: shareImg,
             fromURL,
           }, () => {
-            jssdk.callNative('ga', {
-              path: '/bfe_event',
-              params: {
-                page_id: this.$route.query.page_id,
-                label: '',
-                category: '',
-                type: 'share',
-                value: '',
-              },
-            });
+            this.gaReport('share');
           });
         },
       );
+    },
+    gaReport(type) {
+      jssdk.callNative('ga', {
+        path: '/bfe_event',
+        params: {
+          page_id: `weditor_${this.$route.query.page_id}`,
+          label: '',
+          category: '',
+          type,
+          value: '',
+        },
+      });
     },
   },
   components: {
@@ -155,16 +158,7 @@ export default {
       this.showError = true;
     }
     if (!this.$route.query.isShare) {
-      jssdk.callNative('ga', {
-        path: '/bfe_event',
-        params: {
-          page_id: this.$route.query.page_id,
-          label: '',
-          category: '',
-          type: 'pv',
-          value: '',
-        },
-      });
+      this.gaReport('pv');
     }
   },
 };
