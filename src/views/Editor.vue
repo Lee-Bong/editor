@@ -15,7 +15,7 @@
             <div class="phone-container" ref="phoneContainer" :style="{width: page.phoneWidth+'px',
                 height: (page.clientHeight)+'px'}">
               <phone-banner :title="page.title" :topBannerClick="topBannerClick"/>
-              <div class="screen-line" v-show="page.phoneHeight > 667"></div>
+              <div class="screen-line" v-show="page.phoneHeight > 603"></div>
               <layout-main />
             </div>
             <div class="phone-hidden" :style="{width: page.phoneWidth+'px',
@@ -54,7 +54,7 @@ export default {
   },
   data() {
     return {
-      phoneHeight: 667 + 65,
+      phoneHeight: 603 + 65,
       dragText: {
         width: 375,
         height: 90,
@@ -73,10 +73,10 @@ export default {
         top: 0,
         left: 0,
       },
-      wrapHeight: 667, // 包括头部的高度x
-      clientHeight: 667, // 编辑内容高度
+      wrapHeight: 603, // 包括头部的高度x
+      clientHeight: 603, // 编辑内容高度
       isFirst: true, // 空白编辑页
-      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":667,"screenHeight":667,"clientHeight":731,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
+      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
       beforeState: null,
       gobalState: null,
       isPublish: false,
@@ -589,8 +589,7 @@ body {
 .phone-container {
   position: relative;
   width: 375px;
-  height: 731px;
-  height: 631px;
+  height: 667px;
   top: 0;
   background-color: #fff;
   border: 1px solid #e5e5d5;
@@ -668,7 +667,7 @@ body {
   position: absolute;
   width: 110%;
   left:-5%;
-  top: 731px;
+  top: 603px;
   border: 0.5px dashed #eb5648;
   z-index: 1001;
 }

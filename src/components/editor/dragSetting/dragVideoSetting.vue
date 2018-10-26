@@ -53,7 +53,7 @@
               class="num-input"></el-input-number>
             <el-input-number v-model="videoH" @change="sizeHChange"
               :min="mediaSource.location ? size.wmin * videoH / videoW : size.hmin"
-              :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 667"
+              :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 603"
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
@@ -415,7 +415,6 @@ export default {
         };
       }
       if (isChange) {
-        alert('isChange');
         // video.location = {
         //   x: 0,
         //   y: 0,
