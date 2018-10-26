@@ -9,7 +9,7 @@
       </el-table-column>
       <el-table-column prop="visit" label="浏览量" min-width="180">
         <template slot-scope="scope">
-          <el-button size="mini" type="text"
+          <el-button size="mini" type="text" class="view-total"
             @click="goTotalWeb(scope.row)">查看报表</el-button>
         </template>
       </el-table-column>
@@ -201,6 +201,9 @@ export default {
 }
 .table-box .el-button {
   margin-left: 10px;
+}
+.table-box .el-button.view-total {
+  margin-left: 0;
 }
 .table-box.el-table th {
   background: #f5f7fa;
