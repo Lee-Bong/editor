@@ -133,7 +133,7 @@ export default {
   },
   mounted() {
     // [昨天, 今日, 明日, 近30天]， to是开区间
-    this.timeArr = [timeForMat(-1), timeForMat(0), timeForMat(1), timeForMat(-30)];
+    this.timeArr = [timeForMat(-1), timeForMat(0), timeForMat(1), timeForMat(-29)];
     this.clickArr = this.$route.params.clickArr || [];
     this.viewToday(1);
     this.viewMonth(0);
