@@ -64,7 +64,7 @@
               class="num-input"></el-input-number>
             <el-input-number v-model="playH" @change="sizeHChange"
               :min="size.hmin"
-              :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 667"
+              :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 603"
               :disabled="!isAction" controls-position="right"
               class="num-input"></el-input-number>
           </el-form-item>
