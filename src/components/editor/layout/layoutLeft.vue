@@ -28,7 +28,7 @@ export default {
           list: [
             { text: '文本', icon: 'iconfont ed-icon-text1', type: 1 },
             { text: '图片', icon: 'iconfont ed-icon-image', type: 2 },
-            { text: '热区', icon: 'ed-icon-requ', type: 3 },
+            { text: '热区', icon: 'ed-icon-requm', type: 3 },
             { text: '多图拼接', icon: 'ed-icon-images', type: 4 },
           ],
         },
