@@ -247,7 +247,7 @@ export default {
             this.viewData = this.viewDataTotal.slice(0, 10);
             this.viewPager.total = this.viewDataTotal.length;
           } else {
-            const pre = (shareCount / pvCount).toFixed(2) * 100;
+            const pre = ((shareCount / pvCount) * 100).toFixed(2);
             this.clickDataTotal.push({
               name: '分享',
               click: shareCount,
@@ -256,7 +256,7 @@ export default {
             if (clickCount.length) {
               const ele = this;
               clickCount.map((pro, i) => {
-                const pre1 = (pro / pvCount).toFixed(2) * 100;
+                const pre1 = ((pro / pvCount) * 100).toFixed(2);
                 this.clickDataTotal.push({
                   name: ele.clickArr[i] || '热区',
                   click: pro,
