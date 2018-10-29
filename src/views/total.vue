@@ -83,7 +83,6 @@
 </template>
 
 <script>
-// import dayjs from 'dayjs';
 import { timeForMat } from '@/util/tools';
 import * as service from '@/service';
 import NavBar from '../components/NavBar';
@@ -247,20 +246,20 @@ export default {
             this.viewData = this.viewDataTotal.slice(0, 10);
             this.viewPager.total = this.viewDataTotal.length;
           } else {
-            const pre = ((shareCount / pvCount) * 100).toFixed(2);
+            const pre = !pvCount ? 0 : ((shareCount / pvCount) * 100).toFixed(2);
             this.clickDataTotal.push({
               name: '分享',
               click: shareCount,
-              precent: Number.isNaN(pre) ? 0 : `${pre}%`,
+              precent: `${pre}%`,
             });
             if (clickCount.length) {
               const ele = this;
               clickCount.map((pro, i) => {
-                const pre1 = ((pro / pvCount) * 100).toFixed(2);
+                const pre1 = !pvCount ? 0 : ((pro / pvCount) * 100).toFixed(2);
                 this.clickDataTotal.push({
                   name: ele.clickArr[i] || '热区',
                   click: pro,
-                  precent: Number.isNaN(pre1) ? 0 : `${pre1}%`,
+                  precent: `${pre1}%`,
                 });
                 return true;
               });
