@@ -32,8 +32,10 @@ export default {
   },
   mounted() {
     this.getUserInfo();
+    const { host } = window.location;
+    const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com/we/oa' : 'https://bfe.meiyou.com/we/oa';
     this.$nextTick(() => {
-      this.$refs.oaLogin.setAttribute('href', 'https://bfe.meiyou.com/we/oa');
+      this.$refs.oaLogin.setAttribute('href', `${api}`);
     });
   },
 };
