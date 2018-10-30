@@ -53,7 +53,6 @@ export default {
       let finalComponentsJson = sortBy(this.pageJson.components, [
         item => item.location.y,
       ]);
-
       // 屏幕缩放比例
       this.scale = window.innerWidth / this.pageJson.page.phoneWidth;
       finalComponentsJson = map(finalComponentsJson, (componentJson) => {
