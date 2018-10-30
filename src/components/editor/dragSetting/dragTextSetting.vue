@@ -1,42 +1,33 @@
 <template>
   <div
-    :class="['setting-content', $store.state.editor.isTextSet ? 'setting-show' : '']"
-    :style="{width: 280+'px', height: sHeight+'px',
-    left: setForm.location.x+'px', top: setForm.location.y+'px'}"
+    :class="['setting-content', editor.isTextSet ?
+     'setting-show' : '', 'text-setting']"
+    :style="{width: setForm.width+'px'}"
     @click="settingClick">
-  <!-- <vue-drag-resize
-    class="setting-content"
-    :isActive="true"
-    :w="280"
-    :h="sHeight"
-    :x="600"
-    :y="66"
-    :isResizable="false"> -->
   <div class="setting-box">
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
-    <div class="setting">
-      <el-form ref="form" >
+    <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
+      <el-form ref="form" :rules="formRules" label-width="80px">
         <el-form-item label="" label-width="0">
-          文本内容：
+          <label class="el-form-item__label">文本内容：</label>
           <el-input
           type="textarea"
+          resize=false
           :autosize="{ minRows: 2, maxRows: 4}"
           placeholder="请输入内容"
           label-width='0'
           value="dragForm.content"
-          @focus='textInputFocus'
-          @click='textInputClick'
           v-model="dragForm.content">
           </el-input>
         </el-form-item>
-        <el-form-item label="字体大小：" size="mini">
-        <el-select v-model="dragForm.fontSize" placeholder="请选择">
+        <el-form-item label="字体大小：" size="mini" prop="name">
+        <el-select v-model="dragForm.fontSize"
+          filterable remote :remote-method="remoteMethod" placeholder="请选择">
           <el-option
             v-for="item in sizeList"
             :key="item"
@@ -45,6 +36,12 @@
           </el-option>
         </el-select>
         </el-form-item>
+        <el-form-item label="行高：" size="mini" class="line-item">
+          <el-slider :show-tooltip="false" v-model="lineNum" @change="lineSliderChange"></el-slider>
+          <el-input-number v-model="dragForm.lineHeight"
+            :min="0" :max="3" :step="0.1" @change="lineNumChange"
+            controls-position="right" class="line-num-input"></el-input-number>
+        </el-form-item>
         <el-form-item label="对齐方式：" size="mini">
           <el-radio v-model="dragForm.textAlign" label="left">左对齐</el-radio>
           <el-radio v-model="dragForm.textAlign" label="center">居中</el-radio>
@@ -52,28 +49,61 @@
         </el-form-item>
         <el-form-item label="文本颜色：" size="mini">
           <el-color-picker v-model="dragForm.textColor" :show-alpha="true"></el-color-picker>
+          <el-button type="text" class="bg-reset" @click="textColorReset">重置</el-button>
         </el-form-item>
-        <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange(1, dragForm.location.x)" :min="location.xmin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange(2, dragForm.location.y)" :min="location.ymin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
+        <el-form-item label="位置：" size="mini" class="number-item">
+          <el-input-number v-model="dragForm.location.x" @change="locationChange"
+            :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
+            controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.y" @change="locationChange"
+            :min="location.ymin" :max="yMax"
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange(1, dragForm.size.w)" :min="size.wmin" :max="size.wmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange(2, dragForm.size.h)" :min="size.hmin" :max="size.hmax" label="描述文字" controls-position="right"></el-input-number>
+        <el-form-item label="尺寸：" size="mini" class="number-item">
+          <el-input-number v-model="dragForm.size.w" @change="sizeChange"
+            :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
+            controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.size.h" @change="sizeChange"
+            :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         <div class="dec-label"> <label>宽</label> <label>高</label></div>
+        <el-form-item label="固定位置：" size="mini" class="posotion-item">
+          <el-radio v-model="dragForm.position" label="relative"
+            @change="positionChange('relative')">不固定</el-radio>
+          <el-radio v-model="dragForm.position" label="fixedTop"
+            @change="positionChange('fixedTop')"
+             >相对顶部固定</el-radio>
+          <el-radio v-model="dragForm.position" label="fixedBottom"
+            @change="positionChange('fixedBottom')"
+            >相对底部固定</el-radio>
+        </el-form-item>
+        <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'"
+          class="number-item">
+          <el-input-number
+            :value="fixedTop" @change="fixedTopChange"
+            :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
+            controls-position="right" class="num-input"></el-input-number>
+        </el-form-item>
+        <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'"
+          class="number-item">
+          <el-input-number
+            :value="fixedBottom" @change="fixedBottomChange"
+            :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
+            controls-position="right" class="num-input"></el-input-number>
+        </el-form-item>
         </el-form>
       </div>
     </div>
-   <!-- </vue-drag-resize>  -->
 </div>
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -81,39 +111,21 @@ export default {
   },
   data() {
     return {
-      sHeight: 800,
-
-      sizeList: ['12px', '14px'],
-
+      sizeList: [],
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        // xmax: 10000000,
         ymin: 0,
-        // ymax: 100,
       },
       size: {
-        w: 80,
-        h: 80,
-        wmin: 0,
-        // wmax: 100,
-        hmin: 0,
-        // hmax: 100,
+        wmin: 15,
+        hmin: 15,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
+      lineNum: 0,
+      formRules: {
+      },
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
-    },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isTextSet: false });
     },
@@ -126,115 +138,132 @@ export default {
     settingClick() {
       this.$store.commit('editor_update', {
         textSet: true,
-        isClick: true,
       });
-      // this.$store.commit('inactive_drags', {index: this.$store.state.editor.textActive, arr: 'dragTexts'});
+    },
+    remoteMethod() { // 字体输入监听
+
+    },
+    textColorReset() { // 字体颜色重置
+      const { dragTexts, textActive } = this.editor;
+      dragTexts[textActive].textColor = '#000';
+      this.$store.commit('editor_update', {
+        dragTexts,
+      });
+    },
+    lineNumChange(num) {
+      this.lineNum = (num / 3) * 100;
+    },
+    lineSliderChange(pre) {
+      this.updateLineHieght(((pre * 3) / 100).toFixed(1));
+    },
+    updateLineHieght(num) {
+      const { dragTexts, textActive } = this.editor;
+      dragTexts[textActive].lineHeight = num;
+      this.$store.commit('editor_update', {
+        dragTexts,
+      });
+    },
+    positionChange(val) {
+      if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
+        this.$message({
+          message: '组件高度大于一屏，无法设置固定位置～',
+          type: 'error',
+          duration: 2000,
+        });
+        const { dragTexts, textActive } = this.editor;
+        dragTexts[textActive].position = 'relative';
+        this.$store.commit('editor_update', {
+          dragTexts,
+        });
+        return false;
+      }
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragTexts', location, 'textActive');
+      }
     },
   },
   mounted() {
-    console.log('mounted');
+    let i = 12;
+    const list = [];
+    while (i < 75) {
+      list.push(`${i}px`);
+      i += 2;
+    }
+    this.sizeList = list;
+    this.lineNum = (this.dragForm.lineHeight / 3) * 100;
   },
   destroyed() {
-    console.log('destroyed');
+    // console.log('destroyed');
   },
   updated() {
-    console.log(this.$store.state.editor.textActive);
+
   },
 };
 </script>
 
 <style>
-.setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 10px;
-  right: 266px;
-  width: 260px;
-  z-index: 1001;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
-  visibility: hidden;
+.el-input-number.is-controls-right .el-input__inner {
+  padding-left: 5px!important;
+  padding-right: 34px!important;
 }
-.setting-show{
-  visibility: visible;
+.line-item .el-slider__runway, .ine-item .el-slider__bar {
+  height: 4px;
 }
-.setting-title {
-  height: 31px;
-  padding-left: 15px;
-  padding-right: 15px;
-  line-height: 31px;
-  background-color: #f6f7f8;
-  border-bottom: 1px solid #d9d9d9;
-  text-align: left;
-  color: #8d9ea7;
+.line-item .el-slider__button {
+  width: 10px;
+  height: 10px;
 }
-.header-btn {
-  float: right;
+.line-item .el-slider__runway {
+  width: 180px;
+  margin: 0;
+  display: inline-block;
 }
-.header-btn i {
-  cursor: pointer;
-  margin-left: 5px;
+.line-item .el-slider {
+  float: left;
 }
-.header-btn i:hover {
-  color: #323232;
+.line-num-input.el-input-number--mini {
+  display: inline-block;
+  width: 80px;
+  margin-left: 15px;
 }
-.setting {
+.text-setting .el-textarea__inner {
   padding: 5px;
-  background-color: #f5f5f5;
-  text-align: left;
 }
-.el-form-item__label {
-  padding-right: 0;
+.posotion-item .el-radio+.el-radio {
+  margin-left: 10px;
 }
-.el-form-item {
-  margin-bottom: 8px;
+.text-setting .el-form-item__label {
+  padding-right: 5px;
 }
-.el-radio + .el-radio,
-.el-form-item--mini.el-form-item {
-  margin-left: 5px;
+.number-item .el-input-number--mini:nth-child(2)  {
+  margin-left: 30px;
 }
-.el-radio__label {
-  padding-left: 2px;
+.number-item .el-input-number--mini:nth-child(1),
+.num-input.el-input-number--mini {
+  margin-left: 0;
 }
-.el-input-number--mini {
-  width: 100px;
-  margin-left: 5px;
-}
-.el-input-number--mini .el-input__inner {
-  padding-left: 5px;
-  padding-right: 26px;
-}
-.el-input-number--mini .el-input-number__decrease,
-.el-input-number--mini .el-input-number__increase {
-  width: 20px;
-}
-.el-select.el-select--mini {
-  width: 100px;
-}
-
 .dec-label {
   padding-left: 80px;
   height: 30px;
   line-height: 30px;
-  color: #323232;
-  font-size: 14px;
+  color: #606266;
+  font-size: 13px;
   margin-top: -18px;
 }
-
 .dec-label label {
   display: inline-block;
   width: 80px;
   text-align: center;
   margin-top: -20px;
 }
-
-.dec-label label:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: auto;
-}
 .dec-label label:last-child {
   margin-left: 50px;
 }
+.bg-reset{
+  border: 0;
+}
+
 </style>

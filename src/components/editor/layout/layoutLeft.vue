@@ -1,21 +1,20 @@
 <template>
-<el-aside width="200px">
- <el-card v-for="(com, index) in edComponets" :key="index">
-    <div slot="header">
-    {{com.kind}}
-    </div>
-    <el-button v-for="(list, i) in com.list" :key="i" type="text" class="ed-com"
-        @click="dragItemClick(list.type)"
-        >
-        <icon :name="list.icon"></icon>
+  <el-aside width="200px" class="left-btns">
+    <el-card v-for="(com, index) in edComponets" :key="index" class="left-btns-card">
+      <div slot="header">
+        {{com.kind}}
+      </div>
+      <el-button v-for="(list, i) in com.list" :key="i"
+       class="ed-com" @click="dragItemClick(list.type)">
+        <i :class="['iconfont', list.icon]"></i>
         <span class="el-com-text">{{list.text}}</span>
-    </el-button>
-</el-card>
-</el-aside>
+      </el-button>
+      </el-card>
+  </el-aside>
 </template>
 
 <script>
-import _ from '@/util/tools';
+import { textActiveOff } from '@/util/tools';
 
 export default {
   name: 'HelloWorld',
@@ -27,17 +26,17 @@ export default {
         {
           kind: '基础组件',
           list: [
-            { text: '文本', icon: 'text-width', type: 1 },
-            { text: '图片', icon: 'image', type: 2 },
-            { text: '热区', icon: 'link', type: 3 },
-            { text: '多图拼接', icon: 'th-list', type: 4 },
+            { text: '文本', icon: 'iconfont ed-icon-text1', type: 1 },
+            { text: '图片', icon: 'iconfont ed-icon-image', type: 2 },
+            { text: '热区', icon: 'ed-icon-requm', type: 3 },
+            { text: '多图拼接', icon: 'ed-icon-images', type: 4 },
           ],
         },
         {
           kind: '媒体组件',
           list: [
-            { text: '视频', icon: 'film', type: 5 },
-            { text: '音频', icon: 'music', type: 6 },
+            { text: '视频', icon: 'ed-icon-shipin1', type: 5 },
+            { text: '音频', icon: 'ed-icon-yinpin1', type: 6 },
           ],
         },
       ],
@@ -46,8 +45,9 @@ export default {
   methods: {
     dragItemClick(type) { // 添加组件
       const zIndex = this.$store.state.editor.layoutKey;
-      const sort = type; // 组件类型
+      let layerName;
       let num = 0; // 组件类型索引
+      let icon = 'ed-icon-text3';
       const updateEditor = {
         isTextSet: false,
         isImgSet: false,
@@ -59,34 +59,45 @@ export default {
       for (const item in this.$store.state.editor.typeCat) {
         const lists = this.$store.state.editor[this.$store.state.editor.typeCat[item][0]];
         if (lists.length) {
-          updateEditor[item[0]] = _.textActiveOff(lists, { index: 0, isAll: true });
+          updateEditor[item[0]] = textActiveOff(lists, { index: 0, isAll: true });
         }
       }
       let newEditor = {};
+      const top = document.documentElement.scrollTop || document.body.scrollTop;
+      const isScroll = top > 56 && this.$store.state.page.phoneHeight
+           > this.$store.state.page.screenHeight;
+      const top1 = isScroll ?
+        (((((this.$store.state.page.phoneHeight - top) + 56) - 90) / 2) +
+        top) - 42 : (this.$store.state.page.screenHeight - 90) / 2;
+      const top2 = isScroll ? top - 56 - 24 : 0;
       switch (type) {
         case 1:
-          const textTop = this.$store.state.editor.phoneHeight / 2 - 30 / 2;
+        {
           let drag = this.$store.state.editor.dragTexts;
           num = this.$store.state.editor.dragTexts.length;
-          drag = _.textActiveOff(drag, { index: 0, isAll: true });
+          layerName = `文本${!num ? '' : num + 1}`;
+          drag = textActiveOff(drag, { index: 0, isAll: true });
           drag.push({
+            id: this.getId(),
             isShow: true,
-            zIndex,
-            y: textTop,
+            zIndex: 1000,
             isActive: true,
             dragIndex: zIndex,
-            content: '哈哈哈哈',
+            content: '',
             fontSize: '12px',
+            lineHeight: 1.5,
             textAlign: 'left',
-            textColor: 'rgba(19, 206, 102, 0.8)',
+            textColor: 'rgba(0, 0, 0, 1)',
             location: {
               x: 0,
-              y: this.$store.state.editor.phoneHeight / 2 - 30 / 2,
+              y: top1,
             },
             size: {
               w: 375,
               h: 90,
             },
+            position: 'relative',
+            icon,
           });
           newEditor = {
             textSet: true,
@@ -96,18 +107,32 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
         case 2:
-          const textTop2 = 0;
-          const zIndex2 = this.$store.state.editor.dragImages.length;
+        {
           const drag2 = this.$store.state.editor.dragImages;
           num = drag2.length;
+          layerName = `图片${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tupian1';
           drag2.push({
+            id: this.getId(),
             isShow: true,
-            zIndex,
-            y: textTop2,
+            zIndex: 1000,
             isActive: true,
             dragIndex: zIndex,
-            img: '',
+            img: {},
+            imgList: [],
+            location: {
+              x: 0,
+              y: top2,
+            },
+            size: {
+              w: 375,
+              h: 300,
+            },
+            isUpload: false,
+            position: 'relative',
+            icon,
           });
           newEditor = {
             imgSet: true,
@@ -117,73 +142,60 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
         case 3:
-          const textTop3 = 0;
-          const zIndex3 = this.$store.state.editor.dragLinks.length;
+        {
           let drag3 = this.$store.state.editor.dragLinks;
           num = drag3.length;
-          drag3 = _.textActiveOff(drag3, { index: 0, isAll: true });
+          layerName = `热区${!num ? '' : num + 1}`;
+          icon = 'ed-icon-requm';
+          drag3 = textActiveOff(drag3, { index: 0, isAll: true });
           drag3.push({
+            id: this.getId(),
             isShow: true,
-            zIndex,
-            y: textTop3,
+            zIndex: 1000,
             isActive: true,
             dragIndex: zIndex,
-            appLink: 'http://',
-            outLink: 'http://',
+            appLink: '',
+            outLink: '',
             location: {
-              x: 0,
-              y: 0,
+              x: (375 - 100) / 2,
+              y: top1,
             },
             size: {
               w: 100,
               h: 30,
             },
+            sourceType: '1', // 1.跳转 2.唤起
+            awakeLink: '',
+            iosLink: '',
+            andLink: '',
+            yybLink: '',
+            position: 'relative',
+            icon,
           });
           newEditor = {
             linkSet: true,
             isLinkSet: true,
-            dragLInks: drag3,
+            dragLinks: drag3,
             linkActive: num,
             layoutKey: zIndex + 1,
           };
           break;
+        }
         case 4:
-          const textTop4 = 0;
-          // const zIndex4 = this.$store.state.editor.dragImageLists.length;
-          const drag4 = this.$store.state.editor.dragImageLists;
+        {
+          const drag4 = this.$store.state.editor.dragImgLists;
           num = drag4.length;
+          layerName = `多图拼接${!num ? '' : num + 1}`;
+          icon = 'ed-icon-duotu';
           drag4.push({
+            id: this.getId(),
+            isUplaod: false,
             isShow: true,
-            zIndex,
-            y: textTop4,
+            zIndex: 1000,
             isActive: true,
             dragIndex: zIndex,
-          });
-          newEditor = {
-            imgListSet: true,
-            dragTexts: drag4,
-            imgListActive: num,
-            layoutKey: zIndex + 1,
-            isImgListSet: true,
-          };
-          break;
-        case 5:
-          const textTop5 = 0;
-          // const zIndex5 = this.$store.state.editor.dragVideos.length;
-          let drag5 = this.$store.state.editor.dragVideos;
-          num = drag5.length;
-          drag5 = _.textActiveOff(drag5, { index: 0, isAll: true });
-          drag5.push({
-            isShow: true,
-            zIndex,
-            y: textTop5,
-            isActive: true,
-            dragIndex: zIndex,
-            sourceType: '1', // 1.本地视频 2.在线视频
-            source: 'http://',
-            videoTitle: '',
-            loop: true,
             location: {
               x: 0,
               y: 0,
@@ -192,6 +204,69 @@ export default {
               w: 375,
               h: 300,
             },
+            imgList: [],
+            icon,
+          });
+          newEditor = {
+            imgListSet: true,
+            isImgListSet: true,
+            dragImgLists: drag4,
+            imgListActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 5:
+        {
+          let drag5 = this.$store.state.editor.dragVideos;
+          num = drag5.length;
+          layerName = `视频${!num ? '' : num + 1}`;
+          icon = 'ed-icon-shipin';
+          drag5 = textActiveOff(drag5, { index: 0, isAll: true });
+          drag5.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex,
+            sourceType: '1', // 1.本地视频 2.在线视频
+            source: '',
+            videoTitle: '',
+            loop: true,
+            location: {
+              x: 0,
+              y: top2,
+            },
+            size: {
+              w: 375,
+              h: 300,
+            },
+            video: {
+              position: 'relative',
+              accept: '.mp4',
+              size: {
+                w: 375,
+                h: 300,
+              },
+              location: {
+                x: 0,
+                y: top2,
+              },
+            },
+            lineVideo: {
+              position: 'relative',
+              size: {
+                w: 375,
+                h: 300,
+              },
+              location: {
+                x: 0,
+                y: top2,
+              },
+            },
+            isUpload: false,
+            position: 'relative',
+            icon,
           });
           newEditor = {
             videoSet: true,
@@ -201,30 +276,66 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
-        case 6:
-          const textTop6 = 0;
-          // const zIndex6 = this.$store.state.editor.dragAudios.length;
+        }
+        default:
+        {
           let drag6 = this.$store.state.editor.dragAudios;
           num = drag6.length;
-          drag6 = _.textActiveOff(drag6, { index: 0, isAll: true });
+          layerName = `音频${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tubiao-';
+          drag6 = textActiveOff(drag6, { index: 0, isAll: true });
           drag6.push({
+            id: this.getId(),
             isShow: true,
-            zIndex,
-            y: textTop6,
+            zIndex: 1000,
             isActive: true,
             dragIndex: zIndex + 1,
             sourceType: '1', // 1.本地音频 2.在线音频
-            source: 'http://',
+            source: '',
             audioTitle: '',
             loop: true,
+            isBorder: '2',
             location: {
               x: 0,
-              y: 0,
+              y: top2,
             },
             size: {
               w: 375,
-              h: 65,
+              h: 82,
             },
+            play: {
+              title: '',
+              isUplaod: false,
+              duration: '00:00',
+              url: '',
+              accept: '.mp3',
+              position: 'relative',
+              location: {
+                x: 0,
+                y: top2,
+              },
+              size: {
+                w: 375,
+                h: 82,
+              },
+            },
+            linePlay: {
+              title: '',
+              isUplaod: false,
+              duration: '00:00',
+              url: '',
+              position: 'relative',
+              location: {
+                x: 0,
+                y: top2,
+              },
+              size: {
+                w: 375,
+                h: 82,
+              },
+            },
+            position: 'relative',
+            icon,
           });
           newEditor = {
             audioSet: true,
@@ -234,27 +345,65 @@ export default {
             layoutKey: zIndex + 1,
           };
           break;
+        }
       }
 
-      const layerLists = this.$store.state.editor.layerLists;
+      const { layerLists } = this.$store.state.editor;
       layerLists.unshift({
         display: true, // 是否显示
         lock: true, // 是否可以编辑
-        name: `图层${zIndex + 1}`, // 图层名
+        name: `${layerName}`, // 图层名
         id: num,
-        sort,
+        type,
         num,
+        zIndex,
         editing: false,
+        icon,
       });
       this.$store.commit('editor_update', Object.assign({}, updateEditor, newEditor, {
         layerLists,
         layerActive: 0,
       }));
+      if (this.$store.state.page.pageSet) {
+        this.$store.commit('page_update', { pageSet: false });
+      }
+    },
+    getId() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16;
+        const v = (c === 'x') ? r : ((r && 0x3) || 0x8);
+        return v.toString(16);
+      });
     },
   },
 };
 </script>
 
-<style scoped lang="scss">
+<style>
+.ed-com.el-button.el-button--text {
+  margin-left: 10px;
+}
+.left-btns-card .el-card__body {
+  padding-bottom: 10px !important;
+}
+.left-btns-card .ed-icon-images {
+  font-size: 26px;
+}
+.left-btns .el-button {
+  width: 80px;
+  height: 60px;
+  padding: 0;
+  margin-top: 10px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  margin-left: 10px;
+  background: none;
+}
 
+.left-btns .el-button:hover {
+  border: 1px solid #409eff;
+}
+.left-btns .el-button:active {
+  background-color: #1593ff;
+  color: #fff;
+}
 </style>

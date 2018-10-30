@@ -1,55 +1,96 @@
 <template>
-  <div
-    :class="['setting-content', $store.state.editor.isLinkSet ? 'setting-show' : '']"
-    :style="{width: 280+'px', height: sHeight+'px',
-    left: setForm.location.x+'px', top: setForm.location.y+'px'}"
+  <div :class="['setting-content', editor.isLinkSet
+    ? 'setting-show' : '', 'link-setting']"
+    :style="{width: setForm.width+'px'}"
   >
-
-  <!-- <vue-drag-resize
-    class="setting-content"
-    :isActive="true"
-    :w="280"
-    :h="sHeight"
-    :x="600"
-    :y="66"
-    :isResizable="false"> -->
   <div class="setting-box">
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
           <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
-    <div class="setting">
-      <el-form ref="form" >
-        <el-form-item label="App内跳转：" size="mini">
-          <el-input :span="16" type="text" v-model="dragForm.appLink"></el-input>
+    <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
+      <el-form ref="form" label-width="90px">
+        <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
+          <el-input-number v-model="dragForm.location.x" @blur="locationChange"
+            :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
+            controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.location.y" @blur="locationChange"
+            :min="location.ymin" :max="yMax"
+            controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
-        <el-form-item label="App内跳转：" size="mini">
+        <div class="dec-label" style="padding-left: 90px"> <label>X</label> <label> Y</label></div>
+        <el-form-item label="尺寸：" size="mini" class="number-item">
+          <el-input-number v-model="dragForm.size.w" @blur="sizeChange"
+            :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
+            controls-position="right" class="num-input"></el-input-number>
+          <el-input-number v-model="dragForm.size.h" @blur="sizeChange"
+            :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
+            controls-position="right" class="num-input"></el-input-number>
+        </el-form-item>
+        <div class="dec-label" style="padding-left: 90px"> <label>宽</label> <label>高</label></div>
+        <el-form-item size="mini" class="link-setting-item">
+          <el-radio v-model="dragForm.sourceType"
+            @change="sourceChange('1')" label="1">设置跳转链接</el-radio>
+          <el-radio v-model="dragForm.sourceType"
+            @change="sourceChange('2')" label="2">设置App唤起 /下载链接</el-radio>
+        </el-form-item>
+        <el-form-item class="link-el" v-if="dragForm.sourceType==='1'" label="App内跳转：" size="mini">
+          <el-input type="text" v-model="dragForm.appLink"></el-input>
+        </el-form-item>
+        <el-form-item class="link-el" v-if="dragForm.sourceType==='1'" label="App外跳转：" size="mini">
           <el-input type="text" v-model="dragForm.outLink"></el-input>
         </el-form-item>
-        <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange" :min="location.xmin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange" :min="location.ymin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
+        <el-form-item class="link-el" v-if="dragForm.sourceType==='2'" label="唤起链接：" size="mini">
+          <el-input  type="text" v-model="dragForm.awakeLink"></el-input>
         </el-form-item>
-        <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange" :min="size.wmin" :max="size.wmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange" :min="size.hmin" :max="size.hmax" label="描述文字" controls-position="right"></el-input-number>
+        <el-form-item class="link-el" v-if="dragForm.sourceType==='2'" label="iOS 渠道：" size="mini">
+          <el-input type="text" v-model="dragForm.iosLink"></el-input>
         </el-form-item>
-        <div class="dec-label"> <label>宽</label> <label>高</label></div>
-        </el-form>
-      </div>
+        <el-form-item class="link-el" v-if="dragForm.sourceType==='2'" label="安卓渠道：" size="mini">
+          <el-input :span="16" type="text" v-model="dragForm.andLink"></el-input>
+        </el-form-item>
+        <el-form-item class="link-el" v-if="dragForm.sourceType==='2'" label="应用宝渠道：" size="mini">
+          <el-input type="text" v-model="dragForm.yybLink"></el-input>
+        </el-form-item>
+        <div>
+           <el-form-item label="固定位置：" size="mini" class="posotion-item">
+              <el-radio v-model="dragForm.position" label="relative"
+                @change="positionChange('relative')">不固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedTop"
+                @change="positionChange('fixedTop')"
+                >相对顶部固定</el-radio>
+              <el-radio v-model="dragForm.position" label="fixedBottom"
+                @change="positionChange('fixedBottom')"
+                >相对底部固定</el-radio>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'"
+              class="number-item">
+              <el-input-number
+                v-model="fixedTop" @change="fixedTopChange"
+                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'"
+              class="number-item">
+              <el-input-number
+                v-model="fixedBottom" @change="fixedBottomChange"
+                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+          </div>
+      </el-form>
     </div>
-   <!-- </vue-drag-resize> -->
+   </div>
    </div>
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
@@ -62,37 +103,16 @@ export default {
       sizeList: ['12px', '14px'],
 
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        xmax: 10000000,
         ymin: 0,
-        ymax: 100,
       },
       size: {
-        w: 80,
-        h: 80,
-        wmin: 0,
-        wmax: 1000000,
-        hmin: 0,
-        hmax: 1000000,
+        wmin: 15,
+        hmin: 15,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    handleChange() {
-
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
-    },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isLinkSet: false });
     },
@@ -102,111 +122,53 @@ export default {
     sizeChange() { // 大小值发生改变
       this.$emit('input-sizeChange', 'dragLinks', this.dragForm.size, 'linkActive');
     },
+    sourceChange(type) {
+      this.$emit('linkSourceChange', type, 'dragLinks', 'linkActive');
+    },
+    positionChange(val) {
+      if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
+        this.$message({
+          message: '组件高度大于一屏，无法设置固定位置～',
+          type: 'error',
+          duration: 2000,
+        });
+        const { dragLinks, imgActive } = this.editor;
+        dragLinks[imgActive].position = 'relative';
+        this.$store.commit('editor_update', {
+          dragLinks,
+        });
+        return false;
+      }
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      if (this.dragForm.location.y > maxBottom) {
+        const { location } = this.dragForm;
+        location.y = maxBottom;
+        this.$emit('input-locationChange', 'dragLinks', location, 'linkActive');
+      }
+    },
   },
-  updated() {
-    console.log('update');
+  mounted() {
   },
 };
 </script>
-
 <style>
-.setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 10px;
-  right: 266px;
-  width: 260px;
-  z-index: 1001;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
-}
-.setting-title {
-  height: 31px;
-  padding-left: 15px;
-  padding-right: 15px;
-  line-height: 31px;
-  background-color: #f6f7f8;
-  border-bottom: 1px solid #d9d9d9;
-  text-align: left;
-  color: #8d9ea7;
-}
-.header-btn {
-  float: right;
-}
-.header-btn i {
-  cursor: pointer;
-  margin-left: 5px;
-}
-.header-btn i:hover {
-  color: #323232;
-}
-.setting {
-  padding: 5px;
-  background-color: #f5f5f5;
-  text-align: left;
-}
-.el-form-item__label {
-  padding-right: 0;
-}
-.el-form-item {
-  margin-bottom: 8px;
-}
-.el-radio + .el-radio,
-.el-form-item--mini.el-form-item {
-  margin-left: 5px;
-}
-.el-radio__label {
-  padding-left: 2px;
-}
-.el-input-number--mini {
-  width: 100px;
-  margin-left: 5px;
-}
-.el-input-number--mini .el-input__inner {
-  padding-left: 5px;
-  padding-right: 26px;
-}
-.el-input-number--mini .el-input-number__decrease,
-.el-input-number--mini .el-input-number__increase {
-  width: 20px;
-}
-.el-select.el-select--mini {
-  width: 100px;
-}
-
-.dec-label {
-  padding-left: 80px;
-  height: 30px;
-  line-height: 30px;
-  color: #323232;
-  font-size: 14px;
-  margin-top: -18px;
-}
-
-.dec-label label {
+.link-el.el-form-item--mini .el-form-item__content {
   display: inline-block;
-  width: 80px;
-  text-align: center;
-  margin-top: -20px;
+  width: 255px;
 }
-
-.dec-label label:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: auto;
+.link-setting .el-form-item__label {
+  padding-right: 5px;
 }
-.dec-label label:last-child {
-  margin-left: 50px;
+.link-setting .el-input--mini .el-input__inner {
+  padding: 0 8px;
 }
-.el-input-number--mini {
-  width: 100px!important;
+.link-setting .el-form-item__content {
+  margin-left: 0 !important;
 }
-.el-input-number.is-controls-right .el-input__inner {
-  padding-left: 5px!important;
-  padding-right: 34px!important;
+.link-setting-item {
+  margin-left: 25px !important;
 }
-.el-form-item__label {
-  padding-right: 5px!important;
+.link-setting .posotion-item .el-radio+.el-radio {
+  margin-left: 5px;
 }
 </style>

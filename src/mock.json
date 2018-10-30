@@ -1,0 +1,128 @@
+{
+    "editor": {
+        "page": {
+            "title": "活动页",
+            "phoneWidth": 375,
+            "phoneHeight": 407,
+            "shareTitle": "分享标题",
+            "shareDec": "分享描述",
+            "shareImg": "",
+            "background-color": "#fff"
+        },
+        "components": [
+            {
+                "type": 2,
+                "url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535441924585&di=5a4452229f1e5fa67ad0a6fb9c37692e&imgtype=0&src=http%3A%2F%2Fattach.zhiyoo.com%2Fforum%2F201303%2F30%2F16392363kvt13er39xk1k3.jpg",
+                "location": {
+                    "x": 0,
+                    "y": 90
+                },
+                "size": {
+                    "w": 375,
+                    "h": 220
+                },
+                "style": {
+                    "z-index": 2
+                }
+            },
+            {
+                "type": 2,
+                "url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535441924585&di=5a4452229f1e5fa67ad0a6fb9c37692e&imgtype=0&src=http%3A%2F%2Fattach.zhiyoo.com%2Fforum%2F201303%2F30%2F16392363kvt13er39xk1k3.jpg",
+                "location": {
+                    "x": 0,
+                    "y": 320
+                },
+                "size": {
+                    "w": 375,
+                    "h": 220
+                },
+                "style": {
+                    "z-index": 2
+                }
+            },
+            {
+                "type": 2,
+                "url": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535441924585&di=5a4452229f1e5fa67ad0a6fb9c37692e&imgtype=0&src=http%3A%2F%2Fattach.zhiyoo.com%2Fforum%2F201303%2F30%2F16392363kvt13er39xk1k3.jpg",
+                "location": {
+                    "x": 0,
+                    "y": 700
+                },
+                "size": {
+                    "w": 375,
+                    "h": 220
+                },
+                "style": {
+                    "z-index": 2
+                }
+            },
+            {
+                "type": 1,
+                "content": "哈哈哈哈啧啧啧啧啧啧做做做做做做做做做做做做做做做做做做做做做",
+                "location": {
+                    "x": 100,
+                    "y": 0
+                },
+                "size": {
+                    "w": 60,
+                    "h": 90
+                },
+                "fontSize": 12,
+                "style": {
+                    "text-align": "left",
+                    "text-color": "rgba(19, 206, 102, 0.8)",
+                    "z-index": 2
+                }
+            },
+            {
+                "type": 1,
+                "content": "哈哈哈哈",
+                "location": {
+                    "x": 0,
+                    "y": 310
+                },
+                "size": {
+                    "w": 375,
+                    "h": 90
+                },
+                "style": {
+                    "font-size": "12px",
+                    "text-align": "left",
+                    "text-color": "rgba(19, 206, 102, 0.8)",
+                    "z-index": 2
+                }
+            },
+            {
+                "type": 4,
+                "location": {
+                    "x": 0,
+                    "y": 0
+                },
+                "size": {
+                    "w": 375,
+                    "h": 400
+                },
+                "style": {
+                    "z-index": 8
+                },
+                "imgList": [
+                    {
+                        "url": "https://sc.seeyouyima.com/bfe/we/751edd82821c08ecfcac328c21e96253.png",
+                        "size": {
+                            "w": 375,
+                            "h": 375
+                        }
+                    },
+                    {
+                        "url": "https://sc.seeyouyima.com/bfe/we/751edd82821c08ecfcac328c21e96253.png",
+                        "size": {
+                            "w": 375,
+                            "h": 375
+                        }
+                    }
+                ]
+            }
+            
+        ]
+    }
+
+}

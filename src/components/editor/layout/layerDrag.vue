@@ -5,36 +5,39 @@
   @update="datadragEnd"
   :options="{animation: 300,handle:'.dargDiv'}">
     <transition-group name="list-complete" >
-        <div
+      <div
         v-for="(layer, index) in $store.state.editor.layerLists"
         :key="index"
+        :index="layer.zIndex"
         :class="['dargDiv', {active: $store.state.editor.layerActive==index},'layer-item']"
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
-        <span v-if="!layer.editing" class="layout-name" >{{layer.name}}</span>
-        <input v-if="layer.editing" v-model="layer.name"
+        <i :class="['iconfont', layer.icon]"></i>
+        <span v-show="!layer.editing" class="layout-name" >{{layer.name}}</span>
+        <input v-show="layer.editing" v-model="layer.name"
         ref='nameEditor'
         :key="index"
         :autofocus="layer.editing"
         class="layout-name name-editor"
         @blur="layoutNameBlur(index)"/>
-        </div>
+      </div>
     </transition-group>
   </draggable>
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
+import sortable from 'sortable';
 import VueDraggable from 'vuedraggable';
-import Sortable from 'sortable';
-import _ from '@/util/tools';
+
+import { dragCom } from '@/util/dragMxi';
 
 export default {
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {},
   components: {
     draggable: VueDraggable,
-    sortable: Sortable,
+    sortable,
   },
   data() {
     return {
@@ -58,29 +61,30 @@ export default {
     handleChange() {
 
     },
-    getdata(evt) {
-      console.log(evt.draggedContext.element.id);
+    getdata() {
+      // console.log(evt.draggedContext.element.id);
     },
     datadragEnd(evt) {
       const { oldIndex, newIndex } = evt;
-      const layerLists = this.$store.state.editor.layerLists;
-      const drag = layerLists[oldIndex];
-      const drop = layerLists[newIndex];
-      layerLists[oldIndex] = drop;
-      layerLists[newIndex] = drag;
+      const { layerLists, typeCat } = this.$store.state.editor;
+      const { type, num } = layerLists[newIndex];
+      const nDrags = this.$store.state.editor[typeCat[type][0]];
+      const oDrags = this.$store.state.editor[typeCat[layerLists[oldIndex].type][0]];
+      const nIndex = oDrags[layerLists[oldIndex].num].dragIndex;
+      const oIndex = nDrags[num].dragIndex;
+      nDrags[num].dragIndex = nIndex;
+      oDrags[num].dragIndex = oIndex;
+      this.$store.commit('editor_update', {
+        [typeCat[type][0]]: oDrags,
+        [typeCat[layerLists[newIndex].type][0]]: nDrags,
+      });
+      this.dragClick(num, type);
       this.$store.dispatch('layerMove', { layerLists, newIndex });
     },
-    layerclick(drag, index) { // 单击图层
-      const dragTag = this.$store.state.editor.typeCat[drag.sort];
-      let drags = this.$store.state.editor[dragTag[0]];
-      drags = _.textActiveOff(drags, { index: drag.num });
-      this.$store.commit('editor_update', {
-        [dragTag[0]]: drags,
-        layerActive: index,
-        [dragTag[1]]: true,
-        [dragTag[2]]: true,
-        [dragTag[3]]: drag.num,
-      });
+    layerclick(drag) { // 单击图层
+      // if (this.$store.state.editor.layerActive === index) return false;
+      const { type, num } = drag;
+      this.dragClick(num, type);
     },
     layerDbclick(index) { // 双击图层
       const layouts = this.$store.state.editor.layerLists;
@@ -89,9 +93,9 @@ export default {
         layerLists: layouts,
       });
 
-      this.$nextTick(function () {
-            			this.$refs.nameEditor[0].focus();
-            		});
+      this.$nextTick(() => {
+        this.$refs.nameEditor[0].focus();
+      });
     },
     layoutNameBlur(index) {
       const layouts = this.$store.state.editor.layerLists;
@@ -104,28 +108,12 @@ export default {
   updated() {
   },
 
-
 };
 </script>
 
 <style>
 .layer-drag {
-  position: absolute;
-  top: 51px;
-  right: 0px;
-  left: 0;
   z-index: 99999;
-}
-.setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 10px;
-  right: 266px;
-  width: 260px;
-  z-index: 1001;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
 }
 .setting-title {
   height: 31px;
@@ -149,18 +137,17 @@ export default {
 }
 .setting {
   padding: 5px;
-  background-color: #f5f5f5;
+  background-color: #fff;
   text-align: left;
+  overflow: auto;
+  box-sizing: border-box;
+  padding-bottom: 15px;
 }
 .el-form-item__label {
   padding-right: 0;
 }
 .el-form-item {
   margin-bottom: 8px;
-}
-.el-radio + .el-radio,
-.el-form-item--mini.el-form-item {
-  margin-left: 5px;
 }
 .el-radio__label {
   padding-left: 2px;
@@ -180,45 +167,36 @@ export default {
 .el-select.el-select--mini {
   width: 100px;
 }
-
-.dec-label {
-  padding-left: 80px;
-  height: 30px;
-  line-height: 30px;
-  color: #323232;
-  font-size: 14px;
-  margin-top: -18px;
-}
-
-.dec-label label {
-  display: inline-block;
-  width: 80px;
-  text-align: center;
-  margin-top: -20px;
-}
-
-.dec-label label:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: auto;
-}
-.dec-label label:last-child {
-  margin-left: 50px;
-}
 .dargDiv {
-  background: #fff !important;
+  background: #fff;
 }
+
 .layer-item {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 260px;
+  background: #fff;
+  font-size: 12px;
+  color: #000;
+  color: #323232;
   height: 40px;
   line-height: 40px;
   padding: 0 10px;
-  border-bottom: 1px solid #ddd;
-  color: #323232;
+  border-bottom: 1px solid #ccd5db;
+  box-sizing: border-box;
+  cursor: move;
 }
 
-.layer-item:hover,
+
 .layer-item:active,
 .layer-item.active {
+  background: #1593ffc9;
+  color: #fff !important;
+}
+.layer-item:hover
+{
   color: #1593ff;
 }
 
@@ -229,8 +207,12 @@ export default {
 .layout-name{
     height: 24px;
     padding: 5px;
+    line-height: 24px;
+    width: 170px;
+    cursor: pointer;
 }
 .name-editor{
+  width: 230px;
   transition: border .2s linear,box-shadow .2s linear;
   border-radius: 3px;
   color: #1593ff;

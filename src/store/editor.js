@@ -1,12 +1,10 @@
 export default {
   state: {
-    phoneWidth: 375,
-    phoneHeight: 667,
-    layoutKey: 0, // 层级管理，从0累加
+    layoutKey: 1, // 层级管理，从1累加
     dragTexts: [], // 组件-文本
     dragImages: [], // 组件-图片
     dragLinks: [], // 热区
-    dragImageLists: [], // 多图
+    dragImgLists: [], // 多图
     dragAudios: [], // 音频
     dragVideos: [], // 视频
     textActive: 0, // 当前活跃组件
@@ -28,14 +26,17 @@ export default {
     linkSet: false, // 是否显示热区设置
     isLinkSet: false, // 是否显示文本设置
     layerLists: [], // 图层管理,
-    layerActive: 0,
+    layerActive: 0, // 值为-1表示当前没有任何激活图层
     typeCat: {
       1: ['dragTexts', 'textSet', 'isTextSet', 'textActive'],
       2: ['dragImages', 'imgSet', 'isImgSet', 'imgActive'],
       3: ['dragLinks', 'linkSet', 'isLinkSet', 'linkActive'],
-      4: ['dragImageLists', 'imgListSet', 'isImgListSet', 'imgListActive'],
+      4: ['dragImgLists', 'imgListSet', 'isImgListSet', 'imgListActive'],
       5: ['dragVideos', 'videoSet', 'isVideoSet', 'videoActive'],
       6: ['dragAudios', 'audioSet', 'isAudioSet', 'audioActive'],
     },
+    pageSet: true,
+    mediaHeight: 300,
+    audioHeight: 82,
   },
 };

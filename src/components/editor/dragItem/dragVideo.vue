@@ -1,41 +1,60 @@
 <template>
     <vue-drag-resize
-      :isActive="isActive"
-      :w="dragForm.size.w"
-      :h="dragForm.size.h"
+      :isActive="dragForm.isActive"
+      :w="videoW"
+      :h="videoH"
       :sticks="['tl','tr','br','bl']"
-      :x="dragForm.location.x"
-      :y="dragForm.location.y"
-      :z="locationZ"
+      :x="locationX"
+      :y="locationY"
+      :z="dragForm.zIndex"
+      :isDraggable="isAction"
+      :isResizable="isAction"
       :index="dragForm.dragIndex"
-      listIndex="listIndex"
+      :listIndex="listIndex"
       :parentLimitation="true"
-
+      :aspectRatio="dragForm.isUpload ? true: false"
+      :preventActiveBehavior="true"
+      :parentH="parentH"
+      :minw="218"
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
       @dragging="resize"
       @dragstop="dragstop"
       @resizestop="resizestop"
-      class="drag-item"
+      :class="{ 'drag-item': isAction }"
       >
       <i class="el-icon-circle-close-outline drag-del drag-del-bottom"
-      v-if="isActive"
+      v-if="dragForm.isActive"
       @click="dragDel(listIndex)">
       </i>
-      <div class="drag-img">
+      <div class="drag-img" v-if="!isAction">
         <div class="video-play">
-          <i class="el-icon-caret-right" ></i>
+          <i class="el-icon-caret-right"></i>
         </div>
-        <!-- <video width="320" height="240" controls>
-          <source src="movie.mp4" type="video/mp4">
-      </video> -->
       </div>
-
+      <video v-if="dragForm.sourceType === '1' &&  dragForm.video.url"
+        ref="videoPlay"
+        class="video-show"
+        width="100%"
+        height="100%"
+        :src="dragForm.video.url"
+        controlsList="nodownload"
+        :poster="dragForm.video.poster" controls>
+          <source :src="dragForm.video.url"
+           type="video/mp4">
+        </video>
+        <video v-if="dragForm.sourceType === '2' &&  dragForm.lineVideo.url"
+        ref="lineVideoPlay"
+        class="video-show"
+        width="100%"
+        height="100%"
+        :poster="dragForm.lineVideo.poster" controls>
+          <source :src="dragForm.lineVideo.url">
+        </video>
     </vue-drag-resize>
 
 </template>
 <script>
-import $ from 'jquery';
 import VueDragResize from 'vue-drag-resize';
 
 export default {
@@ -44,28 +63,8 @@ export default {
     'vue-drag-resize': VueDragResize,
   },
   props: {
+    listIndex: Number,
     dragForm: Object,
-    isShow: Boolean,
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-    locationX: {
-      type: Number,
-      default: 0,
-    },
-    locationY: {
-      type: Number,
-      default: 0,
-    },
-    locationZ: {
-      type: Number,
-      default: 0,
-    },
-    tWidth: Number,
-    tHeight: Number,
-    listIndex: Number,
-    listIndex: Number,
   },
   data() {
     return {
@@ -82,16 +81,64 @@ export default {
       },
     };
   },
+  computed: {
+    parentH() {
+      if (this.dragForm.position === 'relative') {
+        return this.$store.state.page.phoneHeight;
+      }
+      return this.$store.state.page.screenHeight;
+    },
+    isAction() {
+      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
+    },
+    locationX: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.location ? curPlay.location.x : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    locationY: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.location ? curPlay.location.y : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    videoW: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.size ? curPlay.size.w : 375;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    videoH: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.size ? curPlay.size.h : 300;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
 
   methods: {
     dragTextClick(index) {
-      const newEditor = this.deActiveArr(index);
-      const layerActive = this.updateLayer(index, 5);
-      this.$store.commit('editor_update', Object.assign(newEditor, {
-        layerActive,
-      }));
+      this.$emit('dragTextClick', index, 5);
     },
-    onResezing(obj) {
+    onResezing(newRect) {
       this.drag.width = newRect.width;
       this.drag.height = newRect.height;
       this.drag.top = newRect.top;
@@ -105,81 +152,85 @@ export default {
     },
     // 删除组件
     dragDel(index) {
-      this.$emit('getDelLayer', 5, index);
+      this.$emit('dragDel', 5, index, this.dragForm.dragIndex);
     },
-    dragDeactivated(index) { // 点击组件外区域
+    dragDeactivated() { // 点击组件外区域
     },
     dragstop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
-    },
-    resizestop(ev) {
-      this.$emit('dragStop', this.dragName, ev, this.listIndex);
-    },
-    // tools
-    deActiveArr(index) {
-      const updateEditor = {};
-      for (const item in this.$store.state.editor.typeCat) {
-        const form = this.$store.state.editor.typeCat[item];
-        const lists = this.$store.state.editor[form[0]];
-
-        if (lists.length) {
-          if (this.dragName === form[0]) {
-            updateEditor[form[0]] = _.textActiveOff(lists, { index });
-            updateEditor[form[2]] = true;
-            updateEditor[form[3]] = index;
-          } else {
-            updateEditor[form[0]] = _.textActiveOff(lists, { index: 0, isAll: true });
-            updateEditor[form[2]] = false;
-          }
+      // this.$emit('dragStop', this.dragName, ev, this.listIndex);
+      this.locationChange({
+        x: ev.left,
+        y: ev.top,
+      });
+      const evs = ev;
+      if (this.dragForm.position !== 'relative') {
+        const maxTop = this.$store.state.page.screenHeight - this.dragForm.size.h;
+        if (evs.top > maxTop) {
+          evs.top = maxTop;
         }
       }
-      return updateEditor;
     },
-    updateLayer(index) {
-      const layers = this.$store.state.editor.layerLists;
-      let i;
-      layers.map((item, key) => {
-        if (item.sort === 1 && item.num === index) {
-          i = key;
-        }
-      });
-      return i;
+    resizestop(ev) {
+      const isAction = this.dragForm.sourceType === '1';
+      const curPlay = isAction ? this.dragForm.video : this.dragForm.lineVideo;
+      curPlay.size = {
+        w: ev.width,
+        h: ev.height,
+      };
+      let playObj = {};
+      if (isAction) {
+        playObj = { video: curPlay };
+      } else {
+        playObj = { lineVideo: curPlay };
+      }
+      this.updateVideo(playObj);
     },
+    locationChange(location) { // 位置值发生改变
+      const isAction = this.dragForm.sourceType === '1';
+      const curPlay = isAction ? this.dragForm.video : this.dragForm.lineVideo;
+      curPlay.location = location;
+
+      let playObj = {};
+      if (isAction) {
+        playObj = { video: curPlay };
+      } else {
+        playObj = { lineVideo: curPlay };
+      }
+      this.updateVideo(playObj);
+    },
+    updateVideo(playObj) {
+      const { dragVideos, videoActive } = this.$store.state.editor;
+      let drags = dragVideos[videoActive];
+      drags = Object.assign({}, drags, playObj);
+      dragVideos[videoActive] = drags;
+      const lists = Object.assign([], dragVideos);
+      this.$store.commit('editor_update', { dragVideos: lists });
+    },
+    forceUpdate() {
+      this.$forceUpdate();
+    },
+  },
+  updated() {
+    const ele = this;
+    this.$nextTick(() => {
+      if (ele.dragForm.sourceType === '1' && ele.dragForm.video.url && ele.$refs.videoPlay) {
+        ele.$refs.videoPlay.src = ele.dragForm.video.url;
+      }
+      if (ele.dragForm.sourceType === '2' && ele.dragForm.lineVideo.url && ele.$refs.lineVideoPlay) {
+        ele.$refs.lineVideoPlay.src = ele.dragForm.lineVideo.url;
+      }
+    });
+  },
+  mounted() {
   },
 };
 </script>
 
 <style>
-.vdr-stick {
-  background-color: #fff;
-  border: 1px solid #59c7f9;
-}
-
-.vdr.active:before {
-  outline: 1px dashed #59c7f9;
-}
-
-.drag-del {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
-  color: #888;
-  border-radius: 20px;
-  right: -10px;
-  top: -10px;
-  cursor: pointer;
-}
-.drag-del-bottom {
-  top: 10px !important;
-}
-.drag-del-bottom {
-  top: 10px !important;
-}
 .video-play {
   width: 44px;
   height: 44px;
-  background-color: #211e1e82;
+  background-color: #211e1e61;
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -191,7 +242,10 @@ export default {
   margin-top: -22px;
 }
 .video-play i {
-  font-size: 30px;
+  font-size: 40px;
   color: #ffffffab;
+}
+.video-show {
+  cursor: move !important;
 }
 </style>

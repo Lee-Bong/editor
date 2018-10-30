@@ -1,218 +1,589 @@
 <template>
-  <div
-    :class="['setting-content', $store.state.editor.isVideoSet ? 'setting-show' : '']"
-    :style="{width: 280+'px', height: sHeight+'px',
-    left: setForm.location.x+'px', top: setForm.location.y+'px'}"
+  <div :class="['setting-content', editor.isVideoSet
+    ? 'setting-show' : '', 'video-setting']"
+    :style="{width: setForm.width+'px'}"
   >
-  <!-- <vue-drag-resize
-    class="setting-content"
-    :isActive="true"
-    :w="280"
-    :h="sHeight"
-    :x="600"
-    :y="66"
-    :isResizable="false"> -->
-  <div class="setting-box">
-    <div class="setting-title">
-      <span>组件设置</span>
-      <span class="header-btn">
-          <i class="el-icon-news" @click="settingFixed"></i>
-          <i class="el-icon-close" @click="settingClose"></i>
-      </span>
-    </div>
-    <div class="setting">
-      <el-form ref="form" >
-        <el-form-item label="类型：" size="mini">
-          <el-radio v-model="dragForm.sourceType" @change="sourceChange('1')" label="1">本地上传</el-radio>
-          <el-radio v-model="dragForm.sourceType" @change="sourceChange('2')" label="2">在线视频</el-radio>
-        </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '1'"  label="选择视频：" size="mini">
-          <el-input :span="16" type="text" v-model="dragForm.textColor"></el-input>
-        </el-form-item>
-        <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接：" size="mini">
-          <el-input type="text" v-model="dragForm.textColor"></el-input>
-        </el-form-item>
-        <el-form-item label="视频封面：" size="mini">
-          <el-input type="text" v-model="dragForm.textColor"></el-input>
-        </el-form-item>
-        <el-form-item label="位置：" size="mini">
-          <el-input-number v-model="dragForm.location.x" @blur="locationChange" :min="location.xmin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.location.y" @blur="locationChange" :min="location.ymin" :max="location.xmax" label="描述文字" controls-position="right"></el-input-number>
-        </el-form-item>
-        <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini">
-          <el-input-number v-model="dragForm.size.w" @blur="sizeChange" :min="size.wmin" :max="size.wmax" label="描述文字" controls-position="right"></el-input-number>
-          <el-input-number v-model="dragForm.size.h" @blur="sizeChange" :min="size.hmin" :max="size.hmax" label="描述文字" controls-position="right"></el-input-number>
-        </el-form-item>
-        <div class="dec-label"> <label>宽</label> <label>高</label></div>
+    <div class="setting-box">
+      <div class="setting-title">
+        <span>组件设置</span>
+        <span class="header-btn">
+            <i class="el-icon-close" @click="settingClose"></i>
+        </span>
+      </div>
+      <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
+        <el-form ref="form" label-width="80px">
+          <el-form-item label="类型：" size="mini">
+            <el-radio v-model="dragForm.sourceType"
+              @change="sourceChange('1')" label="1">本地上传</el-radio>
+            <el-radio v-model="dragForm.sourceType"
+              @change="sourceChange('2')" label="2">在线视频</el-radio>
+          </el-form-item>
+          <el-form-item v-if="dragForm.sourceType === '1'"
+            label="选择视频：" size="mini" class="is-require video-el">
+            <media-upload :source="mediaSource" @upload-done="mediaUploadDone"
+            @file-remove="mediaFileRemove" ref="mediaUpload" :dec="mediaDec"/>
+          </el-form-item>
+          <el-form-item v-if="dragForm.sourceType === '2'" label="视频链接："
+            size="mini" class="is-require video-el">
+            <el-input type="text" ref="lineVideo"
+               v-model="lineSource" @blur="lineSourceBlur"></el-input>
+          </el-form-item>
+          <el-form-item label="视频封面：" size="mini" class="video-el">
+            <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"
+              :dec="String('图片尺寸16:9, 不传即为透明')"/>
+          </el-form-item>
+          <el-form-item label="位置：" size="mini" class="number-item">
+            <el-input-number v-model="locationX" @change="locationXchange"
+              :min="location.xmin"
+              :max="mediaSource.size ? (page.phoneWidth-mediaSource.size.w) : 375"
+              :disabled="!isAction" controls-position="right"
+              class="num-input"></el-input-number>
+            <el-input-number v-model="locationY" @change="locationYchange"
+              :min="location.ymin"
+              :max="mediaSource.size ? (page.phoneHeight-mediaSource.size.h) : 667"
+              :disabled="!isAction" controls-position="right"
+              class="num-input"></el-input-number>
+          </el-form-item>
+          <div class="dec-label"> <label>X</label> <label> Y</label></div>
+          <el-form-item label="尺寸：" size="mini" class="number-item">
+            <el-input-number v-model="videoW" @change="sizeWChange"
+              :min="size.wmin"
+              :max="mediaSource.location ? (page.phoneWidth-mediaSource.location.x) : 375"
+              :disabled="!isAction" controls-position="right"
+              class="num-input"></el-input-number>
+            <el-input-number v-model="videoH" @change="sizeHChange"
+              :min="mediaSource.location ? size.wmin * videoH / videoW : size.hmin"
+              :max="mediaSource.location ? (page.phoneHeight-mediaSource.location.y) : 603"
+              :disabled="!isAction" controls-position="right"
+              class="num-input"></el-input-number>
+          </el-form-item>
+          <div class="dec-label"> <label>宽</label> <label>高</label></div>
+          <div v-if="isAction">
+            <el-form-item label="固定位置：" size="mini" class="posotion-item">
+              <el-radio v-model="playPositon" label="relative"
+               @change="positionChange('relative')">不固定</el-radio>
+              <el-radio v-model="playPositon" label="fixedTop" @change="positionChange('fixedTop')"
+                >相对顶部固定</el-radio>
+              <el-radio v-model="playPositon" label="fixedBottom"
+                @change="positionChange('fixedBottom')"
+                >相对底部固定</el-radio>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedTop'">
+              <el-input-number
+                v-model="locationY" @change="fixedTopChange"
+                :min="location.ymin" :max="(page.screenHeight-mediaSource.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+            <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedBottom'">
+              <el-input-number
+                v-model="locationBottom" @change="fixedBottomChange"
+                :min="location.ymin" :max="(page.screenHeight-mediaSource.size.h)"
+                controls-position="right" class="num-input"></el-input-number>
+            </el-form-item>
+          </div>
         </el-form>
       </div>
     </div>
-   <!-- </vue-drag-resize> -->
-   </div>
+    <video ref="videoLoad" controls v-show="false">
+    </video>
+  </div>
 </template>
 
 <script>
-import VueDragResize from 'vue-drag-resize';
+import oss from '@/service/oss';
+import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
+import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
+import { dragCom } from '@/util/dragMxi';
 
 export default {
+  mixins: [dragCom()],
   name: 'DragSetting',
   props: {
     dragForm: Object,
     setForm: Object,
   },
+  computed: {
+    isAction() {
+      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
+    },
+    locationAble() {
+      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.location)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.location);
+    },
+    locationX: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.location ? curPlay.location.x : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    locationY: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.location ? curPlay.location.y : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    locationBottom: {
+      get() {
+        return this.$store.state.page.screenHeight - this.locationY
+            - this.dragForm.size.h;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    mediaSource: {
+      get() {
+        return this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    playPositon: {
+      get() {
+        const position = this.dragForm.sourceType === '1' ? this.dragForm.video.position : this.dragForm.lineVideo.position;
+        return position;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    imgObj: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.poster !== 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png' ?
+          { url: curPlay.poster } : { url: '' };
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    videoW: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.size ? curPlay.size.w : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+    videoH: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.size ? curPlay.size.h : 0;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
+  components: {
+    imgUplaod,
+    mediaUpload,
+  },
   data() {
     return {
-      sHeight: 800,
-
-      sizeList: ['12px', '14px'],
-
+      limit: 1,
+      fileList: [],
       location: {
-        x: 10000,
-        y: 0,
         xmin: 0,
-        xmax: 10000000,
         ymin: 0,
-        ymax: 100,
       },
       size: {
-        w: 80,
-        h: 80,
-        wmin: 0,
-        // wmax: 100,
+        wmin: 218,
         hmin: 0,
-        // hmax: 100,
       },
-      form: '',
-      textAlign: 1,
-      textColor: 'rgba(19, 206, 102, 0.8)',
+      lineSource: '',
+      isLineUpload: false,
+      lastCont: '', // 标记二次在线url是否一致
+      mediaDec: '仅支持MP4格式',
     };
   },
   methods: {
-    textInputFocus() {
-    },
-    textInputClick() {
-    },
-    handleChange() {
-
-    },
     sourceChange(type) {
+      const isActive = Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
+       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
+      if (!isActive && (this.dragForm.size.h !== this.editor.mediaHeight
+        || this.dragForm.size.w !== this.page.phoneWidth
+        || !this.dragForm.isLineUpload)) {
+        this.setVideoInit();
+      } else {
+        const videoObj = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        this.setVideoInit({
+          size: {
+            w: videoObj.w,
+            h: videoObj.h,
+          },
+          location: {
+            x: videoObj.x,
+            y: videoObj.y,
+          },
+        });
+      }
       this.$emit('videoSourceChange', type, 'dragVideos', 'videoActive');
-    },
-    settingFixed() { // 锁定设置
-      this.$emit('setting-fixed');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isVideoSet: false });
     },
-    locationChange() { // 位置值发生改变
-      this.$emit('input-locationChange', 'dragVideos', this.dragForm.location, 'videoActive');
+    locationXchange(val) {
+      this.locationChange({
+        x: val,
+        y: this.locationY,
+      });
     },
-    sizeChange() { // 大小值发生改变
-      this.$emit('input-sizeChange', 'dragVideos', this.dragForm.size, 'videoActive');
+    locationYchange(val) {
+      this.locationChange({
+        x: this.locationX,
+        y: val,
+      });
     },
+    locationChange(location) { // 位置值发生改变
+      const isAction = this.dragForm.sourceType === '1';
+      const curPlay = isAction ? this.dragForm.video : this.dragForm.lineVideo;
+      curPlay.location = location;
+      let playObj = {};
+      if (isAction) {
+        playObj = { video: curPlay };
+      } else {
+        playObj = { lineVideo: curPlay };
+      }
+      const { dragVideos, videoActive } = this.editor;
+      let drags = dragVideos[videoActive];
+      drags = Object.assign({}, drags, playObj);
+      dragVideos[videoActive] = drags;
+      const lists = Object.assign([], dragVideos);
+      this.$store.commit('editor_update', { dragVideos: lists });
+    },
+    sizeWChange(val) {
+      this.sizeChange({
+        w: val,
+        h: this.dragForm.size.h,
+      }, 1);
+    },
+    sizeHChange(val) {
+      this.sizeChange({
+        w: this.dragForm.size.w,
+        h: val,
+      }, 2);
+    },
+    sizeChange(sizeObj, type) { // 大小值发生改变
+      let size = sizeObj;
+      const curVideo = this.dragForm.sourceType === '1' ? 'video' : 'lineVideo';
+      const videoObj = this.dragForm[curVideo];
+      const maxW = this.page.phoneWidth - videoObj.location.x;
+      const maxH = this.page.phoneHeight - videoObj.location.y;
+
+      if (type === 1) {
+        let newW = size.w > maxW ? maxW : size.w;
+        let newH = (videoObj.h * size.w) / videoObj.w;
+        if (newH > maxH) {
+          newH = maxH;
+          newW = (videoObj.w * newH) / videoObj.h;
+        }
+        size = {
+          w: newW,
+          h: newH,
+        };
+      } else {
+        let newW = (videoObj.w * size.h) / videoObj.h;
+        let newH = size.h > maxH ? maxH : size.h;
+        if (newW > maxW) {
+          newW = maxW;
+          newH = (videoObj.h * newW) / videoObj.w;
+        }
+        size = {
+          w: newW,
+          h: newH,
+        };
+      }
+      videoObj.size = size;
+      videoObj.location = videoObj.location;
+      const videoList = this.editor.dragVideos;
+      const videos = Object.assign(
+        {}, videoList[this.editor.videoActive],
+        {
+          curVideo: videoObj,
+          isUpload: false,
+        },
+      );
+      videoList[this.editor.videoActive] = videos;
+      this.$store.commit('editor_update', { dragVideos: videoList });
+      this.ratioSet(this, 'dragVideos', 'videoActive');
+    },
+    async onFileChange(file) {
+      const up = await oss(file.raw);
+      if (up && up.url) {
+        this.onFileSuccess(up);
+      }
+    },
+    mediaUploadDone(file) {
+      this.onMediaFileSuccess(file, 'dragVideos', 'videoActive');
+    },
+    mediaFileRemove() {
+      this.mediaChange({
+        poster: '',
+        url: '',
+        name: '',
+        position: 'relative',
+        title: '',
+      }, this, 'dragVideos', 'videoActive', true);
+    },
+    onMediaFileSuccess(file, dragList, active) {
+      this.$refs.videoLoad.src = file.url;
+      const ele = this;
+      this.$refs.videoLoad.addEventListener('loadedmetadata', function cb() {
+        if (ele.$refs.videoLoad.currentSrc !== file.url) return false;
+        if (ele.$refs.mediaUpload) ele.$refs.mediaUpload.uplaodDone();
+        if (ele.dragForm.sourceType === '1') {
+          ele.$message({
+            message: '视频上传成功～',
+            type: 'success',
+            duration: 2000,
+          });
+        } else {
+          ele.$message({
+            message: '在线视频访问成功～',
+            type: 'success',
+            duration: 2000,
+          });
+        }
+        const videos = ele.editor[dragList];
+        const drags = videos[ele.editor[active]];
+        const newH = (this.videoHeight * ele.page.phoneWidth) / this.videoWidth;
+
+        const video = {
+          sourceW: this.videoWidth,
+          sourceH: this.videoHeight,
+          w: ele.page.phoneWidth,
+          h: newH,
+          // location: {
+          //   x: 0,
+          //   y: 0,
+          // },
+          size: {
+            w: ele.page.phoneWidth,
+            h: newH,
+          },
+          title: file.name || '',
+          name: file.name || '',
+          url: file.url,
+          isPoster: !!drags.poster,
+          poster: drags.poster ? drags.poster : 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
+        };
+        ele.mediaChange(video, ele, dragList, active);
+      });
+      this.$refs.videoLoad.addEventListener('error', () => {
+        if (ele.dragForm.sourceType === '2') {
+          ele.onFileError('资源不存在或已经损坏，请重试～');
+          ele.$refs.lineVideo.focus();
+          ele.mediaChange({
+            poster: '',
+            url: '',
+          }, ele, 'dragVideos', 'videoActive', true);
+        } else {
+          ele.onFileError();
+          ele.mediaChange({}, ele, dragList, active, true);
+        }
+      });
+    },
+    mediaChange(play, ele, dragList, active, isRemove, isChange) {
+      const lists = ele.editor[dragList];
+      let drags = lists[ele.editor[active]];
+      let videoObj = {};
+      const isAction = ele.dragForm.sourceType === '1';
+      const curPlay = isAction ? ele.dragForm.video : ele.dragForm.lineVideo;
+      const video = Object.assign({}, curPlay, play);
+      if (isRemove) {
+        video.size = {
+          w: ele.page.phoneWidth,
+          h: ele.editor.mediaHeight,
+        };
+      }
+      if (isChange) {
+        // video.location = {
+        //   x: 0,
+        //   y: 0,
+        // };
+      }
+      if (isRemove) video.location.x = 0;
+      if (!isChange) {
+        videoObj = { video };
+        if (this.dragForm.sourceType === '2') {
+          videoObj = { lineVideo: video };
+        }
+      }
+      drags = Object.assign({}, drags, videoObj, { isUpload: false });
+      lists[ele.editor[active]] = drags;
+      ele.$store.commit('editor_update', { [dragList]: lists });
+      this.ratioSet(ele, dragList, active);
+    },
+    onFileError(msg) { // 图片上传失败
+      this.fileFail = true;
+      this.fileAble = false;
+      const message = msg || '视频上传失败，请重试～';
+      this.$message({
+        message,
+        type: 'error',
+        duration: 2000,
+      });
+      if (!msg) this.$refs.mediaUpload.uplaodDone(true);
+    },
+    uploadDone(file) { // 封面上传成功
+      let newFile;
+      if (file && file.url) {
+        this.imgObj = { url: file.url };
+        newFile = {
+          poster: file.url,
+          posterTitle: file.name,
+          isPoster: true,
+        };
+      } else {
+        this.imgObj = {};
+        newFile = {
+          poster: 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
+          posterTitle: '',
+          isPoster: false,
+        };
+      }
+      const videos = this.editor.dragVideos;
+      const drags = videos[this.editor.videoActive];
+      drags.poster = newFile.poster;
+      drags.video = Object.assign({}, drags.video, newFile);
+      drags.lineVideo = Object.assign({}, drags.lineVideo, newFile);
+      videos[this.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragVideos: videos });
+    },
+    fileRemove() {
+      this.uploadDone();
+    },
+    ratioSet(ele, dragList, active) {
+      const lists = ele.editor[dragList];
+      let drags = lists[ele.editor[active]];
+      const ratioTime = setTimeout(() => {
+        drags = Object.assign({}, drags, { isUpload: true });
+        lists[ele.editor[active]] = drags;
+        ele.$store.commit('editor_update', { [dragList]: lists });
+        clearTimeout(ratioTime);
+      }, 100);
+    },
+    positionChange(val) {
+      const curPlay = this.dragForm.sourceType === '1' ? 'video' : 'lineVideo';
+      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      const videos = this.editor.dragVideos;
+      let drags = videos[this.editor.videoActive];
+      if (val !== 'relative' && drags[curPlay].size.h > this.page.screenHeight) {
+        this.$message({
+          message: '组件高度大于一屏，无法设置固定位置～',
+          type: 'error',
+          duration: 2000,
+        });
+        const { dragVideos, videoActive } = this.editor;
+        dragVideos[videoActive].position = 'relative';
+        this.$store.commit('editor_update', {
+          dragVideos,
+        });
+        return false;
+      }
+      if (drags[curPlay].location.y > maxBottom && val !== 'relative') {
+        drags[curPlay].location.y = maxBottom;
+      }
+      drags[curPlay].position = val;
+      drags = Object.assign({}, drags, drags[curPlay]);
+      videos[this.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragVideos: videos });
+    },
+    lineSourceBlur() {
+      const val = this.lineSource;
+      if (this.lastCont && this.lastCont === val) return false;
+      this.lastCont = val;
+      if (val) {
+        if (this.dragForm.lineVideo &&
+        this.dragForm.lineVideo.url && this.dragForm.lineVideo.url === val) return false;
+        this.onMediaFileSuccess({ url: val }, 'dragVideos', 'videoActive');
+      } else {
+        this.setVideoInit(null, true);
+      }
+    },
+    onlineFileError() { // 图片上传失败
+      this.$message({
+        message: '该资源不存在或者已经损坏，请重试～',
+        type: 'error',
+        duration: 2000,
+      });
+    },
+    setVideoInit(newVideo, isClear) { // 恢复视频初始展示
+      let newObj = {
+        sourceType: this.dragForm.sourceType,
+        isUpload: false,
+        size: {
+          w: this.page.phoneWidth,
+          h: this.editor.mediaHeight,
+        },
+        location: {
+          x: 0,
+          y: 0,
+        },
+      };
+      if (newVideo) {
+        newObj = Object.assign({}, newObj, newVideo);
+      }
+      if (isClear) {
+        if (this.dragForm.sourceType === '1' && this.dragForm.video.url) {
+          newObj = Object.assign({}, newObj, { video: { url: '' } });
+        } else if (this.dragForm.sourceType === '2' && this.dragForm.lineVideo.url) {
+          newObj = Object.assign({}, newObj, { lineVideo: { url: '' } });
+        }
+      }
+      const videos = this.editor.dragVideos;
+      let drags = videos[this.editor.videoActive];
+      drags = Object.assign({}, drags, newObj);
+      videos[this.editor.videoActive] = drags;
+      this.$store.commit('editor_update', { dragVideos: videos });
+    },
+  },
+  mounted() {
+    const ele = this;
+    this.$nextTick(() => {
+      ele.lineSource = this.dragForm.lineVideo.url;
+    });
   },
 };
 </script>
 
 <style>
-.setting-content {
-  position: fixed;
-  top: 66px;
-  bottom: 10px;
-  right: 266px;
-  width: 260px;
-  z-index: 1001;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
+.video-el.el-form-item--mini .el-form-item__content {
+    display: inline-block;
+    width: 255px;
 }
-.setting-title {
-  height: 31px;
-  padding-left: 15px;
-  padding-right: 15px;
-  line-height: 31px;
-  background-color: #f6f7f8;
-  border-bottom: 1px solid #d9d9d9;
-  text-align: left;
-  color: #8d9ea7;
-}
-.header-btn {
-  float: right;
-}
-.header-btn i {
-  cursor: pointer;
-  margin-left: 5px;
-}
-.header-btn i:hover {
-  color: #323232;
-}
-.setting {
-  padding: 5px;
-  background-color: #f5f5f5;
-  text-align: left;
-}
-.el-form-item__label {
-  padding-right: 0;
-}
-.el-form-item {
-  margin-bottom: 8px;
-}
-.el-radio + .el-radio,
-.el-form-item--mini.el-form-item {
-  margin-left: 5px;
-}
-.el-radio__label {
-  padding-left: 2px;
-}
-.el-input-number--mini {
-  width: 100px;
-  margin-left: 5px;
-}
-.el-input-number--mini .el-input__inner {
-  padding-left: 5px;
-  padding-right: 26px;
-}
-.el-input-number--mini .el-input-number__decrease,
-.el-input-number--mini .el-input-number__increase {
-  width: 20px;
-}
-.el-select.el-select--mini {
-  width: 100px;
-}
-
-.dec-label {
-  padding-left: 80px;
-  height: 30px;
-  line-height: 30px;
-  color: #323232;
-  font-size: 14px;
-  margin-top: -18px;
-}
-
-.dec-label label {
+.upload-video {
   display: inline-block;
-  width: 80px;
-  text-align: center;
-  margin-top: -20px;
+  margin-left: 10px;
 }
-
-.dec-label label:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
-  width: auto;
+#videoLoad {
+    visibility: hidden;
+    position: absolute;
+    z-index: -1;
+    top: 0;
 }
-.dec-label label:last-child {
-  margin-left: 50px;
+.video-setting .el-input__inner {
+  padding: 0 8px;
 }
-.el-input-number--mini {
-  width: 100px!important;
-}
-.el-input-number.is-controls-right .el-input__inner {
-  padding-left: 5px!important;
-  padding-right: 34px!important;
-}
-.el-form-item__label {
-  padding-right: 5px!important;
+.video-setting .el-form-item__content {
+  margin-left: 0 !important;
 }
 </style>

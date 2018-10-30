@@ -1,59 +1,60 @@
 <template>
   <div class="editor-box">
     <el-container>
-      <el-header>
-        <el-row class="header-flex">
-          <el-col :span="10" type="flex" >
-          <el-breadcrumb separator="/" type="flex">
-            <el-breadcrumb-item>
-              微页面
-            </el-breadcrumb-item>
-            <el-breadcrumb-item>
-              编辑微页面
-            </el-breadcrumb-item>
-          </el-breadcrumb>
-          </el-col>
-          <el-col :span="14">
-            <el-button
-              @click="saveEditor">保存草稿</el-button>
-            <el-button>预览</el-button>
-            <el-button type="primary" class="publish-btn">发布</el-button>
-            <el-button type="text" icon="el-icon-question" class="help-icon">使用帮助</el-button>
-          </el-col>
-        </el-row>
-      </el-header>
+      <nav-bar pageName="编辑微页面">
+        <template slot="btnGroup">
+            <el-button @click="saveEditor">保存草稿</el-button>
+            <el-button @click="reviewEditor">预览</el-button>
+            <el-button type="primary" class="publish-btn" @click="publishEditor">发布</el-button>
+        </template>
+      </nav-bar>
       <layout-left />
       <el-main>
-        <div class="flxed-main" @click="onMainClick">
-          <div class="phone-container"
-          :style="{width: phoneWidth+'px', height: phoneHeight+'px'}">
-           <layoutMain />
+        <div class="flxed-main">
+          <div class="phone-wrap" :style="{height: (page.clientHeight)+'px'}">
+            <div class="phone-container" ref="phoneContainer" :style="{width: page.phoneWidth+'px',
+                height: (page.clientHeight)+'px'}">
+              <phone-banner :title="page.title" :topBannerClick="topBannerClick"/>
+              <div class="screen-line" v-show="page.phoneHeight > 603"></div>
+              <layout-main />
+            </div>
+            <div class="phone-hidden" :style="{width: page.phoneWidth+'px',
+                top: (page.phoneHeight + 64+ 37)+'px'}"></div>
           </div>
+          <layout-setting />
         </div>
         <div class="fixed-right">
-        <layer />
+          <layer />
         </div>
       </el-main>
     </el-container>
   </div>
 </template>
 <script>
+import merge from 'webpack-merge';
 import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
-import _ from '@/util/tools';
+import layoutSetting from '@/components/editor/layout/layoutSetting';
+import NavBar from '@/components/NavBar';
+import phoneBanner from '@/components/editor/layout/phoneBanner';
+import { dragCom } from '@/util/dragMxi';
+import * as service from '@/service';
 
 export default {
+  mixins: [dragCom()],
   name: 'editor',
   components: {
     layoutMain,
     layer,
     layoutLeft,
+    layoutSetting,
+    NavBar,
+    phoneBanner,
   },
   data() {
     return {
-      phoneWidth: 385, // 可视区宽高
-      phoneHeight: 750,
+      phoneHeight: 603 + 65,
       dragText: {
         width: 375,
         height: 90,
@@ -66,68 +67,437 @@ export default {
         width: 100,
         height: 30,
       },
+      drag: {
+        width: 0,
+        height: 0,
+        top: 0,
+        left: 0,
+      },
+      wrapHeight: 603, // 包括头部的高度x
+      clientHeight: 603, // 编辑内容高度
+      isFirst: true, // 空白编辑页
+      dataInit: '{"editor":{"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{}}}',
+      beforeState: null,
+      gobalState: null,
+      isPublish: false,
+      curState: null,
+      initState: null,
     };
   },
 
   methods: {
-    onMainClick(e) {
-      console.log('e', e);
-      console.log('e.offsetX+e.offsetY', e);
-    },
-    saveEditor() { // 保存草稿
-      // const editor = this.$store.state.editor;
-      // const data = JSON.stringify(editor);
-      // const saveData = JSON.parse(data);
-    },
-    dragDel(s, n) { // 删除当前编辑组件
-      const { editor } = this.$store.state;
-      const { typeCat, layerActive } = editor;
-      let { layerLists } = editor;
-      if (layerLists.length) {
-        const sort = s || layerLists[layerActive].sort;
-        const num = n || layerLists[layerActive].num;
-        const cat = typeCat[sort];
-        editor[cat[0]] = editor[cat[0]].filter((item, key) => key !== num);
-        editor[cat[2]] = false;
-        if (!editor[cat[0]].length) {
-          editor[cat[1]] = false;
-        }
-        layerLists = editor[cat[0]].filter((item, key) => key !== layerActive);
-        editor.layerLists = layerLists;
-        this.$store.commit('editor_update', editor);
+    topBannerClick() { // 点击页面顶部，显示页面设置
+      const { pageSet } = this.page;
+      if (!pageSet) {
+        this.$store.dispatch('setting_tap', { pageSet: true });
+      }
+      if (this.$store.state.editor.layerActive !== -1) {
+        this.dragClick(-2);
       }
     },
+    async saveEditor(isTrigger, isPublish) { // 保存草稿
+      try {
+        const { isOk, msg } = this.checkSources();
+        if (!isOk) {
+          this.$message.error(msg);
+          return false;
+        }
+        let { state, draft } = this.getEditorJson(isPublish);
+        state = JSON.stringify(state);
+        draft = JSON.stringify(draft);
+        const params = {
+          state,
+          draft,
+        };
+        let data;
+        if (this.isFirst) {
+          data = await service.postPageInfo(params);
+        } else {
+          data = await service.patchPageInfo(this.$route.query.page_id, params);
+        }
+        this.beforeState = JSON.stringify(this.$store.state);
+        if (data && data.status === 'ok' && data.data) {
+          if (isTrigger) {
+            this.optSucsess('保存草稿');
+          }
+          if (this.isFirst) {
+            this.$router.push({
+              query: merge(this.$route.query, { page_id: data.data.id }),
+            });
+            this.isFirst = false;
+          }
+          return true;
+        } else if (isTrigger) this.optError('保存草稿');
+        return false;
+      } catch (err) {
+        this.optError('保存草稿');
+      }
+    },
+    async reviewEditor() { // 预览
+      const ele = this;
+      const isOk = await this.saveEditor(false);
+      if (isOk) {
+        ele.$router.push({
+          path: '/preview',
+          query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
+        });
+      }
+    },
+    async publishEditor() { // 发布
+      try {
+        const ele = this;
+        const isOk = await this.saveEditor(false, true);
+        if (isOk) {
+          const { data } = await service.publishPage(this.$route.query.page_id);
+          if (data) {
+            ele.optSucsess('发布页面');
+            ele.$router.push({
+              path: '/publish',
+              query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
+            });
+          } else {
+            ele.optError('发布页面');
+          }
+        }
+      } catch (err) {
+        this.optError('发布页面');
+      }
+    },
+    optError(msg) {
+      this.$message({
+        message: `${msg}失败，请重试～`,
+        type: 'error',
+        duration: 2000,
+      });
+    },
+    optSucsess(msg) {
+      this.$message({
+        message: `${msg}成功～`,
+        type: 'success',
+        duration: 2000,
+      });
+    },
+    getEditorJson(isPublish) { // 生成预览与发布的json
+      const eJson = { editor: {} };
+      const { editor, page } = this.$store.state;
+      const {
+        title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor,
+      } = page;
+      eJson.editor.page = {
+        title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor,
+      };
+      eJson.editor.page.shareImg = page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png';
+      const dragArr = [];
+      const {
+        dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
+        dragImgLists, layerLists,
+      } = editor;
+      if (dragTexts.length) {
+        dragTexts.map((item) => {
+          const {
+            size, location, content, position,
+          } = item;
+          dragArr.push({
+            type: 1,
+            size,
+            location,
+            isFixed: position !== 'relative',
+            content,
+            style: {
+              'font-size': item.fontSize,
+              'text-align': item.textAlign,
+              'line-height': item.lineHeight,
+              color: item.textColor,
+              'z-index': item.dragIndex,
+            },
+          });
+          return true;
+        });
+      }
+      if (dragImages.length) {
+        dragImages.map((item) => {
+          const {
+            size, location, img, dragIndex, position,
+          } = item;
+          dragArr.push({
+            type: 2,
+            size,
+            location,
+            isFixed: position !== 'relative',
+            url: img.url,
+            style: {
+              'z-index': dragIndex,
+            },
+          });
+          return true;
+        });
+      }
+      if (dragLinks.length) {
+        dragLinks.map((item, key) => {
+          const {
+            size, location, appLink, outLink, sourceType, awakeLink, iosLink, andLink, yybLink,
+          } = item;
+          dragArr.push({
+            type: 3,
+            key,
+            size,
+            location,
+            isFixed: item.position !== 'relative',
+            name: this.getLinkName(3, key, layerLists),
+            appLink,
+            outLink,
+            sourceType, // 1.普通跳转 2. 唤起下载app
+            awakeLink,
+            iosLink,
+            andLink,
+            yybLink,
+            style: {
+              'z-index': item.dragIndex,
+            },
+          });
+          return true;
+        });
+      }
+      if (dragImgLists.length) {
+        dragImgLists.map((item) => {
+          const {
+            size, location, imgList, dragIndex,
+          } = item;
+          dragArr.push({
+            type: 4,
+            location,
+            size,
+            style: {
+              'z-index': dragIndex,
+            },
+            imgList,
+            isFixed: false,
+          });
+          return true;
+        });
+      }
+      if (dragVideos.length) {
+        dragVideos.map((item) => {
+          const curVideo = item.sourceType === '1' ? item.video : item.lineVideo;
+          const {
+            loop, poster, location, size, dragIndex, position,
+          } = curVideo;
+          dragArr.push({
+            type: 5,
+            source: curVideo.url,
+            title: curVideo.title,
+            loop,
+            poster,
+            location,
+            size,
+            style: {
+              'z-index': dragIndex,
+            },
+            isFixed: position !== 'relative',
+          });
+          return true;
+        });
+      }
+      if (dragAudios.length) {
+        dragAudios.map((item) => {
+          const curPlay = item.sourceType === '1' ? item.play : item.linePlay;
+          dragArr.push({
+            type: 6,
+            isFixed: curPlay.position !== 'relative',
+            play: curPlay,
+            location: curPlay.location,
+            size: curPlay.size,
+            style: {
+              'z-index': item.dragIndex,
+            },
+          });
+          return true;
+        });
+      }
+      this.topBannerClick();
+      eJson.editor.components = dragArr;
+      const ele = this;
+      function setPageData(m, n) {
+        ele.gobalState[m] = ele.$store.state;
+        ele.gobalState[m].page.pageSet = true;
+        ele.gobalState[m].editor.layerActive = -1;
+        ele.gobalState[n] = JSON.parse(ele.initState);
+      }
+      if (isPublish) {
+        setPageData('publish', 'draft');
+      } else {
+        setPageData('draft', 'publish');
+      }
+      const saveState = this.gobalState;
+      return { state: saveState, draft: eJson.editor };
+    },
+    getLinkName(type, num, layerLists) {
+      let linkName = '热区';
+      for (let i = 0; i < layerLists.length; i++) {
+        if (layerLists[i].type === type && layerLists[i].num === num && layerLists[i].name) {
+          linkName = layerLists[i].name;
+          break;
+        }
+      }
+      return linkName;
+    },
+    checkSources() { // 检测是否所有资源都上传
+      const { page, editor } = this.$store.state;
+      const { typeCat } = editor;
+      const msgObj = {
+        isOk: true,
+        msg: '请添加页面名称～',
+      };
+      const ele = this;
+      const layItemCheck = (msg, item) => {
+        msgObj.isOk = false;
+        msgObj.msg = msg;
+        ele.dragClick(item.num, item.type);
+      };
+      if (!page.title) {
+        msgObj.isOk = false;
+        this.topBannerClick();
+      } else {
+        const { layerLists } = editor;
+        if (layerLists.length) {
+          for (let i = 0; i < layerLists.length; i++) {
+            const item = layerLists[i];
+            const drag = editor[typeCat[item.type][0]][item.num];
+            // Todo if the interatcion isunified,just one logic
+            if (item.type === 2 && (JSON.stringify(drag.img) === '{}' || !drag.img.url)) {
+              layItemCheck('请添加图片～', item);
+              break;
+            }
+            if (item.type === 6) {
+              const curPlay = drag.sourceType === '1' ? drag.play : drag.linePlay;
+              if ((!curPlay || !curPlay.url)) {
+                layItemCheck('请添加音频～', item);
+                break;
+              }
+            }
+            if (item.type === 5) {
+              const curVideo = drag.sourceType === '1' ? drag.video : drag.lineVideo;
+              if ((!curVideo || !curVideo.url)) {
+                layItemCheck('请添加视频～', item);
+                break;
+              }
+            }
+            if (item.type === 4 && (!drag.imgList || (JSON.stringify(drag.imgList) === '[]' || !this.imgListFilter(drag.imgList)))) {
+              layItemCheck('请添加多图组件的图片资源～', item);
+              break;
+            }
+          }
+        }
+      }
+      return msgObj;
+    },
+    imgListFilter(list) {
+      let isOk = true;
+      list.map((el) => {
+        if (!el.url) {
+          isOk = false;
+        }
+        return true;
+      });
+      return isOk;
+    },
+    editorInit(data) {
+      this.gobalState = {
+        draft: JSON.parse(this.dataInit),
+        publish: JSON.parse(this.dataInit),
+      };
+      if (data) {
+        this.gobalState = JSON.parse(data);
+      }
+      this.isPublish = !!this.$route.query.public;
+      const curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
+      this.initState = JSON.stringify(curState);
+      this.beforeState = JSON.stringify(curState);
+      this.$store.commit('editor_update', curState.editor);
+      this.$store.commit('page_update', curState.page);
+    },
+    delCheck() {
+      const { className } = document.activeElement;
+      const classList = ['drag-text', 'el-textarea__inner', 'el-input__inner', 'name-editor'];
+      let isContain = false;
+      if (className.indexOf(' ') >= 0) {
+        const list = className.split(' ');
+        const fList = list.filter(item => classList.includes(item));
+        isContain = !!fList.length;
+      } else if (classList.includes(className)) {
+        isContain = true;
+      }
+      return isContain;
+    },
+    goCheck() { // 离开页面，检测是否操作都保存
+      const curState = JSON.stringify(this.$store.state);
+      let isOk = true;
+      if (curState !== this.beforeState) isOk = false;
+      return isOk;
+    },
   },
-  mounted() {
-    // 读取保存数据
-    const ss = '{"phoneWidth":375,"phoneHeight":667,"layoutKey":1,"dragTexts":[{"isShow":true,"zIndex":0,"y":318.5,"isActive":true,"dragIndex":0,"content":"哈哈哈哈","fontSize":"12px","textAlign":"left","textColor":"rgba(19, 206, 102, 0.8)","location":{"x":0,"y":318.5},"size":{"w":375,"h":90}}],"dragImages":[],"dragLinks":[],"dragImageLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":true,"isTextSet":true,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[{"display":true,"lock":true,"name":"图层1","id":0,"sort":1,"num":0,"editing":false}],"layerActive":0,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImageLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"]}}';
-    const saveData = JSON.parse(ss);
-    this.$store.commit('editor_update', saveData);
-    const editor = this;
-    window.onkeydown = (e) => {
-      const evt = (e) || window.event;
-      if (evt.keyCode && evt.keyCode === 8) {
-        editor.dragDel();
+  async mounted() {
+    if (this.$route.query.page_id) {
+      try {
+        this.isFirst = false;
+        const { data } = await service.getPageInfo(this.$route.query.page_id);
+        this.editorInit(data.state);
+      } catch (err) {
+        this.optError('获取编辑器数据');
+        this.editorInit();
+      }
+      this.wrapHeight = this.page.phoneHeight + 64 + 37;
+    } else {
+      this.editorInit();
+    }
+  },
+  updated() {
+  },
+  created() {
+    const ele = this;
+    window.onbeforeunload = (e) => { // 离开验证1: 点击浏览器刷新、前进、后退
+      const event = window.event || e;
+      if (!ele.goCheck()) {
+        event.returnValue = ('确定离开当前页面吗？');
+      }
+    };
+    document.onkeydown = (e) => { // 键盘点击就del键删除组件
+      if (e.keyCode && parseInt(e.keyCode, 10) === 8) {
+        if (!ele.delCheck()) {
+          const { layerActive, layerLists } = ele.$store.state.editor;
+          if (layerLists.length && layerActive !== -1) {
+            ele.dragDel();
+          }
+        }
       }
     };
   },
-
+  beforeRouteLeave(to, from, next) {
+    if (!this.goCheck()) { // 离开验证2: 路由跳转
+      this.$confirm('检测到有未保存的内容，如果离开将丢失内容，是否继续？', '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '狠心离开',
+        cancelButtonText: '取消',
+        callback: (action) => {
+          if (action === 'confirm') {
+            next(true);
+          } else {
+            next(false);
+          }
+        },
+      });
+    } else {
+      next(true);
+    }
+  },
 };
-
 </script>
 
-
 <style>
-.el-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 56px;
-  background-color: #fafafa;
+html,
+body {
+  height: 100%;
   width: 100%;
-  overflow: hidden;
-  border-bottom: 1px solid #ccd5db;
-  z-index: 100;
 }
 
 .el-aside {
@@ -142,42 +512,8 @@ export default {
   z-index: 98;
 }
 
-.el-main {
-}
-
-.el-breadcrumb {
-}
-
 .help-icon {
   color: #323232;
-}
-
-.header-flex {
-  height: 100%;
-  align-content: center;
-  justify-content: space-between;
-}
-
-.header-flex .el-breadcrumb__inner {
-  line-height: 56px;
-}
-
-.header-flex .el-col-14 {
-  margin-top: -10px;
-}
-.el-button.el-button--text {
-  color: #333;
-  width: 80px;
-  height: 60px;
-  padding: 0;
-  margin-top: 10px;
-}
-.el-button.el-button--text:hover {
-  border: 1px solid #409eff;
-}
-.el-button.el-button--text:active {
-  background-color: #1593ff;
-  color: #fff;
 }
 
 .ed-com i,
@@ -198,9 +534,6 @@ export default {
   padding: 0 !important;
 }
 
-.el-button + .el-button:nth-child(2n + 1) {
-  margin-left: 0;
-}
 .el-card {
   border-top: 0;
 }
@@ -217,33 +550,22 @@ export default {
 
 .fixed-right {
   position: fixed;
-  right: 0;
-  top: 56px;
+  float: right;
+  right: 20px;
   bottom: 0;
+  top: 20px;
   width: 260px;
   z-index: 98;
+  margin-top: 40px;
+  margin-right: -19px;
   background-color: #fafafa;
   border-left: 1px solid #ccd5db;
   box-sizing: content-box;
 }
-
-.layer-item {
-  position: relative;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 260px;
-  height: 36px;
-  background: #fff;
-  font-size: 12px;
-  color: #000;
-  border-bottom: 1px solid #ccd5db;
-  box-sizing: border-box;
-  cursor: pointer;
-}
 .el-card__header {
   padding: 5px 10px;
   line-height: 34px;
+  margin-top: 3px;
 }
 .fixed-right .el-card__header {
   padding: 0;
@@ -252,30 +574,12 @@ export default {
   height: 50px;
   line-height: 50px;
 }
-.layer-item {
-  height: 40px;
-  line-height: 40px;
-  padding: 0 10px;
-  border-bottom: 1px solid #ddd;
-  color: #323232;
-}
-
-.layer-item:hover,
-.layer-item:active,
-.layer-item.active {
-  color: #1593ff;
-}
-
-.layer-item > i,
-.layer-item .fa-icon {
-  margin-right: 10px;
-}
 .flxed-main {
   background-color: #eee;
   position: absolute;
   top: 56px;
   height: auto;
-  padding-bottom: 40px;
+  padding-bottom: 60px;
   left: 200px;
   right: 260px;
   display: flex;
@@ -284,68 +588,59 @@ export default {
 }
 .phone-container {
   position: relative;
-  /* background: url('../../static/images/phone.svg') no-repeat; */
-  width: 385px;
-  height: 731px;
-  height: 631px;
-  /* top: 50%; */
-  top: 10px;
-  /* margin-top: -334px; */
-  /* background-size: contain; */
-  background-color: #ddd;
-  border-radius: 20px;
+  width: 375px;
+  height: 667px;
+  top: 0;
+  background-color: #fff;
+  border: 1px solid #e5e5d5;
+}
+.phone-container.active {
+  border: 1px solid #59c7f9;
 }
 
-.phone-content {
-  position: absolute;
-  /* top: 52px; */
-  top: 30px;
-  left: 5px;
-  width: 366px;
-  /* height: 667px; */
-  height: 567px;
-  background-color: #fff;
-}
 .el-button.el-button--text {
   color: #606266;
+  padding: 5px;
 }
 
 .publish-btn {
   margin-left: 10px !important;
 }
-body{
-    font-family:'微软雅黑'
+body {
+  font-family: "微软雅黑";
 }
-[v-cloak]{
-    display:none;
+[v-cloak] {
+  display: none;
 }
-#example{
-    width:1000px;
-    margin:0 auto;
+#example {
+  width: 1000px;
+  margin: 0 auto;
 }
 .list-complete-item {
   transition: all 1s;
-    height:50px;
-    line-height: 50px;
-    background: #000;
-    color:#fff;
-    text-align: center;
-    font-size:24px;
-    margin-top:10px;
+  height: 50px;
+  line-height: 50px;
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  margin-top: 10px;
 }
-.styleclass{
-    width:100px;
-    float:left;
+.styleclass {
+  width: 100px;
+  float: left;
 }
-.list-complete-enter, .list-complete-leave-active {
+.list-complete-enter,
+.list-complete-leave-active {
   opacity: 0;
   height: 0px;
   margin-top: 0px;
   padding: 0px;
   border: solid 0px;
 }
-.list-complete-sortable-chosen,.list-complete-sortable-ghost{
- opacity: 0;
+.list-complete-sortable-chosen,
+.list-complete-sortable-ghost {
+  opacity: 0;
   height: 0px;
   margin-top: 0px;
   padding: 0px;
@@ -355,5 +650,35 @@ body{
 .el-card.is-always-shadow {
   margin-top: 0;
 }
+.phone-wrap {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
 
+.phone-hidden {
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: -1px;
+  left: 1px;
+  z-index: 1050;
+}
+.screen-line {
+  position: absolute;
+  width: 110%;
+  left:-5%;
+  top: 667px;
+  border: 0.5px dashed #eb5648;
+  z-index: 1001;
+}
+.is-require .el-form-item__label:before {
+  content: '*';
+  color: #eb5648;
+}
+.el-breadcrumb__inner.is-link {
+  color: #409EFFf9;
+}
+.el-color-picker__panel .el-color-dropdown__link-btn {
+  display: none
+}
 </style>
