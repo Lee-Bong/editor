@@ -280,7 +280,7 @@ export default {
         dragVideos.map((item) => {
           const curVideo = item.sourceType === '1' ? item.video : item.lineVideo;
           const {
-            loop, poster, location, size, dragIndex, position,
+            loop, poster, location, size, position,
           } = curVideo;
           dragArr.push({
             type: 5,
@@ -291,7 +291,7 @@ export default {
             location,
             size,
             style: {
-              'z-index': dragIndex,
+              'z-index': item.dragIndex,
             },
             isFixed: position !== 'relative',
           });
