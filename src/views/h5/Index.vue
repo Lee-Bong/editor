@@ -156,9 +156,7 @@ export default {
     } catch (error) {
       this.showError = true;
     }
-    if (!this.$route.query.isShare) {
-      this.gaReport('pv');
-    }
+    this.gaReport('pv');
   },
 };
 </script>
