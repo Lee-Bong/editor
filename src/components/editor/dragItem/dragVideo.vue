@@ -16,6 +16,7 @@
       :preventActiveBehavior="true"
       :parentH="parentH"
       :minw="218"
+      :minh="minh"
       @clicked="dragTextClick(listIndex)"
       @resizing="resize"
       @dragging="resize"
@@ -131,6 +132,12 @@ export default {
       },
       immediate: true,
       deep: true,
+    },
+    minh: {
+      get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        return curPlay.size ? (curPlay.size.h * 218) / curPlay.size.w : 100;
+      },
     },
   },
 
