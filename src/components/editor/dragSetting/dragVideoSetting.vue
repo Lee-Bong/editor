@@ -256,6 +256,7 @@ export default {
       const isAction = this.dragForm.sourceType === '1';
       const curPlay = isAction ? this.dragForm.video : this.dragForm.lineVideo;
       curPlay.location = location;
+      curPlay.size = curPlay.size;
       let playObj = {};
       if (isAction) {
         playObj = { video: curPlay };

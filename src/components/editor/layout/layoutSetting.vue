@@ -112,6 +112,8 @@ export default {
     inputLocationChange(form, val, active) { // 设置-文本组件位置变化
       let dragItems = this.$store.state.editor[form];
       dragItems[this.$store.state.editor[active]].location = val;
+      dragItems[this.$store.state.editor[active]].size =
+      dragItems[this.$store.state.editor[active]].size;
       dragItems = Object.assign([], dragItems);
       this.$store.commit('editor_update', {
         [form]: dragItems,
