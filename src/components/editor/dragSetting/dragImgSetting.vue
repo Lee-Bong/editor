@@ -157,7 +157,14 @@ export default {
       this.$store.commit('editor_update', { isImgSet: false });
     },
     locationChange() { // 位置值发生改变
-      this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
+      // this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
+      const lists = this.editor.dragImages;
+      let drags = lists[this.editor.imgActive];
+      const { location, size } = this.dragForm;
+      drags = Object.assign({}, drags, { location, size, isUpload: false });
+      lists[this.editor.imgActive] = drags;
+      this.$store.commit('editor_update', { dragImages: lists });
+      this.ratioSet(this, 'dragImages', 'imgActive');
     },
     sizeChange(type) { // 大小值发生改变
       let { size } = this.dragForm;

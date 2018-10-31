@@ -149,9 +149,6 @@ export default {
       });
     },
   },
-  updated() {
-    // console.log('update', this.dragForm);
-  },
 };
 </script>
 
