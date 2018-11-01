@@ -123,9 +123,7 @@ export default {
       const {
         sourceType, awakeLink, outLink, appLink,
       } = this.component;
-      if (!this.$route.query.isShare) {
-        this.gaReport('click', `${index}` || '0');
-      }
+      this.gaReport('click', `${index}` || '0');
       if (sourceType === '1') {
         // 普通跳转
         /* if (this.$route.query.isShare) {

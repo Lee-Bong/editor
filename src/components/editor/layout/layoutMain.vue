@@ -157,6 +157,13 @@ export default {
         return true;
       });
     }
+    if (this.$refs.linkRef && this.$store.state.editor.dragLinks &&
+      this.$store.state.editor.dragLinks.length) {
+      this.$refs.linkRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
   },
 };
 </script>

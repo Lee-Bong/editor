@@ -53,7 +53,6 @@ export default {
       let finalComponentsJson = sortBy(this.pageJson.components, [
         item => item.location.y,
       ]);
-
       // 屏幕缩放比例
       this.scale = window.innerWidth / this.pageJson.page.phoneWidth;
       finalComponentsJson = map(finalComponentsJson, (componentJson) => {
@@ -157,9 +156,7 @@ export default {
     } catch (error) {
       this.showError = true;
     }
-    if (!this.$route.query.isShare) {
-      this.gaReport('pv');
-    }
+    this.gaReport('pv');
   },
 };
 </script>

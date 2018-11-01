@@ -38,6 +38,9 @@ export default {
     dragStop(ev) {
       this.$emit('dragStop', this.dragName, ev, this.listIndex);
     },
+    forceUpdate() {
+      this.$forceUpdate();
+    },
   },
 };
 </script>

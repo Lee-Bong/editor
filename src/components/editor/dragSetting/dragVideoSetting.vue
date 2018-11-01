@@ -256,6 +256,7 @@ export default {
       const isAction = this.dragForm.sourceType === '1';
       const curPlay = isAction ? this.dragForm.video : this.dragForm.lineVideo;
       curPlay.location = location;
+      curPlay.size = curPlay.size;
       let playObj = {};
       if (isAction) {
         playObj = { video: curPlay };
@@ -264,10 +265,11 @@ export default {
       }
       const { dragVideos, videoActive } = this.editor;
       let drags = dragVideos[videoActive];
-      drags = Object.assign({}, drags, playObj);
+      drags = Object.assign({}, drags, playObj, { isUpload: false });
       dragVideos[videoActive] = drags;
       const lists = Object.assign([], dragVideos);
       this.$store.commit('editor_update', { dragVideos: lists });
+      this.ratioSet(this, 'dragVideos', 'videoActive');
     },
     sizeWChange(val) {
       this.sizeChange({
