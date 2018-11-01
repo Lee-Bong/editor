@@ -38,6 +38,8 @@
               </el-table-column>
               <el-table-column prop="uv" label="UV" min-width="200">
               </el-table-column>
+              <el-table-column prop="pvOut" label="站外PV" min-width="200">
+              </el-table-column>
             </el-table>
             <el-pagination class="table-page" layout="total, prev, pager, next, jumper"
             @current-change="viewPageChange" :current-page="viewPager.page"
@@ -198,21 +200,27 @@ export default {
           // 过滤
           let pvCount = 0;
           let uvCount = 0;
+          let pvOutCount = 0;
           let shareCount = 0;
           const clickCount = [];
           this.viewDataTotal = [];
           this.clickDataTotal = [];
           for (const k in data.data) {
             let pvItem = [];
+            let pvItemOut = [];
             if (data.data[k].length) {
               const view = data.data[k];
               const len = view.length;
               for (let i = 0; i < len; i++) {
                 if (view[i].length) {
                   if (view[i][0] === 'pv') {
-                    pvItem = view[i];
+                    if (view[i][3] === 'outside') {
+                      pvItemOut = view[i];
+                    } else {
+                      pvItem = view[i];
+                    }
                   }
-                  const index2 = parseInt(view[i][2], 10);
+                  const index2 = parseInt(view[i][4], 10);
                   if (index2 && !type) {
                     if (view[i][0] === 'share') {
                       shareCount += index2;
@@ -226,14 +234,17 @@ export default {
                 }
               }
             }
-            const pv = pvItem.length ? pvItem[2] : 0;
-            const uv = pvItem.length ? pvItem[3] : 0;
+            const pv = pvItem.length ? pvItem[4] : 0;
+            const pvOut = pvItemOut.length ? pvItemOut[4] : 0;
+            const uv = pvItem.length ? pvItem[5] : 0;
             pvCount += parseInt(pv, 10);
+            pvOutCount += parseInt(pvOut, 10);
             uvCount += parseInt(uv, 10);
             this.viewDataTotal.push({
               date: k,
               pv,
               uv,
+              pvOut,
             });
           }
           if (type) {
@@ -241,12 +252,13 @@ export default {
               date: '合计',
               pv: pvCount,
               uv: uvCount,
+              pvOut: pvOutCount,
             });
             this.viewDataTotal = this.viewDataTotal.reverse();
             this.viewData = this.viewDataTotal.slice(0, 10);
             this.viewPager.total = this.viewDataTotal.length;
           } else {
-            const pre = !pvCount ? 0 : ((shareCount / pvCount) * 100).toFixed(2);
+            const pre = !pvCount ? 0 : ((shareCount / (pvCount + pvOutCount)) * 100).toFixed(2);
             this.clickDataTotal.push({
               name: '分享',
               click: shareCount,
@@ -255,7 +267,7 @@ export default {
             if (clickCount.length) {
               const ele = this;
               clickCount.map((pro, i) => {
-                const pre1 = !pvCount ? 0 : ((pro / pvCount) * 100).toFixed(2);
+                const pre1 = !pvCount ? 0 : ((pro / (pvCount + pvOutCount)) * 100).toFixed(2);
                 this.clickDataTotal.push({
                   name: ele.clickArr[i] || '热区',
                   click: pro,

@@ -109,10 +109,19 @@ export default {
         params: {
           page_id: `weditor_${this.$route.query.page_id}`,
           label: '',
-          category: '',
+          category: 'inside',
           type,
           value: '',
         },
+      });
+    },
+    gaReportOut(type) {
+      service.gaReportOut({
+        page_id: `weditor_${this.$route.query.page_id}`,
+        label: '',
+        category: 'outside',
+        type,
+        value: '',
       });
     },
   },
@@ -156,7 +165,11 @@ export default {
     } catch (error) {
       this.showError = true;
     }
-    this.gaReport('pv');
+    if (!this.$route.query.isShare) {
+      this.gaReport('pv');
+    } else {
+      this.gaReportOut('pv');
+    }
   },
 };
 </script>

@@ -71,6 +71,7 @@ import jssdk from 'meetyou.jssdk';
 import generate from 'nanoid/generate';
 import awakeApp from '../../util/awakeApp.js';
 import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
+import * as service from '../../service';
 
 export default {
   data() {
@@ -123,7 +124,11 @@ export default {
       const {
         sourceType, awakeLink, outLink, appLink,
       } = this.component;
-      this.gaReport('click', `${index}` || '0');
+      if (!this.$route.query.isShare) {
+        this.gaReport('click', `${index}` || '0');
+      } else {
+        this.gaReportOut('click', `${index}` || '0');
+      }
       if (sourceType === '1') {
         // 普通跳转
         /* if (this.$route.query.isShare) {
@@ -166,6 +171,16 @@ export default {
           value,
         }),
       });
+    },
+    gaReportOut(type, value) {
+      service.gaReportOut(Object.assign({
+        page_id: `weditor_${this.$route.query.page_id}`,
+        label: '',
+        category: '',
+      }, {
+        type,
+        value,
+      }));
     },
   },
 };
