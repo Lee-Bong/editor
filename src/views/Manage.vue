@@ -1,19 +1,20 @@
 <template>
   <div class="manage-wrap">
-    <div class="header-fixed">
-      <el-tabs v-model="activeTab" @tab-click="tabChange">
-        <el-tab-pane name="pages">
-          <span slot="label">
-            <i class="el-icon-date"></i>H5 管理</span>
-        </el-tab-pane>
-        <el-tab-pane name="draft">
-          <span slot="label">
-            <i class="el-icon-edit"></i>草稿箱</span>
-        </el-tab-pane>
-      </el-tabs>
-      <div class="help-btn">
-      <help />
-      </div>
+    <div class="header-fixed flex">
+        <el-tabs v-model="activeTab" @tab-click="tabChange">
+          <el-tab-pane name="pages">
+            <span slot="label">
+              <i class="el-icon-date"></i>H5 管理</span>
+          </el-tab-pane>
+          <el-tab-pane name="draft">
+            <span slot="label">
+              <i class="el-icon-edit"></i>草稿箱</span>
+          </el-tab-pane>
+        </el-tabs>
+        <div class="extra">
+          <help />
+          <Account />
+        </div>
     </div>
     <div class="main-wrap">
       <div class="content-wrap">
@@ -45,6 +46,7 @@
 import tableList from '@/components/table/table';
 import tableDraft from '@/components/table/tableDraft';
 import help from '@/components/editor/layout/help';
+import Account from '@/components/editor/layout/Account';
 
 export default {
   name: 'manage',
@@ -54,6 +56,7 @@ export default {
     tableList,
     tableDraft,
     help,
+    Account,
   },
   watch: {
     $route: 'changeTab',
@@ -149,9 +152,17 @@ export default {
 .search-submit:hover {
   color: #0875e4;
 }
-.help-btn {
-  position: absolute;
-  right: 40px;
-  top: 10px;
+</style>
+
+<style lang="less" scoped>
+.flex {
+  display: flex;
+  .extra {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    margin: 20px;
+  }
 }
 </style>

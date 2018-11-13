@@ -85,7 +85,7 @@ export default {
         } else {
           this.$message({
             type: 'error',
-            message: data.message,
+            message: data.message || '',
           });
         }
       } catch (error) {
