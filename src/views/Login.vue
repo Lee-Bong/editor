@@ -19,8 +19,8 @@
           <el-input placeholder="密码" type="password" v-model="loginForm.password"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="keepAccount" class="extra">
-          <el-checkbox>记住用户名</el-checkbox>
+        <el-form-item class="extra">
+          <el-checkbox @change="switchKeep" v-model="loginForm.keepAccount">记住用户名</el-checkbox>
           <div class="tip">** 需要部门账号请联系徐志加</div>
         </el-form-item>
         <el-form-item>
@@ -37,12 +37,18 @@ import * as service from '../service';
 
 export default {
   data() {
+    let loginForm = {
+      username: '',
+      password: '',
+      keepAccount: false,
+    };
+    try {
+      loginForm = JSON.parse(localStorage.getItem('AccountInfo'));
+    } catch (error) {
+      console.error(error);
+    }
     return {
-      loginForm: {
-        username: '',
-        password: '',
-        keepAccount: false,
-      },
+      loginForm,
     };
   },
   mounted() {
@@ -61,6 +67,19 @@ export default {
         // console.log('未登陆');
       }
     },
+    switchKeep() {
+      if (!this.loginForm.keepAccount) {
+        try {
+          localStorage.setItem('AccountInfo', JSON.stringify({
+            username: '',
+            password: '',
+            keepAccount: false,
+          }));
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    },
     oaLogin() {
       const { host } = window.location;
       const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com/we/oa' : 'https://bfe.meiyou.com/we/oa';
@@ -70,6 +89,13 @@ export default {
       const formData = new FormData();
       formData.append('username', this.loginForm.username);
       formData.append('password', this.loginForm.password);
+      if (this.loginForm.keepAccount) {
+        try {
+          localStorage.setItem('AccountInfo', JSON.stringify(this.loginForm));
+        } catch (error) {
+          console.error(error);
+        }
+      }
       try {
         const { data } = await service.loginByAccount(formData);
         if (data.status && data.status === 'ok') {
@@ -139,6 +165,11 @@ export default {
     .el-form {
       width: 80%;
       margin: auto;
+      /deep/.el-checkbox__input.is-checked{
+        .el-checkbox__label{
+          color: #FF5476 !important;
+        }
+      }
       .extra {
         text-align: left;
         .tip {
