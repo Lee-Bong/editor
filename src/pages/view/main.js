@@ -10,7 +10,9 @@ import router from './router';
 
 Vue.config.productionTip = false;
 
-Vue.use(VueLazyload);
+Vue.use(VueLazyload, {
+  preLoad: 2.5,
+});
 Vue.use(Button);
 Vue.use(Slider);
 new Vue({
