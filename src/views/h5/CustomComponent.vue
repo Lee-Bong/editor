@@ -67,11 +67,11 @@
 </template>
 
 <script>
-import jssdk from 'meetyou.jssdk';
 import generate from 'nanoid/generate';
-import awakeApp from '../../util/awakeApp.js';
+import { isInApp } from '../../util/ua.js';
+import hotSpot from '../../util/hotSpot.js';
 import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
-import * as service from '../../service';
+import gaReport from '../../util/gaReport.js';
 
 export default {
   data() {
@@ -104,8 +104,8 @@ export default {
       type, sourceType, awakeLink,
     } = this.component;
     // 如果是热区且在分享页唤起app
-    if (type === 3 && sourceType === '2' && this.$route.query.isShare) {
-      this.sharebar = awakeApp.init({
+    if (type === 3 && sourceType === '2' && !isInApp) {
+      this.sharebar = hotSpot.init({
         link: awakeLink,
         container: `#${this.componentId}`,
         downloadUrls: this.downloadUrls,
@@ -120,67 +120,17 @@ export default {
       return optUrl;
     },
     handleLinkClick(index) {
-      // 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
       const {
         sourceType, awakeLink, outLink, appLink,
       } = this.component;
-      if (!this.$route.query.isShare) {
-        this.gaReport('click', `${index}` || '0');
-      } else {
-        this.gaReportOut('click', `${index}` || '0');
-      }
-      if (sourceType === '1') {
-        // 普通跳转
-        /* if (this.$route.query.isShare) {
-          // 分享出去的页面
-          window.location.href = outLink;
-        } else {
-          // 应用内跳转
-          jssdk.callNative('web', {
-            url: appLink,
-          });
-        } */
-
-        window.location.href = this.$route.query.isShare ? outLink : appLink;
-      } else if (this.$route.query.isShare) {
-        // 分享页面唤起app
-        awakeApp.handleOpen(this.sharebar);
-      } else {
-        // app内唤起app
-        jssdk.callNative('open', { url: awakeLink }, (path, data) => {
-          if (!data) {
-            // 打开失败，跳转下载应用
-            const download = awakeApp.getDownLoadUrl(this.downloadUrls);
-            if (!download) {
-              return awakeApp.showDownLoadTip();
-            }
-            window.location.href = download;
-          }
-        });
-      }
-    },
-    gaReport(type, value) {
-      jssdk.callNative('ga', {
-        path: '/bfe_event',
-        params: Object.assign({
-          page_id: `weditor_${this.$route.query.page_id}`,
-          label: '',
-          category: '',
-        }, {
-          type,
-          value,
-        }),
+      gaReport({
+        type: 'click',
+        value: `${index}` || '0',
+        pageId: `weditor_${this.$route.query.page_id}`,
       });
-    },
-    gaReportOut(type, value) {
-      service.gaReportOut(Object.assign({
-        page_id: `weditor_${this.$route.query.page_id}`,
-        label: '',
-        category: '',
-      }, {
-        type,
-        value,
-      }));
+      hotSpot.handleClick({
+        sourceType, awakeLink, outLink, appLink,
+      });
     },
   },
 };

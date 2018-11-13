@@ -11,21 +11,26 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
-          <el-col :span="8" type="flex" style="marginTop: 10px">
+          <el-col :span="6" type="flex" style="marginTop: 10px">
             <slot name="btnGroup" />
           </el-col>
-          <el-col :span="2" type="flex" style="marginTop: 15px"><help /></el-col>
+          <el-col :span="4" type="flex" class="extra">
+            <help />
+            <Account />
+          </el-col>
         </el-row>
       </el-header>
 </template>
 
 <script>
 import help from '@/components/editor/layout/help';
+import Account from '@/components/editor/layout/Account';
 
 export default {
   props: ['pageName'],
   components: {
     help,
+    Account,
   },
   methods: {
     goHelpWeb() {
@@ -68,4 +73,10 @@ export default {
   color: #409eff;
 }
 </style>
-
+<style lang="less" scoped>
+.extra {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+</style>

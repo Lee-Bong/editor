@@ -5,17 +5,51 @@
     </div>
     <div class="login-form">
       <h1>编辑器管理后台</h1>
-      <a ref="oaLogin" class="login-oa">
-        OA一键登录
-      </a>
+      <el-form :model="loginForm">
+        <el-form-item
+          prop="username"
+          :rules="{ required: true, message: '请填写用户名', trigger: 'blur' }"
+        >
+          <el-input v-model="loginForm.username" placeholder="用户名"></el-input>
+        </el-form-item>
+        <el-form-item
+          prop="password"
+          :rules="{ required: true, message: '请填写密码', trigger: 'blur' }"
+        >
+          <el-input placeholder="密码" type="password" v-model="loginForm.password"
+          ></el-input>
+        </el-form-item>
+        <el-form-item class="extra">
+          <el-checkbox @change="switchKeep" v-model="loginForm.keepAccount">记住用户名</el-checkbox>
+          <div class="tip">** 需要部门账号请联系徐志加</div>
+        </el-form-item>
+        <el-form-item>
+          <div><el-button class="btn" @click.prevent="login">登录</el-button></div>
+          <div><el-button class="btn" @click.prevent="oaLogin">OA一键登录</el-button></div>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
 import * as service from '../service';
+import Storage from '../util/storage';
 
 export default {
+  data() {
+    const loginForm = Storage.getItem('AccountInfo', {
+      username: '',
+      password: '',
+      keepAccount: false,
+    });
+    return {
+      loginForm,
+    };
+  },
+  mounted() {
+    this.getUserInfo();
+  },
   methods: {
     async getUserInfo() {
       try {
@@ -29,14 +63,52 @@ export default {
         // console.log('未登陆');
       }
     },
-  },
-  mounted() {
-    this.getUserInfo();
-    const { host } = window.location;
-    const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com/we/oa' : 'https://bfe.meiyou.com/we/oa';
-    this.$nextTick(() => {
-      this.$refs.oaLogin.setAttribute('href', `${api}`);
-    });
+    switchKeep() {
+      if (!this.loginForm.keepAccount) {
+        Storage.setItem('AccountInfo', {
+          username: '',
+          password: '',
+          keepAccount: false,
+        });
+      }
+    },
+    oaLogin() {
+      const { host } = window.location;
+      const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com/we/oa' : 'https://bfe.meiyou.com/we/oa';
+      window.location.href = api;
+    },
+    async login() {
+      const formData = new FormData();
+      formData.append('username', this.loginForm.username);
+      formData.append('password', this.loginForm.password);
+      if (this.loginForm.keepAccount) {
+        Storage.setItem('AccountInfo', this.loginForm);
+      }
+      try {
+        const { data } = await service.loginByAccount(formData);
+        if (data.status && data.status === 'ok') {
+          this.$message({
+            type: 'success',
+            message: '登录成功~',
+          });
+          setTimeout(() => {
+            this.$router.push({
+              path: '/manage',
+            });
+          }, 1000);
+        } else {
+          this.$message({
+            type: 'error',
+            message: data.message || '',
+          });
+        }
+      } catch (error) {
+        this.$message({
+          type: 'error',
+          message: error,
+        });
+      }
+    },
   },
 };
 </script>
@@ -61,7 +133,7 @@ export default {
     height: 85px;
     background: url("../assets/images/logo.png") center no-repeat;
     background-size: 100%;
-    margin-top: -60px;
+    margin-top: -200px;
   }
   .login-form {
     text-align: center;
@@ -71,26 +143,31 @@ export default {
     background: #fff;
     margin: 0 auto;
     position: absolute;
-    top: 250px;
+    top: 180px;
     left: 37%;
     border-radius: 4px;
     h1 {
       font-size: 18px;
       margin: 40px 0;
     }
-  }
-  .login-oa {
-    display: block;
-    width: 216px;
-    height: 40px;
-    background: #ff5375;
-    margin: 10px auto;
-    text-align: center;
-    line-height: 40px;
-    cursor: pointer;
-    margin-top: 64px;
-    color: #fff;
-    text-decoration: none;
+    .el-form {
+      width: 80%;
+      margin: auto;
+      .extra {
+        text-align: left;
+        .tip {
+          color: #FF5476;
+          font-size: 14px;
+          line-height: 14px;
+        }
+      }
+      .btn {
+        background: #ff5375;
+        color: #fff;
+        width: 216px;
+        margin-top: 10px;
+      }
+    }
   }
 }
 </style>

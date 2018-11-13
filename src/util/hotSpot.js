@@ -1,15 +1,11 @@
 // 初始化唤起链接
 import MeiyouAppBar from 'meetyou.sharebar/lib/MeiyouAppBar';
 import YunQiAppBar from 'meetyou.sharebar/lib/YoubaobaoAppBar';
+import jssdk from 'meetyou.jssdk';
 import querystring from 'meetyou.util/lib/querystring';
 import jsonp from 'jsonp';
-
+import { isWeixin, isAndroid, isIOS, isInApp } from './ua';
 // const wx = require('../assets/javascript/jweixin-1.2.0');
-
-const ua = navigator.userAgent;
-const isWeixin = !!ua.match(/MicroMessenger/i);
-const isAndroid = !!ua.match(/Android|Adr/i);
-const isIOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 
 const getDownLoadUrl = (downloadUrls) => {
   let url = '';
@@ -117,6 +113,31 @@ const wxShare = (opt = {}) => {
   }
 };
 
+// 点击热区事件, 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
+const handleClick = ({
+  sourceType, awakeLink, outLink, appLink,
+}) => {
+  if (sourceType === '1') {
+    // 内部链接和外部链接不一样
+    window.location.href = isInApp ? appLink : outLink;
+  } else if (!isInApp) {
+    // 分享页面唤起app
+    handleOpen(this.sharebar);
+  } else {
+    // app内唤起app
+    jssdk.callNative('open', { url: awakeLink }, (path, data) => {
+      if (!data) {
+        // 打开失败，跳转下载应用
+        const download = getDownLoadUrl(this.downloadUrls);
+        if (!download) {
+          return showDownLoadTip();
+        }
+        window.location.href = download;
+      }
+    });
+  }
+};
+
 export default {
-  init, handleOpen, showDownLoadTip, getDownLoadUrl, wxShare,
+  init, handleClick, wxShare,
 };
