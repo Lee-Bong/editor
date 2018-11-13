@@ -103,7 +103,7 @@ export default {
       type, sourceType, awakeLink,
     } = this.component;
     // 如果是热区且在分享页唤起app
-    if (type === 3 && sourceType === '2' && this.$route.query.isShare) {
+    if (type === 3 && sourceType === '2' && !awakeApp.isInApp) {
       this.sharebar = awakeApp.init({
         link: awakeLink,
         container: `#${this.componentId}`,
@@ -124,34 +124,28 @@ export default {
         sourceType, awakeLink, outLink, appLink,
       } = this.component;
       this.gaReport('click', `${index}` || '0');
-      if (sourceType === '1') {
-        // 普通跳转
-        /* if (this.$route.query.isShare) {
-          // 分享出去的页面
-          window.location.href = outLink;
+      try {
+        if (sourceType === '1') {
+          // 内部链接和外部链接不一样
+          window.location.href = awakeApp.isInApp ? appLink : outLink;
+        } else if (!awakeApp.isInApp) {
+          // 分享页面唤起app
+          awakeApp.handleOpen(this.sharebar);
         } else {
-          // 应用内跳转
-          jssdk.callNative('web', {
-            url: appLink,
-          });
-        } */
-
-        window.location.href = this.$route.query.isShare ? outLink : appLink;
-      } else if (this.$route.query.isShare) {
-        // 分享页面唤起app
-        awakeApp.handleOpen(this.sharebar);
-      } else {
-        // app内唤起app
-        jssdk.callNative('open', { url: awakeLink }, (path, data) => {
-          if (!data) {
-            // 打开失败，跳转下载应用
-            const download = awakeApp.getDownLoadUrl(this.downloadUrls);
-            if (!download) {
-              return awakeApp.showDownLoadTip();
+          // app内唤起app
+          jssdk.callNative('open', { url: awakeLink }, (path, data) => {
+            if (!data) {
+              // 打开失败，跳转下载应用
+              const download = awakeApp.getDownLoadUrl(this.downloadUrls);
+              if (!download) {
+                return awakeApp.showDownLoadTip();
+              }
+              window.location.href = download;
             }
-            window.location.href = download;
-          }
-        });
+          });
+        }
+      } catch (error) {
+        alert(error);
       }
     },
     gaReport(type, value) {

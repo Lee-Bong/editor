@@ -82,7 +82,7 @@ export default {
     initShare() {
       const fromURL = `${window.location.protocol}//${window.location.host}/we/view?page_id=${
         this.pageId
-      }&is_formal=${this.isFormal}&isShare=1`;
+      }&is_formal=${this.isFormal}`;
       const {
         shareDec, shareImg, shareTitle, title,
       } = this.pageJson.page;
