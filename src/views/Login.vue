@@ -82,7 +82,7 @@ export default {
       formData.append('username', this.loginForm.username);
       formData.append('password', this.loginForm.password);
       if (this.loginForm.keepAccount) {
-        Storage.setItem('AccountInfo', this.loginForm);
+        Storage.setItem('AccountInfo', { ...this.loginForm, password: '' });
       }
       try {
         const { data } = await service.loginByAccount(formData);
