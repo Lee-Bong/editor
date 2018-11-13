@@ -34,19 +34,15 @@
 
 <script>
 import * as service from '../service';
+import Storage from '../util/storage';
 
 export default {
   data() {
-    let loginForm = {
+    const loginForm = Storage.getItem('AccountInfo', {
       username: '',
       password: '',
       keepAccount: false,
-    };
-    try {
-      loginForm = JSON.parse(localStorage.getItem('AccountInfo'));
-    } catch (error) {
-      console.error(error);
-    }
+    });
     return {
       loginForm,
     };
@@ -69,15 +65,11 @@ export default {
     },
     switchKeep() {
       if (!this.loginForm.keepAccount) {
-        try {
-          localStorage.setItem('AccountInfo', JSON.stringify({
-            username: '',
-            password: '',
-            keepAccount: false,
-          }));
-        } catch (error) {
-          console.error(error);
-        }
+        Storage.setItem('AccountInfo', {
+          username: '',
+          password: '',
+          keepAccount: false,
+        });
       }
     },
     oaLogin() {
@@ -90,11 +82,7 @@ export default {
       formData.append('username', this.loginForm.username);
       formData.append('password', this.loginForm.password);
       if (this.loginForm.keepAccount) {
-        try {
-          localStorage.setItem('AccountInfo', JSON.stringify(this.loginForm));
-        } catch (error) {
-          console.error(error);
-        }
+        Storage.setItem('AccountInfo', this.loginForm);
       }
       try {
         const { data } = await service.loginByAccount(formData);
@@ -165,11 +153,6 @@ export default {
     .el-form {
       width: 80%;
       margin: auto;
-      /deep/.el-checkbox__input.is-checked{
-        .el-checkbox__label{
-          color: #FF5476 !important;
-        }
-      }
       .extra {
         text-align: left;
         .tip {
