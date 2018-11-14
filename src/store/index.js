@@ -1,3 +1,4 @@
+/* eslint no-param-reassign:0 */
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { textActiveOff } from '../util/tools';
@@ -7,23 +8,28 @@ import page from './page';
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
+    user: null,
   },
   modules: {
     editor,
     page,
   },
   mutations: {
+    setUser(state, user) {
+      state.user = user;
+    },
     inactive_drags(state, payload) {
       state.editor[payload.arr] = textActiveOff(state.editor[payload.arr], payload);
     },
     del_drag(state, payload) {
-      state.editor[payload.arr] = state.editor[payload.arr].filter((item, key) => key !== payload.index);
+      state.editor[payload.arr] = state.editor[payload.arr]
+        .filter((item, key) => key !== payload.index);
       if (!state.editor[payload.arr].length) {
         const k = payload.active.substring(2);
         const activeK = k.slice(0, 1).toLowerCase() + k.slice(1);
         state.editor[activeK] = false;
       }
-      state.editor.layoutKey = state.editor.layoutKey - 1;
+      state.editor.layoutKey -= 1;
     },
     /* 图片组件操作 */
     add_drag_img(state) {

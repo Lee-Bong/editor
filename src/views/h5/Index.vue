@@ -22,10 +22,11 @@
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
 import jssdk from 'meetyou.jssdk';
-import awakeApp from '../../util/awakeApp';
+import hotSpot from '../../util/hotSpot';
 import * as service from '../../service';
 import CustomComponent from './CustomComponent.vue';
 import Error from '../Error.vue';
+import gaReport from '../../util/gaReport.js';
 
 export default {
   data() {
@@ -82,7 +83,7 @@ export default {
     initShare() {
       const fromURL = `${window.location.protocol}//${window.location.host}/we/view?page_id=${
         this.pageId
-      }&is_formal=${this.isFormal}&isShare=1`;
+      }&is_formal=${this.isFormal}`;
       const {
         shareDec, shareImg, shareTitle, title,
       } = this.pageJson.page;
@@ -98,22 +99,13 @@ export default {
             imageURL: shareImg,
             fromURL,
           }, () => {
-            this.gaReport('share');
+            gaReport({
+              type: 'share',
+              pageId: `weditor_${this.$route.query.page_id}`,
+            });
           });
         },
       );
-    },
-    gaReport(type) {
-      jssdk.callNative('ga', {
-        path: '/bfe_event',
-        params: {
-          page_id: `weditor_${this.$route.query.page_id}`,
-          label: '',
-          category: '',
-          type,
-          value: '',
-        },
-      });
     },
   },
   components: {
@@ -147,7 +139,7 @@ export default {
       // 初始化app内分享
       this.$nextTick(() => {
         this.initShare();
-        awakeApp.wxShare({
+        hotSpot.wxShare({
           title: shareTitle || title,
           desc: shareDec,
           imgUrl: shareImg,
@@ -156,7 +148,10 @@ export default {
     } catch (error) {
       this.showError = true;
     }
-    this.gaReport('pv');
+    gaReport({
+      type: 'pv',
+      pageId: `weditor_${this.$route.query.page_id}`,
+    });
   },
 };
 </script>

@@ -12,9 +12,10 @@ const config = {
       ],
     },
     // proxy: {
-    //   '/api': {
-    //     target: 'https://test-bfe.meiyou.com',
+    //   '/gaApi': {
+    //     target: 'https://test-ga.seeyouyima.com',
     //     changeOrigin: true,
+    //     // secure: false,
     //   },
     // },
   },

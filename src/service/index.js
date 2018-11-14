@@ -4,6 +4,12 @@ import axios from './request';
 const { host } = window.location;
 const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
 
+// 通过账号登录
+const loginByAccount = formData => axios.post(`${api}/api/we/login`, formData);
+
+// 退出登录
+const logout = () => axios.post(`${api}/api/we/logout`);
+
 const getPageInfo = pageId => axios.get(`${api}/api/we/page`, { params: { page_id: pageId } })
   .then(property('data'));
 
@@ -38,6 +44,12 @@ const getUserInfo = () => axios.get(`${api}/api/we/me`).then(property('data'));
 const stateBI = (pageId, start, end) => axios.get(`${api}/api/stat-bi?page_id=${pageId}&from=${start}&to=${end}`)
   .then(property('data'));
 
+// 站外ga上报
+const gaReportOut = (data) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://ga.seeyouyima.com/bfe_event', true);
+  xhr.send(JSON.stringify(data));
+};
 
 export {
   axios,
@@ -52,4 +64,7 @@ export {
   getUserInfo,
   markPage,
   stateBI,
+  gaReportOut,
+  loginByAccount,
+  logout,
 };
