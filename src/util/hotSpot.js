@@ -21,7 +21,7 @@ const getDownLoadUrl = (downloadUrls) => {
 
 const init = ({ link, container, downloadUrls }) => {
   const query = querystring.parse();
-  const appid = query.appid ? parseInt(query.appid, 10) : parseInt(query.app_id, 10);
+  const appid = parseInt(query.appid || query.app_id, 10);
   let AppBar = MeiyouAppBar;
 
   if ((appid === 2 || appid === 8 || appid === 14)) {
@@ -115,20 +115,20 @@ const wxShare = (opt = {}) => {
 
 // 点击热区事件, 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
 const handleClick = ({
-  sourceType, awakeLink, outLink, appLink,
+  sourceType, awakeLink, outLink, appLink, sharebar, downloadUrls,
 }) => {
   if (sourceType === '1') {
     // 内部链接和外部链接不一样
     window.location.href = isInApp ? appLink : outLink;
   } else if (!isInApp) {
     // 分享页面唤起app
-    handleOpen(this.sharebar);
+    handleOpen(sharebar);
   } else {
     // app内唤起app
     jssdk.callNative('open', { url: awakeLink }, (path, data) => {
       if (!data) {
         // 打开失败，跳转下载应用
-        const download = getDownLoadUrl(this.downloadUrls);
+        const download = getDownLoadUrl(downloadUrls);
         if (!download) {
           return showDownLoadTip();
         }

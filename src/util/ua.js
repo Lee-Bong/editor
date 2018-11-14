@@ -4,6 +4,4 @@ const isAndroid = !!ua.match(/Android|Adr/i);
 const isIOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 const isInApp = !!ua.match(/MeetYouClient/i);
 
-export default {
-  ua, isWeixin, isAndroid, isIOS, isInApp,
-};
+export { ua, isWeixin, isAndroid, isIOS, isInApp };

@@ -129,7 +129,12 @@ export default {
         pageId: `weditor_${this.$route.query.page_id}`,
       });
       hotSpot.handleClick({
-        sourceType, awakeLink, outLink, appLink,
+        sourceType,
+        awakeLink,
+        outLink,
+        appLink,
+        sharebar: this.sharebar,
+        downloadUrls: this.downloadUrls,
       });
     },
   },
