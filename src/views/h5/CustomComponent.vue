@@ -68,7 +68,6 @@
 
 <script>
 import generate from 'nanoid/generate';
-import { isInApp } from '../../util/ua.js';
 import hotSpot from '../../util/hotSpot.js';
 import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
 import gaReport from '../../util/gaReport.js';
@@ -78,7 +77,6 @@ export default {
     const componentId = generate('abcdefghijklmn', 10);
     return {
       componentId,
-      sharebar: null,
     };
   },
 
@@ -99,19 +97,6 @@ export default {
     },
   },
 
-  mounted() {
-    const {
-      type, sourceType, awakeLink,
-    } = this.component;
-    // 如果是热区且在分享页唤起app
-    if (type === 3 && sourceType === '2' && !isInApp) {
-      this.sharebar = hotSpot.init({
-        link: awakeLink,
-        container: `#${this.componentId}`,
-        downloadUrls: this.downloadUrls,
-      });
-    }
-  },
   props: ['component', 'scale'],
   methods: {
     transformImgUrl(url, h, w) {
@@ -133,7 +118,6 @@ export default {
         awakeLink,
         outLink,
         appLink,
-        sharebar: this.sharebar,
         downloadUrls: this.downloadUrls,
       });
     },

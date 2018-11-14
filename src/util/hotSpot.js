@@ -1,8 +1,5 @@
 // 初始化唤起链接
-import MeiyouAppBar from 'meetyou.sharebar/lib/MeiyouAppBar';
-import YunQiAppBar from 'meetyou.sharebar/lib/YoubaobaoAppBar';
 import jssdk from 'meetyou.jssdk';
-import querystring from 'meetyou.util/lib/querystring';
 import jsonp from 'jsonp';
 import { isWeixin, isAndroid, isIOS, isInApp } from './ua';
 // const wx = require('../assets/javascript/jweixin-1.2.0');
@@ -17,24 +14,6 @@ const getDownLoadUrl = (downloadUrls) => {
     url = downloadUrls.ios;
   }
   return url;
-};
-
-const init = ({ link, container, downloadUrls }) => {
-  const query = querystring.parse();
-  const appid = parseInt(query.appid || query.app_id, 10);
-  let AppBar = MeiyouAppBar;
-  if ((appid === 2 || appid === 8 || appid === 14)) {
-    AppBar = YunQiAppBar;
-  }
-  const download = getDownLoadUrl(downloadUrls);
-  const sharebar = new AppBar({
-    container,
-    link,
-    download,
-    template: '<div class="downloadbar" style="display: none"/>',
-  });
-
-  return sharebar;
 };
 
 const showDownLoadTip = () => {
@@ -107,19 +86,29 @@ const wxShare = (opt = {}) => {
 
 // 点击热区事件, 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
 const handleClick = ({
-  sourceType, awakeLink, outLink, appLink, sharebar, downloadUrls,
+  sourceType, awakeLink, outLink, appLink, downloadUrls,
 }) => {
   if (sourceType === '1') {
     // 内部链接和外部链接不一样
     window.location.href = isInApp ? appLink : outLink;
   } else if (!isInApp) {
-    // 非app页面唤起app
+    // 有填写 唤起 app 链接
+    if (awakeLink) {
+      // 尝试唤起 app
+      window.location.href = awakeLink;
+    }
+    // 尝试下载
     const download = getDownLoadUrl(downloadUrls);
+    // 无任何下载渠道
+    if (!download) {
+      return;
+    }
     // 如果在微信打开，不存在 yyb 渠道，但是存在 ios / android 渠道时展示引导
-    if (isWeixin && !downloadUrls.yyb && download) {
+    if (isWeixin && !downloadUrls.yyb) {
       return showDownLoadTip();
     }
-    sharebar.handleOpen();
+    // ios / android 下载
+    window.location.href = download;
   } else {
     // app内唤起app
     jssdk.callNative('open', { url: awakeLink }, (path, data) => {
@@ -136,5 +125,5 @@ const handleClick = ({
 };
 
 export default {
-  init, handleClick, wxShare,
+  handleClick, wxShare,
 };
