@@ -103,7 +103,11 @@ export default {
   },
   methods: {
     sourceChange(type, form, active) {
-      this.$store.state.editor[form][this.$store.state.editor[active]].sourceType = type;
+      const dragItems = this.$store.state.editor[form];
+      dragItems[this.$store.state.editor[active]].sourceType = type;
+      this.$store.commit('editor_update', {
+        [form]: dragItems,
+      });
     },
     settingFixed() { // 锁定设置
       this.settingForm.location.x = 600;
