@@ -1,5 +1,5 @@
 <template>
-    <div
+    <!-- <div
         class="container"
         :id="componentId"
         :style="{
@@ -10,6 +10,11 @@
             height: `${component.size.h}px`,
             'z-index': component.style['z-index'] || 0
     }"
+    > -->
+    <div
+        class="container"
+        :id="componentId"
+        :style="containerStyle()"
     >
         <div
           v-if="component.type === 1"
@@ -99,6 +104,33 @@ export default {
 
   props: ['component', 'scale'],
   methods: {
+    containerStyle() {
+      const {
+        size, isFixed, positionInfo, location,
+      } = this.component;
+      let style = {
+        width: `${size.w}px`,
+        height: `${size.h}px`,
+        'z-index': this.component.style['z-index'] || 0,
+      };
+      if (isFixed) {
+        style = { ...style, position: 'fixed' };
+        if (positionInfo.position === 'fixedBottom') {
+          style = { ...style, bottom: `${positionInfo.bottom}px` };
+        }
+        if (positionInfo.position === 'fixedTop') {
+          style = { ...style, top: `${positionInfo.top}px` };
+        }
+      } else {
+        style = {
+          ...style,
+          position: 'absolute',
+          top: `${location.y}px`,
+          left: `${location.x}px`,
+        };
+      }
+      return style;
+    },
     transformImgUrl(url, h, w) {
       let optUrl = url.replace(/^https?:/, '');
       optUrl += `?x-oss-process=image/resize,m_fixed,h_${Math.ceil(h * 2)},w_${Math.ceil(w * 2)}`;

@@ -177,6 +177,29 @@ export default {
         duration: 2000,
       });
     },
+    // 获取定位信息
+    getPositionInfo({ position, location, size }) {
+      const { page } = this.$store.state;
+      if (position === 'relative') {
+        return {
+          position,
+        };
+      }
+      if (position === 'fixedBottom') {
+        const bottom = page.screenHeight - location.y - size.h;
+        return {
+          position,
+          bottom,
+        };
+      }
+      if (position === 'fixedTop') {
+        const top = location.y;
+        return {
+          position,
+          top,
+        };
+      }
+    },
     getEditorJson(isPublish) { // 生成预览与发布的json
       const eJson = { editor: {} };
       const { editor, page } = this.$store.state;
@@ -197,11 +220,13 @@ export default {
           const {
             size, location, content, position,
           } = item;
+          const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
             type: 1,
             size,
             location,
             isFixed: position !== 'relative',
+            positionInfo,
             content,
             style: {
               'font-size': item.fontSize,
@@ -219,11 +244,13 @@ export default {
           const {
             size, location, img, dragIndex, position,
           } = item;
+          const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
             type: 2,
             size,
             location,
             isFixed: position !== 'relative',
+            positionInfo,
             url: img.url,
             style: {
               'z-index': dragIndex,
@@ -235,13 +262,16 @@ export default {
       if (dragLinks.length) {
         dragLinks.map((item, key) => {
           const {
-            size, location, appLink, outLink, sourceType, awakeLink, iosLink, andLink, yybLink,
+            size, location, position, appLink, outLink,
+            sourceType, awakeLink, iosLink, andLink, yybLink,
           } = item;
+          const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
             type: 3,
             key,
             size,
             location,
+            positionInfo,
             isFixed: item.position !== 'relative',
             name: this.getLinkName(3, key, layerLists),
             appLink,
@@ -282,6 +312,7 @@ export default {
           const {
             loop, poster, location, size, position,
           } = curVideo;
+          const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
             type: 5,
             source: curVideo.url,
@@ -293,6 +324,7 @@ export default {
             style: {
               'z-index': item.dragIndex,
             },
+            positionInfo,
             isFixed: position !== 'relative',
           });
           return true;
@@ -301,12 +333,15 @@ export default {
       if (dragAudios.length) {
         dragAudios.map((item) => {
           const curPlay = item.sourceType === '1' ? item.play : item.linePlay;
+          const { position, location, size } = curPlay;
+          const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
             type: 6,
-            isFixed: curPlay.position !== 'relative',
+            positionInfo,
+            isFixed: position !== 'relative',
             play: curPlay,
-            location: curPlay.location,
-            size: curPlay.size,
+            location,
+            size,
             style: {
               'z-index': item.dragIndex,
             },
