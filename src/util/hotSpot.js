@@ -9,7 +9,7 @@ import { isWeixin, isAndroid, isIOS, isInApp } from './ua';
 
 const getDownLoadUrl = (downloadUrls) => {
   let url = '';
-  if (isWeixin) {
+  if (isWeixin && downloadUrls.yyb) {
     url = downloadUrls.yyb;
   } else if (isAndroid) {
     url = downloadUrls.android;
@@ -23,7 +23,6 @@ const init = ({ link, container, downloadUrls }) => {
   const query = querystring.parse();
   const appid = parseInt(query.appid || query.app_id, 10);
   let AppBar = MeiyouAppBar;
-
   if ((appid === 2 || appid === 8 || appid === 14)) {
     AppBar = YunQiAppBar;
   }
@@ -47,13 +46,6 @@ const showDownLoadTip = () => {
     tip.parentNode.removeChild(tip);
   };
   document.body.appendChild(tip);
-};
-
-const handleOpen = (sharebar) => {
-  if (isWeixin && !sharebar.download) {
-    return showDownLoadTip();
-  }
-  sharebar.handleOpen();
 };
 
 const getWechatToken = () => new Promise((resolve, reject) => {
@@ -121,8 +113,13 @@ const handleClick = ({
     // 内部链接和外部链接不一样
     window.location.href = isInApp ? appLink : outLink;
   } else if (!isInApp) {
-    // 分享页面唤起app
-    handleOpen(sharebar);
+    // 非app页面唤起app
+    const download = getDownLoadUrl(downloadUrls);
+    // 如果在微信打开，不存在 yyb 渠道，但是存在 ios / android 渠道时展示引导
+    if (isWeixin && !downloadUrls.yyb && download) {
+      return showDownLoadTip();
+    }
+    sharebar.handleOpen();
   } else {
     // app内唤起app
     jssdk.callNative('open', { url: awakeLink }, (path, data) => {
@@ -130,7 +127,7 @@ const handleClick = ({
         // 打开失败，跳转下载应用
         const download = getDownLoadUrl(downloadUrls);
         if (!download) {
-          return showDownLoadTip();
+          return;
         }
         window.location.href = download;
       }
