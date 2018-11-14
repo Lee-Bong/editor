@@ -1,5 +1,5 @@
 import jssdk from 'meetyou.jssdk';
-import { isInApp } from './ua';
+import { isMeetyouWebview } from 'meetyou.browser';
 import * as service from '../service';
 
 export default ({
@@ -8,11 +8,11 @@ export default ({
   const params = {
     page_id: pageId,
     label,
-    category: isInApp ? 'inside' : 'outside',
+    category: isMeetyouWebview ? 'inside' : 'outside',
     type,
     value,
   };
-  if (isInApp) {
+  if (isMeetyouWebview) {
     // 如果是 美柚 app
     return jssdk.callNative('ga', {
       path,
