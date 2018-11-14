@@ -1,11 +1,27 @@
 <template>
-    <div class="wrap"><div class="logout" @click="logout">退出</div></div>
+    <div class="wrap">
+      <span class="username" v-if="user">{{user.name}}</span>
+      <span class="logout" @click="logout">退出</span>
+    </div>
 </template>
 
 <script>
 import * as service from '../../../service';
 
 export default {
+  async mounted() {
+    if (!this.user) {
+      const data = await service.getUserInfo();
+      if (data.status && data.status === 'ok') {
+        this.$store.commit('setUser', data.data);
+      }
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
   methods: {
     async logout() {
       try {
@@ -41,6 +57,9 @@ export default {
 .wrap {
   margin: 0 10px;
   font-size: 14px;
+  .username {
+    margin: 10px;
+  }
   .logout {
     cursor: pointer;
     color: #409eff;

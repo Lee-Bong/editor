@@ -55,6 +55,7 @@ export default {
       try {
         const data = await service.getUserInfo();
         if (data && data.status === 'ok' && data.data) {
+          this.$store.commit('setUser', data.data);
           this.$router.push({
             path: '/manage',
           });
@@ -81,9 +82,6 @@ export default {
       const formData = new FormData();
       formData.append('username', this.loginForm.username);
       formData.append('password', this.loginForm.password);
-      if (this.loginForm.keepAccount) {
-        Storage.setItem('AccountInfo', { ...this.loginForm, password: '' });
-      }
       try {
         const { data } = await service.loginByAccount(formData);
         if (data.status && data.status === 'ok') {
@@ -91,6 +89,10 @@ export default {
             type: 'success',
             message: '登录成功~',
           });
+          if (this.loginForm.keepAccount) {
+            Storage.setItem('AccountInfo', { ...this.loginForm, password: '' });
+          }
+          this.$store.commit('setUser', { name: this.loginForm.username });
           setTimeout(() => {
             this.$router.push({
               path: '/manage',
