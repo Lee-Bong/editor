@@ -1,16 +1,15 @@
 // 初始化唤起链接
 import jssdk from 'meetyou.jssdk';
 import jsonp from 'jsonp';
-import { isWeixin, isAndroid, isIOS, isInApp } from './ua';
-// const wx = require('../assets/javascript/jweixin-1.2.0');
+import { isiOS, isAndroid, isWechat, isMeetyouWebview } from 'meetyou.browser';
 
 const getDownLoadUrl = (downloadUrls) => {
   let url = '';
-  if (isWeixin && downloadUrls.yyb) {
+  if (isWechat && downloadUrls.yyb) {
     url = downloadUrls.yyb;
   } else if (isAndroid) {
     url = downloadUrls.android;
-  } else if (isIOS) {
+  } else if (isiOS) {
     url = downloadUrls.ios;
   }
   return url;
@@ -39,7 +38,7 @@ const getWechatToken = () => new Promise((resolve, reject) => {
 
 // 微信二次分享
 const wxShare = (opt = {}) => {
-  if (isWeixin) {
+  if (isWechat) {
     getWechatToken().then((result) => {
       const { wx } = window;
       wx.config({
@@ -90,8 +89,8 @@ const handleClick = ({
 }) => {
   if (sourceType === '1') {
     // 内部链接和外部链接不一样
-    window.location.href = isInApp ? appLink : outLink;
-  } else if (!isInApp) {
+    window.location.href = isMeetyouWebview ? appLink : outLink;
+  } else if (!isMeetyouWebview) {
     // 有填写 唤起 app 链接
     if (awakeLink) {
       // 尝试唤起 app
@@ -104,23 +103,26 @@ const handleClick = ({
       return;
     }
     // 如果在微信打开，不存在 yyb 渠道，但是存在 ios / android 渠道时展示引导
-    if (isWeixin && !downloadUrls.yyb) {
+    if (isWechat && !downloadUrls.yyb) {
       return showDownLoadTip();
     }
     // ios / android 下载
     window.location.href = download;
   } else {
     // app内唤起app
-    jssdk.callNative('open', { url: awakeLink }, (path, data) => {
-      if (!data) {
-        // 打开失败，跳转下载应用
-        const download = getDownLoadUrl(downloadUrls);
-        if (!download) {
-          return;
+    const download = getDownLoadUrl(downloadUrls);
+    if (awakeLink) {
+      jssdk.callNative('open', { url: awakeLink }, (path, data) => {
+        if (!data) {
+          // 打开失败，跳转下载应用
+          if (download) {
+            window.location.href = download;
+          }
         }
-        window.location.href = download;
-      }
-    });
+      });
+    } else if (download) {
+      window.location.href = download;
+    }
   }
 };
 
