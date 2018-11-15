@@ -107,7 +107,9 @@ const handleClick = ({
       return showDownLoadTip();
     }
     // ios / android 下载
-    window.location.href = download;
+    setTimeout(() => {
+      window.location.href = download;
+    }, 1200);
   } else {
     // app内唤起app
     const download = getDownLoadUrl(downloadUrls);
