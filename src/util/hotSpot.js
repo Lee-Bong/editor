@@ -114,13 +114,9 @@ const handleClick = ({
       const timer = setTimeout(() => {
         if ((new Date()) - openTime < 2200) {
           // 加了200ms基准误差
-          if (download) {
-            goDownLoad(downloadUrls);
-          }
+          return goDownLoad(downloadUrls);
         }
-        if ((new Date()) - openTime > 2200) {
-          clearTimeout(timer);
-        }
+        clearTimeout(timer);
       }, 2000);
     } else if (download) {
       // 否则跳转下载
