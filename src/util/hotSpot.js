@@ -83,6 +83,20 @@ const wxShare = (opt = {}) => {
   }
 };
 
+// 下载
+const goDownLoad = (downloadUrls) => {
+  const download = getDownLoadUrl(downloadUrls);
+  if (!download) {
+    return;
+  }
+  // 如果在微信打开，不存在 yyb 渠道，但是存在 ios / android 渠道时展示引导
+  if (isWechat && !downloadUrls.yyb) {
+    return showDownLoadTip();
+  }
+  // ios / android 下载
+  window.location.href = download;
+};
+
 // 点击热区事件, 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
 const handleClick = ({
   sourceType, awakeLink, outLink, appLink, downloadUrls,
@@ -91,23 +105,29 @@ const handleClick = ({
     // 内部链接和外部链接不一样
     window.location.href = isMeetyouWebview ? appLink : outLink;
   } else if (!isMeetyouWebview) {
-    // 有填写 唤起 app 链接
+    const download = getDownLoadUrl(downloadUrls);
+    // 有填写 唤起 app 链接, 首先尝试唤起
     if (awakeLink) {
       // 尝试唤起 app
+      if (isWechat && !downloadUrls.yyb && download) {
+        // 微信内尝试唤起app，无应用宝渠道，但存在别的渠道
+        return showDownLoadTip();
+      }
+      const openTime = +new Date();
       window.location.href = awakeLink;
+      const timer = setTimeout(() => {
+        if ((+new Date()) - openTime < 2200) {
+          // 加了200ms基准误差
+          return goDownLoad(downloadUrls);
+        }
+        if ((+new Date()) - openTime > 2200) {
+          return clearTimeout(timer);
+        }
+      }, 2000);
+    } else if (download) {
+      // 否则跳转下载
+      goDownLoad(downloadUrls);
     }
-    // 尝试下载
-    const download = getDownLoadUrl(downloadUrls);
-    // 无任何下载渠道
-    if (!download) {
-      return;
-    }
-    // 如果在微信打开，不存在 yyb 渠道，但是存在 ios / android 渠道时展示引导
-    if (isWechat && !downloadUrls.yyb) {
-      return showDownLoadTip();
-    }
-    // ios / android 下载
-    window.location.href = download;
   } else {
     // app内唤起app
     const download = getDownLoadUrl(downloadUrls);

@@ -12,11 +12,14 @@
 }
 body {
   margin: 0;
-  padding: constant(safe-area-inset-top)
-        constant(safe-area-inset-right)
-        constant(safe-area-inset-bottom)
-        constant(safe-area-inset-left);
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
+.ipx-padding {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+}
+
 .opentip {
   position: absolute;
   left: 0;

@@ -1,18 +1,7 @@
 <template>
-    <!-- <div
-        class="container"
-        :id="componentId"
-        :style="{
-            position: component.isFixed ? 'fixed' : 'absolute',
-            top: `${component.location.y}px`,
-            left: `${component.location.x}px`,
-            width: `${component.size.w}px`,
-            height: `${component.size.h}px`,
-            'z-index': component.style['z-index'] || 0
-    }"
-    > -->
     <div
         class="container"
+        :class="{ 'ipx-padding': component.isFixed }"
         :id="componentId"
         :style="containerStyle()"
     >
@@ -116,7 +105,10 @@ export default {
       if (isFixed) {
         style = { ...style, position: 'fixed' };
         if (positionInfo.position === 'fixedBottom') {
-          style = { ...style, bottom: `${positionInfo.bottom}px` };
+          style = {
+            ...style,
+            bottom: `${positionInfo.bottom}px`,
+          };
         }
         if (positionInfo.position === 'fixedTop') {
           style = { ...style, top: `${positionInfo.top}px` };
