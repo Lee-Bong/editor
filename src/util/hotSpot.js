@@ -112,7 +112,7 @@ const handleClick = ({
       const openTime = +new Date();
       window.location.href = awakeLink;
       const timer = setTimeout(() => {
-        if ((new Date()) - openTime < 2200) {
+        if ((+new Date()) - openTime < 2200) {
           // 加了200ms基准误差
           return goDownLoad(downloadUrls);
         }
