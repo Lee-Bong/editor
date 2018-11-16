@@ -109,6 +109,10 @@ const handleClick = ({
     // 有填写 唤起 app 链接, 首先尝试唤起
     if (awakeLink) {
       // 尝试唤起 app
+      if (isWechat && !downloadUrls.yyb && download) {
+        // 微信内尝试唤起app，无应用宝渠道，但存在别的渠道
+        return showDownLoadTip();
+      }
       const openTime = +new Date();
       window.location.href = awakeLink;
       const timer = setTimeout(() => {
