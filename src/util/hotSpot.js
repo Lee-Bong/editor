@@ -116,7 +116,9 @@ const handleClick = ({
           // 加了200ms基准误差
           return goDownLoad(downloadUrls);
         }
-        clearTimeout(timer);
+        if ((+new Date()) - openTime > 2200) {
+          return clearTimeout(timer);
+        }
       }, 2000);
     } else if (download) {
       // 否则跳转下载

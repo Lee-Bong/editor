@@ -1,7 +1,7 @@
 <template>
     <div
         class="container"
-        :class="{ ipxPadding: component.isFixed }"
+        :class="{ 'ipx-padding': component.isFixed }"
         :id="componentId"
         :style="containerStyle()"
     >
