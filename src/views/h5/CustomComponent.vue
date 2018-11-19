@@ -1,7 +1,7 @@
 <template>
     <div
         class="container"
-        :class="{ 'ipx-padding': isFixed() }"
+        :class="{ 'ipx-padding': isFixed }"
         :id="componentId"
         :style="containerStyle()"
     >
@@ -89,24 +89,26 @@ export default {
         yyb: yybLink,
       };
     },
+    isFixed() {
+      const {
+        positionInfo,
+      } = this.component;
+      return positionInfo.position !== 'relative';
+    },
   },
 
   props: ['component', 'scale'],
   methods: {
-    isFixed() {
-      return this.componnet.postionInfo.postion !== 'relative';
-    },
     containerStyle() {
       const {
         size, positionInfo, location,
       } = this.component;
-      const isFixed = this.isFixed();
       let style = {
         width: `${size.w}px`,
         height: `${size.h}px`,
         'z-index': this.component.style['z-index'] || 0,
       };
-      if (isFixed) {
+      if (this.isFixed) {
         style = { ...style, position: 'fixed' };
         if (positionInfo.position === 'fixedBottom') {
           style = {
