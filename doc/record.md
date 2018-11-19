@@ -12,5 +12,8 @@ zIndex: 作用于展示的zIndex
 + 交互文档地址
 
 https://axhub.im/pro/2aa8447594400b26  密码：meiyou123
+新交互地址：
+https://axhub.im/pro/b3ca8072ecf0a0d8/#g=1&p=%E5%B0%81%E9%9D%A2  密码：meiyou123
+
 
 + API

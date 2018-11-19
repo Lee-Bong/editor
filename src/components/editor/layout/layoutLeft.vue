@@ -39,6 +39,18 @@ export default {
             { text: '音频', icon: 'ed-icon-yinpin1', type: 6 },
           ],
         },
+        {
+          kind: '表单组件',
+          list: [
+            { text: '单行文本', icon: 'ed-icon-shipin1', type: 7 },
+            { text: '多行文本', icon: 'ed-icon-yinpin1', type: 8 },
+            { text: '单项选择', icon: 'ed-icon-shipin1', type: 9 },
+            { text: '多项选择', icon: 'ed-icon-yinpin1', type: 10 },
+            { text: '下拉选择', icon: 'ed-icon-shipin1', type: 11 },
+            { text: '手机', icon: 'ed-icon-yinpin1', type: 12 },
+            { text: '提交按钮', icon: 'ed-icon-yinpin1', type: 13 },
+          ],
+        },
       ],
     };
   },
