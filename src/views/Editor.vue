@@ -225,7 +225,6 @@ export default {
             type: 1,
             size,
             location,
-            isFixed: position !== 'relative',
             positionInfo,
             content,
             style: {
@@ -249,7 +248,6 @@ export default {
             type: 2,
             size,
             location,
-            isFixed: position !== 'relative',
             positionInfo,
             url: img.url,
             style: {
@@ -272,7 +270,6 @@ export default {
             size,
             location,
             positionInfo,
-            isFixed: item.position !== 'relative',
             name: this.getLinkName(3, key, layerLists),
             appLink,
             outLink,
@@ -300,8 +297,10 @@ export default {
             style: {
               'z-index': dragIndex,
             },
+            positionInfo: {
+              position: 'relative',
+            },
             imgList,
-            isFixed: false,
           });
           return true;
         });
@@ -325,7 +324,6 @@ export default {
               'z-index': item.dragIndex,
             },
             positionInfo,
-            isFixed: position !== 'relative',
           });
           return true;
         });
@@ -338,7 +336,6 @@ export default {
           dragArr.push({
             type: 6,
             positionInfo,
-            isFixed: position !== 'relative',
             play: curPlay,
             location,
             size,
