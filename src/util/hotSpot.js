@@ -1,45 +1,18 @@
 // 初始化唤起链接
-import MeiyouAppBar from 'meetyou.sharebar/lib/MeiyouAppBar';
-import YunQiAppBar from 'meetyou.sharebar/lib/YoubaobaoAppBar';
-import querystring from 'meetyou.util/lib/querystring';
+import jssdk from 'meetyou.jssdk';
 import jsonp from 'jsonp';
-
-// const wx = require('../assets/javascript/jweixin-1.2.0');
-
-const ua = navigator.userAgent;
-const isWeixin = !!ua.match(/MicroMessenger/i);
-const isAndroid = !!ua.match(/Android|Adr/i);
-const isIOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+import { isiOS, isAndroid, isWechat, isMeetyouWebview } from 'meetyou.browser';
 
 const getDownLoadUrl = (downloadUrls) => {
   let url = '';
-  if (isWeixin) {
+  if (isWechat && downloadUrls.yyb) {
     url = downloadUrls.yyb;
   } else if (isAndroid) {
     url = downloadUrls.android;
-  } else if (isIOS) {
+  } else if (isiOS) {
     url = downloadUrls.ios;
   }
   return url;
-};
-
-const init = ({ link, container, downloadUrls }) => {
-  const query = querystring.parse();
-  const appid = query.appid ? parseInt(query.appid, 10) : parseInt(query.app_id, 10);
-  let AppBar = MeiyouAppBar;
-
-  if ((appid === 2 || appid === 8 || appid === 14)) {
-    AppBar = YunQiAppBar;
-  }
-  const download = getDownLoadUrl(downloadUrls);
-  const sharebar = new AppBar({
-    container,
-    link,
-    download,
-    template: '<div class="downloadbar" style="display: none"/>',
-  });
-
-  return sharebar;
 };
 
 const showDownLoadTip = () => {
@@ -51,13 +24,6 @@ const showDownLoadTip = () => {
     tip.parentNode.removeChild(tip);
   };
   document.body.appendChild(tip);
-};
-
-const handleOpen = (sharebar) => {
-  if (isWeixin && !sharebar.download) {
-    return showDownLoadTip();
-  }
-  sharebar.handleOpen();
 };
 
 const getWechatToken = () => new Promise((resolve, reject) => {
@@ -72,7 +38,7 @@ const getWechatToken = () => new Promise((resolve, reject) => {
 
 // 微信二次分享
 const wxShare = (opt = {}) => {
-  if (isWeixin) {
+  if (isWechat) {
     getWechatToken().then((result) => {
       const { wx } = window;
       wx.config({
@@ -117,6 +83,69 @@ const wxShare = (opt = {}) => {
   }
 };
 
+// 下载
+const goDownLoad = (downloadUrls) => {
+  const download = getDownLoadUrl(downloadUrls);
+  if (!download) {
+    return;
+  }
+  // 如果在微信打开，不存在 yyb 渠道，但是存在 ios / android 渠道时展示引导
+  if (isWechat && !downloadUrls.yyb) {
+    return showDownLoadTip();
+  }
+  // ios / android 下载
+  window.location.href = download;
+};
+
+// 点击热区事件, 这里有四种组合：app内跳转，分享页面跳转，app内唤起，分享页面
+const handleClick = ({
+  sourceType, awakeLink, outLink, appLink, downloadUrls,
+}) => {
+  if (sourceType === '1') {
+    // 内部链接和外部链接不一样
+    window.location.href = isMeetyouWebview ? appLink : outLink;
+  } else if (!isMeetyouWebview) {
+    const download = getDownLoadUrl(downloadUrls);
+    // 有填写 唤起 app 链接, 首先尝试唤起
+    if (awakeLink) {
+      // 尝试唤起 app
+      if (isWechat && !downloadUrls.yyb && download) {
+        // 微信内尝试唤起app，无应用宝渠道，但存在别的渠道
+        return showDownLoadTip();
+      }
+      const openTime = +new Date();
+      window.location.href = awakeLink;
+      const timer = setTimeout(() => {
+        if ((+new Date()) - openTime < 2200) {
+          // 加了200ms基准误差
+          return goDownLoad(downloadUrls);
+        }
+        if ((+new Date()) - openTime > 2200) {
+          return clearTimeout(timer);
+        }
+      }, 2000);
+    } else if (download) {
+      // 否则跳转下载
+      goDownLoad(downloadUrls);
+    }
+  } else {
+    // app内唤起app
+    const download = getDownLoadUrl(downloadUrls);
+    if (awakeLink) {
+      jssdk.callNative('open', { url: awakeLink }, (path, data) => {
+        if (!data) {
+          // 打开失败，跳转下载应用
+          if (download) {
+            window.location.href = download;
+          }
+        }
+      });
+    } else if (download) {
+      window.location.href = download;
+    }
+  }
+};
+
 export default {
-  init, handleOpen, showDownLoadTip, getDownLoadUrl, wxShare,
+  handleClick, wxShare,
 };

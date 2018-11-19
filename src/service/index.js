@@ -4,6 +4,12 @@ import axios from './request';
 const { host } = window.location;
 const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
 
+// 通过账号登录
+const loginByAccount = formData => axios.post(`${api}/api/we/login`, formData);
+
+// 退出登录
+const logout = () => axios.post(`${api}/api/we/logout`);
+
 const getPageInfo = pageId => axios.get(`${api}/api/we/page`, { params: { page_id: pageId } })
   .then(property('data'));
 
@@ -59,4 +65,6 @@ export {
   markPage,
   stateBI,
   gaReportOut,
+  loginByAccount,
+  logout,
 };
