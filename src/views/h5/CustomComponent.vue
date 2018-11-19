@@ -1,7 +1,7 @@
 <template>
     <div
         class="container"
-        :class="{ 'ipx-padding': component.isFixed }"
+        :class="{ 'ipx-padding': isFixed() }"
         :id="componentId"
         :style="containerStyle()"
     >
@@ -93,10 +93,14 @@ export default {
 
   props: ['component', 'scale'],
   methods: {
+    isFixed() {
+      return this.componnet.postionInfo.postion !== 'relative';
+    },
     containerStyle() {
       const {
-        size, isFixed, positionInfo, location,
+        size, positionInfo, location,
       } = this.component;
+      const isFixed = this.isFixed();
       let style = {
         width: `${size.w}px`,
         height: `${size.h}px`,

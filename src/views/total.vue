@@ -214,7 +214,7 @@ export default {
               for (let i = 0; i < len; i++) {
                 if (view[i].length) {
                   if (view[i][0] === 'pv') {
-                    if (view[i][3] === 'outside') {
+                    if (view[i][2] === 'outside') {
                       pvItemOut = view[i];
                     } else {
                       pvItem = view[i];
