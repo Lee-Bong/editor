@@ -105,8 +105,12 @@ export default {
       if (ev.height > this.page.phoneHeight) {
         this.$store.commit('page_update', {
           phoneHeight: ev.height,
-          clientHeight: ev.height,
         });
+        if (ev.height > this.page.clientHeight - 64) {
+          this.$store.commit('page_update', {
+            clientHeight: ev.height + 64,
+          });
+        }
         const scrollTime = setTimeout(() => {
           window.scrollTo(0, ((ev.height + 264) - document.body.clientHeight));
           clearTimeout(scrollTime);
@@ -204,7 +208,7 @@ export default {
   line-height: 35px;
   color: #323232;
   cursor: ns-resize;
-  z-index: 999;
+  z-index: 1005;
   text-align: center;
 }
 .resize-icon {
