@@ -9,17 +9,18 @@
         </template>
       </nav-bar>
       <layout-left />
-      <el-main>
-        <div class="flxed-main">
-          <div class="phone-wrap" :style="{height: (page.clientHeight)+'px'}">
+      <el-main >
+        <div class="main-bg"></div>
+        <div class="flxed-main" :style="{height: (page.phoneHeight + 50+37)+'px'}">
+          <div class="phone-wrap" :style="{height: (page.phoneHeight)+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: page.phoneWidth+'px',
-                height: (page.clientHeight)+'px'}">
+                height: (page.phoneHeight)+'px'}">
               <phone-banner :title="page.title" :topBannerClick="topBannerClick"/>
               <div class="screen-line" v-show="page.phoneHeight > 603"></div>
               <layout-main />
             </div>
-            <div class="phone-hidden" :style="{width: page.phoneWidth+'px',
-                top: (page.phoneHeight + 64+ 37)+'px'}"></div>
+            <!-- <div class="phone-hidden" :style="{width: page.phoneWidth+'px',
+                top: (page.phoneHeight + 64+ 37)+'px'}"></div> -->
           </div>
           <layout-setting />
         </div>
@@ -82,6 +83,7 @@ export default {
       isPublish: false,
       curState: null,
       initState: null,
+      windowH: window.innerHeight,
     };
   },
 
@@ -607,7 +609,6 @@ body {
   line-height: 50px;
 }
 .flxed-main {
-  background-color: #eee;
   position: absolute;
   top: 56px;
   height: auto;
@@ -617,6 +618,14 @@ body {
   display: flex;
   align-content: center;
   justify-content: center;
+}
+.main-bg {
+ background-color: #eee;
+ position: absolute;
+ top: 0;
+ bottom: 0;
+ left: 0;
+ right: 0;
 }
 .phone-container {
   position: relative;
