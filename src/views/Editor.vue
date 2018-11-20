@@ -19,8 +19,9 @@
               <div class="screen-line" v-show="page.phoneHeight > 603"></div>
               <layout-main />
             </div>
-            <!-- <div class="phone-hidden" :style="{width: page.phoneWidth+'px',
-                top: (page.phoneHeight + 64+ 37)+'px'}"></div> -->
+            <div class="phone-hidden" :style="{width: page.phoneWidth + 20 +'px',
+                top: (page.phoneHeight + 64)+'px',
+                height: page.clientHeight - page.phoneHeight + 'px'}"></div>
           </div>
           <layout-setting />
         </div>
@@ -618,6 +619,7 @@ body {
   display: flex;
   align-content: center;
   justify-content: center;
+  overflow: hidden;
 }
 .main-bg {
  background-color: #eee;
@@ -698,11 +700,12 @@ body {
 }
 
 .phone-hidden {
-  background: rgba(0, 0, 0, 0.5);
+  background: #eee;
   position: absolute;
   bottom: -1px;
-  left: 1px;
-  z-index: 1050;
+  left: -5px;
+  right: -5px;
+  z-index: 1002;
 }
 .screen-line {
   position: absolute;
