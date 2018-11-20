@@ -102,13 +102,13 @@ export default {
       this.dragClick(index, type);
     },
     resizestop(ev) {
-      if (ev.height > this.page.phoneHeight && ev.height > this.page.clientHeight - 64) {
+      if (ev.height > this.page.phoneHeight) {
         this.$store.commit('page_update', {
           phoneHeight: ev.height,
-          clientHeight: ev.height + 64,
+          clientHeight: ev.height,
         });
         const scrollTime = setTimeout(() => {
-          window.scrollTo(0, (ev.height + 264) - document.body.clientHeight);
+          window.scrollTo(0, ((ev.height + 264) - document.body.clientHeight));
           clearTimeout(scrollTime);
         }, 300);
       } else {
