@@ -130,6 +130,7 @@ export default {
   right: 0;
   background-color: #eee;
   padding: 20px 30px 30px 30px;
+  overflow-y: auto;
 }
 .content-wrap {
   background-color: #fff;

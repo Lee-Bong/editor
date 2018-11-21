@@ -160,7 +160,7 @@ export function dragCom() {
     computed: {
       fixedBottom: {
         get() {
-          if (this.dragForm.type === 6) {
+          if (this.dragForm.type === 6 || this.dragForm.type === 5) {
             return this.$store.state.page.screenHeight - this.locationY
             - this.dragForm.size.h;
           }
@@ -172,7 +172,7 @@ export function dragCom() {
       },
       fixedTop: {
         get() {
-          if (this.dragForm.type === 6) {
+          if (this.dragForm.type === 6 || this.dragForm.type === 5) {
             return this.locationX;
           }
           return this.dragForm.location.y;

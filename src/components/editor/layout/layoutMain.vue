@@ -159,13 +159,17 @@ export default {
       this.dragClick(index, type);
     },
     resizestop(ev) {
-      if (ev.height > this.page.phoneHeight && ev.height > this.page.clientHeight - 64) {
+      if (ev.height > this.page.phoneHeight) {
         this.$store.commit('page_update', {
           phoneHeight: ev.height,
-          clientHeight: ev.height + 64,
         });
+        if (ev.height > this.page.clientHeight - 64) {
+          this.$store.commit('page_update', {
+            clientHeight: ev.height + 64,
+          });
+        }
         const scrollTime = setTimeout(() => {
-          window.scrollTo(0, (ev.height + 264) - document.body.clientHeight);
+          window.scrollTo(0, ((ev.height + 264) - document.body.clientHeight));
           clearTimeout(scrollTime);
         }, 300);
       } else {
@@ -261,7 +265,7 @@ export default {
   line-height: 35px;
   color: #323232;
   cursor: ns-resize;
-  z-index: 999;
+  z-index: 1005;
   text-align: center;
 }
 .resize-icon {

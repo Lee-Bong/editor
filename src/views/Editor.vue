@@ -9,17 +9,19 @@
         </template>
       </nav-bar>
       <layout-left />
-      <el-main>
-        <div class="flxed-main">
-          <div class="phone-wrap" :style="{height: (page.clientHeight)+'px'}">
+      <el-main >
+        <div class="main-bg"></div>
+        <div class="flxed-main" :style="{height: (page.phoneHeight + 50+37)+'px'}">
+          <div class="phone-wrap" :style="{height: (page.phoneHeight)+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: page.phoneWidth+'px',
-                height: (page.clientHeight)+'px'}">
+                height: (page.phoneHeight)+'px'}">
               <phone-banner :title="page.title" :topBannerClick="topBannerClick"/>
               <div class="screen-line" v-show="page.phoneHeight > 603"></div>
               <layout-main />
             </div>
-            <div class="phone-hidden" :style="{width: page.phoneWidth+'px',
-                top: (page.phoneHeight + 64+ 37)+'px'}"></div>
+            <div class="phone-hidden" :style="{width: page.phoneWidth + 20 +'px',
+                top: (page.phoneHeight + 64)+'px',
+                height: page.clientHeight - page.phoneHeight + 'px'}"></div>
           </div>
           <layout-setting />
         </div>
@@ -82,6 +84,7 @@ export default {
       isPublish: false,
       curState: null,
       initState: null,
+      windowH: window.innerHeight,
     };
   },
 
@@ -225,7 +228,6 @@ export default {
             type: 1,
             size,
             location,
-            isFixed: position !== 'relative',
             positionInfo,
             content,
             style: {
@@ -249,7 +251,6 @@ export default {
             type: 2,
             size,
             location,
-            isFixed: position !== 'relative',
             positionInfo,
             url: img.url,
             style: {
@@ -272,7 +273,6 @@ export default {
             size,
             location,
             positionInfo,
-            isFixed: item.position !== 'relative',
             name: this.getLinkName(3, key, layerLists),
             appLink,
             outLink,
@@ -300,8 +300,10 @@ export default {
             style: {
               'z-index': dragIndex,
             },
+            positionInfo: {
+              position: 'relative',
+            },
             imgList,
-            isFixed: false,
           });
           return true;
         });
@@ -325,7 +327,6 @@ export default {
               'z-index': item.dragIndex,
             },
             positionInfo,
-            isFixed: position !== 'relative',
           });
           return true;
         });
@@ -338,7 +339,6 @@ export default {
           dragArr.push({
             type: 6,
             positionInfo,
-            isFixed: position !== 'relative',
             play: curPlay,
             location,
             size,
@@ -610,7 +610,6 @@ body {
   line-height: 50px;
 }
 .flxed-main {
-  background-color: #eee;
   position: absolute;
   top: 56px;
   height: auto;
@@ -620,6 +619,15 @@ body {
   display: flex;
   align-content: center;
   justify-content: center;
+  overflow: hidden;
+}
+.main-bg {
+ background-color: #eee;
+ position: absolute;
+ top: 0;
+ bottom: 0;
+ left: 0;
+ right: 0;
 }
 .phone-container {
   position: relative;
@@ -692,11 +700,12 @@ body {
 }
 
 .phone-hidden {
-  background: rgba(0, 0, 0, 0.5);
+  background: #eee;
   position: absolute;
   bottom: -1px;
-  left: 1px;
-  z-index: 1050;
+  left: -5px;
+  right: -5px;
+  z-index: 1002;
 }
 .screen-line {
   position: absolute;

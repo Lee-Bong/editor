@@ -214,7 +214,7 @@ export default {
               for (let i = 0; i < len; i++) {
                 if (view[i].length) {
                   if (view[i][0] === 'pv') {
-                    if (view[i][3] === 'outside') {
+                    if (view[i][2] === 'outside') {
                       pvItemOut = view[i];
                     } else {
                       pvItem = view[i];
@@ -258,7 +258,8 @@ export default {
             this.viewData = this.viewDataTotal.slice(0, 10);
             this.viewPager.total = this.viewDataTotal.length;
           } else {
-            const pre = !pvCount ? 0 : ((shareCount / (pvCount + pvOutCount)) * 100).toFixed(2);
+            const pre = !(pvCount + pvOutCount) ? 0 :
+              ((shareCount / (pvCount + pvOutCount)) * 100).toFixed(2);
             this.clickDataTotal.push({
               name: '分享',
               click: shareCount,
@@ -267,7 +268,8 @@ export default {
             if (clickCount.length) {
               const ele = this;
               clickCount.map((pro, i) => {
-                const pre1 = !pvCount ? 0 : ((pro / (pvCount + pvOutCount)) * 100).toFixed(2);
+                const pre1 = !(pvCount + pvOutCount) ? 0 :
+                  ((pro / (pvCount + pvOutCount)) * 100).toFixed(2);
                 this.clickDataTotal.push({
                   name: ele.clickArr[i] || '热区',
                   click: pro,
