@@ -40,6 +40,42 @@
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop" ref="audioRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+      <!-- 表单 -->
+      <drag-form-text v-for="(drag, index) in dragFormTexts" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+      <drag-form-textarea v-for="(drag, index) in dragFormTextares" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-redio v-for="(drag, index) in dragFormRadios" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+      <drag-form-checkbox v-for="(drag, index) in dragFormCheckboxs" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-droplist v-for="(drag, index) in dragFormDroplists" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-smscode v-for="(drag, index) in dragFormSmscodes" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-submit v-for="(drag, index) in dragFormSubmits" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
   </vue-drag-resize>
 </template>
@@ -51,6 +87,13 @@ import dragLink from '@/components/editor/dragItem/dragLink';
 import dragImgLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
+import dragFormText from '@/components/editor/dragItem/dragForm/dragFormText';
+import dragFormTextarea from '@/components/editor/dragItem/dragForm/dragFormTextarea';
+import dragFormRadio from '@/components/editor/dragItem/dragForm/dragFormRadio';
+import dragFormCheckbox from '@/components/editor/dragItem/dragForm/dragFormCheckbox';
+import dragFormDroplist from '@/components/editor/dragItem/dragForm/dragFormDroplist';
+import dragFormSmscode from '@/components/editor/dragItem/dragForm/dragFormSmscode';
+import dragFormSubmit from '@/components/editor/dragItem/dragForm/dragFormSubmit';
 import { dragCom } from '@/util/dragMxi';
 import { mapState } from 'vuex';
 
@@ -66,6 +109,13 @@ export default {
     dragImgLists,
     dragVideo,
     dragAudio,
+    dragFormText,
+    dragFormTextarea,
+    dragFormRadio,
+    dragFormCheckbox,
+    dragFormDroplist,
+    dragFormSmscode,
+    dragFormSubmit,
   },
   data() {
     return {
@@ -79,6 +129,13 @@ export default {
       dragLinks: state => state.editor.dragLinks,
       dragImages: state => state.editor.dragImages,
       dragTexts: state => state.editor.dragTexts,
+      dragFormTexts: state => state.editor.dragFormTexts,
+      dragFormTextares: state => state.editor.dragFormTextares,
+      dragFormRadios: state => state.editor.dragFormRadios,
+      dragFormCheckboxs: state => state.editor.dragFormCheckboxs,
+      dragFormDroplists: state => state.editor.dragFormDroplists,
+      dragFormSmscodes: state => state.editor.dragFormSmscodes,
+      dragFormSubmits: state => state.editor.dragFormSubmits,
       page: state => state.page,
     }),
   },

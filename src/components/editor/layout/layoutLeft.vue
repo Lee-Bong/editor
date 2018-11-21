@@ -289,6 +289,223 @@ export default {
           };
           break;
         }
+        case 6:
+        {
+          let drag6 = this.$store.state.editor.dragAudios;
+          num = drag6.length;
+          layerName = `音频${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tubiao-';
+          drag6 = textActiveOff(drag6, { index: 0, isAll: true });
+          drag6.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            sourceType: '1', // 1.本地音频 2.在线音频
+            source: '',
+            audioTitle: '',
+            loop: true,
+            isBorder: '2',
+            location: {
+              x: 0,
+              y: top2,
+            },
+            size: {
+              w: 375,
+              h: 82,
+            },
+            play: {
+              title: '',
+              isUplaod: false,
+              duration: '00:00',
+              url: '',
+              accept: '.mp3',
+              position: 'relative',
+              location: {
+                x: 0,
+                y: top2,
+              },
+              size: {
+                w: 375,
+                h: 82,
+              },
+            },
+            linePlay: {
+              title: '',
+              isUplaod: false,
+              duration: '00:00',
+              url: '',
+              position: 'relative',
+              location: {
+                x: 0,
+                y: top2,
+              },
+              size: {
+                w: 375,
+                h: 82,
+              },
+            },
+            position: 'relative',
+            icon,
+          });
+          newEditor = {
+            audioSet: true,
+            isAudioSet: true,
+            dragAudios: drag6,
+            audioActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 7:
+        {
+          let drag7 = this.$store.state.editor.dragFormTexts;
+          num = drag7.length;
+          layerName = `单行文本${!num ? '' : num + 1}`;
+          icon = 'ed-icon-wenben-';
+          drag7 = textActiveOff(drag7, { index: 0, isAll: true });
+          drag7.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            sourceType: '1', // 1.本地音频 2.在线音频
+            source: '',
+            audioTitle: '',
+            loop: true,
+            location: {
+              x: 0,
+              y: top2,
+            },
+            size: {
+              w: 375,
+              h: 40,
+            },
+            position: 'relative',
+            icon,
+          });
+          newEditor = {
+            fTextSet: true,
+            isFTextSet: true,
+            dragFormTexts: drag7,
+            fTextActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 8:
+        {
+          let drag8 = this.$store.state.editor.dragFormTextares;
+          num = drag8.length;
+          layerName = `单行文本${!num ? '' : num + 1}`;
+          icon = 'ed-icon-wenben-';
+          drag8 = textActiveOff(drag8, { index: 0, isAll: true });
+          drag8.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            sourceType: '1', // 1.本地音频 2.在线音频
+            source: '',
+            audioTitle: '',
+            loop: true,
+            location: {
+              x: 0,
+              y: top2,
+            },
+            size: {
+              w: 375,
+              h: 96,
+            },
+            position: 'relative',
+            icon,
+          });
+          newEditor = {
+            fTextSet: true,
+            isFTextSet: true,
+            dragFormTextares: drag8,
+            fTextActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 11:
+        {
+          let drag11 = this.$store.state.editor.dragFormDroplists;
+          num = drag11.length;
+          layerName = `下拉选项${!num ? '' : num + 1}`;
+          icon = 'ed-icon-wenben-';
+          drag11 = textActiveOff(drag11, { index: 0, isAll: true });
+          drag11.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            sourceType: '1', // 1.本地音频 2.在线音频
+            source: '',
+            audioTitle: '',
+            loop: true,
+            location: {
+              x: 0,
+              y: top2,
+            },
+            size: {
+              w: 375,
+              h: 96,
+            },
+            position: 'relative',
+            icon,
+          });
+          newEditor = {
+            fTextSet: true,
+            isFTextSet: true,
+            dragFormDroplists: drag11,
+            fTextActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 12:
+        {
+          let drag12 = this.$store.state.editor.dragFormDroplists;
+          num = drag12.length;
+          layerName = `手机短信${!num ? '' : num + 1}`;
+          icon = 'ed-icon-wenben-';
+          drag12 = textActiveOff(drag12, { index: 0, isAll: true });
+          drag12.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            sourceType: '1', // 1.本地音频 2.在线音频
+            source: '',
+            audioTitle: '',
+            loop: true,
+            location: {
+              x: 0,
+              y: top2,
+            },
+            size: {
+              w: 375,
+              h: 96,
+            },
+            position: 'relative',
+            icon,
+          });
+          newEditor = {
+            fTextSet: true,
+            isFTextSet: true,
+            dragFormSmscodes: drag12,
+            fTextActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
         default:
         {
           let drag6 = this.$store.state.editor.dragAudios;

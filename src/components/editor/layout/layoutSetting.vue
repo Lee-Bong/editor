@@ -56,12 +56,34 @@
       @input-sizeChange="inputSizeChange"
       @linkSourceChange="sourceChange"
     />
-    <page-setting
+    <!-- <page-setting
       v-if="page.pageSet"
       :dragForm="page"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
+    /> -->
+
+    <!-- <f-text-setting
+      :dragForm="page"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    /> -->
+    <f-radio-setting
+      :dragForm="page"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
     />
+    <!-- <f-sms-setting
+      :dragForm="page"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    /> -->
+    <!-- <f-submit-setting
+      :dragForm="page"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    /> -->
+
 </div>
 </template>
 
@@ -73,6 +95,12 @@ import dragImgListSetting from '@/components/editor/dragSetting/dragImgListSetti
 import dragVideoSetting from '@/components/editor/dragSetting/dragVideoSetting';
 import dragAudioSetting from '@/components/editor/dragSetting/dragAudioSetting';
 import pageSetting from '@/components/editor/dragSetting/pageSetting';
+import fTextSetting from '@/components/editor/dragSetting/formSetting/fTextSetting';
+import fRadioSetting from '@/components/editor/dragSetting/formSetting/fRadioSetting';
+
+import fSmsSetting from '@/components/editor/dragSetting/formSetting/fSmsSetting';
+
+import fSubmitSetting from '@/components/editor/dragSetting/formSetting/fSubmitSetting';
 import { dragCom } from '@/util/dragMxi';
 
 export default {
@@ -88,6 +116,10 @@ export default {
     dragAudioSetting,
     pageSetting,
     dragImgListSetting,
+    fTextSetting,
+    fSmsSetting,
+    fRadioSetting,
+    fSubmitSetting,
   },
   data() {
     return {

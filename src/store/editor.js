@@ -7,6 +7,13 @@ export default {
     dragImgLists: [], // 多图
     dragAudios: [], // 音频
     dragVideos: [], // 视频
+    dragFormTexts: [], // 表单-单行文本
+    dragFormTextares: [], // 表单-多行文本
+    dragFormRadios: [], // 表单-单项选择
+    dragFormCheckboxs: [], // 表单-多项选择
+    dragFormDroplists: [], // 表单-下拉选择
+    dragFormSmscodes: [], // 表单-手机短信
+    dragFormSubmits: [], // 表单-提交按钮
     textActive: 0, // 当前活跃组件
     linkActive: 0,
     imgActive: 0,
