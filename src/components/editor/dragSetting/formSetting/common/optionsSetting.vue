@@ -80,7 +80,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style>
 .options-label {
   width: 90px;
   font-size: 14px;
@@ -90,20 +90,20 @@ export default {
 .options-manage {
   width: 330px;
   margin-left: 20px;
-  .option-item {
+}
+.options-manage .option-item {
     width: 250px;
   }
-  .del {
+  .options-manage .del {
     margin-left: 10px;
   }
-  .el-icon-delete {
+  .options-manage .el-icon-delete {
     color: red;
   }
-  .moving {
+  .options-manage .moving {
     background-color: #eee;
   }
-  .el-row--flex {
+  .options-manage .el-row--flex {
     margin-bottom: 8px;
   }
-}
 </style>
