@@ -66,12 +66,10 @@ export default {
     try {
       const { data: { draft } } = await service.getPageInfo(this.pageId);
       this.pageJson = JSON.parse(draft);
-      console.log(this.pageJson);
       if (!this.pageJson) {
         this.$router.replace('/error');
       }
     } catch (error) {
-      console.error(error.message);
       this.$router.replace('/error');
     }
   },

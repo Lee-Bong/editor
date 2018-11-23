@@ -1,24 +1,26 @@
 <template>
 <div>
   <el-form-item label="主题颜色：" size="mini">
-        <el-color-picker :value="'#409eff'"
-          :show-alpha="true" class="color-item"></el-color-picker>
-        <el-button type="text" class="bg-reset" @click="pageBgReset">重置</el-button>
+        <el-color-picker :value="colorForm.bgColor"
+          :show-alpha="true" class="color-item" @change="bgcolorChange"></el-color-picker>
+        <el-button type="text" class="bg-reset" @click="bgcolorReset">重置</el-button>
       </el-form-item>
     <el-form-item label="标题颜色：" size="mini">
-    <el-color-picker :value="'#fff'"
-        :show-alpha="true" class="color-item"></el-color-picker>
-    <el-button type="text" class="bg-reset" @click="pageBgReset">重置</el-button>
+    <el-color-picker :value="colorForm.textColor"
+        :show-alpha="true" class="color-item" @change="textcolorChange"></el-color-picker>
+    <el-button type="text" class="bg-reset" @click="textcolorReset">重置</el-button>
     </el-form-item>
     </div>
 </template>
 
 <script>
+import { settingCom } from '@/util/settingMxi';
 
 export default {
   name: 'DragSetting',
+  mixins: [settingCom()],
   props: {
-    dragForm: Object,
+    colorForm: Object,
     setForm: Object,
   },
   data() {
@@ -35,6 +37,19 @@ export default {
     };
   },
   methods: {
+    pageBgReset() {},
+    bgcolorChange(val) {
+      this.updateDrags(this.colorForm.dragName, val, this.colorForm.dragActive, 'bgColor');
+    },
+    textcolorChange(val) {
+      this.updateDrags(this.colorForm.dragName, val, this.colorForm.dragActive, 'textColor');
+    },
+    bgcolorReset() {
+      this.bgcolorChange(this.colorForm.bgDefault);
+    },
+    textcolorReset() {
+      this.textcolorChange(this.colorForm.textDefault);
+    },
   },
 };
 </script>

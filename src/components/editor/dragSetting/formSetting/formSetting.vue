@@ -2,12 +2,13 @@
   <base-setting :setForm="setForm">
     <template slot="form">
       <el-form ref="form" label-width="90px">
-        <el-form-item label="标题：" size="mini" class="is-require" >
-          <el-input type="text" :placeholder="setForm.place"></el-input>
+        <el-form-item label="标题：" size="mini">
+          <el-input type="text" :placeholder="setForm.place" :value="dragForm.label"
+           @change="labelEvent"></el-input>
         </el-form-item>
         <el-form-item label="" size="mini">
           <div style="width: 90px; display: inline-block;"></div>
-          <el-checkbox :value="true">设为必填</el-checkbox>
+          <el-checkbox :value="dragForm.isRequired" @change="requireEvent">设为必填</el-checkbox>
         </el-form-item>
         <slot name="setting"></slot>
       </el-form>
@@ -21,9 +22,11 @@
 
 <script>
 import baseSetting from '@/components/editor/dragSetting/baseSetting';
+import { settingCom } from '@/util/settingMxi';
 
 export default {
   name: 'DragSetting',
+  mixins: [settingCom()],
   props: {
     dragForm: Object,
     setForm: Object,
@@ -45,23 +48,11 @@ export default {
     };
   },
   methods: {
-    settingClose() { // 关闭设置
-      this.$store.commit('page_update', { pageSet: false });
+    requireEvent(val) {
+      this.requireChange(this.setForm.dragName, val, this.setForm.dragActive);
     },
-    pageBgReset() {
-      this.$store.commit('page_update', { backgroundColor: '#fff' });
-    },
-    uploadDone(img) {
-      this.$store.commit('page_update', {
-        img: {
-          url: img.url,
-        },
-      });
-    },
-    fileRemove() {
-      this.$store.commit('page_update', {
-        img: {},
-      });
+    labelEvent(val) {
+      this.updateDrags(this.setForm.dragName, val, this.setForm.dragActive, 'label');
     },
   },
 };

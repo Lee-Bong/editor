@@ -7,33 +7,19 @@
       :dragStop="dragStop"
       >
       <template slot="content">
-        <el-row v-if="infoForm.type === 12">
-        <el-col>
-          <el-input
-            placeholder="请输入手机号">
-          </el-input>
-        </el-col>
-        <el-row :gutter="10">
-          <el-col :span="12">
-            <el-input
-            placeholder="验证码">
-            </el-input>
-          </el-col>
-          <el-col :span="12">
-            <el-button type="primary">获取验证码</el-button>
-          </el-col>
-        </el-row>
-      </el-row>
+        <form-sms />
       </template>
     </drag-resize-form>
 </template>
 <script>
 import dragResizeForm from '@/components/editor/dragItem/dragResizeForm';
+import formSms from '@/components/element/wsmscode';
 
 export default {
-  name: 'dragtext',
+  name: 'dragFormSmscodes',
   components: {
     dragResizeForm,
+    formSms,
   },
   props: {
     listIndex: Number,
@@ -41,7 +27,7 @@ export default {
   },
   data() {
     return {
-      dragName: 'dragTexts',
+      dragName: 'dragFormSmscodes',
     };
   },
   methods: {

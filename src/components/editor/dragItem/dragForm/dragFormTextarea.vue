@@ -1,29 +1,29 @@
 <template>
     <drag-resize-form
       :dragForm="dragForm"
-      :infoForm="{dragName, type: 8, listIndex, minH: 15, minW: 15}"
+      :infoForm="{dragName, type: 8, listIndex, minH: 40, minW: 30, resizing: true}"
       :classList="'drag-item'"
       ref="dragItem"
-      :dragStop="dragStop"
+      :sticks="['tl','tr', 'br', 'bl', 'tm','br','mr', 'ml']"
       >
       <template slot="content">
         <div>
-          <el-input
-          type="textarea"
-          :rows="4"
-          placeholder="多行文本">
-          </el-input>
+          <form-textarea place="多行文本" :classList="['drag-form-item']"
+          :size="this.dragForm.size"
+          :styles="styles" />
         </div>
       </template>
     </drag-resize-form>
 </template>
 <script>
 import dragResizeForm from '@/components/editor/dragItem/dragResizeForm';
+import formTextarea from '@/components/element/wtextarea';
 
 export default {
   name: 'dragtext',
   components: {
     dragResizeForm,
+    formTextarea,
   },
   props: {
     listIndex: Number,
@@ -31,26 +31,20 @@ export default {
   },
   data() {
     return {
-      dragName: 'dragTexts',
+      dragName: 'dragFormTextareas',
+      styles: {
+        height: `${this.dragForm.size.h}px`,
+        width: `${this.dragForm.size.w}px`,
+      },
     };
   },
   methods: {
-    dragTextClick() {
-      this.$emit('dragTextClick', this.listIndex, 1);
-      if (this.$refs.inputCont) this.$refs.inputCont.focus();
-    },
-    dragStop(ev) {
-      const evs = ev;
-      if (this.dragForm.position !== 'relative') {
-        const maxTop = this.$store.state.page.screenHeight - this.dragForm.size.h;
-        if (evs.top > maxTop) {
-          evs.top = maxTop;
-        }
-      }
-      this.$emit('dragStop', this.dragName, evs, this.listIndex);
+    forceUpdate() {
+      this.$forceUpdate();
     },
   },
   updated() {
+    // console.log('this.dragForm.size', this.dragForm.size);
   },
 };
 </script>

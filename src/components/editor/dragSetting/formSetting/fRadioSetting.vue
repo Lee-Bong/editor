@@ -1,27 +1,36 @@
 <template>
-  <form-setting :setForm="Object.assign(setForm, {place: '提交'})" :dragForm="dragForm">
+<div :class="['setting-content', $store.state.editor.isFRadioSet ?
+   'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px', }">
+  <form-setting :setForm="Object.assign(setForm, {place: '单项选择', dragName, dragActive,})"
+   :dragForm="dragForm">
     <template slot="setting">
       <el-form-item label="选择模式：" size="mini">
-        <el-radio-group>
-          <el-radio label="单选"></el-radio>
-          <el-radio label="多选"></el-radio>
+        <el-radio-group v-model="dragForm.type">
+          <el-radio :label="1" @change="typeChange">单选</el-radio>
+          <el-radio :label="2" @change="typeChange">多选</el-radio>
         </el-radio-group>
       </el-form-item>
-      <options-setting></options-setting>
-      <color-setting></color-setting>
-      <location-setting></location-setting>
+      <options-setting :list="dragForm.list" :form="{dragName, dragActive, size: dragForm.size}" />
+      <color-setting :colorForm="{bgColor: dragForm.bgColor, textColor: dragForm.textColor,
+      bgDefault: '#5AC7F9', textDefault: '#fff', dragName, dragActive,}"/>
+      <location-setting  :locationForm="{location: dragForm.location, size: dragForm.size,
+        dragName: 'dragFormRadios', dragActive: 'fRadioActive', hDisabled: true,
+        minW: 50}"/>
     </template>
   </form-setting>
+  </div>
 </template>
 
 <script>
 import formSetting from '@/components/editor/dragSetting/formSetting/formSetting';
 import locationSetting from '@/components/editor/dragSetting/formSetting/common/locationSetting';
-import optionsSetting from '@/components/editor/dragSetting/formSetting/optionsSetting';
+import optionsSetting from '@/components/editor/dragSetting/formSetting/common/optionsSetting';
 import colorSetting from '@/components/editor/dragSetting/formSetting/common/colorSetting';
+import { settingCom } from '@/util/settingMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'dragFormRadios',
+  mixins: [settingCom()],
   props: {
     dragForm: Object,
     setForm: Object,
@@ -34,36 +43,17 @@ export default {
   },
   data() {
     return {
-      location: {
-        xmin: 0,
-        ymin: 0,
-      },
-      size: {
-        wmin: 0,
-        hmin: 0,
-      },
-      fileModify: false,
+      dragName: 'dragFormRadios',
+      dragActive: 'fRadioActive',
     };
   },
   methods: {
-    settingClose() { // 关闭设置
-      this.$store.commit('page_update', { pageSet: false });
+    typeChange(val) {
+      this.updateDrags(this.dragName, val, this.dragActive, 'type');
     },
-    pageBgReset() {
-      this.$store.commit('page_update', { backgroundColor: '#fff' });
-    },
-    uploadDone(img) {
-      this.$store.commit('page_update', {
-        img: {
-          url: img.url,
-        },
-      });
-    },
-    fileRemove() {
-      this.$store.commit('page_update', {
-        img: {},
-      });
-    },
+  },
+  updated() {
+    // console.log('radioupdated', this.dragForm.size);
   },
 };
 </script>

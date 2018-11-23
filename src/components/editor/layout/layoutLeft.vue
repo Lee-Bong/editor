@@ -45,10 +45,9 @@ export default {
             { text: '单行文本', icon: 'ed-icon-wenben', type: 7 },
             { text: '多行文本', icon: 'ed-icon-duohangwenben', type: 8 },
             { text: '单项选择', icon: 'ed-icon-danxiangxuanze', type: 9 },
-            { text: '多项选择', icon: 'ed-icon-duoxiangxuanze', type: 10 },
-            { text: '下拉选择', icon: 'ed-icon-xialaxuanzeti', type: 11 },
-            { text: '手机短信', icon: 'ed-icon-shoujiduanxin', type: 12 },
-            { text: '提交按钮', icon: 'ed-icon-tijiao', type: 13 },
+            { text: '多项选择', icon: 'ed-icon-duoxuan', type: 10 },
+            { text: '手机短信', icon: 'ed-icon-shoujiduanxin', type: 11 },
+            { text: '提交按钮', icon: 'ed-icon-tijiao1', type: 12 },
           ],
         },
       ],
@@ -363,7 +362,7 @@ export default {
           let drag7 = this.$store.state.editor.dragFormTexts;
           num = drag7.length;
           layerName = `单行文本${!num ? '' : num + 1}`;
-          icon = 'ed-icon-wenben-';
+          icon = 'ed-icon-wenben';
           drag7 = textActiveOff(drag7, { index: 0, isAll: true });
           drag7.push({
             id: this.getId(),
@@ -371,20 +370,18 @@ export default {
             zIndex: 1000,
             isActive: true,
             dragIndex: zIndex + 1,
-            sourceType: '1', // 1.本地音频 2.在线音频
-            source: '',
-            audioTitle: '',
-            loop: true,
             location: {
-              x: 0,
-              y: top2,
+              x: (375 - 325) / 2,
+              y: top1,
             },
             size: {
-              w: 375,
+              w: 325,
               h: 40,
             },
             position: 'relative',
             icon,
+            isRequired: false,
+            label: '单行文本',
           });
           newEditor = {
             fTextSet: true,
@@ -397,10 +394,10 @@ export default {
         }
         case 8:
         {
-          let drag8 = this.$store.state.editor.dragFormTextares;
+          let drag8 = this.$store.state.editor.dragFormTextareas;
           num = drag8.length;
-          layerName = `单行文本${!num ? '' : num + 1}`;
-          icon = 'ed-icon-wenben-';
+          layerName = `多行文本${!num ? '' : num + 1}`;
+          icon = 'ed-icon-duohangwenben';
           drag8 = textActiveOff(drag8, { index: 0, isAll: true });
           drag8.push({
             id: this.getId(),
@@ -408,70 +405,106 @@ export default {
             zIndex: 1000,
             isActive: true,
             dragIndex: zIndex + 1,
-            sourceType: '1', // 1.本地音频 2.在线音频
-            source: '',
-            audioTitle: '',
-            loop: true,
             location: {
-              x: 0,
-              y: top2,
+              x: (375 - 325) / 2,
+              y: top1,
             },
             size: {
-              w: 375,
-              h: 96,
+              w: 325,
+              h: 140,
             },
             position: 'relative',
             icon,
+            isRequired: false,
+            label: '多行文本',
           });
           newEditor = {
-            fTextSet: true,
-            isFTextSet: true,
-            dragFormTextares: drag8,
-            fTextActive: num,
+            fTextareaSet: true,
+            isFTextareaSet: true,
+            dragFormTextareas: drag8,
+            fTextareaActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 9:
+        {
+          let drag9 = this.$store.state.editor.dragFormRadios;
+          num = drag9.length;
+          layerName = `单项选择${!num ? '' : num + 1}`;
+          icon = 'ed-icon-danxiangxuanze';
+          drag9 = textActiveOff(drag9, { index: 0, isAll: true });
+          drag9.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 325) / 2,
+              y: top1,
+            },
+            size: {
+              w: 325,
+              h: 80,
+            },
+            position: 'relative',
+            icon,
+            isRequired: false,
+            label: '单项选择',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+            type: 1, // '1'：单选，'2'：多选
+            itemType: '单选',
+            list: [{ text: '选项1', label: 1 }],
+          });
+          newEditor = {
+            fRadioSet: true,
+            isFRadioSet: true,
+            dragFormRadios: drag9,
+            fRadioActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 10:
+        {
+          let drag10 = this.$store.state.editor.dragFormCheckboxs;
+          num = drag10.length;
+          layerName = `多项选择（可多选）${!num ? '' : num + 1}`;
+          icon = 'ed-icon-duoxuan';
+          drag10 = textActiveOff(drag10, { index: 0, isAll: true });
+          drag10.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 325) / 2,
+              y: top1,
+            },
+            size: {
+              w: 325,
+              h: 80,
+            },
+            position: 'relative',
+            icon,
+            isRequired: false,
+            label: '多项选择（可多选）',
+          });
+          newEditor = {
+            fCheckboxSet: true,
+            isFCheckboxSet: true,
+            dragFormCheckboxs: drag10,
+            fCheckboxActive: num,
             layoutKey: zIndex + 1,
           };
           break;
         }
         case 11:
         {
-          let drag11 = this.$store.state.editor.dragFormDroplists;
-          num = drag11.length;
-          layerName = `下拉选项${!num ? '' : num + 1}`;
-          icon = 'ed-icon-wenben-';
-          drag11 = textActiveOff(drag11, { index: 0, isAll: true });
-          drag11.push({
-            id: this.getId(),
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex + 1,
-            sourceType: '1', // 1.本地音频 2.在线音频
-            source: '',
-            audioTitle: '',
-            loop: true,
-            location: {
-              x: 0,
-              y: top2,
-            },
-            size: {
-              w: 375,
-              h: 96,
-            },
-            position: 'relative',
-            icon,
-          });
-          newEditor = {
-            fTextSet: true,
-            isFTextSet: true,
-            dragFormDroplists: drag11,
-            fTextActive: num,
-            layoutKey: zIndex + 1,
-          };
-          break;
-        }
-        case 12:
-        {
-          let drag12 = this.$store.state.editor.dragFormDroplists;
+          let drag12 = this.$store.state.editor.dragFormSmscodes;
           num = drag12.length;
           layerName = `手机短信${!num ? '' : num + 1}`;
           icon = 'ed-icon-wenben-';
@@ -498,10 +531,10 @@ export default {
             icon,
           });
           newEditor = {
-            fTextSet: true,
-            isFTextSet: true,
+            fSmsSet: true,
+            isFSmsSet: true,
             dragFormSmscodes: drag12,
-            fTextActive: num,
+            fSmsActive: num,
             layoutKey: zIndex + 1,
           };
           break;

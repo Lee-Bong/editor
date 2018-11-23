@@ -56,20 +56,29 @@
       @input-sizeChange="inputSizeChange"
       @linkSourceChange="sourceChange"
     />
-    <!-- <page-setting
+    <page-setting
       v-if="page.pageSet"
       :dragForm="page"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
-    /> -->
+    />
 
-    <!-- <f-text-setting
-      :dragForm="page"
+    <f-text-setting
+      v-if="editor.isFTextSet"
+      :dragForm="editor.dragFormTexts[editor.fTextActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
-    /> -->
+    />
+
+    <f-textarea-setting
+      v-if="editor.isFTextareaSet"
+      :dragForm="editor.dragFormTextareas[editor.fTextareaActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
     <f-radio-setting
-      :dragForm="page"
+      v-if="editor.isFRadioSet"
+      :dragForm="editor.dragFormRadios[editor.fRadioActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
     />
@@ -96,10 +105,9 @@ import dragVideoSetting from '@/components/editor/dragSetting/dragVideoSetting';
 import dragAudioSetting from '@/components/editor/dragSetting/dragAudioSetting';
 import pageSetting from '@/components/editor/dragSetting/pageSetting';
 import fTextSetting from '@/components/editor/dragSetting/formSetting/fTextSetting';
+import fTextareaSetting from '@/components/editor/dragSetting/formSetting/fTextareaSetting';
 import fRadioSetting from '@/components/editor/dragSetting/formSetting/fRadioSetting';
-
 import fSmsSetting from '@/components/editor/dragSetting/formSetting/fSmsSetting';
-
 import fSubmitSetting from '@/components/editor/dragSetting/formSetting/fSubmitSetting';
 import { dragCom } from '@/util/dragMxi';
 
@@ -117,6 +125,7 @@ export default {
     pageSetting,
     dragImgListSetting,
     fTextSetting,
+    fTextareaSetting,
     fSmsSetting,
     fRadioSetting,
     fSubmitSetting,
@@ -165,6 +174,9 @@ export default {
         [form]: dragItems,
       });
     },
+  },
+  updated() {
+    // console.log('editor.isFTextSet', this.editor.dragFormTexts[this.editor.fTextActive]);
   },
 };
 </script>

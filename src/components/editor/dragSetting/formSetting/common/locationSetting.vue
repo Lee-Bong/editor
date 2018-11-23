@@ -1,29 +1,36 @@
 <template>
-    <div>
-        <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
-            <el-input-number :value="0" @blur="locationChange"
-            controls-position="right" class="num-input"></el-input-number>
-            <el-input-number :value="0" @blur="locationChange"
-            controls-position="right" class="num-input"></el-input-number>
-        </el-form-item>
-        <div class="dec-label" style="padding-left: 90px"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini" class="number-item">
-            <el-input-number :value="200" @blur="sizeChange"
-            controls-position="right" class="num-input"></el-input-number>
-            <el-input-number :value="40" @blur="sizeChange"
-            controls-position="right" class="num-input"></el-input-number>
-        </el-form-item>
-        <div class="dec-label" style="padding-left: 90px"> <label>宽</label> <label>高</label></div>
-    </div>
+  <div>
+    <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
+      <el-input-number :value="locationForm.location.x" @change="locationXchange"
+      :min="location.xmin" :max="(page.phoneWidth-locationForm.size.w)" controls-position="right"
+      class="num-input"></el-input-number>
+      <el-input-number :value="locationForm.location.y" @change="locationYchange"
+      :min="location.ymin" :max="(page.phoneHeight-locationForm.size.h)" controls-position="right"
+      class="num-input"></el-input-number>
+    </el-form-item>
+    <div class="dec-label" style="padding-left: 90px"> <label>X</label> <label> Y</label></div>
+    <el-form-item label="尺寸：" size="mini" class="number-item">
+      <el-input-number :value="locationForm.size.w" @change="sizeWchange"
+      :min="locationForm.minW" :max="(page.phoneWidth-locationForm.location.x)"
+      controls-position="right" class="num-input"></el-input-number>
+      <el-input-number :value="locationForm.size.h" @change="sizeHchange"
+      :min="locationForm.minH || 0" :max="(page.phoneHeight-locationForm.location.y)"
+      :disabled="locationForm.hDisabled" controls-position="right"
+      class="num-input"></el-input-number>
+    </el-form-item>
+    <div class="dec-label" style="padding-left: 90px"> <label>宽</label> <label>高</label></div>
+  </div>
 </template>
 
 <script>
+import { dragCom } from '@/util/dragMxi';
+import { settingCom } from '@/util/settingMxi';
 
 export default {
   name: 'DragSetting',
+  mixins: [dragCom(), settingCom()],
   props: {
-    dragForm: Object,
-    setForm: Object,
+    locationForm: Object,
   },
   data() {
     return {
@@ -32,19 +39,49 @@ export default {
         ymin: 0,
       },
       size: {
-        wmin: 0,
-        hmin: 0,
+        wmin: 30,
+        hmin: 40,
       },
       fileModify: false,
     };
   },
   methods: {
-    locationChange() {},
-    sizeChange() {},
+    locationEvent(location) {
+      this.locationChange(this.locationForm.dragName, location, this.locationForm.dragActive);
+    },
+    locationXchange(val) {
+      this.locationEvent({
+        x: val,
+        y: this.locationForm.location.y,
+      });
+    },
+    locationYchange(val) {
+      this.locationEvent({
+        x: this.locationForm.location.x,
+        y: val,
+      });
+    },
+    sizeEvent(size) {
+      this.sizeChange(this.locationForm.dragName, size, this.locationForm.dragActive);
+    },
+    sizeWchange(val) {
+      this.sizeEvent({
+        w: val,
+        h: this.locationForm.size.h,
+      });
+    },
+    sizeHchange(val) {
+      this.sizeEvent({
+        w: this.locationForm.size.w,
+        h: val,
+      });
+    },
+  },
+  updated() {
+    // console.log('ssss', this.locationForm);
   },
 };
 </script>
 
 <style >
-
 </style>

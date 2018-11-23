@@ -6,7 +6,7 @@
     :minh='page.screenHeight'
     :style="{
     width: page.phoneWidth+'px',
-    backgroundColor:  page.backgroundColor,
+    backgroundColor: page.backgroundColor,
   }">
     <div class="phone-resize">
       <i class="el-icon-back resize-icon resize-up"></i>
@@ -47,14 +47,14 @@
        @dragStop="inputDragStop" ref="fTextRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-      <drag-form-textarea v-for="(drag, index) in dragFormTextares" v-if="drag.isShow"
+      <drag-form-textarea v-for="(drag, index) in dragFormTextareas" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextRef"
+       @dragStop="inputDragStop" ref="fTextareaRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-       <drag-form-redio v-for="(drag, index) in dragFormRadios" v-if="drag.isShow"
+       <drag-form-radio v-for="(drag, index) in dragFormRadios" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextRef"
+       @dragStop="inputDragStop" ref="fRadioRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
       <drag-form-checkbox v-for="(drag, index) in dragFormCheckboxs" v-if="drag.isShow"
@@ -62,14 +62,9 @@
        @dragStop="inputDragStop" ref="fTextRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-       <drag-form-droplist v-for="(drag, index) in dragFormDroplists" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
-
        <drag-form-smscode v-for="(drag, index) in dragFormSmscodes" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextRef"
+       @dragStop="inputDragStop" ref="fSmsRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
        <drag-form-submit v-for="(drag, index) in dragFormSubmits" v-if="drag.isShow"
@@ -91,7 +86,6 @@ import dragFormText from '@/components/editor/dragItem/dragForm/dragFormText';
 import dragFormTextarea from '@/components/editor/dragItem/dragForm/dragFormTextarea';
 import dragFormRadio from '@/components/editor/dragItem/dragForm/dragFormRadio';
 import dragFormCheckbox from '@/components/editor/dragItem/dragForm/dragFormCheckbox';
-import dragFormDroplist from '@/components/editor/dragItem/dragForm/dragFormDroplist';
 import dragFormSmscode from '@/components/editor/dragItem/dragForm/dragFormSmscode';
 import dragFormSubmit from '@/components/editor/dragItem/dragForm/dragFormSubmit';
 import { dragCom } from '@/util/dragMxi';
@@ -113,7 +107,6 @@ export default {
     dragFormTextarea,
     dragFormRadio,
     dragFormCheckbox,
-    dragFormDroplist,
     dragFormSmscode,
     dragFormSubmit,
   },
@@ -130,10 +123,9 @@ export default {
       dragImages: state => state.editor.dragImages,
       dragTexts: state => state.editor.dragTexts,
       dragFormTexts: state => state.editor.dragFormTexts,
-      dragFormTextares: state => state.editor.dragFormTextares,
+      dragFormTextareas: state => state.editor.dragFormTextareas,
       dragFormRadios: state => state.editor.dragFormRadios,
       dragFormCheckboxs: state => state.editor.dragFormCheckboxs,
-      dragFormDroplists: state => state.editor.dragFormDroplists,
       dragFormSmscodes: state => state.editor.dragFormSmscodes,
       dragFormSubmits: state => state.editor.dragFormSubmits,
       page: state => state.page,
@@ -221,6 +213,34 @@ export default {
     if (this.$refs.linkRef && this.$store.state.editor.dragLinks &&
       this.$store.state.editor.dragLinks.length) {
       this.$refs.linkRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.fTextRef && this.$store.state.editor.dragFormTexts &&
+      this.$store.state.editor.dragFormTexts.length) {
+      this.$refs.fTextRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.fTextareaRef && this.$store.state.editor.dragFormTextareas &&
+      this.$store.state.editor.dragFormTextareas.length) {
+      this.$refs.fTextareaRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.dragFormRadios && this.$store.state.editor.dragFormRadios &&
+      this.$store.state.editor.dragFormRadios.length) {
+      this.$refs.fRadioRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.dragFormSmscodes && this.$store.state.editor.dragFormSmscodes &&
+      this.$store.state.editor.dragFormSmscodes.length) {
+      this.$refs.fSmsRef.map((item) => {
         item.forceUpdate();
         return true;
       });

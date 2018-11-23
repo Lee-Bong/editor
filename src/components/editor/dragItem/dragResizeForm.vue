@@ -4,6 +4,7 @@
       :w="dragForm.size.w"
       :h="dragForm.size.h"
       :sticks="sticks"
+      :axis="axis"
       :x="dragForm.location.x"
       :y="dragForm.location.y"
       :z="dragForm.zIndex"
@@ -52,6 +53,10 @@ export default {
       type: Array,
       default: () => ['tm', 'bm', 'ml', 'mr'],
     },
+    axis: {
+      type: String,
+      default: () => 'both',
+    },
     activated: Function,
     dragStop: {
       type: Function,
@@ -99,11 +104,11 @@ export default {
     activateEv() {
       if (this.$refs.inputCont) this.$refs.inputCont.blur();
     },
-    resize() {
+    resize(ev) { // resizing 需要在拖拽时候监听
+      if (this.infoForm.resizing) this.resizeEvent(ev);
     },
     dragTextClick(index, type) { // 点击组件
       this.dragClick(index, type);
-      if (this.$refs.inputCont) this.$refs.inputCont.focus();
     },
     resizeEvent(ev) {
       this.resizeStop.call(this, ev);

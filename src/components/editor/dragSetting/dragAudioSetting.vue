@@ -1,8 +1,7 @@
 <template>
   <div
     :class="['setting-content', editor.isAudioSet ? 'setting-show' : '', 'audio-setting']"
-    :style="{width: setForm.width+'px'
-    }">
+    :style="{width: setForm.width+'px'}">
   <div class="setting-box">
     <div class="setting-title">
       <span>组件设置</span>

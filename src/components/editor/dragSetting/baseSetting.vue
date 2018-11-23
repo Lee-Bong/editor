@@ -1,6 +1,4 @@
 <template>
-  <div :class="['setting-content', $store.state.page.pageSet ?
-   'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px'}">
     <div class="setting-box">
       <div class="setting-title">
         <span>组件设置</span>
@@ -12,7 +10,6 @@
         <slot name="form"></slot>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
