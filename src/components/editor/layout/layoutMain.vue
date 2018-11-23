@@ -57,9 +57,9 @@
        @dragStop="inputDragStop" ref="fRadioRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
-      <drag-form-checkbox v-for="(drag, index) in dragFormCheckboxs" v-if="drag.isShow"
+      <drag-form-radio v-for="(drag, index) in dragFormCheckboxs" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextRef"
+       @dragStop="inputDragStop" ref="fCheckboxRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
 
        <drag-form-smscode v-for="(drag, index) in dragFormSmscodes" v-if="drag.isShow"
@@ -69,7 +69,7 @@
 
        <drag-form-submit v-for="(drag, index) in dragFormSubmits" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextRef"
+       @dragStop="inputDragStop" ref="fSubmitRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
   </vue-drag-resize>
@@ -85,7 +85,6 @@ import dragAudio from '@/components/editor/dragItem/dragAudio';
 import dragFormText from '@/components/editor/dragItem/dragForm/dragFormText';
 import dragFormTextarea from '@/components/editor/dragItem/dragForm/dragFormTextarea';
 import dragFormRadio from '@/components/editor/dragItem/dragForm/dragFormRadio';
-import dragFormCheckbox from '@/components/editor/dragItem/dragForm/dragFormCheckbox';
 import dragFormSmscode from '@/components/editor/dragItem/dragForm/dragFormSmscode';
 import dragFormSubmit from '@/components/editor/dragItem/dragForm/dragFormSubmit';
 import { dragCom } from '@/util/dragMxi';
@@ -106,7 +105,6 @@ export default {
     dragFormText,
     dragFormTextarea,
     dragFormRadio,
-    dragFormCheckbox,
     dragFormSmscode,
     dragFormSubmit,
   },
@@ -238,9 +236,23 @@ export default {
         return true;
       });
     }
+    if (this.$refs.dragFormCheckboxs && this.$store.state.editor.dragFormCheckboxs &&
+      this.$store.state.editor.dragFormCheckboxs.length) {
+      this.$refs.fCheckboxRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
     if (this.$refs.dragFormSmscodes && this.$store.state.editor.dragFormSmscodes &&
       this.$store.state.editor.dragFormSmscodes.length) {
       this.$refs.fSmsRef.map((item) => {
+        item.forceUpdate();
+        return true;
+      });
+    }
+    if (this.$refs.dragFormSubmits && this.$store.state.editor.dragFormSubmits &&
+      this.$store.state.editor.dragFormSubmits.length) {
+      this.$refs.fSubmitRef.map((item) => {
         item.forceUpdate();
         return true;
       });

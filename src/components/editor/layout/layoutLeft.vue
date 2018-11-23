@@ -455,7 +455,7 @@ export default {
             bgColor: '#5AC7F9',
             textColor: '#fff',
             type: 1, // '1'：单选，'2'：多选
-            itemType: '单选',
+            dragType: 9,
             list: [{ text: '选项1', label: 1 }],
           });
           newEditor = {
@@ -471,7 +471,7 @@ export default {
         {
           let drag10 = this.$store.state.editor.dragFormCheckboxs;
           num = drag10.length;
-          layerName = `多项选择（可多选）${!num ? '' : num + 1}`;
+          layerName = `多项选择${!num ? '' : num + 1}`;
           icon = 'ed-icon-duoxuan';
           drag10 = textActiveOff(drag10, { index: 0, isAll: true });
           drag10.push({
@@ -492,6 +492,11 @@ export default {
             icon,
             isRequired: false,
             label: '多项选择（可多选）',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+            type: 2, // '1'：单选，'2'：多选
+            dragType: 10,
+            list: [{ text: '选项1', label: 1 }],
           });
           newEditor = {
             fCheckboxSet: true,
@@ -504,36 +509,35 @@ export default {
         }
         case 11:
         {
-          let drag12 = this.$store.state.editor.dragFormSmscodes;
-          num = drag12.length;
+          let drag11 = this.$store.state.editor.dragFormSmscodes;
+          num = drag11.length;
           layerName = `手机短信${!num ? '' : num + 1}`;
-          icon = 'ed-icon-wenben-';
-          drag12 = textActiveOff(drag12, { index: 0, isAll: true });
-          drag12.push({
+          icon = 'ed-icon-shoujiduanxin';
+          drag11 = textActiveOff(drag11, { index: 0, isAll: true });
+          drag11.push({
             id: this.getId(),
             isShow: true,
             zIndex: 1000,
             isActive: true,
             dragIndex: zIndex + 1,
-            sourceType: '1', // 1.本地音频 2.在线音频
-            source: '',
-            audioTitle: '',
-            loop: true,
             location: {
-              x: 0,
-              y: top2,
+              x: (375 - 325) / 2,
+              y: top1,
             },
             size: {
-              w: 375,
-              h: 96,
+              w: 325,
+              h: 94,
             },
             position: 'relative',
             icon,
+            isRequired: false,
+            label: '手机短信',
+            verify: 1,
           });
           newEditor = {
             fSmsSet: true,
             isFSmsSet: true,
-            dragFormSmscodes: drag12,
+            dragFormSmscodes: drag11,
             fSmsActive: num,
             layoutKey: zIndex + 1,
           };
@@ -541,69 +545,36 @@ export default {
         }
         default:
         {
-          let drag6 = this.$store.state.editor.dragAudios;
-          num = drag6.length;
-          layerName = `音频${!num ? '' : num + 1}`;
-          icon = 'ed-icon-tubiao-';
-          drag6 = textActiveOff(drag6, { index: 0, isAll: true });
-          drag6.push({
+          let drag12 = this.$store.state.editor.dragFormSubmits;
+          num = drag12.length;
+          layerName = `提交按钮${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tijiao1';
+          drag12 = textActiveOff(drag12, { index: 0, isAll: true });
+          drag12.push({
             id: this.getId(),
             isShow: true,
             zIndex: 1000,
             isActive: true,
             dragIndex: zIndex + 1,
-            sourceType: '1', // 1.本地音频 2.在线音频
-            source: '',
-            audioTitle: '',
-            loop: true,
-            isBorder: '2',
             location: {
-              x: 0,
-              y: top2,
+              x: (375 - 136) / 2,
+              y: top1,
             },
             size: {
-              w: 375,
-              h: 82,
-            },
-            play: {
-              title: '',
-              isUplaod: false,
-              duration: '00:00',
-              url: '',
-              accept: '.mp3',
-              position: 'relative',
-              location: {
-                x: 0,
-                y: top2,
-              },
-              size: {
-                w: 375,
-                h: 82,
-              },
-            },
-            linePlay: {
-              title: '',
-              isUplaod: false,
-              duration: '00:00',
-              url: '',
-              position: 'relative',
-              location: {
-                x: 0,
-                y: top2,
-              },
-              size: {
-                w: 375,
-                h: 82,
-              },
+              w: 136,
+              h: 40,
             },
             position: 'relative',
             icon,
+            label: '提交',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
           });
           newEditor = {
-            audioSet: true,
-            isAudioSet: true,
-            dragAudios: drag6,
-            audioActive: num,
+            fSubmitSet: true,
+            isFSubmitSet: true,
+            dragFormSubmits: drag12,
+            fSubmitActive: num,
             layoutKey: zIndex + 1,
           };
           break;

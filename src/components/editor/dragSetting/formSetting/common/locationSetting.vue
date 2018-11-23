@@ -78,10 +78,9 @@ export default {
     },
   },
   updated() {
-    // console.log('ssss', this.locationForm);
   },
 };
 </script>
 
-<style >
+<style>
 </style>

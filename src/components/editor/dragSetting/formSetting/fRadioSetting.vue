@@ -1,11 +1,11 @@
 <template>
-<div :class="['setting-content', $store.state.editor.isFRadioSet ?
+<div :class="['setting-content', $store.state.editor[isShow] ?
    'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px', }">
-  <form-setting :setForm="Object.assign(setForm, {place: '单项选择', dragName, dragActive,})"
+  <form-setting :setForm="Object.assign(setForm, {place: '单项选择', dragName, dragActive})"
    :dragForm="dragForm">
     <template slot="setting">
       <el-form-item label="选择模式：" size="mini">
-        <el-radio-group v-model="dragForm.type">
+        <el-radio-group v-model="dragForm.verify">
           <el-radio :label="1" @change="typeChange">单选</el-radio>
           <el-radio :label="2" @change="typeChange">多选</el-radio>
         </el-radio-group>
@@ -43,9 +43,18 @@ export default {
   },
   data() {
     return {
-      dragName: 'dragFormRadios',
-      dragActive: 'fRadioActive',
     };
+  },
+  computed: {
+    isShow() {
+      return this.dragForm.dragType === 9 ? 'isFRadioSet' : 'isFCheckboxSet';
+    },
+    dragName() {
+      return this.dragForm.dragType === 9 ? 'dragFormRadios' : 'dragFormCheckboxs';
+    },
+    dragActive() {
+      return this.dragForm.dragType === 9 ? 'fRadioActive' : 'fCheckboxActive';
+    },
   },
   methods: {
     typeChange(val) {
@@ -53,45 +62,6 @@ export default {
     },
   },
   updated() {
-    // console.log('radioupdated', this.dragForm.size);
   },
 };
 </script>
-
-<style >
-.bg-reset.el-button.el-button--text {
-  position: absolute;
-  height: 28px;
-  margin-top: 0;
-  width: 40px;
-  margin-left: 5px;
-}
-.bg-reset.el-button.el-button--text:hover,
-.page-setting .el-button.el-button--text:hover {
-  border: 0;
-}
-
-.page-setting .el-form-item--mini .el-form-item__content {
-  display: inline-block;
-  width: 260px;
-  margin-left: 0 !important;
-}
-.page-setting .el-form-item__label {
-  padding-right: 5px;
-}
-.page-setting .el-input--mini .el-input__inner{
-  padding: 0 8px;
-}
-.page-setting .share-img.el-form-item--mini .el-form-item__content {
-  width: 200px;
-}
-.page-setting .el-textarea__inner {
-  padding: 3px 8px;
-}
-.label-dec {
-  font-size: 10px;
-  color: #999;
-  display: inline-block;
-  margin-left: 5px;
-}
-</style>

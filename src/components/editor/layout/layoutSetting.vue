@@ -82,16 +82,24 @@
       :setForm="settingForm"
       @setting-fixed="settingFixed"
     />
-    <!-- <f-sms-setting
-      :dragForm="page"
+    <f-radio-setting
+      v-if="editor.isFCheckboxSet"
+      :dragForm="editor.dragFormCheckboxs[editor.fCheckboxActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
-    /> -->
-    <!-- <f-submit-setting
-      :dragForm="page"
+    />
+    <f-sms-setting
+      v-if="editor.isFSmsSet"
+      :dragForm="editor.dragFormSmscodes[editor.fSmsActive]"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
-    /> -->
+    />
+    <f-submit-setting
+      v-if="editor.isFSubmitSet"
+      :dragForm="editor.dragFormSubmits[editor.fSubmitActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
 
 </div>
 </template>

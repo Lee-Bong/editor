@@ -1,7 +1,7 @@
 <template>
     <drag-resize-form
       :dragForm="dragForm"
-      :infoForm="{dragName, dragActive, type: 9, listIndex, minH: 40, minW: 50}"
+      :infoForm="{dragName, dragActive, type: dragForm.dragType, listIndex, minH: 40, minW: 50}"
       :classList="'drag-item'"
       ref="dragItem"
       :sticks="['ml','mr']"
@@ -31,10 +31,15 @@ export default {
   },
   data() {
     return {
-      dragName: 'dragFormRadios',
-      dragActive: 'fRadioActive',
-      lists: [{ text: '选项1选项1选项1选项1选项1选选项1选项1选项1选项1选项1选项1项1', label: 1 }],
     };
+  },
+  computed: {
+    dragName() {
+      return this.dragForm.dragType === 9 ? 'dragFormRadios' : 'dragFormCheckboxs';
+    },
+    dragActive() {
+      return this.dragForm.dragType === 9 ? 'fRadioActive' : 'fCheckboxActive';
+    },
   },
   methods: {
     forceUpdate() {

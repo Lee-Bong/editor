@@ -9,7 +9,8 @@
                 <transition-group name="list-complete" >
                 <el-row type="flex" v-for="(item, index) in list" :key="index">
                     <el-input :placeholder="'选项' + (index+1)" class="option-item"
-                    :value="item.text"></el-input>
+                    ref="optionText"
+                    v-model="item.text" @change="optionTextChange(index)"></el-input>
                     <el-button v-if="list.length && list.length > 1"
                     type="text" icon="el-icon-delete"
                     class="del" @click="delOption(index)"></el-button>
@@ -70,34 +71,39 @@ export default {
       };
       this.updateSetting(this.form.dragName, this.form.dragActive, { list: this.list, size });
     },
+    optionTextChange(i) { // todo v-model改为value无法获取value
+      const text = this.$refs.optionText[i].value;
+      this.list[i].text = text;
+      this.updateSetting(this.form.dragName, this.form.dragActive, { list: this.list });
+    },
   },
 };
 </script>
 
 <style lang="less" scoped>
 .options-label {
-    width: 90px;
-    font-size: 14px;
-    color: #606266;
-    text-align: right;
+  width: 90px;
+  font-size: 14px;
+  color: #606266;
+  text-align: right;
 }
 .options-manage {
-    width: 330px;
-    margin-left: 20px;
-    .option-item {
-        width: 250px;
-    }
-    .del {
-        margin-left: 10px;
-    }
-    .el-icon-delete {
-        color: red;
-    }
-    .moving {
-        background-color: red;
-    }
-    .el-row--flex {
-        margin-bottom: 8px;
-    }
+  width: 330px;
+  margin-left: 20px;
+  .option-item {
+    width: 250px;
+  }
+  .del {
+    margin-left: 10px;
+  }
+  .el-icon-delete {
+    color: red;
+  }
+  .moving {
+    background-color: #eee;
+  }
+  .el-row--flex {
+    margin-bottom: 8px;
+  }
 }
 </style>

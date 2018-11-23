@@ -4,7 +4,7 @@
       <el-form ref="form" label-width="90px">
         <el-form-item label="标题：" size="mini">
           <el-input type="text" :placeholder="setForm.place" :value="dragForm.label"
-           @change="labelEvent"></el-input>
+          @change="labelEvent"></el-input>
         </el-form-item>
         <el-form-item label="" size="mini">
           <div style="width: 90px; display: inline-block;"></div>
@@ -79,7 +79,7 @@ export default {
 .page-setting .el-form-item__label {
   padding-right: 5px;
 }
-.page-setting .el-input--mini .el-input__inner{
+.page-setting .el-input--mini .el-input__inner {
   padding: 0 8px;
 }
 .page-setting .share-img.el-form-item--mini .el-form-item__content {
