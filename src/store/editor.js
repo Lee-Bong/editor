@@ -63,5 +63,6 @@ export default {
     pageSet: true,
     mediaHeight: 300,
     audioHeight: 82,
+    isSubmit: true, // 是否可以添加提交按钮，一个页面目前最多只能添加一个
   },
 };

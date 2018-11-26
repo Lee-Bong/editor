@@ -5,7 +5,7 @@
         {{com.kind}}
       </div>
       <el-button v-for="(list, i) in com.list" :key="i"
-       class="ed-com" @click="dragItemClick(list.type)">
+       class="ed-com" @click="dragItemClick(list.type)" :disabled="list.type === 12 && !$store.state.editor.isSubmit">
         <i :class="['iconfont', list.icon]"></i>
         <span class="el-com-text">{{list.text}}</span>
       </el-button>
@@ -543,6 +543,43 @@ export default {
           };
           break;
         }
+        case 12:
+        {
+          let drag12 = this.$store.state.editor.dragFormSubmits;
+          num = drag12.length;
+          layerName = `提交按钮${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tijiao1';
+          drag12 = textActiveOff(drag12, { index: 0, isAll: true });
+          drag12.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 136) / 2,
+              y: top1,
+            },
+            size: {
+              w: 136,
+              h: 40,
+            },
+            position: 'relative',
+            icon,
+            label: '提交',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+          });
+          newEditor = {
+            fSubmitSet: true,
+            isFSubmitSet: true,
+            dragFormSubmits: drag12,
+            fSubmitActive: num,
+            layoutKey: zIndex + 1,
+          };
+          this.$store.commit('editor_update', { isSubmit: false });
+          break;
+        }
         default:
         {
           let drag12 = this.$store.state.editor.dragFormSubmits;
@@ -638,5 +675,11 @@ export default {
 .left-btns .el-button:active {
   background-color: #1593ff;
   color: #fff;
+}
+
+.left-btns .el-button.is-disabled:hover, .left-btns .el-button.is-disabled:active {
+  border: 1px solid rgba(0, 0, 0, 0);
+  background-color: #fff;
+  color: #c0c4cc;
 }
 </style>
