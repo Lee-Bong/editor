@@ -5,7 +5,8 @@
         {{com.kind}}
       </div>
       <el-button v-for="(list, i) in com.list" :key="i"
-       class="ed-com" @click="dragItemClick(list.type)">
+      class="ed-com" @click="dragItemClick(list.type)"
+      :disabled="list.type === 12 && !$store.state.editor.isSubmit">
         <i :class="['iconfont', list.icon]"></i>
         <span class="el-com-text">{{list.text}}</span>
       </el-button>
@@ -39,6 +40,17 @@ export default {
             { text: '音频', icon: 'ed-icon-yinpin1', type: 6 },
           ],
         },
+        {
+          kind: '表单组件',
+          list: [
+            { text: '单行文本', icon: 'ed-icon-wenben', type: 7 },
+            { text: '多行文本', icon: 'ed-icon-duohangwenben', type: 8 },
+            { text: '单项选择', icon: 'ed-icon-danxiangxuanze', type: 9 },
+            { text: '多项选择', icon: 'ed-icon-duoxuan', type: 10 },
+            { text: '手机短信', icon: 'ed-icon-shoujiduanxin', type: 11 },
+            { text: '提交按钮', icon: 'ed-icon-tijiao1', type: 12 },
+          ],
+        },
       ],
     };
   },
@@ -47,7 +59,7 @@ export default {
       const zIndex = this.$store.state.editor.layoutKey;
       let layerName;
       let num = 0; // 组件类型索引
-      let icon = 'ed-icon-text3';
+      let icon = 'ed-icon-text1';
       const updateEditor = {
         isTextSet: false,
         isImgSet: false,
@@ -55,6 +67,12 @@ export default {
         isImgListSet: false,
         isVideoSet: false,
         isAudioSet: false,
+        isFTextSet: false,
+        isFTextareaSet: false,
+        isFRadioSet: false,
+        isFCheckboxSet: false,
+        isFSmsSet: false,
+        isFSubmitSet: false,
       };
       for (const item in this.$store.state.editor.typeCat) {
         const lists = this.$store.state.editor[this.$store.state.editor.typeCat[item][0]];
@@ -277,7 +295,7 @@ export default {
           };
           break;
         }
-        default:
+        case 6:
         {
           let drag6 = this.$store.state.editor.dragAudios;
           num = drag6.length;
@@ -346,6 +364,267 @@ export default {
           };
           break;
         }
+        case 7:
+        {
+          let drag7 = this.$store.state.editor.dragFormTexts;
+          num = drag7.length;
+          layerName = `单行文本${!num ? '' : num + 1}`;
+          icon = 'ed-icon-text3';
+          drag7 = textActiveOff(drag7, { index: 0, isAll: true });
+          drag7.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 325) / 2,
+              y: top1,
+            },
+            size: {
+              w: 325,
+              h: 40,
+            },
+            position: 'relative',
+            icon,
+            isRequired: false,
+            label: '单行文本',
+          });
+          newEditor = {
+            fTextSet: true,
+            isFTextSet: true,
+            dragFormTexts: drag7,
+            fTextActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 8:
+        {
+          let drag8 = this.$store.state.editor.dragFormTextareas;
+          num = drag8.length;
+          layerName = `多行文本${!num ? '' : num + 1}`;
+          icon = 'ed-icon-duohangwenben';
+          drag8 = textActiveOff(drag8, { index: 0, isAll: true });
+          drag8.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 325) / 2,
+              y: top1,
+            },
+            size: {
+              w: 325,
+              h: 140,
+            },
+            position: 'relative',
+            icon,
+            isRequired: false,
+            label: '多行文本',
+          });
+          newEditor = {
+            fTextareaSet: true,
+            isFTextareaSet: true,
+            dragFormTextareas: drag8,
+            fTextareaActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 9:
+        {
+          let drag9 = this.$store.state.editor.dragFormRadios;
+          num = drag9.length;
+          layerName = `单项选择${!num ? '' : num + 1}`;
+          icon = 'ed-icon-danxiangxuanze';
+          drag9 = textActiveOff(drag9, { index: 0, isAll: true });
+          drag9.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 325) / 2,
+              y: top1,
+            },
+            size: {
+              w: 325,
+              h: 80,
+            },
+            position: 'relative',
+            icon,
+            isRequired: false,
+            label: '单项选择',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+            type: 1, // '1'：单选，'2'：多选
+            dragType: 9,
+            list: [{ text: '选项1', label: 1 }],
+            optionIndex: 1,
+          });
+          newEditor = {
+            fRadioSet: true,
+            isFRadioSet: true,
+            dragFormRadios: drag9,
+            fRadioActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 10:
+        {
+          let drag10 = this.$store.state.editor.dragFormCheckboxs;
+          num = drag10.length;
+          layerName = `多项选择${!num ? '' : num + 1}`;
+          icon = 'ed-icon-duoxuan';
+          drag10 = textActiveOff(drag10, { index: 0, isAll: true });
+          drag10.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 325) / 2,
+              y: top1,
+            },
+            size: {
+              w: 325,
+              h: 80,
+            },
+            position: 'relative',
+            icon,
+            isRequired: false,
+            label: '多项选择（可多选）',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+            type: 2, // '1'：单选，'2'：多选
+            dragType: 10,
+            list: [{ text: '选项1', label: 1 }],
+            optionIndex: 1,
+          });
+          newEditor = {
+            fCheckboxSet: true,
+            isFCheckboxSet: true,
+            dragFormCheckboxs: drag10,
+            fCheckboxActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 11:
+        {
+          let drag11 = this.$store.state.editor.dragFormSmscodes;
+          num = drag11.length;
+          layerName = `手机短信${!num ? '' : num + 1}`;
+          icon = 'ed-icon-shoujiduanxin';
+          drag11 = textActiveOff(drag11, { index: 0, isAll: true });
+          drag11.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 325) / 2,
+              y: top1,
+            },
+            size: {
+              w: 325,
+              h: 94,
+            },
+            position: 'relative',
+            icon,
+            isRequired: false,
+            label: '请输入手机号',
+            verify: 1,
+          });
+          newEditor = {
+            fSmsSet: true,
+            isFSmsSet: true,
+            dragFormSmscodes: drag11,
+            fSmsActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
+        case 12:
+        {
+          let drag12 = this.$store.state.editor.dragFormSubmits;
+          num = drag12.length;
+          layerName = `提交按钮${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tijiao1';
+          drag12 = textActiveOff(drag12, { index: 0, isAll: true });
+          drag12.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 136) / 2,
+              y: top1,
+            },
+            size: {
+              w: 136,
+              h: 40,
+            },
+            position: 'relative',
+            icon,
+            label: '提交',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+          });
+          newEditor = {
+            fSubmitSet: true,
+            isFSubmitSet: true,
+            dragFormSubmits: drag12,
+            fSubmitActive: num,
+            layoutKey: zIndex + 1,
+          };
+          this.$store.commit('editor_update', { isSubmit: false });
+          break;
+        }
+        default:
+        {
+          let drag12 = this.$store.state.editor.dragFormSubmits;
+          num = drag12.length;
+          layerName = `提交按钮${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tijiao1';
+          drag12 = textActiveOff(drag12, { index: 0, isAll: true });
+          drag12.push({
+            id: this.getId(),
+            isShow: true,
+            zIndex: 1000,
+            isActive: true,
+            dragIndex: zIndex + 1,
+            location: {
+              x: (375 - 136) / 2,
+              y: top1,
+            },
+            size: {
+              w: 136,
+              h: 40,
+            },
+            position: 'relative',
+            icon,
+            label: '提交',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+          });
+          newEditor = {
+            fSubmitSet: true,
+            isFSubmitSet: true,
+            dragFormSubmits: drag12,
+            fSubmitActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
       }
 
       const { layerLists } = this.$store.state.editor;
@@ -405,5 +684,11 @@ export default {
 .left-btns .el-button:active {
   background-color: #1593ff;
   color: #fff;
+}
+
+.left-btns .el-button.is-disabled:hover, .left-btns .el-button.is-disabled:active {
+  border: 1px solid rgba(0, 0, 0, 0);
+  background-color: #fff;
+  color: #c0c4cc;
 }
 </style>

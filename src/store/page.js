@@ -1,7 +1,8 @@
 export default {
   state: {
     pageSet: true,
-    title: '',
+    title: '', // 页面名称
+    name: '', // 页面标题
     phoneWidth: 375,
     phoneHeight: 603,
     screenHeight: 603,
@@ -12,5 +13,7 @@ export default {
     backgroundColor: '#fff',
     img: {
     },
+    code: '',
+    componentIds: '',
   },
 };

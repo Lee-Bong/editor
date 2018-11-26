@@ -115,7 +115,7 @@ function wxShare() {
         });
       } catch (e) {
         /* eslint no-console: 0 */
-        console.log(e);
+        (e);
       }
     });
   }

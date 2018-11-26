@@ -62,6 +62,45 @@
       :setForm="settingForm"
       @setting-fixed="settingFixed"
     />
+
+    <f-text-setting
+      v-if="editor.isFTextSet"
+      :dragForm="editor.dragFormTexts[editor.fTextActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
+
+    <f-textarea-setting
+      v-if="editor.isFTextareaSet"
+      :dragForm="editor.dragFormTextareas[editor.fTextareaActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
+    <f-radio-setting
+      v-if="editor.isFRadioSet"
+      :dragForm="editor.dragFormRadios[editor.fRadioActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
+    <f-radio-setting
+      v-if="editor.isFCheckboxSet"
+      :dragForm="editor.dragFormCheckboxs[editor.fCheckboxActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
+    <f-sms-setting
+      v-if="editor.isFSmsSet"
+      :dragForm="editor.dragFormSmscodes[editor.fSmsActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
+    <f-submit-setting
+      v-if="editor.isFSubmitSet"
+      :dragForm="editor.dragFormSubmits[editor.fSubmitActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
+
 </div>
 </template>
 
@@ -73,6 +112,11 @@ import dragImgListSetting from '@/components/editor/dragSetting/dragImgListSetti
 import dragVideoSetting from '@/components/editor/dragSetting/dragVideoSetting';
 import dragAudioSetting from '@/components/editor/dragSetting/dragAudioSetting';
 import pageSetting from '@/components/editor/dragSetting/pageSetting';
+import fTextSetting from '@/components/editor/dragSetting/formSetting/fTextSetting';
+import fTextareaSetting from '@/components/editor/dragSetting/formSetting/fTextareaSetting';
+import fRadioSetting from '@/components/editor/dragSetting/formSetting/fRadioSetting';
+import fSmsSetting from '@/components/editor/dragSetting/formSetting/fSmsSetting';
+import fSubmitSetting from '@/components/editor/dragSetting/formSetting/fSubmitSetting';
 import { dragCom } from '@/util/dragMxi';
 
 export default {
@@ -88,6 +132,11 @@ export default {
     dragAudioSetting,
     pageSetting,
     dragImgListSetting,
+    fTextSetting,
+    fTextareaSetting,
+    fSmsSetting,
+    fRadioSetting,
+    fSubmitSetting,
   },
   data() {
     return {
@@ -103,7 +152,11 @@ export default {
   },
   methods: {
     sourceChange(type, form, active) {
-      this.$store.state.editor[form][this.$store.state.editor[active]].sourceType = type;
+      const dragItems = this.$store.state.editor[form];
+      dragItems[this.$store.state.editor[active]].sourceType = type;
+      this.$store.commit('editor_update', {
+        [form]: dragItems,
+      });
     },
     settingFixed() { // 锁定设置
       this.settingForm.location.x = 600;
@@ -130,6 +183,9 @@ export default {
       });
     },
   },
+  updated() {
+    // console.log('editor.isFTextSet', this.editor.dragFormTexts[this.editor.fTextActive]);
+  },
 };
 </script>
 
@@ -150,11 +206,11 @@ export default {
   overflow: hidden;
   box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
   visibility: hidden;
+  position: fixed;
+  top: 75px;
 }
 .setting-show{
   visibility: visible;
-  position: fixed;
-  top: 75px;
   // max-height: maxHeight;
 }
 .setting-title {
@@ -181,7 +237,7 @@ export default {
   padding: 5px;
   background-color: #fff;
   text-align: left;
-  overflow: auto;
+  overflow-y: auto;
   .el-form-item__label {
     padding-right: 0;
   }

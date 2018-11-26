@@ -152,6 +152,9 @@ export function dragCom() {
           });
           editor.layerActive = -1;
           editor.layoutKey -= 1;
+          if (sort === 12) {
+            editor.isSubmit = true;
+          }
           this.$store.commit('editor_update', editor);
         }
       },

@@ -1,7 +1,6 @@
 <template>
 <draggable class="layer-drag"
   :list="$store.state.editor.layerLists"
-  :move="getdata"
   @update="datadragEnd"
   :options="{animation: 300,handle:'.dargDiv'}">
     <transition-group name="list-complete" >
@@ -60,9 +59,6 @@ export default {
     },
     handleChange() {
 
-    },
-    getdata() {
-      // console.log(evt.draggedContext.element.id);
     },
     datadragEnd(evt) {
       const { oldIndex, newIndex } = evt;
@@ -139,7 +135,7 @@ export default {
   padding: 5px;
   background-color: #fff;
   text-align: left;
-  overflow: auto;
+  overflow-y: auto;
   box-sizing: border-box;
   padding-bottom: 15px;
 }

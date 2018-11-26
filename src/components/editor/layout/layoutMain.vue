@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 <template>
   <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
     :h="page.phoneHeight" :isActive="true" :isDraggable="false"
@@ -6,7 +7,7 @@
     :minh='page.screenHeight'
     :style="{
     width: page.phoneWidth+'px',
-    backgroundColor:  page.backgroundColor,
+    backgroundColor: page.backgroundColor,
   }">
     <div class="phone-resize">
       <i class="el-icon-back resize-icon resize-up"></i>
@@ -40,6 +41,37 @@
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop" ref="audioRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+      <!-- 表单 -->
+      <drag-form-text v-for="(drag, index) in dragFormTexts" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+      <drag-form-textarea v-for="(drag, index) in dragFormTextareas" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fTextareaRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-radio v-for="(drag, index) in dragFormRadios" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fRadioRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+      <drag-form-radio v-for="(drag, index) in dragFormCheckboxs" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fCheckboxRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-smscode v-for="(drag, index) in dragFormSmscodes" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fSmsRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-submit v-for="(drag, index) in dragFormSubmits" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fSubmitRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
   </vue-drag-resize>
 </template>
@@ -51,6 +83,11 @@ import dragLink from '@/components/editor/dragItem/dragLink';
 import dragImgLists from '@/components/editor/dragItem/dragImgLists';
 import dragVideo from '@/components/editor/dragItem/dragVideo';
 import dragAudio from '@/components/editor/dragItem/dragAudio';
+import dragFormText from '@/components/editor/dragItem/dragForm/dragFormText';
+import dragFormTextarea from '@/components/editor/dragItem/dragForm/dragFormTextarea';
+import dragFormRadio from '@/components/editor/dragItem/dragForm/dragFormRadio';
+import dragFormSmscode from '@/components/editor/dragItem/dragForm/dragFormSmscode';
+import dragFormSubmit from '@/components/editor/dragItem/dragForm/dragFormSubmit';
 import { dragCom } from '@/util/dragMxi';
 import { mapState } from 'vuex';
 
@@ -66,9 +103,28 @@ export default {
     dragImgLists,
     dragVideo,
     dragAudio,
+    dragFormText,
+    dragFormTextarea,
+    dragFormRadio,
+    dragFormSmscode,
+    dragFormSubmit,
   },
   data() {
     return {
+      evt: [
+        ['dragTexts', 'fTextRef'],
+        ['dragImages', 'imgRef'],
+        ['dragLinks', 'linkRef'],
+        ['dragImgLists', 'imgListRef'],
+        ['dragVideos', 'videoRef'],
+        ['dragAudios', 'audioRef'],
+        ['dragFormTexts', 'fTextRef'],
+        ['dragFormTextareas', 'fTextareaRef'],
+        ['dragFormRadios', 'fRadioRef'],
+        ['dragFormCheckboxs', 'fCheckboxRef'],
+        ['dragFormSmscodes', 'fSmsRef'],
+        ['dragFormSubmits', 'fSubmitRef'],
+      ],
     };
   },
   computed: {
@@ -79,6 +135,12 @@ export default {
       dragLinks: state => state.editor.dragLinks,
       dragImages: state => state.editor.dragImages,
       dragTexts: state => state.editor.dragTexts,
+      dragFormTexts: state => state.editor.dragFormTexts,
+      dragFormTextareas: state => state.editor.dragFormTextareas,
+      dragFormRadios: state => state.editor.dragFormRadios,
+      dragFormCheckboxs: state => state.editor.dragFormCheckboxs,
+      dragFormSmscodes: state => state.editor.dragFormSmscodes,
+      dragFormSubmits: state => state.editor.dragFormSubmits,
       page: state => state.page,
     }),
   },
@@ -133,41 +195,17 @@ export default {
     },
   },
   updated() {
-    if (this.$refs.imgListRef && this.$store.state.editor.dragImgLists &&
-      this.$store.state.editor.dragImgLists.length) {
-      this.$refs.imgListRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.imgRef && this.$store.state.editor.dragImages &&
-      this.$store.state.editor.dragImages.length) {
-      this.$refs.imgRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.videoRef && this.$store.state.editor.dragVideos &&
-      this.$store.state.editor.dragVideos.length) {
-      this.$refs.videoRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.audioRef && this.$store.state.editor.dragAudios &&
-      this.$store.state.editor.dragAudios.length) {
-      this.$refs.audioRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.linkRef && this.$store.state.editor.dragLinks &&
-      this.$store.state.editor.dragLinks.length) {
-      this.$refs.linkRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
+    this.evt.map((item) => {
+      const list = this.$store.state.editor[item[0]];
+      const re = this.$refs[item[1]];
+      if (list && list.length && re) {
+        re.map((ele) => {
+          ele.forceUpdate();
+          return true;
+        });
+      }
+      return true;
+    });
   },
 };
 </script>
