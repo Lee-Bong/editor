@@ -196,7 +196,6 @@ export default {
   margin-top: 20px;
   margin-left: 25px;
   border-radius: 5px;
-  overflow: hidden;
   z-index: 80;
 }
 .setting-content {

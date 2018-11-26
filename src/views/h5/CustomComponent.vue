@@ -57,6 +57,8 @@
             :style="component.style"
             :play="component.play"
         ></audio-play>
+
+        <div v-if="component.type === 7" is="wText"></div>
     </div>
 </template>
 
@@ -65,6 +67,7 @@ import generate from 'nanoid/generate';
 import hotSpot from '../../util/hotSpot.js';
 import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
 import gaReport from '../../util/gaReport.js';
+import wText from '../../components/element/wtext';
 
 export default {
   data() {
@@ -76,6 +79,7 @@ export default {
 
   components: {
     AudioPlay,
+    wText,
   },
 
   computed: {
