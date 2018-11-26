@@ -540,7 +540,7 @@ export default {
             position: 'relative',
             icon,
             isRequired: false,
-            label: '手机短信',
+            label: '请输入手机号',
             verify: 1,
           });
           newEditor = {

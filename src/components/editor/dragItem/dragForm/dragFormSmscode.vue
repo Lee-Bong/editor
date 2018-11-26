@@ -8,7 +8,7 @@
       :style="{height: dragForm.size.h + 'px'}"
       >
       <template slot="content">
-        <form-sms :verify="dragForm.verify"/>
+        <form-sms :verify="dragForm.verify" :palce="dragForm.label"/>
       </template>
     </drag-resize-form>
 </template>

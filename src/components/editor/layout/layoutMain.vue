@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 <template>
   <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
     :h="page.phoneHeight" :isActive="true" :isDraggable="false"
@@ -110,6 +111,20 @@ export default {
   },
   data() {
     return {
+      evt: [
+        ['dragTexts', 'fTextRef'],
+        ['dragImages', 'imgRef'],
+        ['dragLinks', 'linkRef'],
+        ['dragImgLists', 'imgListRef'],
+        ['dragVideos', 'videoRef'],
+        ['dragAudios', 'audioRef'],
+        ['dragFormTexts', 'fTextRef'],
+        ['dragFormTextareas', 'fTextareaRef'],
+        ['dragFormRadios', 'fRadioRef'],
+        ['dragFormCheckboxs', 'fCheckboxRef'],
+        ['dragFormSmscodes', 'fSmsRef'],
+        ['dragFormSubmits', 'fSubmitRef'],
+      ],
     };
   },
   computed: {
@@ -180,83 +195,17 @@ export default {
     },
   },
   updated() {
-    if (this.$refs.imgListRef && this.$store.state.editor.dragImgLists &&
-      this.$store.state.editor.dragImgLists.length) {
-      this.$refs.imgListRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.imgRef && this.$store.state.editor.dragImages &&
-      this.$store.state.editor.dragImages.length) {
-      this.$refs.imgRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.videoRef && this.$store.state.editor.dragVideos &&
-      this.$store.state.editor.dragVideos.length) {
-      this.$refs.videoRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.audioRef && this.$store.state.editor.dragAudios &&
-      this.$store.state.editor.dragAudios.length) {
-      this.$refs.audioRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.linkRef && this.$store.state.editor.dragLinks &&
-      this.$store.state.editor.dragLinks.length) {
-      this.$refs.linkRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.fTextRef && this.$store.state.editor.dragFormTexts &&
-      this.$store.state.editor.dragFormTexts.length) {
-      this.$refs.fTextRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.fTextareaRef && this.$store.state.editor.dragFormTextareas &&
-      this.$store.state.editor.dragFormTextareas.length) {
-      this.$refs.fTextareaRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.fRadioRef && this.$store.state.editor.dragFormRadios &&
-      this.$store.state.editor.dragFormRadios.length) {
-      this.$refs.fRadioRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.fCheckboxRef && this.$store.state.editor.dragFormCheckboxs &&
-      this.$store.state.editor.dragFormCheckboxs.length) {
-      this.$refs.fCheckboxRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.fSmsRef && this.$store.state.editor.dragFormSmscodes &&
-      this.$store.state.editor.dragFormSmscodes.length) {
-      this.$refs.fSmsRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
-    if (this.$refs.fSubmitRef && this.$store.state.editor.dragFormSubmits &&
-      this.$store.state.editor.dragFormSubmits.length) {
-      this.$refs.fSubmitRef.map((item) => {
-        item.forceUpdate();
-        return true;
-      });
-    }
+    this.evt.map((item) => {
+      const list = this.$store.state.editor[item[0]];
+      const re = this.$refs[item[1]];
+      if (list && list.length && re) {
+        re.map((ele) => {
+          ele.forceUpdate();
+          return true;
+        });
+      }
+      return true;
+    });
   },
 };
 </script>

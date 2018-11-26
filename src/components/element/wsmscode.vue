@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-input
-    placeholder="请输入手机号">
+    :placeholder="palce || '请输入手机号'">
     </el-input>
     <div style="margin-top: 14px" class="code-cont" v-if="verify === 1">
       <el-input class="code-left"
@@ -14,14 +14,10 @@
 <script>
 
 export default {
-  name: 'texg',
+  name: 'wsmscode',
   props: {
     verify: Number,
-  },
-  data() {
-    return {
-      dragName: 'dragFormTexts',
-    };
+    palce: String,
   },
 };
 </script>
