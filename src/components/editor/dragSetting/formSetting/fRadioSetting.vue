@@ -5,16 +5,17 @@
    :dragForm="dragForm">
     <template slot="setting">
       <el-form-item label="选择模式：" size="mini">
-        <el-radio-group v-model="dragForm.verify">
+        <el-radio-group v-model="dragForm.type">
           <el-radio :label="1" @change="typeChange">单选</el-radio>
           <el-radio :label="2" @change="typeChange">多选</el-radio>
         </el-radio-group>
       </el-form-item>
-      <options-setting :list="dragForm.list" :form="{dragName, dragActive, size: dragForm.size}" />
+      <options-setting :list="dragForm.list" :form="{dragName, dragActive, size: dragForm.size,
+       optionIndex: dragForm.optionIndex}" />
       <color-setting :colorForm="{bgColor: dragForm.bgColor, textColor: dragForm.textColor,
-      bgDefault: '#5AC7F9', textDefault: '#fff', dragName, dragActive,}"/>
+      bgDefault: '#5AC7F9', textDefault: '#fff', dragName, dragActive}"/>
       <location-setting  :locationForm="{location: dragForm.location, size: dragForm.size,
-      dragName: 'dragFormRadios', dragActive: 'fRadioActive', hDisabled: true,
+      dragName, dragActive, hDisabled: true,
       minW: 50}"/>
     </template>
   </form-setting>
@@ -60,6 +61,8 @@ export default {
     typeChange(val) {
       this.updateDrags(this.dragName, val, this.dragActive, 'type');
     },
+  },
+  created() {
   },
   updated() {
   },

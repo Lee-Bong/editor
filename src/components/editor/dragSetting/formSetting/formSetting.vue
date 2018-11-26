@@ -3,7 +3,7 @@
     <template slot="form">
       <el-form ref="form" label-width="90px">
         <el-form-item label="标题：" size="mini">
-          <el-input type="text" :placeholder="setForm.place" :value="dragForm.label"
+          <el-input type="text" :placeholder="setForm.place" v-model="dragForm.label"
           @change="labelEvent"></el-input>
         </el-form-item>
         <el-form-item label="" size="mini">

@@ -229,28 +229,28 @@ export default {
         return true;
       });
     }
-    if (this.$refs.dragFormRadios && this.$store.state.editor.dragFormRadios &&
+    if (this.$refs.fRadioRef && this.$store.state.editor.dragFormRadios &&
       this.$store.state.editor.dragFormRadios.length) {
       this.$refs.fRadioRef.map((item) => {
         item.forceUpdate();
         return true;
       });
     }
-    if (this.$refs.dragFormCheckboxs && this.$store.state.editor.dragFormCheckboxs &&
+    if (this.$refs.fCheckboxRef && this.$store.state.editor.dragFormCheckboxs &&
       this.$store.state.editor.dragFormCheckboxs.length) {
       this.$refs.fCheckboxRef.map((item) => {
         item.forceUpdate();
         return true;
       });
     }
-    if (this.$refs.dragFormSmscodes && this.$store.state.editor.dragFormSmscodes &&
+    if (this.$refs.fSmsRef && this.$store.state.editor.dragFormSmscodes &&
       this.$store.state.editor.dragFormSmscodes.length) {
       this.$refs.fSmsRef.map((item) => {
         item.forceUpdate();
         return true;
       });
     }
-    if (this.$refs.dragFormSubmits && this.$store.state.editor.dragFormSubmits &&
+    if (this.$refs.fSubmitRef && this.$store.state.editor.dragFormSubmits &&
       this.$store.state.editor.dragFormSubmits.length) {
       this.$refs.fSubmitRef.map((item) => {
         item.forceUpdate();

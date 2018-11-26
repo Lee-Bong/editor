@@ -5,7 +5,8 @@
         {{com.kind}}
       </div>
       <el-button v-for="(list, i) in com.list" :key="i"
-       class="ed-com" @click="dragItemClick(list.type)" :disabled="list.type === 12 && !$store.state.editor.isSubmit">
+      class="ed-com" @click="dragItemClick(list.type)"
+      :disabled="list.type === 12 && !$store.state.editor.isSubmit">
         <i :class="['iconfont', list.icon]"></i>
         <span class="el-com-text">{{list.text}}</span>
       </el-button>
@@ -58,7 +59,7 @@ export default {
       const zIndex = this.$store.state.editor.layoutKey;
       let layerName;
       let num = 0; // 组件类型索引
-      let icon = 'ed-icon-text3';
+      let icon = 'ed-icon-text1';
       const updateEditor = {
         isTextSet: false,
         isImgSet: false,
@@ -66,6 +67,12 @@ export default {
         isImgListSet: false,
         isVideoSet: false,
         isAudioSet: false,
+        isFTextSet: false,
+        isFTextareaSet: false,
+        isFRadioSet: false,
+        isFCheckboxSet: false,
+        isFSmsSet: false,
+        isFSubmitSet: false,
       };
       for (const item in this.$store.state.editor.typeCat) {
         const lists = this.$store.state.editor[this.$store.state.editor.typeCat[item][0]];
@@ -362,7 +369,7 @@ export default {
           let drag7 = this.$store.state.editor.dragFormTexts;
           num = drag7.length;
           layerName = `单行文本${!num ? '' : num + 1}`;
-          icon = 'ed-icon-wenben';
+          icon = 'ed-icon-text3';
           drag7 = textActiveOff(drag7, { index: 0, isAll: true });
           drag7.push({
             id: this.getId(),
@@ -457,6 +464,7 @@ export default {
             type: 1, // '1'：单选，'2'：多选
             dragType: 9,
             list: [{ text: '选项1', label: 1 }],
+            optionIndex: 1,
           });
           newEditor = {
             fRadioSet: true,
@@ -497,6 +505,7 @@ export default {
             type: 2, // '1'：单选，'2'：多选
             dragType: 10,
             list: [{ text: '选项1', label: 1 }],
+            optionIndex: 1,
           });
           newEditor = {
             fCheckboxSet: true,

@@ -206,11 +206,11 @@ export default {
   overflow: hidden;
   box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
   visibility: hidden;
+  position: fixed;
+  top: 75px;
 }
 .setting-show{
   visibility: visible;
-  position: fixed;
-  top: 75px;
   // max-height: maxHeight;
 }
 .setting-title {
@@ -237,7 +237,7 @@ export default {
   padding: 5px;
   background-color: #fff;
   text-align: left;
-  overflow: auto;
+  overflow-y: auto;
   .el-form-item__label {
     padding-right: 0;
   }

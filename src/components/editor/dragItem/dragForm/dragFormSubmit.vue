@@ -8,7 +8,7 @@
       >
       <template slot="content">
         <div>
-          <form-submit :text="dragForm.label"
+          <form-submit :label="dragForm.label"
            :bgColor="dragForm.bgColor" :textColor="dragForm.textColor" />
         </div>
       </template>

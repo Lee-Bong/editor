@@ -8,7 +8,7 @@
       >
       <template slot="content">
         <div>
-          <form-textarea place="多行文本" :classList="['drag-form-item']"
+          <form-textarea :place="dragForm.label" :classList="['drag-form-item']"
           :size="this.dragForm.size"
           :styles="styles" />
         </div>
@@ -44,7 +44,6 @@ export default {
     },
   },
   updated() {
-    // console.log('this.dragForm.size', this.dragForm.size);
   },
 };
 </script>

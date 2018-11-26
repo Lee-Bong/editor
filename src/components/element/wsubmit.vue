@@ -1,5 +1,5 @@
 <template>
-  <button class="w-form-submit" :style="{backgroundColor: bgColor, color: textColor}">{{text}}
+  <button class="w-form-submit" :style="{backgroundColor: bgColor, color: textColor}">{{label}}
   </button>
 </template>
 <script>
@@ -8,7 +8,7 @@ export default {
   name: 'texg',
   props: {
     classList: Array,
-    text: String,
+    label: String,
     bgColor: String,
     textColor: String,
   },

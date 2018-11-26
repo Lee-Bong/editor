@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     locationEvent(location) {
-      this.locationChange(this.locationForm.dragName, location, this.locationForm.dragActive);
+      this.updateSetting(this.locationForm.dragName, this.locationForm.dragActive, { location });
     },
     locationXchange(val) {
       this.locationEvent({
@@ -62,7 +62,7 @@ export default {
       });
     },
     sizeEvent(size) {
-      this.sizeChange(this.locationForm.dragName, size, this.locationForm.dragActive);
+      this.updateSetting(this.locationForm.dragName, this.locationForm.dragActive, { size });
     },
     sizeWchange(val) {
       this.sizeEvent({
@@ -78,6 +78,7 @@ export default {
     },
   },
   updated() {
+    // alert(this.locationForm.dragName);
   },
 };
 </script>
