@@ -22,7 +22,7 @@
           </el-form-item>
           <el-form-item label="分享描述：" size="mini">
             <el-input :rows="2" maxlength=40 v-model="dragForm.shareDec" type="textarea"
-             placeholder="微信分享描述，最多输入40个字"></el-input>
+             placeholder="微信分享描述，最多输入40个字" resize="none"></el-input>
           </el-form-item>
           <el-form-item label="分享缩略图：" size="mini" class="share-img">
             <img-uplaod :imgObj="dragForm.img" @upload-done="uploadDone"
@@ -36,12 +36,12 @@
           <div class="form-item-code">
             <div>自定义代码区:</div>
             <el-input v-model="dragForm.code" class="color-item"
-             type="textarea" rows="4"></el-input>
+             type="textarea" rows="8" resize="none"></el-input>
           </div>
           <div class="form-item-code">
             <div>组件id:</div>
             <el-input v-model="dragForm.componentIds"
-             class="color-item" type="textarea" rows="4"></el-input>
+             class="color-item" type="textarea" rows="8" resize="none"></el-input>
           </div>
         </el-form>
       </div>
