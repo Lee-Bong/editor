@@ -8,9 +8,7 @@
       >
       <template slot="content">
         <div>
-          <form-textarea :place="dragForm.label" :classList="['drag-form-item']"
-          :size="this.dragForm.size"
-          :styles="styles" />
+          <form-textarea :attr="{label: dragForm.label, size: dragForm.size, classList: []}"/>
         </div>
       </template>
     </drag-resize-form>

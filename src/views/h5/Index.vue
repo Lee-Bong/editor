@@ -131,10 +131,10 @@ export default {
       document.title = title;
       jssdk.callNative('topbar/title', { title });
 
-      const { _czc: czc } = window;
-      if (this.isFormal && czc) {
-        czc.push(['_trackEvent', '页面浏览量', title]);
-      }
+      // const { _czc: czc } = window;
+      // if (this.isFormal && czc) {
+      //   czc.push(['_trackEvent', '页面浏览量', title]);
+      // }
 
       // 初始化app内分享
       this.$nextTick(() => {

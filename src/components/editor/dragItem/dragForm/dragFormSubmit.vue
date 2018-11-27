@@ -8,8 +8,8 @@
       >
       <template slot="content">
         <div>
-          <form-submit :label="dragForm.label"
-           :bgColor="dragForm.bgColor" :textColor="dragForm.textColor" />
+          <form-submit :attr="{label:dragForm.label,bgColor:dragForm.bgColor,
+          textColor:dragForm.textColor}" />
         </div>
       </template>
     </drag-resize-form>

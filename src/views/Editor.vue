@@ -78,7 +78,7 @@ export default {
       wrapHeight: 603, // 包括头部的高度x
       clientHeight: 603, // 编辑内容高度
       isFirst: true, // 空白编辑页
-      dataInit: '{"editor":{"isSubmit": true,"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"], "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"], "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"], "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"], "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"], "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"], "12":["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","name": "", "phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"code":"","componentIds":""}}',
+      dataInit: '{"editor":{"isSubmit": true,"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"dragFormTexts":[],"dragFormTextareas":[],"dragFormRadios":[],"dragFormCheckboxs":[],"dragFormSmscodes":[],"dragFormSubmits":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"fTextSet":false,"isFTextSet":false,"fTextareaSet":false,"isFTextareaSet":false,"fRadioSet":false,"isFRadioSet":false,"fCheckboxSet":false,"isFCheckboxSet":false,"fSmsSet":false,"isFSmsSet":false,"fSubmitSet":false,"isFSubmitSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"], "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"], "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"], "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"], "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"], "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"], "12":["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","name": "", "phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"code":"","componentIds":""}}',
       beforeState: null,
       gobalState: null,
       isPublish: false,
@@ -215,7 +215,8 @@ export default {
       eJson.editor.page.shareImg = page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png';
       const dragArr = [];
       const {
-        dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
+        dragTexts, dragImages, dragLinks, dragVideos, dragAudios, dragFormTexts, dragFormTextareas,
+        dragFormRadios, dragFormCheckboxs, dragFormSmscodes, dragFormSubmits,
         dragImgLists, layerLists,
       } = editor;
       if (dragTexts.length) {
@@ -349,6 +350,108 @@ export default {
           return true;
         });
       }
+      if (dragFormTexts.length) {
+        dragFormTexts.map((item) => {
+          const { location, size, label } = item;
+          dragArr.push({
+            type: 7,
+            location,
+            size,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+            },
+          });
+          return true;
+        });
+      }
+      if (dragFormTextareas.length) {
+        dragFormTextareas.map((item) => {
+          const { location, size, label } = item;
+          dragArr.push({
+            type: 8,
+            location,
+            size,
+            label,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              size,
+              classList: [],
+            },
+          });
+          return true;
+        });
+      }
+      if (dragFormRadios.length) {
+        dragFormRadios.map((item) => {
+          dragArr.push(this.getRadioSet(item, 9));
+          return true;
+        });
+      }
+      if (dragFormCheckboxs.length) {
+        dragFormCheckboxs.map((item) => {
+          dragArr.push(this.getRadioSet(item, 9));
+          return true;
+        });
+      }
+      if (dragFormSmscodes.length) {
+        dragFormSmscodes.map((item) => {
+          const {
+            location, size, label, verify,
+          } = item;
+          dragArr.push({
+            type: 11,
+            location,
+            size,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              verify,
+            },
+          });
+          return true;
+        });
+      }
+      if (dragFormSubmits.length) {
+        dragFormSubmits.map((item) => {
+          const {
+            location, size, label, bgColor, textColor,
+          } = item;
+          dragArr.push({
+            type: 12,
+            location,
+            size,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              bgColor,
+              textColor,
+            },
+          });
+          return true;
+        });
+      }
       this.topBannerClick();
       eJson.editor.components = dragArr;
       const ele = this;
@@ -365,6 +468,32 @@ export default {
       }
       const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
+    },
+    getRadioSet(item, dragType) {
+      const {
+        location, size, label, bgColor, textColor, list, type,
+      } = item;
+      return {
+        type: dragType,
+        location,
+        size,
+        label,
+        positionInfo: {
+          position: 'relative',
+        },
+        style: {
+          'z-index': item.dragIndex,
+        },
+        attr: {
+          label,
+          size,
+          classList: [],
+          bgColor,
+          textColor,
+          list,
+          type,
+        },
+      };
     },
     getLinkName(type, num, layerLists) {
       let linkName = '热区';

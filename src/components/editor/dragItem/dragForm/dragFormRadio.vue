@@ -8,9 +8,13 @@
       >
       <template slot="content">
         <div>
-          <form-radio :label="dragForm.label" :classList="['drag-form-item']"
-           :list="dragForm.list" :type="dragForm.type"
-           :bgColor="dragForm.bgColor" :textColor="dragForm.textColor" />
+          <div :style="{width: dragForm.size.w+'px',height: dragForm.size.h+'px',}"
+           class="radio-shadow"></div>
+          <div style="z-index: 3">
+            <form-radio :attr="{label:dragForm.label,classList:['drag-form-item'],
+            list:dragForm.list,type:dragForm.type,bgColor:dragForm.bgColor,
+            textColor:dragForm.textColor}" />
+          </div>
         </div>
       </template>
     </drag-resize-form>
@@ -62,5 +66,11 @@ export default {
   color: #333;
   line-height: 20px;
   text-align: left;
+}
+.radio-shadow {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0);
+  cursor: move;
+  z-index: 5;
 }
 </style>

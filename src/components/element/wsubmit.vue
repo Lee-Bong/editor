@@ -1,5 +1,6 @@
 <template>
-  <button class="w-form-submit" :style="{backgroundColor: bgColor, color: textColor}">{{label}}
+  <button class="w-form-submit" :style="{backgroundColor: attr.bgColor, color: attr.textColor}">
+    {{attr.label}}
   </button>
 </template>
 <script>
@@ -7,14 +8,13 @@
 export default {
   name: 'texg',
   props: {
-    classList: Array,
-    label: String,
-    bgColor: String,
-    textColor: String,
+    attr: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
-      dragName: 'dragFormTexts',
     };
   },
 };
@@ -33,5 +33,12 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  outline: none;
+  cursor: pointer;
 }
+/* .w-form-submit:hover {
+  color: #fff;
+  background-color: #409EFF !important;
+  border-color: #409EFF !important;
+} */
 </style>

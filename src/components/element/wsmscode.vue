@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-input
-    :placeholder="palce || '请输入手机号'">
+    :placeholder="attr.label || '请输入手机号'">
     </el-input>
-    <div style="margin-top: 14px" class="code-cont" v-if="verify === 1">
+    <div style="margin-top: 14px" class="code-cont" v-if="attr.verify === 1">
       <el-input class="code-left"
       placeholder="验证码">
       </el-input>
@@ -16,8 +16,10 @@
 export default {
   name: 'wsmscode',
   props: {
-    verify: Number,
-    palce: String,
+    attr: {
+      type: Object,
+      default: () => {},
+    },
   },
 };
 </script>

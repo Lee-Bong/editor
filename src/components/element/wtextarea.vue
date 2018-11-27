@@ -1,9 +1,8 @@
 <template>
     <textarea
-    :rows="rows"
-    :placeholder="place"
-    :class="[...classList, 'w-textarea']" :style="Object.assign(styles,
-     {width: size.w+'px', height: size.h+'px'})">
+    :placeholder="attr.label"
+    :class="[...attr.classList, 'w-textarea']"
+    :style="{width: attr.size.w+'px', height: attr.size.h+'px', resize: 'none'}">
     </textarea>
 </template>
 <script>
@@ -11,22 +10,17 @@
 export default {
   name: 'texg',
   props: {
-    styles: Object,
-    place: {
-      type: String,
-      default: () => '多行文本',
+    attr: {
+      type: Object,
+      default: () => {},
     },
-    classList: Array,
-    rows: Number,
-    size: Object,
   },
   data() {
     return {
-      dragName: 'dragFormTexts',
     };
   },
   updated() {
-    // console.log('updated', this.size);
+    // console.log('updated', this.attr);
   },
 };
 </script>
@@ -38,7 +32,7 @@ export default {
   background-image: none;
   border-radius: 4px;
   border: 1px solid #dcdfe6;
-  padding: 0 14px;
+  padding: 12px 14px;
   font-size: 14px;
   color: #333;
   line-height: 20px;
@@ -46,7 +40,6 @@ export default {
   overflow-y: auto;
 }
 .w-textarea::-webkit-input-placeholder {
-  padding-top: 12px;
   color: #909399;
   font-size: 14px;
 }

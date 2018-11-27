@@ -1,34 +1,29 @@
 <template>
     <div>
-      <div class="radio-label" :style="{backgroundColor: bgColor, color: textColor}">{{label}}</div>
-      <div v-for="(item, index) in list"
+      <div class="radio-label text-over" :style="{backgroundColor: attr.bgColor,
+      color: attr.textColor}">
+      {{attr.label}}</div>
+      <div v-for="(item, index) in attr.list"
       :key="index" class="radio-item">
-        <span class="radio-text">{{item.text}}</span>
-        <el-radio :value="1" v-if="type===1"></el-radio>
-        <el-checkbox :value="1" v-if="type===2"></el-checkbox>
+        <el-radio :value="index" v-model="checked" v-if="attr.type===1">{{item.text}}</el-radio>
+        <el-checkbox :value="index" v-model="checked" v-if="attr.type===2">
+        {{item.text}}</el-checkbox>
       </div>
     </div>
 </template>
 <script>
 
 export default {
-  name: 'texg',
+  name: 'wradio',
   props: {
-    label: String,
-    list: Array,
-    styles: Object,
-    place: {
-      type: String,
-      default: () => '单行文本',
+    attr: {
+      type: Object,
+      default: () => {},
     },
-    classList: Array,
-    type: Number,
-    bgColor: String,
-    textColor: String,
   },
   data() {
     return {
-      dragName: 'dragFormTexts',
+      checked: 0,
     };
   },
 };
@@ -63,16 +58,42 @@ export default {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
+.radio-item .el-radio, .radio-item .el-checkbox {
+  display: block;
+  width: 100%;
+  line-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.radio-item .el-radio__input, .radio-item .el-checkbox__input {
+  position: absolute;
+  right: 0;
+}
+.radio-item .el-radio__label, .radio-item .el-checkbox__label {
+  float: left;
+  padding-left: 0;
+  position: absolute;
+  left: 0;
+  right: 28px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .radio-item .el-radio__inner, .radio-item .el-checkbox__inner {
   width: 20px;
   height: 20px;
-  flex-basis: 20px;
-  flex-grow: 1;
 }
 .radio-text {
+  display: inline-block;
+}
+.text-over {
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-block;
   overflow: hidden;
+}
+.radio-item .el-checkbox__inner::after {
+  left: 7px;
+  top: 4px;
 }
 </style>

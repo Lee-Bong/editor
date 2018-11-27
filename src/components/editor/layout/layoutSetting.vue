@@ -51,7 +51,6 @@
       v-if="editor.isImgListSet"
       :dragForm="editor.dragImgLists[editor.imgListActive]"
       :setForm="settingForm"
-      @setting-fixed="settingFixed"
       @input-locationChange="inputLocationChange"
       @input-sizeChange="inputSizeChange"
       @linkSourceChange="sourceChange"
@@ -80,7 +79,6 @@
       v-if="editor.isFRadioSet"
       :dragForm="editor.dragFormRadios[editor.fRadioActive]"
       :setForm="settingForm"
-      @setting-fixed="settingFixed"
     />
     <f-radio-setting
       v-if="editor.isFCheckboxSet"
@@ -196,7 +194,6 @@ export default {
   margin-top: 20px;
   margin-left: 25px;
   border-radius: 5px;
-  overflow: hidden;
   z-index: 80;
 }
 .setting-content {
