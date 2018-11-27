@@ -1,7 +1,7 @@
 <template>
 <div :class="['setting-content', $store.state.editor[isShow] ?
    'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px', }">
-  <form-setting :setForm="Object.assign(setForm, {place: '单项选择', dragName, dragActive})"
+  <form-setting :setForm="Object.assign(setForm, {place: '单项选择', dragName,dragActive,noReauired:0})"
    :dragForm="dragForm">
     <template slot="setting">
       <el-form-item label="选择模式：" size="mini">
