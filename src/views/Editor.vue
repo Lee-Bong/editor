@@ -352,9 +352,12 @@ export default {
       }
       if (dragFormTexts.length) {
         dragFormTexts.map((item) => {
-          const { location, size, label } = item;
+          const {
+            location, size, label, isRequired,
+          } = item;
           dragArr.push({
             type: 7,
+            isRequired,
             location,
             size,
             positionInfo: {
@@ -365,6 +368,8 @@ export default {
             },
             attr: {
               label,
+              isRequired,
+              classList: [],
             },
           });
           return true;
@@ -372,9 +377,12 @@ export default {
       }
       if (dragFormTextareas.length) {
         dragFormTextareas.map((item) => {
-          const { location, size, label } = item;
+          const {
+            location, size, label, isRequired,
+          } = item;
           dragArr.push({
             type: 8,
+            isRequired,
             location,
             size,
             label,
@@ -388,6 +396,7 @@ export default {
               label,
               size,
               classList: [],
+              isRequired,
             },
           });
           return true;
@@ -408,10 +417,11 @@ export default {
       if (dragFormSmscodes.length) {
         dragFormSmscodes.map((item) => {
           const {
-            location, size, label, verify,
+            location, size, label, verify, isRequired,
           } = item;
           dragArr.push({
             type: 11,
+            isRequired,
             location,
             size,
             positionInfo: {
@@ -423,6 +433,8 @@ export default {
             attr: {
               label,
               verify,
+              isRequired,
+              classList: [],
             },
           });
           return true;
@@ -447,6 +459,7 @@ export default {
               label,
               bgColor,
               textColor,
+              classList: [],
             },
           });
           return true;
@@ -471,10 +484,11 @@ export default {
     },
     getRadioSet(item, dragType) {
       const {
-        location, size, label, bgColor, textColor, list, type,
+        location, size, label, bgColor, textColor, list, type, isRequired,
       } = item;
       return {
         type: dragType,
+        isRequired,
         location,
         size,
         label,
@@ -492,6 +506,7 @@ export default {
           textColor,
           list,
           type,
+          isRequired,
         },
       };
     },

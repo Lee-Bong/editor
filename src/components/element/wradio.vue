@@ -2,7 +2,7 @@
     <div>
       <div class="radio-label text-over" :style="{backgroundColor: attr.bgColor,
       color: attr.textColor}">
-      {{attr.label}}</div>
+      <span v-if="attr.isRequired" class="radio-required">*</span>{{attr.label}}</div>
       <div v-for="(item, index) in attr.list"
       :key="index" class="radio-item">
         <el-radio :value="index" v-model="checked" v-if="attr.type===1">{{item.text}}</el-radio>
@@ -30,6 +30,12 @@ export default {
 </script>
 
 <style>
+.radio-required {
+  display: inline-block;
+  font-size: 14px;
+  color: #D0021B;
+  margin-right: 2px;
+}
 .radio-label {
   background-color: #5AC7F9;
   color: #fff;

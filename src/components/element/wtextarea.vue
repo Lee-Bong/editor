@@ -1,9 +1,11 @@
 <template>
+  <div :class="[attr.isRequired? 'from-required': '', 'form-w-textarea']">
     <textarea
     :placeholder="attr.label"
     :class="[...attr.classList, 'w-textarea']"
     :style="{width: attr.size.w+'px', height: attr.size.h+'px', resize: 'none'}">
     </textarea>
+  </div>
 </template>
 <script>
 
@@ -26,6 +28,10 @@ export default {
 </script>
 
 <style>
+.form-w-textarea:before {
+  top: 16px;
+  z-index: 5;
+}
 .w-textarea {
   box-sizing: border-box;
   background-color: #fff;
@@ -35,9 +41,12 @@ export default {
   padding: 12px 14px;
   font-size: 14px;
   color: #333;
+  background-color: #fff;
   line-height: 20px;
   text-align: left;
   overflow-y: auto;
+  display: block;
+  position: relative;
 }
 .w-textarea::-webkit-input-placeholder {
   color: #909399;

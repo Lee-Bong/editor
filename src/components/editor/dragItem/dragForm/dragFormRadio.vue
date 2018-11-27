@@ -13,7 +13,7 @@
           <div style="z-index: 3">
             <form-radio :attr="{label:dragForm.label,classList:['drag-form-item'],
             list:dragForm.list,type:dragForm.type,bgColor:dragForm.bgColor,
-            textColor:dragForm.textColor}" />
+            textColor:dragForm.textColor,isRequired:dragForm.isRequired}" />
           </div>
         </div>
       </template>

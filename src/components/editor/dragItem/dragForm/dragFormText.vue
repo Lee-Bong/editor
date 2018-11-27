@@ -8,7 +8,8 @@
       >
       <template slot="content">
         <div>
-          <form-text :attr="{label: dragForm.label, classList: ['drag-form-item']}" />
+          <form-text :attr="{label: dragForm.label, classList: ['drag-form-item'],
+          isRequired:dragForm.isRequired}" />
         </div>
       </template>
     </drag-resize-form>

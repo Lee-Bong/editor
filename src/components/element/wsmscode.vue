@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-input
-    :placeholder="attr.label || '请输入手机号'">
+    <el-input :class="[attr.isRequired? 'from-required': '']"
+    :placeholder="attr.label">
     </el-input>
     <div style="margin-top: 14px" class="code-cont" v-if="attr.verify === 1">
       <el-input class="code-left"

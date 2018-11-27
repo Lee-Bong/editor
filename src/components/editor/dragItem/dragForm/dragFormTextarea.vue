@@ -7,9 +7,8 @@
       :sticks="['tl','tr', 'br', 'bl', 'tm','br','mr', 'ml']"
       >
       <template slot="content">
-        <div>
-          <form-textarea :attr="{label: dragForm.label, size: dragForm.size, classList: []}"/>
-        </div>
+        <form-textarea :attr="{label: dragForm.label, size: dragForm.size, classList: [],
+        isRequired:dragForm.isRequired}"/>
       </template>
     </drag-resize-form>
 </template>

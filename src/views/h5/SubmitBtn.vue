@@ -1,17 +1,19 @@
 <template>
-  <button class="w-form-submit" :style="{backgroundColor: attr.bgColor, color: attr.textColor}">
-    {{attr.label}}
-  </button>
+  <w-submit :attr="attr" />
 </template>
 <script>
+import wSubmit from '../../components/element/wsubmit';
 
 export default {
-  name: 'texg',
+  name: 'wsubmit',
   props: {
     attr: {
       type: Object,
       default: () => {},
     },
+  },
+  components: {
+    wSubmit,
   },
   data() {
     return {
