@@ -1,6 +1,6 @@
 <template>
     <el-input
-        :placeholder="place" :class="[...classList]" :style="styles">
+        :placeholder="attr.label || '单行文本'" :class="[...attr.classList]" :style="attr.styles">
     </el-input>
 </template>
 <script>
@@ -8,12 +8,10 @@
 export default {
   name: 'texg',
   props: {
-    styles: Object,
-    place: {
-      type: String,
-      default: () => '单行文本',
+    attr: {
+      type: Object,
+      default: () => ({ label: '单行文本' }),
     },
-    classList: Array,
   },
   data() {
     return {

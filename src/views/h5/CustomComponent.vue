@@ -58,7 +58,8 @@
             :play="component.play"
         ></audio-play>
 
-        <div v-if="component.type === 7" is="wText"></div>
+        <div :is="type" :attr="component.attr"></div>
+
     </div>
 </template>
 
@@ -68,6 +69,10 @@ import hotSpot from '../../util/hotSpot.js';
 import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
 import gaReport from '../../util/gaReport.js';
 import wText from '../../components/element/wtext';
+import wTextarea from '../../components/element/wtextarea';
+import wRadio from '../../components/element/wradio';
+import wSmscode from '../../components/element/wsmscode';
+import wSubmit from '../../components/element/wsubmit';
 
 export default {
   data() {
@@ -80,6 +85,10 @@ export default {
   components: {
     AudioPlay,
     wText,
+    wTextarea,
+    wRadio,
+    wSmscode,
+    wSubmit,
   },
 
   computed: {
@@ -98,6 +107,31 @@ export default {
         positionInfo,
       } = this.component;
       return positionInfo.position !== 'relative';
+    },
+    // eslint-disable-next-line vue/return-in-computed-property
+    type() {
+      switch (this.component.type) {
+        case 7:
+        {
+          return 'wText';
+        }
+        case 8:
+        {
+          return 'wTextarea';
+        }
+        case 9: {
+          return 'wRadio';
+        }
+        case 10: {
+          return 'wSmscode';
+        }
+        case 11: {
+          return 'wSubmit';
+        }
+        default: {
+          break;
+        }
+      }
     },
   },
 

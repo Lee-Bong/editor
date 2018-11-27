@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import Button from 'element-ui/lib/button';
 import Slider from 'element-ui/lib/slider';
+import Input from 'element-ui/lib/input';
+import Radio from 'element-ui/lib/radio';
+import Checkbox from 'element-ui/lib/checkbox';
+import 'element-ui/lib/theme-chalk/index.css';
 import VueLazyload from 'vue-lazyload';
-import './element-ui.scss';
 import '../../assets/icons/iconfont.css';
 
 import App from './App.vue';
@@ -15,6 +18,9 @@ Vue.use(VueLazyload, {
 });
 Vue.use(Button);
 Vue.use(Slider);
+Vue.use(Input);
+Vue.use(Radio);
+Vue.use(Checkbox);
 new Vue({
   router,
   render: h => h(App),

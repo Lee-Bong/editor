@@ -215,7 +215,8 @@ export default {
       eJson.editor.page.shareImg = page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png';
       const dragArr = [];
       const {
-        dragTexts, dragImages, dragLinks, dragVideos, dragAudios,
+        dragTexts, dragImages, dragLinks, dragVideos, dragAudios, dragFormTexts, dragFormTextareas,
+        dragFormRadios, dragFormCheckboxs, dragFormSmscodes, dragFormSubmits,
         dragImgLists, layerLists,
       } = editor;
       if (dragTexts.length) {
@@ -349,6 +350,108 @@ export default {
           return true;
         });
       }
+      if (dragFormTexts.length) {
+        dragFormTexts.map((item) => {
+          const { location, size, label } = item;
+          dragArr.push({
+            type: 7,
+            location,
+            size,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+            },
+          });
+          return true;
+        });
+      }
+      if (dragFormTextareas.length) {
+        dragFormTextareas.map((item) => {
+          const { location, size, label } = item;
+          dragArr.push({
+            type: 8,
+            location,
+            size,
+            label,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              size,
+              classList: [],
+            },
+          });
+          return true;
+        });
+      }
+      if (dragFormRadios.length) {
+        dragFormRadios.map((item) => {
+          dragArr.push(this.getRadioSet(item, 9));
+          return true;
+        });
+      }
+      if (dragFormCheckboxs.length) {
+        dragFormCheckboxs.map((item) => {
+          dragArr.push(this.getRadioSet(item, 10));
+          return true;
+        });
+      }
+      if (dragFormSmscodes.length) {
+        dragFormSmscodes.map((item) => {
+          const {
+            location, size, label, verify,
+          } = item;
+          dragArr.push({
+            type: 10,
+            location,
+            size,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              verify,
+            },
+          });
+          return true;
+        });
+      }
+      if (dragFormSubmits.length) {
+        dragFormSubmits.map((item) => {
+          const {
+            location, size, label, bgColor, textColor,
+          } = item;
+          dragArr.push({
+            type: 11,
+            location,
+            size,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              bgColor,
+              textColor,
+            },
+          });
+          return true;
+        });
+      }
       this.topBannerClick();
       eJson.editor.components = dragArr;
       const ele = this;
@@ -365,6 +468,32 @@ export default {
       }
       const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
+    },
+    getRadioSet(item, dragType) {
+      const {
+        location, size, label, bgColor, textColor, list, type,
+      } = item;
+      return {
+        type: dragType,
+        location,
+        size,
+        label,
+        positionInfo: {
+          position: 'relative',
+        },
+        style: {
+          'z-index': item.dragIndex,
+        },
+        attr: {
+          label,
+          size,
+          classList: [],
+          bgColor,
+          textColor,
+          list,
+          type,
+        },
+      };
     },
     getLinkName(type, num, layerLists) {
       let linkName = '热区';

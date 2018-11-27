@@ -8,9 +8,12 @@
       >
       <template slot="content">
         <div>
-          <form-radio :label="dragForm.label" :classList="['drag-form-item']"
+          <!-- <form-radio :label="dragForm.label" :classList="['drag-form-item']"
            :list="dragForm.list" :type="dragForm.type"
-           :bgColor="dragForm.bgColor" :textColor="dragForm.textColor" />
+           :bgColor="dragForm.bgColor" :textColor="dragForm.textColor" /> -->
+          <form-radio :attr="{label:dragForm.label,classList:['drag-form-item'],
+          list:dragForm.list,type:dragForm.type,bgColor:dragForm.bgColor,
+          textColor:dragForm.textColor}" />
         </div>
       </template>
     </drag-resize-form>
