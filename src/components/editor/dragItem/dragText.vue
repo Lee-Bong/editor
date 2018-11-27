@@ -40,6 +40,9 @@ export default {
       }
       this.$emit('dragStop', this.dragName, evs, this.listIndex);
     },
+    forceUpdate() {
+      this.$forceUpdate();
+    },
   },
   updated() {
   },
