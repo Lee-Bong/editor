@@ -401,7 +401,7 @@ export default {
       }
       if (dragFormCheckboxs.length) {
         dragFormCheckboxs.map((item) => {
-          dragArr.push(this.getRadioSet(item, 10));
+          dragArr.push(this.getRadioSet(item, 9));
           return true;
         });
       }
@@ -411,7 +411,7 @@ export default {
             location, size, label, verify,
           } = item;
           dragArr.push({
-            type: 10,
+            type: 11,
             location,
             size,
             positionInfo: {
@@ -434,7 +434,7 @@ export default {
             location, size, label, bgColor, textColor,
           } = item;
           dragArr.push({
-            type: 11,
+            type: 12,
             location,
             size,
             positionInfo: {

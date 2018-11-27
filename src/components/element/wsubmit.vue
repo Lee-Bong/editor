@@ -34,5 +34,11 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   outline: none;
+  cursor: pointer;
 }
+/* .w-form-submit:hover {
+  color: #fff;
+  background-color: #409EFF !important;
+  border-color: #409EFF !important;
+} */
 </style>

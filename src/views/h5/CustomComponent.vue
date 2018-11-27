@@ -108,7 +108,6 @@ export default {
       } = this.component;
       return positionInfo.position !== 'relative';
     },
-    // eslint-disable-next-line vue/return-in-computed-property
     type() {
       switch (this.component.type) {
         case 7:
@@ -122,10 +121,10 @@ export default {
         case 9: {
           return 'wRadio';
         }
-        case 10: {
+        case 11: {
           return 'wSmscode';
         }
-        case 11: {
+        case 12: {
           return 'wSubmit';
         }
         default: {

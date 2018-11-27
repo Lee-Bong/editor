@@ -112,7 +112,7 @@ export default {
   data() {
     return {
       evt: [
-        ['dragTexts', 'fTextRef'],
+        ['dragTexts', 'textRef'],
         ['dragImages', 'imgRef'],
         ['dragLinks', 'linkRef'],
         ['dragImgLists', 'imgListRef'],

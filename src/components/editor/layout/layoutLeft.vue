@@ -376,7 +376,7 @@ export default {
             isShow: true,
             zIndex: 1000,
             isActive: true,
-            dragIndex: zIndex + 1,
+            dragIndex: zIndex,
             location: {
               x: (375 - 325) / 2,
               y: top1,
@@ -411,7 +411,7 @@ export default {
             isShow: true,
             zIndex: 1000,
             isActive: true,
-            dragIndex: zIndex + 1,
+            dragIndex: zIndex,
             location: {
               x: (375 - 325) / 2,
               y: top1,
@@ -446,7 +446,7 @@ export default {
             isShow: true,
             zIndex: 1000,
             isActive: true,
-            dragIndex: zIndex + 1,
+            dragIndex: zIndex,
             location: {
               x: (375 - 325) / 2,
               y: top1,
@@ -487,7 +487,7 @@ export default {
             isShow: true,
             zIndex: 1000,
             isActive: true,
-            dragIndex: zIndex + 1,
+            dragIndex: zIndex,
             location: {
               x: (375 - 325) / 2,
               y: top1,
@@ -528,7 +528,7 @@ export default {
             isShow: true,
             zIndex: 1000,
             isActive: true,
-            dragIndex: zIndex + 1,
+            dragIndex: zIndex,
             location: {
               x: (375 - 325) / 2,
               y: top1,
@@ -564,7 +564,7 @@ export default {
             isShow: true,
             zIndex: 1000,
             isActive: true,
-            dragIndex: zIndex + 1,
+            dragIndex: zIndex,
             location: {
               x: (375 - 136) / 2,
               y: top1,
@@ -591,38 +591,6 @@ export default {
         }
         default:
         {
-          let drag12 = this.$store.state.editor.dragFormSubmits;
-          num = drag12.length;
-          layerName = `提交按钮${!num ? '' : num + 1}`;
-          icon = 'ed-icon-tijiao1';
-          drag12 = textActiveOff(drag12, { index: 0, isAll: true });
-          drag12.push({
-            id: this.getId(),
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex + 1,
-            location: {
-              x: (375 - 136) / 2,
-              y: top1,
-            },
-            size: {
-              w: 136,
-              h: 40,
-            },
-            position: 'relative',
-            icon,
-            label: '提交',
-            bgColor: '#5AC7F9',
-            textColor: '#fff',
-          });
-          newEditor = {
-            fSubmitSet: true,
-            isFSubmitSet: true,
-            dragFormSubmits: drag12,
-            fSubmitActive: num,
-            layoutKey: zIndex + 1,
-          };
           break;
         }
       }
