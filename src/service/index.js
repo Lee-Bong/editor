@@ -51,6 +51,9 @@ const gaReportOut = (data) => {
   xhr.send(JSON.stringify(data));
 };
 
+// 验证码验证
+const smsCode = data => axios.post(`${api}/api/we/page`, data);
+
 export {
   axios,
   api,
@@ -67,4 +70,5 @@ export {
   gaReportOut,
   loginByAccount,
   logout,
+  smsCode,
 };

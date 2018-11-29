@@ -7,13 +7,19 @@
     backgroundColor: pageJson.page.backgroundColor || "#fff" }'
   >
       <custom-component
-        v-if="finalComponentsJson"
-        v-for="(component, index) in finalComponentsJson"
+        v-if="customComponentsJson && customComponentsJson.length"
+        v-for="(component, index) in customComponentsJson"
         :key="index"
         :component="component"
         :scale="scale"
       >
       </custom-component>
+      <form-component
+        v-if="formComPonentsJson && formComPonentsJson.length"
+        :form="formComPonentsJson"
+        :scale="scale"
+      >
+      </form-component>
     </div>
     <error v-if="showError"></error>
   </div>
@@ -25,6 +31,7 @@ import jssdk from 'meetyou.jssdk';
 import hotSpot from '../../util/hotSpot';
 import * as service from '../../service';
 import CustomComponent from './CustomComponent.vue';
+import FormComponent from './FormComponent.vue';
 import Error from '../Error.vue';
 import gaReport from '../../util/gaReport.js';
 
@@ -33,10 +40,12 @@ export default {
     return {
       pageJson: null,
       // 经过计算转换过的结构
-      finalComponentsJson: null,
+      customComponentsJson: null,
+      formComPonentsJson: null, // 表单组件
       showError: false,
       // 屏幕缩放比例
       scale: 1,
+      form: {},
     };
   },
   computed: {
@@ -51,12 +60,14 @@ export default {
     // 对页面数据进行加工转换
     getFinalComponentsJson() {
       // 按照 y 进行排序
-      let finalComponentsJson = sortBy(this.pageJson.components, [
+      const cjson = sortBy(this.pageJson.components, [
         item => item.location.y,
       ]);
       // 屏幕缩放比例
       this.scale = window.innerWidth / this.pageJson.page.phoneWidth;
-      finalComponentsJson = map(finalComponentsJson, (componentJson) => {
+      const formComPonentsJson = [];
+      const customComponentsJson = [];
+      map(cjson, (componentJson) => {
         const componentJsonTemp = {
           ...componentJson,
           location: {
@@ -76,9 +87,14 @@ export default {
             ...componentJson.style,
           },
         };
+        if (componentJsonTemp.isForm) {
+          formComPonentsJson.push(componentJsonTemp);
+        } else {
+          customComponentsJson.push(componentJsonTemp);
+        }
         return componentJsonTemp;
       });
-      return finalComponentsJson;
+      return { formComPonentsJson, customComponentsJson };
     },
     initShare() {
       const fromURL = `${window.location.protocol}//${window.location.host}/we/view?page_id=${
@@ -110,6 +126,7 @@ export default {
   },
   components: {
     CustomComponent,
+    FormComponent,
     Error,
   },
   async mounted() {
@@ -121,9 +138,9 @@ export default {
       if (this.isFormal === '1' && !visible) {
         this.showError = true;
       }
-
-      this.finalComponentsJson = this.getFinalComponentsJson();
-
+      const cjson = this.getFinalComponentsJson();
+      this.customComponentsJson = cjson.customComponentsJson;
+      this.formComPonentsJson = cjson.formComPonentsJson;
       const {
         shareDec, shareImg, shareTitle, title,
       } = this.pageJson.page;

@@ -57,9 +57,7 @@
             :style="component.style"
             :play="component.play"
         ></audio-play>
-
-        <div :is="type" :attr="component.attr"></div>
-
+      <div :is="type" :attr="component.attr" :clickEvent="formSubmit"></div>
     </div>
 </template>
 
@@ -187,6 +185,9 @@ export default {
         appLink,
         downloadUrls: this.downloadUrls,
       });
+    },
+    formSubmit() {
+      this.$emit('clickEvent');
     },
   },
 };

@@ -1,6 +1,7 @@
 <template>
   <div :class="[attr.isRequired? 'from-required': '', 'form-w-textarea']">
     <textarea
+    @input="valueChange"
     :placeholder="attr.label"
     :class="[...attr.classList, 'w-textarea']"
     :style="{width: attr.size.w+'px', height: attr.size.h+'px', resize: 'none'}">
@@ -16,13 +17,16 @@ export default {
       type: Object,
       default: () => {},
     },
+    id: String,
   },
   data() {
     return {
     };
   },
-  updated() {
-    // console.log('updated', this.attr);
+  methods: {
+    valueChange(val) {
+      this.$emit('valueEvent', val.data, this.id);
+    },
   },
 };
 </script>
@@ -47,6 +51,7 @@ export default {
   overflow-y: auto;
   display: block;
   position: relative;
+  outline: none;
 }
 .w-textarea::-webkit-input-placeholder {
   color: #909399;

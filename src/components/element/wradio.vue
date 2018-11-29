@@ -5,8 +5,10 @@
       <span v-if="attr.isRequired" class="radio-required">*</span>{{attr.label}}</div>
       <div v-for="(item, index) in attr.list"
       :key="index" class="radio-item">
-        <el-radio :value="index" v-model="checked" v-if="attr.type===1">{{item.text}}</el-radio>
-        <el-checkbox :value="index" v-model="checked" v-if="attr.type===2">
+        <el-radio :value="checked" v-if="attr.type===1"
+        @change="redioChange(index)" :label="index">{{item.text}}</el-radio>
+        <el-checkbox v-if="attr.type===2" ref="checkRef" :label="index"
+        @change="checkChange(index)">
         {{item.text}}</el-checkbox>
       </div>
     </div>
@@ -20,11 +22,31 @@ export default {
       type: Object,
       default: () => {},
     },
+    id: String,
   },
   data() {
     return {
-      checked: 0,
+      checked: -1,
+      selectList: [],
     };
+  },
+  methods: {
+    redioChange(i) {
+      this.checked = i;
+      this.$emit('valueEvent', this.attr.list[i].text, this.id);
+    },
+    checkChange(i) {
+      this.selectList[i] = this.$refs.checkRef[i].isChecked;
+      const value = [];
+      this.attr.list.map((item, index) => {
+        if (this.selectList[index]) {
+          value.push(item.text);
+        }
+        return true;
+      });
+      const values = value.join(',');
+      this.$emit('valueEvent', values, this.id);
+    },
   },
 };
 </script>
