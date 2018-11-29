@@ -43,7 +43,7 @@
 <script>
 import { formatTableData } from '@/util/tools';
 import * as API from '@/service';
-import qrCode from '../../components/QrCode';
+import qrCode from '@/components/QrCode';
 
 const getTipUrl = id => `${API.api}/we/view?page_id=${id}&is_formal=1`;
 
