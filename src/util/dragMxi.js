@@ -126,7 +126,6 @@ export function dragCom() {
                   const ke = nItem.dragIndex - 1;
                   nItem.dragIndex = ke;
                   nItem.zIndex = ke;
-                  this.getLayIndex(layerLists, nItem);
                 }
                 return true;
               });

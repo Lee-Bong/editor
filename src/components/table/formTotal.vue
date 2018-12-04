@@ -11,6 +11,7 @@
           @visible-change="filterFocus"
           placeholder="表格过滤">
           <el-option :class="['filter-option']"
+            :disabled="item.id === 'fId'"
             v-for="item in formItems"
             :key="item.value"
             :label="item.label"
@@ -29,8 +30,15 @@
       <el-table class="table-box" style="width: 100%" border v-loading="loading1" ref="tableRef"
         :data="formData" >
         <el-table-column v-for="(item, index) in formShowItems" :key="index" class="table-col"
-        :prop="item.id" :label="item.label" min-width="80" :width="item.id === 'fId' ? 80 : 'auto'"
-        >
+        :prop="item.id" :label="item.label" min-width="80" :width="item.id === 'fId' &&
+        formShowItems.length > 1 ? 80 : 'auto'">
+        <template slot-scope="scope">
+          <div>
+            <div class="cell-show">{{scope.row[item.id]}}</div>
+            <div class="cell-hide" >{{scope.row[item.id]}}</div>
+            <div class="expend-all" @click="expendAll(scope.row[item.id])">展开全部</div>
+          </div>
+        </template>
         </el-table-column>
       </el-table>
       <el-pagination
@@ -90,12 +98,13 @@ export default {
     },
     formPageChange(val) {
       this.formPager.pager = val;
+      this.formSummary(val);
     },
     async formSummary(pager) {
       try {
         const data = await formSummary({
           page_id: this.$route.query.page_id,
-          currentPage: 1,
+          currentPage: pager || 1,
           pageSize: 10,
         });
         if (data && data.status === 'ok') {
@@ -107,7 +116,7 @@ export default {
             if (summaries && summaries.length) {
               summaries.map((item, index) => {
                 const tdata = {};
-                tdata.fId = this.formPager.pager + index;
+                tdata.fId = ((this.formPager.pager - 1) * this.formPager.size) + index + 1;
                 if (item.data) {
                   for (let i = 0; i < formItems.length; i++) {
                     const fEle = formItems[i];
@@ -133,7 +142,22 @@ export default {
                 this.formItems.map(item => this.showItems.push(item.id));
               }
               this.hasData = true;
+              const expends = Array.prototype.slice.call(document.getElementsByClassName('expend-all'), 1);
+              expends.map((item, index) => {
+                expends[index].style.display = 'none';
+                return true;
+              });
               this.formData = formData;
+              this.$nextTick(() => {
+                const cellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'), 1);
+                const expendRef = Array.prototype.slice.call(document.getElementsByClassName('expend-all'), 1);
+                cellRef.map((item, index) => {
+                  if (item.offsetHeight > 67) {
+                    expendRef[index].style.display = 'block';
+                  }
+                  return true;
+                });
+              });
             } else {
               this.hasData = false;
             }
@@ -190,7 +214,7 @@ export default {
     // 导出表格
     async exportTable() {
       try {
-        const data = await formExport('1111');
+        const data = await formExport(this.$route.query.page_id);
         const url = window.URL.createObjectURL(data.data); // todo URL undefined
         const link = document.createElement('a');
         link.style.display = 'none';
@@ -204,7 +228,18 @@ export default {
         this.$message.error('导出表格失败，请重试～');
       }
     },
+    expendAll(content) {
+      this.$confirm(content, '', {
+        customClass: 'expend-dialog',
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
+    },
   },
+  updated() {
+
+  },
+
 };
 </script>
 
@@ -260,15 +295,35 @@ export default {
 .filter-option {
   width: 150px;
 }
-.table-box .cell {
-  max-height: 115px;
+.table-box .cell-show  {
+  max-height: 67px;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 3;
   overflow: hidden;
 }
+.table-box .cell-hide {
+  position: absolute;
+  top: 0;
+  opacity: 1;
+  z-index: -1;
+  background: red;
+}
+
 .filter-right {
   float: right;
+}
+.expend-all {
+  display: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #409EFF;
+}
+.expend-dialog.el-message-box {
+    width: auto;
+    max-width: 550px;
+    max-height: 600px;
+    overflow-y: auto;
 }
 </style>
