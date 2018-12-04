@@ -122,9 +122,11 @@ export function dragCom() {
             if (editor[typeCat[k][0]].length) {
               editor[typeCat[k][0]].map((item, i) => {
                 if (item.dragIndex > index) {
-                  const ke = editor[typeCat[k][0]][i].dragIndex - 1;
-                  editor[typeCat[k][0]][i].dragIndex = ke;
-                  editor[typeCat[k][0]][i].zIndex = ke;
+                  const nItem = editor[typeCat[k][0]][i];
+                  const ke = nItem.dragIndex - 1;
+                  nItem.dragIndex = ke;
+                  nItem.zIndex = ke;
+                  this.getLayIndex(layerLists, nItem);
                 }
                 return true;
               });
@@ -146,6 +148,9 @@ export function dragCom() {
               if (item.type === sort && item.num > num) {
                 layerLists[key].num -= 1;
               }
+              if (item.zIndex > layerLists[lActive].zIndex) {
+                layerLists[key].zIndex -= 1;
+              }
               return item;
             }
             return false;
@@ -160,7 +165,6 @@ export function dragCom() {
           this.$store.commit('editor_update', editor);
         }
       },
-
     },
     computed: {
       fixedBottom: {

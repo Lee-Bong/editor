@@ -5,21 +5,26 @@
       <div class="perate-wrap" >
         <div class="filter-text">表格过滤：</div>
         <div class="filter">
-        <el-select v-model="showItems"
-        multiple
-        @change="filterChange"
-        @visible-change="filterFocus"
-        placeholder="表格过滤">
-        <el-option :class="['filter-option']"
-          v-for="item in formItems"
-          :key="item.value"
-          :label="item.label"
-          :selected="true"
-          :value="item.id">
-        </el-option>
-      </el-select>
-      <el-button class="table-fliter-btn" icon="iconfont ed-icon-icon-test" type="text"></el-button>
+          <el-select v-model="showItems"
+          multiple
+          @change="filterChange"
+          @visible-change="filterFocus"
+          placeholder="表格过滤">
+          <el-option :class="['filter-option']"
+            v-for="item in formItems"
+            :key="item.value"
+            :label="item.label"
+            :selected="true"
+            :value="item.id">
+          </el-option>
+        </el-select>
+        <el-button class="table-fliter-btn" icon="iconfont ed-icon-icon-test" type="text">
+        </el-button>
       </div>
+        <div class="filter-right">
+          <el-button icon="el-icon-bell">停止收集</el-button>
+          <el-button icon="el-icon-upload2" @click="exportTable">导出表格</el-button>
+        </div>
       </div>
       <el-table class="table-box" style="width: 100%" border v-loading="loading1" ref="tableRef"
         :data="formData" >
@@ -41,7 +46,7 @@
 </template>
 
 <script>
-import * as service from '@/service';
+import { formSummary, formExport } from '@/service';
 import { formatDate } from '@/util/tools';
 
 export default {
@@ -62,10 +67,9 @@ export default {
         {
           id: 'fId',
           label: '序号',
-          isShow: true,
         },
       ],
-      showItems: ['fId'],
+      showItems: [],
       formShowItems: [],
       formPager: {
         size: 10,
@@ -89,7 +93,7 @@ export default {
     },
     async formSummary(pager) {
       try {
-        const data = await service.formSummary({
+        const data = await formSummary({
           page_id: this.$route.query.page_id,
           currentPage: 1,
           pageSize: 10,
@@ -123,12 +127,11 @@ export default {
               if (!pager) {
                 this.formItems = this.formItems.concat(formItems, {
                   id: 'createdAt',
-                  label: '创建时间',
-                  isShow: true,
+                  label: '提交时间',
                 });
                 this.formShowItems = this.formItems;
+                this.formItems.map(item => this.showItems.push(item.id));
               }
-
               this.hasData = true;
               this.formData = formData;
             } else {
@@ -149,39 +152,57 @@ export default {
     filterChange(list) {
       this.filters = list;
       this.showItems = list;
-      // for (let i = 0; i < this.formItems.length; i++) {
-      //   if (list.includes(this.formItems[i].id)) {
-      //     this.formItems[i].isShow = true;
-      //   } else {
-      //     this.formItems[i].isShow = false;
-      //   }
-      // }
     },
+    // 表格列过滤
     filterFocus(visible) {
       if (!visible) { // 收起列表触发
         if (this.filters.toString() !== this.filtersBefore.toString()) {
           this.filtersBefore = Object.assign([], this.filters);
-          const formShowItems = [{
-            id: 'fId',
-            label: '序号',
-          }];
-          this.filters.map((item) => {
-            formShowItems.push({
-              id: item, label: this.getTableLabel(item)[0].label, isShow: true,
-            });
+          let formShowItems = [];
+          const ele = this;
+          this.showItems.map((item) => {
+            const fItem = ele.getTableLabel(item);
+            formShowItems[fItem.index] = {
+              id: item,
+              label: fItem.label,
+            };
             return true;
           });
-          this.formShowItems = formShowItems.concat({
-            id: 'createdAt',
-            label: '创建时间',
-          });
-
+          formShowItems = formShowItems.filter(t => t && t !== undefined && t !== null);
+          this.formShowItems = formShowItems;
           this.$refs.tableRef.doLayout();
         }
       }
     },
     getTableLabel(id) {
-      return this.formItems.filter(item => item.id === id);
+      let index = 0;
+      let fItem = {};
+      this.formItems.map((item, k) => {
+        if (item.id === id) {
+          index = k;
+          fItem = item;
+        }
+        return true;
+      });
+      fItem.index = index;
+      return fItem;
+    },
+    // 导出表格
+    async exportTable() {
+      try {
+        const data = await formExport('1111');
+        const url = window.URL.createObjectURL(data.data); // todo URL undefined
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = url;
+        link.setAttribute('download', 'ssss.xls');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url); // 释放掉blob对象
+      } catch (err) {
+        this.$message.error('导出表格失败，请重试～');
+      }
     },
   },
 };
@@ -246,5 +267,8 @@ export default {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
   overflow: hidden;
+}
+.filter-right {
+  float: right;
 }
 </style>
