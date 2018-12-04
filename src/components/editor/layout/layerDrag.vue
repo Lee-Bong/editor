@@ -1,7 +1,7 @@
 <template>
 <draggable class="layer-drag"
   :list="$store.state.editor.layerLists"
-  @update="datadragEnd"
+  @update="updateLayerList"
   :options="{animation: 300,handle:'.dargDiv'}">
     <transition-group name="list-complete" >
       <div
@@ -60,25 +60,37 @@ export default {
     handleChange() {
 
     },
-    datadragEnd(evt) {
-      const { oldIndex, newIndex } = evt;
+    updateLayerList(evt) {
+      const { newIndex } = evt;
       const { layerLists, typeCat } = this.$store.state.editor;
       const { type, num } = layerLists[newIndex];
-      const nDrags = this.$store.state.editor[typeCat[type][0]];
-      const oDrags = this.$store.state.editor[typeCat[layerLists[oldIndex].type][0]];
-      const nIndex = oDrags[layerLists[oldIndex].num].dragIndex;
-      const oIndex = nDrags[num].dragIndex;
-      nDrags[num].dragIndex = nIndex;
-      oDrags[num].dragIndex = oIndex;
+      const newList = [];
+      let newRditor = {};
+      layerLists.map((item, i) => {
+        const zin = layerLists.length - i;
+        newList[i] = Object.assign(item, { zIndex: zin });
+        const drags = this.$store.state.editor[typeCat[item.type][0]];
+        drags[item.num] = Object.assign(drags[item.num], { dragIndex: zin });
+        newRditor = Object.assign(newRditor, { [typeCat[item.type][0]]: drags });
+        return true;
+      });
       this.$store.commit('editor_update', {
-        [typeCat[type][0]]: oDrags,
-        [typeCat[layerLists[newIndex].type][0]]: nDrags,
+        ...newRditor,
+        layerLists: newList,
+        layerActive: newIndex,
       });
       this.dragClick(num, type);
-      this.$store.dispatch('layerMove', { layerLists, newIndex });
+      // this.$store.dispatch('layerMove', { layerLists, newIndex });
+    },
+    dataMoving(evt) {
+      const { draggedContext } = evt;
+      const { futureIndex, index } = draggedContext;
+      this.updateLayerList({
+        newIndex: futureIndex,
+        oldIndex: index,
+      });
     },
     layerclick(drag) { // 单击图层
-      // if (this.$store.state.editor.layerActive === index) return false;
       const { type, num } = drag;
       this.dragClick(num, type);
     },

@@ -51,7 +51,21 @@ const stateBI = (pageId, start, end) => axios.get(`${api}/api/stat-bi?page_id=${
 const formSubmit = data => axios.post(`${api}/api/we/form-sumbit`, data).then(property('data'));
 // 表单-汇总
 const formSummary = params => axios.get(`${api}/api/we/form-summary`, { params }).then(property('data'));
-
+// 汇总-导出
+const formExport = pageId =>
+  new Promise((resolve, reject) => {
+    axios({
+      method: 'get',
+      url: `${api}/api/we/summary-download?page_id=${pageId}`,
+      responseType: 'blob',
+    }).then((data) => {
+      if (data) {
+        resolve(data);
+      } else {
+        reject();
+      }
+    }).catch(err => reject(err));
+  });
 
 // 站外ga上报
 const gaReportOut = (data) => {
@@ -72,7 +86,6 @@ const smsApi = (path, params) => new Promise((resolve, reject) => {
 
 // 验证码验证
 const smsCode = params => smsApi('sms', params);
-
 const smsVerify = params => smsApi('sms_verify', params);
 
 export {
@@ -95,4 +108,5 @@ export {
   smsVerify,
   formSubmit,
   formSummary,
+  formExport,
 };
