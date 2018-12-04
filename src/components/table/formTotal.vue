@@ -158,7 +158,6 @@ export default {
       //     this.formItems[i].isShow = false;
       //   }
       // }
-      debugger;
     },
     filterFocus(visible) {
       if (!visible) { // 收起列表触发
