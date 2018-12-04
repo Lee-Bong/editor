@@ -1,11 +1,12 @@
 <template>
-  <div ref="form" :model="formModel">
+  <div ref="form">
     <div v-for="(component, index) in form" :key="index" >
     <div>
       <div class="container" :id="getElementId()" :style="containerStyle(component)">
-        <div :is="formType(component.type)" :attr="component.attr" :value="formModel.value"
-        :id="component.id" @valueEvent="valueChange" @clickEvent="formSubmit"
-        @codeEvent="codeChange"></div>
+        <div :is="formType(component.type)" :attr="component.attr"
+        :ref="formType(component.type)+'Ref'"
+        :id="component.id" @valueEvent="valueChange" @clickEvent="formSubmit" :index="index"
+        @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent"></div>
       </div>
       </div>
     </div>
@@ -14,13 +15,15 @@
 </template>
 
 <script>
+import md5 from 'js-md5';
 import generate from 'nanoid/generate';
-import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
-import wText from '../../components/element/wtext';
-import wTextarea from '../../components/element/wtextarea';
-import wRadio from '../../components/element/wradio';
-import wSmscode from '../../components/element/wsmscode';
-import wSubmit from '../../components/element/wsubmit';
+import * as service from '@/service/index';
+import AudioPlay from '@/components/editor/dragSetting/upload/audioPlay';
+import wText from '@/components/element/wtext';
+import wTextarea from '@/components/element/wtextarea';
+import wRadio from '@/components/element/wradio';
+import wSmscode from '@/components/element/wsmscode';
+import wSubmit from '@/components/element/wsubmit';
 import ScaleStyle from './ScaleStyle';
 import fWarn from './fWarn';
 
@@ -28,6 +31,7 @@ export default {
   data() {
     return {
       formModel: {},
+      formArr: [],
       warn: {},
       phones: [], // 存放手机
     };
@@ -48,7 +52,7 @@ export default {
   },
 
   mounted() {
-    this.formModel = this.getFormModel();
+    this.formArr = this.getFormModel();
   },
   methods: {
     containerStyle(component) {
@@ -106,6 +110,7 @@ export default {
       }
     },
     getFormModel() {
+      const ps = [];
       const model = {};
       this.form.map((item) => {
         if (item.type !== 12) {
@@ -114,47 +119,142 @@ export default {
             value: '',
             isRequired: item.isRequired,
           };
+          ps.push({
+            id: item.id,
+            label: item.attr.label,
+            value: '',
+            isRequired: item.isRequired,
+          });
         }
         return true;
       });
-      return model;
+      return ps;
     },
     getElementId() {
       return generate('abcdefghijklmn', 10);
     },
-    valueChange(val, id) {
-      console.log('valval', val);
-      if (this.formModel[id] && this.formModel[id].value !== undefined) {
-        this.formModel[id].value = val;
+    valueChange(val, index) {
+      if (this.formArr[index]) {
+        this.formArr[index].value = val;
       }
     },
-    formSubmit() {
-      for (const k in this.formModel) {
-        if (this.formModel[k].isRequired && (!this.formModel[k].value ||
-        !(this.formModel[k].value && this.formModel[k].value.trim()))) {
+    codeChange(val, index) { // 验证码
+      if (this.formArr[index]) {
+        this.formArr[index].codeValue = val;
+      }
+    },
+    async formSubmit() {
+      const isOk = await this.inputCheck();
+      if (isOk) {
+        try {
+          const ele = this;
+          const res = await service.formSubmit({
+            page_id: this.$route.query.page_id,
+            formDatas: this.formArr,
+          });
+          if (res && res.status === 'ok') {
+            ele.openWarning({ text: '提交成功～' });
+          } else {
+            ele.commitError(res.message);
+          }
+        } catch (err) {
+          this.commitError();
+        }
+      }
+    },
+    async sendCodeEvent() {
+      if (this.phoneVerify(true)) {
+        try {
+          const ts = Math.round(Date.parse(new Date()) / 1000);
+          const phone = this.getPhoneItem(this.phones[0].id).value;
+          const params = `phone=${phone}&ts=${ts}&sign=${this.getSign(`classsmsphone${phone}ts${ts}Ixv&EwN^e#gP%Gl4NhR7m9Z0P#UOH^EU`)}`;
+          const data = await service.smsCode(params);
+          if (data && data.code === 0) {
+            // 倒计时
+            this.$refs.wSmscodeRef[0].sendToast('验证码发送成功～');
+            this.$refs.wSmscodeRef[0].setCodeTip();
+          } else {
+            this.$refs.wSmscodeRef[0].sendToast('验证码发送失败，请重试～');
+          }
+        } catch (err) {
+          this.$refs.wSmscodeRef[0].sendToast('验证码发送失败，请重试～');
+        }
+      }
+    },
+    getSign(params) {
+      return md5(params);
+    },
+    // 表单校验
+    async inputCheck() {
+      let isOk = true;
+      const len = this.formArr.length;
+      for (let k = 0; k < len; k++) {
+        if (this.formArr[k].isRequired && (!this.formArr[k].value ||
+        !(this.formArr[k].value && this.formArr[k].value.trim()))) {
           this.openWarning({});
+          isOk = false;
           return false;
         }
       }
 
+      isOk = await this.phoneVerify();
+      return isOk;
+    },
+    async phoneVerify(isCode) {
+      let isOk = true;
       this.hasPhone();
       if (this.phones.length) {
-        for (let i = 0; i < this.phones.length; i++) {
-          const { value } = this.formModel[this.phones[i].id];
-          if (value && value.trim() && !this.phoneCheck(value)) {
-            this.openWarning({ text: '手机号输入错误，请重新输入' });
+        const phone = this.getPhoneItem(this.phones[0].id);
+        const { value, codeValue } = phone;
+        if (isCode && (!value || !value.trim())) {
+          this.openWarning({ text: '发送验证码需要输入手机号～' });
+          isOk = false;
+          return false;
+        }
+        if (value && value.trim()) {
+          if (!this.phoneCheck(value)) {
+            this.openWarning({ text: '手机号输入错误，请重新输入～' });
+            isOk = false;
             return false;
           }
-          if (this.phones[i].verify === 1) { // 验证码验证
-            this.openWarning({ text: '验证码输入错误，请重新输入' });
-            return false;
+          if (this.phones[0].attr.verify === 1 && !isCode) { // 验证码验证
+            if (!codeValue || !codeValue.trim()) {
+              this.openWarning({ text: '请输入验证码～' });
+              isOk = false;
+              return false;
+            }
+            // 验证码校验
+            isOk = await this.smsVerify(codeValue);
           }
         }
       }
-      console.log('sss验证', this.formModel);
+      return isOk;
+    },
+    async smsVerify(code) {
+      try {
+        const ts = Math.round(Date.parse(new Date()) / 1000);
+        const phone = this.getPhoneItem(this.phones[0].id).value;
+        const params = `phone=${phone}&ts=${ts}&code=${code}&sign=${this.getSign(`classsms_verifycode${code}phone${phone}ts${ts}Ixv&EwN^e#gP%Gl4NhR7m9Z0P#UOH^EU`)}`;
+        const data = await service.smsVerify(params);
+        if (data && data.code === 0) {
+          return true;
+        }
+        this.openWarning({ text: '验证码输入错误，请重新输入～' });
+        return false;
+      } catch (err) {
+        this.openWarning({ text: '验证码输入错误，请重新输入～' });
+        return false;
+      }
+    },
+    commitError(msg) {
+      const message = msg || '提交失败，请重试～';
+      this.openWarning({ text: message });
     },
     hasPhone() {
       this.phones = this.form.filter(item => item.type === 11);
+    },
+    getPhoneItem(id) {
+      return this.formArr.filter(item => item.id === id)[0];
     },
     openWarning(warn) {
       this.warn = warn;
@@ -166,9 +266,7 @@ export default {
       }
       return false;
     },
-    codeChange() { // 验证码
 
-    },
   },
 };
 </script>

@@ -17,6 +17,8 @@ https://axhub.im/pro/b3ca8072ecf0a0d8/#g=1&p=%E5%B0%81%E9%9D%A2  密码：meiyou
 
 
 ###  API
+短信验证
+http://apidoc.seeyouyima.com/edit/5c00a0363b82db1c76e4443c
 
 ### ga统计
 > 站内 注意不要上报中文

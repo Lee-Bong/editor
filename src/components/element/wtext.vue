@@ -15,6 +15,7 @@ export default {
       default: () => ({ label: '单行文本' }),
     },
     id: String,
+    index: Number,
   },
   data() {
     return {
@@ -23,7 +24,7 @@ export default {
   },
   methods: {
     valueChange(val) {
-      this.$emit('valueEvent', val, this.id);
+      this.$emit('valueEvent', val, this.index);
     },
   },
 };

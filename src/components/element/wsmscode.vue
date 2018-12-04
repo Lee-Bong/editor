@@ -10,9 +10,11 @@
       <el-button type="primary" class="code-right" :disabled="this.isSending"
       @click="sendCode">{{codeTip}}</el-button>
     </div>
+    <w-toast :text="sendTip" ref="toastRef"/>
   </div>
 </template>
 <script>
+import wToast from './wtoast';
 
 export default {
   name: 'wsmscode',
@@ -22,24 +24,31 @@ export default {
       default: () => {},
     },
     id: String,
+    index: Number,
+  },
+  components: {
+    wToast,
   },
   data() {
     return {
       codeTip: '发送验证码',
       isSending: false,
+      sendTip: '',
     };
   },
   methods: {
     valueChange(val) {
-      this.$emit('valueEvent', val, this.id);
+      this.$emit('valueEvent', val, this.index);
     },
     codeChange(val) {
-      this.$emit('codeEvent', val, this.id);
+      this.$emit('codeEvent', val, this.index);
     },
-    sendCode() {
-      // todo 接口
-      // 倒计时
-      this.setCodeTip();
+    async sendCode() {
+      this.$emit('sendCodeEvent');
+    },
+    sendToast(text) {
+      this.sendTip = text;
+      this.$refs.toastRef.show();
     },
     setCodeTip() {
       this.isSending = true;
@@ -85,5 +94,6 @@ export default {
 .w-form-submit:hover{
   background-color: #9B9B9B;
 }
+
 
 </style>

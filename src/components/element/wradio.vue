@@ -23,6 +23,7 @@ export default {
       default: () => {},
     },
     id: String,
+    index: Number,
   },
   data() {
     return {
@@ -33,7 +34,7 @@ export default {
   methods: {
     redioChange(i) {
       this.checked = i;
-      this.$emit('valueEvent', this.attr.list[i].text, this.id);
+      this.$emit('valueEvent', this.attr.list[i].text, this.index);
     },
     checkChange(i) {
       this.selectList[i] = this.$refs.checkRef[i].isChecked;
@@ -45,7 +46,7 @@ export default {
         return true;
       });
       const values = value.join(',');
-      this.$emit('valueEvent', values, this.id);
+      this.$emit('valueEvent', values, this.index);
     },
   },
 };

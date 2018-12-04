@@ -18,6 +18,7 @@ export default {
       default: () => {},
     },
     id: String,
+    index: Number,
   },
   data() {
     return {
@@ -25,7 +26,7 @@ export default {
   },
   methods: {
     valueChange(val) {
-      this.$emit('valueEvent', val.data, this.id);
+      this.$emit('valueEvent', val.srcElement.value, this.index);
     },
   },
 };

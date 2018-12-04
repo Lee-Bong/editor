@@ -1,6 +1,6 @@
 <template>
   <button :class="['w-form-submit', attr.disabled ? 'w-submit-disabled': '']"
-  @click="submitForm" disabled="attr.disabled"
+  @click="submitForm"
   :style="{backgroundColor: attr.bgColor, color: attr.textColor}">
     {{attr.label}}
   </button>
