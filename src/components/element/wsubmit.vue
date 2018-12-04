@@ -1,12 +1,14 @@
 <template>
-  <button class="w-form-submit" :style="{backgroundColor: attr.bgColor, color: attr.textColor}">
+  <button :class="['w-form-submit', attr.disabled ? 'w-submit-disabled': '']"
+  @click="submitForm"
+  :style="{backgroundColor: attr.bgColor, color: attr.textColor}">
     {{attr.label}}
   </button>
 </template>
 <script>
 
 export default {
-  name: 'texg',
+  name: 'wsubmit',
   props: {
     attr: {
       type: Object,
@@ -16,6 +18,11 @@ export default {
   data() {
     return {
     };
+  },
+  methods: {
+    submitForm() {
+      this.$emit('clickEvent');
+    },
   },
 };
 </script>
@@ -36,9 +43,13 @@ export default {
   outline: none;
   cursor: pointer;
 }
-/* .w-form-submit:hover {
-  color: #fff;
-  background-color: #409EFF !important;
-  border-color: #409EFF !important;
-} */
+.w-form-submit:hover, .w-form-submit:active {
+  opacity: 0.85;
+}
+.w-submit-disabled,
+.w-submit-disabled:hover{
+  background-color: #9B9B9B !important;
+  opacity: 1 !important;
+  cursor: default;
+}
 </style>

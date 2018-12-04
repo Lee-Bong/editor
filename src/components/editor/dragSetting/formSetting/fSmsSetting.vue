@@ -1,7 +1,7 @@
 <template>
 <div :class="['setting-content', $store.state.editor.isFSmsSet?
    'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px', }">
-    <form-setting :setForm="Object.assign(setForm, {place: '手机短信', dragName, dragActive})"
+    <form-setting :setForm="Object.assign(setForm, {place:'手机短信',dragName,dragActive,noReauired:0})"
      :dragForm="dragForm">
       <template slot="setting">
         <el-form-item label="验证手机号：" size="mini">

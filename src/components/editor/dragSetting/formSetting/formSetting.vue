@@ -6,7 +6,7 @@
           <el-input type="text" :placeholder="setForm.place" v-model="dragForm.label"
           @change="labelEvent"></el-input>
         </el-form-item>
-        <el-form-item label="" size="mini">
+        <el-form-item label="" size="mini" v-if="!setForm.noReauired">
           <div style="width: 90px; display: inline-block;"></div>
           <el-checkbox :value="dragForm.isRequired" @change="requireEvent">设为必填</el-checkbox>
         </el-form-item>

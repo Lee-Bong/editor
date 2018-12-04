@@ -1,32 +1,156 @@
 <template>
-  <div>
-    <nav-bar pageName="数据统计">
-      <template slot="btnGroup">
-      </template>
-    </nav-bar>
-    <el-tabs v-model="activeTab" type="card" class="main-total-wrap" @tab-click="tabChange">
-      <el-tab-pane name="webTotal" label="页面统计" class="lllll">
-        <web-total />
-      </el-tab-pane>
-      <el-tab-pane name="formTotal" label="表单汇总">
-        <form-total />
-      </el-tab-pane>
-    </el-tabs>
+  <div class="content-wrap">
+    <div class="review-table">
+      <h3>页面浏览</h3>
+      <div class="table-wrap">
+        <div class="table-search-wrap">
+          <el-date-picker
+            v-model="viewDate"
+            type="daterange"
+            size="mini"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="pickDate"
+          >
+          </el-date-picker>
+          <div
+            @click="viewToday(1)"
+            class="total-search"
+            :class="{'active': this.todayActive}"
+          >今昨</div>
+          <div
+            @click="viewMonth(1)"
+            class="total-search"
+            :class="{'active': this.monthActive}"
+          >近30天</div>
+        </div>
+        <el-table
+          class="table-box"
+          style="width: 100%"
+          v-loading="loading0"
+          :data="viewData"
+        >
+          <el-table-column
+            prop="date"
+            label="时间"
+            min-width="200"
+            max-height=50
+          >
+            <template slot-scope="scope">
+              <i
+                class="el-icon-time"
+                v-if="scope.row.date !== '合计'"
+              ></i>
+              <i
+                class="iconfont ed-icon-zongji"
+                v-if="scope.row.date === '合计'"
+              ></i>
+              <span style="margin-left: 10px">{{ scope.row.date }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="pv"
+            label="PV"
+            min-width="200"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="uv"
+            label="UV"
+            min-width="200"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="pvOut"
+            label="站外PV"
+            min-width="200"
+          >
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          class="table-page"
+          layout="total, prev, pager, next, jumper"
+          @current-change="viewPageChange"
+          :current-page="viewPager.page"
+          :page-size="viewPager.size"
+          :total="viewPager.total"
+        >
+        </el-pagination>
+      </div>
+    </div>
+    <div class="button-table">
+      <h3>按钮统计</h3>
+      <div class="table-wrap">
+        <div class="table-search-wrap">
+          <el-date-picker
+            v-model="btnsDate"
+            type="daterange"
+            size="mini"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="pickDate1"
+          >
+          </el-date-picker>
+          <div
+            class="total-search"
+            @click="clicTotal"
+            :class="{'active': this.clickActive}"
+          >总计</div>
+        </div>
+        <el-table
+          class="table-box"
+          style="width: 100%"
+          v-loading="loading1"
+          :data="clickData"
+        >
+          <el-table-column
+            prop="name"
+            label="按钮名称"
+            min-width="200"
+            max-height=50
+          >
+          </el-table-column>
+          <el-table-column
+            prop="click"
+            label="点击量"
+            min-width="200"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="precent"
+            label="点击率"
+            min-width="200"
+          >
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          class="table-page"
+          layout="total, prev, pager, next, jumper"
+          @current-change="btnsPageChange"
+          :current-page="clickPager.page"
+          :page-size="clickPager.size"
+          :total="clickPager.total"
+        >
+        </el-pagination>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { timeForMat } from '@/util/tools';
 import * as service from '@/service';
-import webTotal from '@/components/table/webTotal';
 import NavBar from '@/components/NavBar';
-import formTotal from '@/components/table/formTotal';
 
 export default {
   components: {
     NavBar,
-    webTotal,
-    formTotal,
   },
   filters: {
     isOnline(value) {
@@ -61,7 +185,7 @@ export default {
       clickArr: [],
       pickerOptions: {
         disabledDate(time) {
-          const curDate = (new Date()).getTime();
+          const curDate = new Date().getTime();
           const oneMonths = curDate - (30 * 24 * 3600 * 1000);
           return time.getTime() > Date.now() || time.getTime() < oneMonths;
         },
@@ -70,15 +194,18 @@ export default {
   },
   mounted() {
     // [昨天, 今日, 明日, 近30天]， to是开区间
-    this.timeArr = [timeForMat(-1), timeForMat(0), timeForMat(1), timeForMat(-29)];
+    this.timeArr = [
+      timeForMat(-1),
+      timeForMat(0),
+      timeForMat(1),
+      timeForMat(-29),
+    ];
     this.clickArr = this.$route.params.clickArr || [];
     this.viewToday(1);
     this.viewMonth(0);
   },
   methods: {
-    tabChange() {
-
-    },
+    tabChange() {},
     viewToday(type) {
       this.updateTotal(this.timeArr[0], this.timeArr[2], type, () => {
         this.viewDate = [this.timeArr[0], this.timeArr[1]];
@@ -124,7 +251,10 @@ export default {
     },
     pageChange(page, type) {
       const { size } = this[`${type}Pager`];
-      this[`${type}Data`] = this[`${type}DataTotal`].slice((page - 1) * size, ((page - 1) * size) + 10);
+      this[`${type}Data`] = this[`${type}DataTotal`].slice(
+        (page - 1) * size,
+        ((page - 1) * size) + 10,
+      );
     },
     async updateTotal(s, n, type, cb) {
       try {
@@ -197,8 +327,9 @@ export default {
             this.viewData = this.viewDataTotal.slice(0, 10);
             this.viewPager.total = this.viewDataTotal.length;
           } else {
-            const pre = !(pvCount + pvOutCount) ? 0 :
-              ((shareCount / (pvCount + pvOutCount)) * 100).toFixed(2);
+            const pre = !(pvCount + pvOutCount)
+              ? 0
+              : ((shareCount / (pvCount + pvOutCount)) * 100).toFixed(2);
             this.clickDataTotal.push({
               name: '分享',
               click: shareCount,
@@ -207,8 +338,9 @@ export default {
             if (clickCount.length) {
               const ele = this;
               clickCount.map((pro, i) => {
-                const pre1 = !(pvCount + pvOutCount) ? 0 :
-                  ((pro / (pvCount + pvOutCount)) * 100).toFixed(2);
+                const pre1 = !(pvCount + pvOutCount)
+                  ? 0
+                  : ((pro / (pvCount + pvOutCount)) * 100).toFixed(2);
                 this.clickDataTotal.push({
                   name: ele.clickArr[i] || '热区',
                   click: pro,
@@ -231,10 +363,6 @@ export default {
 };
 </script>
 <style>
-.main-total-wrap .el-tabs__nav.is-top {
-  height: 41px !important;
-  line-height: 39px;
-}
 .table-box {
   margin-top: 20px;
 }

@@ -222,10 +222,11 @@ export default {
       if (dragTexts.length) {
         dragTexts.map((item) => {
           const {
-            size, location, content, position,
+            size, location, content, position, id,
           } = item;
           const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
+            id,
             type: 1,
             size,
             location,
@@ -245,10 +246,11 @@ export default {
       if (dragImages.length) {
         dragImages.map((item) => {
           const {
-            size, location, img, dragIndex, position,
+            size, location, img, dragIndex, position, id,
           } = item;
           const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
+            id,
             type: 2,
             size,
             location,
@@ -265,10 +267,11 @@ export default {
         dragLinks.map((item, key) => {
           const {
             size, location, position, appLink, outLink,
-            sourceType, awakeLink, iosLink, andLink, yybLink,
+            sourceType, awakeLink, iosLink, andLink, yybLink, id,
           } = item;
           const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
+            id,
             type: 3,
             key,
             size,
@@ -292,9 +295,10 @@ export default {
       if (dragImgLists.length) {
         dragImgLists.map((item) => {
           const {
-            size, location, imgList, dragIndex,
+            size, location, imgList, dragIndex, id,
           } = item;
           dragArr.push({
+            id,
             type: 4,
             location,
             size,
@@ -317,6 +321,7 @@ export default {
           } = curVideo;
           const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
+            id: item.id,
             type: 5,
             source: curVideo.url,
             title: curVideo.title,
@@ -338,6 +343,7 @@ export default {
           const { position, location, size } = curPlay;
           const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
+            id: item.id,
             type: 6,
             positionInfo,
             play: curPlay,
@@ -352,9 +358,14 @@ export default {
       }
       if (dragFormTexts.length) {
         dragFormTexts.map((item) => {
-          const { location, size, label } = item;
+          const {
+            location, size, label, isRequired, id,
+          } = item;
           dragArr.push({
+            id,
+            isForm: true,
             type: 7,
+            isRequired,
             location,
             size,
             positionInfo: {
@@ -365,6 +376,8 @@ export default {
             },
             attr: {
               label,
+              isRequired,
+              classList: [],
             },
           });
           return true;
@@ -372,9 +385,14 @@ export default {
       }
       if (dragFormTextareas.length) {
         dragFormTextareas.map((item) => {
-          const { location, size, label } = item;
+          const {
+            location, size, label, isRequired, id,
+          } = item;
           dragArr.push({
+            id,
+            isForm: true,
             type: 8,
+            isRequired,
             location,
             size,
             label,
@@ -388,6 +406,7 @@ export default {
               label,
               size,
               classList: [],
+              isRequired,
             },
           });
           return true;
@@ -408,10 +427,13 @@ export default {
       if (dragFormSmscodes.length) {
         dragFormSmscodes.map((item) => {
           const {
-            location, size, label, verify,
+            location, size, label, verify, isRequired, id,
           } = item;
           dragArr.push({
+            id,
+            isForm: true,
             type: 11,
+            isRequired,
             location,
             size,
             positionInfo: {
@@ -423,6 +445,8 @@ export default {
             attr: {
               label,
               verify,
+              isRequired,
+              classList: [],
             },
           });
           return true;
@@ -431,9 +455,11 @@ export default {
       if (dragFormSubmits.length) {
         dragFormSubmits.map((item) => {
           const {
-            location, size, label, bgColor, textColor,
+            location, size, label, bgColor, textColor, id,
           } = item;
           dragArr.push({
+            id,
+            isForm: true,
             type: 12,
             location,
             size,
@@ -447,6 +473,7 @@ export default {
               label,
               bgColor,
               textColor,
+              classList: [],
             },
           });
           return true;
@@ -471,10 +498,13 @@ export default {
     },
     getRadioSet(item, dragType) {
       const {
-        location, size, label, bgColor, textColor, list, type,
+        location, size, label, bgColor, textColor, list, type, isRequired, id,
       } = item;
       return {
+        id,
+        isForm: true,
         type: dragType,
+        isRequired,
         location,
         size,
         label,
@@ -492,6 +522,7 @@ export default {
           textColor,
           list,
           type,
+          isRequired,
         },
       };
     },

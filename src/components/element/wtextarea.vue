@@ -1,9 +1,12 @@
 <template>
+  <div :class="[attr.isRequired? 'from-required': '', 'form-w-textarea']">
     <textarea
+    @input="valueChange"
     :placeholder="attr.label"
     :class="[...attr.classList, 'w-textarea']"
     :style="{width: attr.size.w+'px', height: attr.size.h+'px', resize: 'none'}">
     </textarea>
+  </div>
 </template>
 <script>
 
@@ -14,18 +17,26 @@ export default {
       type: Object,
       default: () => {},
     },
+    id: String,
+    index: Number,
   },
   data() {
     return {
     };
   },
-  updated() {
-    // console.log('updated', this.attr);
+  methods: {
+    valueChange(val) {
+      this.$emit('valueEvent', val.srcElement.value, this.index);
+    },
   },
 };
 </script>
 
 <style>
+.form-w-textarea:before {
+  top: 16px;
+  z-index: 5;
+}
 .w-textarea {
   box-sizing: border-box;
   background-color: #fff;
@@ -35,9 +46,13 @@ export default {
   padding: 12px 14px;
   font-size: 14px;
   color: #333;
+  background-color: #fff;
   line-height: 20px;
   text-align: left;
   overflow-y: auto;
+  display: block;
+  position: relative;
+  outline: none;
 }
 .w-textarea::-webkit-input-placeholder {
   color: #909399;

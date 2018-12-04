@@ -16,6 +16,7 @@
 
 <script>
 import { textActiveOff } from '@/util/tools';
+import generate from 'nanoid/generate';
 
 export default {
   name: 'HelloWorld',
@@ -616,11 +617,12 @@ export default {
       }
     },
     getId() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = Math.random() * 16;
-        const v = (c === 'x') ? r : ((r && 0x3) || 0x8);
-        return v.toString(16);
-      });
+      // return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      //   const r = Math.random() * 16;
+      //   const v = (c === 'x') ? r : ((r && 0x3) || 0x8);
+      //   return v.toString(16);
+      // });
+      return generate('1234567890abcdefghijklmn', 10);
     },
   },
 };

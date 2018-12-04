@@ -4,6 +4,7 @@ import Slider from 'element-ui/lib/slider';
 import Input from 'element-ui/lib/input';
 import Radio from 'element-ui/lib/radio';
 import Checkbox from 'element-ui/lib/checkbox';
+
 import 'element-ui/lib/theme-chalk/index.css';
 import VueLazyload from 'vue-lazyload';
 import '../../assets/icons/iconfont.css';

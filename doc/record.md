@@ -17,6 +17,8 @@ https://axhub.im/pro/b3ca8072ecf0a0d8/#g=1&p=%E5%B0%81%E9%9D%A2  密码：meiyou
 
 
 ###  API
+短信验证
+http://apidoc.seeyouyima.com/edit/5c00a0363b82db1c76e4443c
 
 ### ga统计
 > 站内 注意不要上报中文
@@ -41,3 +43,4 @@ https://axhub.im/pro/b3ca8072ecf0a0d8/#g=1&p=%E5%B0%81%E9%9D%A2  密码：meiyou
 
 选项至少一个，初始化默认一个，超出一个才显示删除按钮
 不限制选项添加个数，当添加项目超出面板，需要用户自行拖动面板高度，代码不自动
+

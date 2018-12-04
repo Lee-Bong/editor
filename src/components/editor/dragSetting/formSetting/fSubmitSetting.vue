@@ -1,7 +1,7 @@
 <template>
   <div :class="['setting-content', $store.state.editor.isFSubmitSet?
     'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px', }">
-    <form-setting :setForm="Object.assign(setForm, {place: '提交', dragName, dragActive})"
+    <form-setting :setForm="Object.assign(setForm, {place: '提交',dragName,dragActive,noReauired:1})"
     :dragForm="dragForm">
       <template slot="setting">
         <color-setting :colorForm="{bgColor: dragForm.bgColor, textColor: dragForm.textColor,

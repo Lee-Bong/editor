@@ -1,8 +1,11 @@
+import jsonp from 'jsonp';
 import property from 'lodash/property';
 import axios from './request';
 
 const { host } = window.location;
-const api = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0 ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
+const isTest = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0;
+const api = isTest ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
+const codeApi = isTest ? 'https://test-users.seeyouyima.com' : 'https://users.seeyouyima.com';
 
 // 通过账号登录
 const loginByAccount = formData => axios.post(`${api}/api/we/login`, formData);
@@ -44,12 +47,33 @@ const getUserInfo = () => axios.get(`${api}/api/we/me`).then(property('data'));
 const stateBI = (pageId, start, end) => axios.get(`${api}/api/stat-bi?page_id=${pageId}&from=${start}&to=${end}`)
   .then(property('data'));
 
+// 表单-提交
+const formSubmit = data => axios.post(`${api}/api/we/form-sumbit`, data).then(property('data'));
+// 表单-汇总
+const formSummary = params => axios.get(`${api}/api/we/form-summary`, { params }).then(property('data'));
+
+
 // 站外ga上报
 const gaReportOut = (data) => {
   const xhr = new XMLHttpRequest();
   xhr.open('POST', 'https://ga.seeyouyima.com/bfe_event', true);
   xhr.send(JSON.stringify(data));
 };
+
+const smsApi = (path, params) => new Promise((resolve, reject) => {
+  jsonp(`${codeApi}/h5/${path}?${params}`, { timeout: 60000 }, (err, data) => {
+    if (!err) {
+      resolve(data);
+    } else {
+      reject(err);
+    }
+  });
+});
+
+// 验证码验证
+const smsCode = params => smsApi('sms', params);
+
+const smsVerify = params => smsApi('sms_verify', params);
 
 export {
   axios,
@@ -67,4 +91,8 @@ export {
   gaReportOut,
   loginByAccount,
   logout,
+  smsCode,
+  smsVerify,
+  formSubmit,
+  formSummary,
 };

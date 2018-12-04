@@ -2,7 +2,7 @@
   <div :class="['setting-content', $store.state.editor.isFTextareaSet ?
    'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px', }">
     <form-setting :setForm="Object.assign(setForm, {place: '多行文本', dragName: 'dragFormTextareas',
-    dragActive: 'fTextareaActive',})"
+    dragActive: 'fTextareaActive',noReauired:0,})"
     :dragForm="dragForm">
       <template slot="setting">
         <location-setting  :locationForm="{location: dragForm.location, size: dragForm.size,
