@@ -11,7 +11,7 @@
         @visible-change="filterFocus"
         placeholder="表格过滤">
         <el-option :class="['filter-option']"
-          v-for="(item, index) in formItems"
+          v-for="item in formItems"
           :key="item.value"
           :label="item.label"
           :selected="true"
@@ -94,7 +94,6 @@ export default {
           currentPage: 1,
           pageSize: 10,
         });
-        console.log('sss', data);
         if (data && data.status === 'ok') {
           if (data.data) {
             const fdata = data.data;
@@ -148,7 +147,6 @@ export default {
       }
     },
     filterChange(list) {
-      console.log('list', list);
       this.filters = list;
       this.showItems = list;
       // for (let i = 0; i < this.formItems.length; i++) {
@@ -179,7 +177,6 @@ export default {
           });
 
           this.$refs.tableRef.doLayout();
-          console.log('gio;', this.formShowItems);
         }
       }
     },
@@ -213,8 +210,6 @@ export default {
 }
 .perate-wrap .el-input__inner, .el-input__suffix, {
   display: none;
-}
-.perate-wrap .el-select__input  {
 }
 .table-fliter-btn {
   position: absolute;

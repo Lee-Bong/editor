@@ -154,6 +154,8 @@ export function dragCom() {
           editor.layoutKey -= 1;
           if (sort === 12) {
             editor.isSubmit = true;
+          } else if (sort === 11) {
+            editor.isPhone = true;
           }
           this.$store.commit('editor_update', editor);
         }

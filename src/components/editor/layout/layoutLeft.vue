@@ -6,7 +6,7 @@
       </div>
       <el-button v-for="(list, i) in com.list" :key="i"
       class="ed-com" @click="dragItemClick(list.type)"
-      :disabled="list.type === 12 && !$store.state.editor.isSubmit">
+      :disabled="(list.type === 11 && !$store.state.editor.isPhone) || (list.type === 12 && !$store.state.editor.isSubmit)">
         <i :class="['iconfont', list.icon]"></i>
         <span class="el-com-text">{{list.text}}</span>
       </el-button>
@@ -551,6 +551,7 @@ export default {
             fSmsActive: num,
             layoutKey: zIndex + 1,
           };
+          this.$store.commit('editor_update', { isPhone: false });
           break;
         }
         case 12:
