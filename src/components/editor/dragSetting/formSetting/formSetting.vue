@@ -25,7 +25,7 @@ import baseSetting from '@/components/editor/dragSetting/baseSetting';
 import { settingCom } from '@/util/settingMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'formSetting',
   mixins: [settingCom()],
   props: {
     dragForm: Object,

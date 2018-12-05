@@ -27,7 +27,7 @@ import { dragCom } from '@/util/dragMxi';
 import { settingCom } from '@/util/settingMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'locationSetting',
   mixins: [dragCom(), settingCom()],
   props: {
     locationForm: Object,

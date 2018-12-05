@@ -22,7 +22,7 @@
 import oss from '@/service/oss';
 
 export default {
-  name: 'HelloWorld',
+  name: 'imgUpload',
   props: {
     imgObj: Object,
     dec: String,

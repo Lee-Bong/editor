@@ -54,26 +54,26 @@ export default {
 <style>
 .radio-required {
   display: inline-block;
+  margin-right: 2px;
   font-size: 14px;
   color: #D0021B;
-  margin-right: 2px;
 }
 .radio-label {
-  background-color: #5AC7F9;
-  color: #fff;
-  font-size: 18px;
   height: 40px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  font-size: 18px;
   text-align: center;
   line-height: 40px;
+  color: #fff;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background-color: #5ac7f9;
 }
 .radio-item {
   height: 40px;
   background-color: #fff;
   line-height: 20px;
   color: #333;
-  border: 1px solid #DCDFE6;
+  border: 1px solid #dcdfe6;
   border-top: 0;
   padding: 0 14px;
   line-height: 40px;

@@ -18,7 +18,7 @@ import formSetting from '@/components/editor/dragSetting/formSetting/formSetting
 import locationSetting from '@/components/editor/dragSetting/formSetting/common/locationSetting';
 
 export default {
-  name: 'dragFormTextareas',
+  name: 'fTextareaSetting',
   props: {
     dragForm: Object,
     setForm: Object,

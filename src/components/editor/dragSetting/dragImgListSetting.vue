@@ -52,7 +52,7 @@ import draggable from 'vuedraggable';
 import { dragCom } from '@/util/dragMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'dragImgListSetting',
   mixins: [dragCom()],
   props: {
     dragForm: Object,

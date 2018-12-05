@@ -104,7 +104,7 @@ import { dragCom } from '@/util/dragMxi';
 
 export default {
   mixins: [dragCom()],
-  name: 'DragSetting',
+  name: 'dragTextSetting',
   props: {
     dragForm: Object,
     setForm: Object,

@@ -104,7 +104,7 @@ import { formatSecond } from '@/util/tools';
 import { dragCom } from '@/util/dragMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'dragAudioSetting',
   mixins: [dragCom()],
   props: {
     dragForm: Object,

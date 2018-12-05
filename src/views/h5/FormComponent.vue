@@ -21,7 +21,7 @@ import wTextarea from '@/components/element/wtextarea';
 import wRadio from '@/components/element/wradio';
 import wSmscode from '@/components/element/wsmscode';
 import wSubmit from '@/components/element/wsubmit';
-import wWarn from '@/components/element/wWarn';
+import wWarn from '@/components/element/wwarn';
 import { formSubmit, smsCode, smsVerify } from '@/service/index';
 import ScaleStyle from './ScaleStyle';
 
@@ -140,11 +140,11 @@ export default {
     },
     async formSubmit() {
       const isOk = await this.inputCheck();
-      if (!this.$route.query.is_formal) { // 预览不统计数据
-        this.openWarning({ text: '提交成功～' });
-        return false;
-      }
       if (isOk) {
+        if (!this.$route.query.is_formal) { // 预览不统计数据
+          this.openWarning({ text: '提交成功～' });
+          return false;
+        }
         try {
           const ele = this;
           const res = await formSubmit({
@@ -238,10 +238,10 @@ export default {
         if (data && data.code === 0) {
           return true;
         }
-        this.openWarning({ text: '验证码输入错误，请重新输入～' });
+        this.openWarning({ text: '验证码错误，请重新输入～' });
         return false;
       } catch (err) {
-        this.openWarning({ text: '验证码输入错误，请重新输入～' });
+        this.openWarning({ text: '验证码错误，请重新输入～' });
         return false;
       }
     },

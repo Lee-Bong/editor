@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'imgReviewItem',
   props: {
     imgObj: Object,
     index: Number,

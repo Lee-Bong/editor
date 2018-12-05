@@ -27,7 +27,7 @@
 import { formatSecond } from '@/util/tools';
 
 export default {
-  name: 'HelloWorld',
+  name: 'audioPlay',
   props: {
     play: Object,
     isBorder: Boolean,

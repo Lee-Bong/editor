@@ -61,7 +61,7 @@
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 
 export default {
-  name: 'DragSetting',
+  name: 'pageSetting',
   props: {
     dragForm: Object,
     setForm: Object,

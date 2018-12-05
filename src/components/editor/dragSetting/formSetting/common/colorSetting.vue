@@ -17,7 +17,7 @@
 import { settingCom } from '@/util/settingMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'colorSetting',
   mixins: [settingCom()],
   props: {
     colorForm: Object,
@@ -37,7 +37,6 @@ export default {
     };
   },
   methods: {
-    pageBgReset() {},
     bgcolorChange(val) {
       this.updateDrags(this.colorForm.dragName, val, this.colorForm.dragActive, 'bgColor');
     },

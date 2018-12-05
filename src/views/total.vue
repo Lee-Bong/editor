@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav-bar pageName="数据统计">
+    <nav-bar pageName="数据统计（h5标题）">
       <template slot="btnGroup">
       </template>
     </nav-bar>

@@ -28,12 +28,11 @@
 <script>
 import sortable from 'sortable';
 import VueDraggable from 'vuedraggable';
-
 import { dragCom } from '@/util/dragMxi';
 
 export default {
   mixins: [dragCom()],
-  name: 'DragSetting',
+  name: 'layerDrag',
   props: {},
   components: {
     draggable: VueDraggable,

@@ -20,7 +20,7 @@ import { textActiveOff } from '@/util/tools';
 import generate from 'nanoid/generate';
 
 export default {
-  name: 'HelloWorld',
+  name: 'layoutLeft',
   props: {
   },
   data() {

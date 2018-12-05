@@ -33,6 +33,7 @@ export default {
   },
 };
 </script>
+
 <style lang="less" scoped>
 .top-banner {
   cursor: pointer;
