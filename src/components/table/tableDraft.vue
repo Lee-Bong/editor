@@ -3,7 +3,9 @@
     <el-table class="table-box" style="width: 100%" v-loading="loading"
       :data="tableData" :default-sort="{prop: 'createdAt', order: 'descending'}"
       @sort-change="handleSortChange">
-      <el-table-column prop="title" label="标题" min-width="280" max-height=50>
+      <el-table-column prop="title" label="名称" min-width="280" max-height=50>
+      </el-table-column>
+      <el-table-column prop="name" label="标题" min-width="280" max-height=50>
       </el-table-column>
       <el-table-column prop="createdAt" label="创建时间" sortable min-width="220">
       </el-table-column>
@@ -52,7 +54,6 @@ export default {
     getList() {
       const q = { ...this.pager, ...this.query };
       this.loading = true;
-
       getPageList(q)
         .then((res) => {
           if (res.status === 'ok') {

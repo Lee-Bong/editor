@@ -23,7 +23,7 @@
         </el-button>
       </div>
         <div class="filter-right">
-          <el-button icon="el-icon-bell">停止收集</el-button>
+          <el-button icon="el-icon-bell" @click="stopCollect" :disabled="isStop">停止收集</el-button>
           <el-button icon="el-icon-upload2" @click="exportTable">导出表格</el-button>
         </div>
       </div>
@@ -54,17 +54,13 @@
 </template>
 
 <script>
-import { formSummary, formExport } from '@/service';
+import { formSummary, formExport, formStopCollect } from '@/service';
 import { formatDate } from '@/util/tools';
 
 export default {
   name: 'formTotal',
   props: {
-    attr: {
-      type: Object,
-      default: () => ({ label: '单行文本' }),
-    },
-    id: String,
+    formInfo: Object,
   },
   data() {
     return {
@@ -87,6 +83,7 @@ export default {
       formData: [],
       filters: [], // 当前显示的表格列['id', ***]
       filtersBefore: [],
+      isStop: false,
     };
   },
   mounted() {
@@ -219,7 +216,8 @@ export default {
         const link = document.createElement('a');
         link.style.display = 'none';
         link.href = url;
-        link.setAttribute('download', 'ssss.xls');
+        const title = this.formInfo.title ? this.formInfo.title : '表单汇总';
+        link.setAttribute('download', `${title}.xsl`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -234,6 +232,20 @@ export default {
         showConfirmButton: false,
         showCancelButton: false,
       });
+    },
+    // 导出表格
+    async stopCollect() {
+      try {
+        const { status } = await formStopCollect(this.$route.query.page_id);
+        if (status === 'ok') {
+          this.isStop = true;
+          this.$message.success('停止收集设置成功～');
+        } else {
+          this.$message.error('操作失败，请重试～');
+        }
+      } catch (err) {
+        this.$message.error('操作失败，请重试～');
+      }
     },
   },
   updated() {

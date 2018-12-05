@@ -152,6 +152,9 @@ export default {
   components: {
     NavBar,
   },
+  props: {
+    webInfo: Object,
+  },
   filters: {
     isOnline(value) {
       return !value ? '上线' : '下线';
@@ -200,7 +203,7 @@ export default {
       timeForMat(1),
       timeForMat(-29),
     ];
-    this.clickArr = this.$route.params.clickArr || [];
+    this.clickArr = this.webInfo.clickArr || [];
     this.viewToday(1);
     this.viewMonth(0);
   },
@@ -258,6 +261,7 @@ export default {
     },
     async updateTotal(s, n, type, cb) {
       try {
+        this.clickArr = this.webInfo.clickArr || [];
         this[`loading${type}`] = true;
         const data = await stateBI(
           `weditor_${this.$route.query.page_id}`,

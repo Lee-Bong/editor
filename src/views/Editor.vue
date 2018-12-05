@@ -108,9 +108,14 @@ export default {
         let { state, draft } = this.getEditorJson(isPublish);
         state = JSON.stringify(state);
         draft = JSON.stringify(draft);
+        const { title, name } = this.$store.state.page;
+        const stitle = isPublish ? 'public_title' : 'draft_title';
+        const sname = isPublish ? 'public_name' : 'draft_name';
         const params = {
           state,
           draft,
+          [stitle]: title,
+          [sname]: name,
         };
         let data;
         if (this.isFirst) {

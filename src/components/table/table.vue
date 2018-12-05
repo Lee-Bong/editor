@@ -3,7 +3,9 @@
     <el-table class="table-box" style="width: 100%" v-loading="loading"
       :row-class-name="tableRowClassName" :data="tableData"
       :default-sort="{prop: 'createdAt', order: 'descending'}" @sort-change="handleSortChange">
-      <el-table-column prop="title" label="标题" min-width="200" max-height=50>
+      <el-table-column prop="title" label="名称" min-width="200" max-height=50>
+      </el-table-column>
+      <el-table-column prop="name" label="标题" min-width="200" max-height=50>
       </el-table-column>
       <el-table-column prop="createdAt" label="创建时间" sortable min-width="180">
       </el-table-column>
@@ -30,6 +32,8 @@
             plain @click="handlePublish(scope.$index, scope.row)">
             {{ scope.row.online | isOnline }}
           </el-button>
+           <el-button size="mini" type="info" plain
+            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -42,7 +46,7 @@
 
 <script>
 import { formatTableData } from '@/util/tools';
-import { api, getPageList, duplicatePage, markPage } from '@/service';
+import { api, getPageList, duplicatePage, markPage, patchPageInfo } from '@/service';
 import qrCode from '@/components/QrCode';
 
 const getTipUrl = id => `${api}/we/view?page_id=${id}&is_formal=1`;
@@ -190,6 +194,28 @@ export default {
         params: {
           clickArr,
         },
+      });
+    },
+    handleDelete(index, row) {
+      this.$confirm('删除后将无法复原！是否确认删除？')
+        .then(() => {
+          this.deletePage(row);
+        })
+        .catch(() => {
+        });
+    },
+    deletePage(row) {
+      patchPageInfo(row.id, {
+        state: row.state, public: '',
+      }).then((res) => {
+        if (res.status === 'ok') {
+          this.$message.success('删除成功');
+          this.getList();
+        } else {
+          this.$message.warning('未删除成功，请稍后重试~');
+        }
+      }).catch(() => {
+        this.$message.error('出错了，请稍后重试~');
       });
     },
   },
