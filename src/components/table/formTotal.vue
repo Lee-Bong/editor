@@ -36,7 +36,7 @@
           <div>
             <div class="cell-show">{{scope.row[item.id]}}</div>
             <div class="cell-hide" >{{scope.row[item.id]}}</div>
-            <div class="expend-all" @click="expendAll(scope.row[item.id])">展开全部</div>
+            <div class="expend-all" @click="expendAll(scope.row[item.id])">展开全部 >></div>
           </div>
         </template>
         </el-table-column>
@@ -317,7 +317,7 @@ export default {
 .expend-all {
   display: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   color: #409EFF;
 }
 .expend-dialog.el-message-box {

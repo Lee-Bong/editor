@@ -8,6 +8,7 @@
         v-for="(layer, index) in $store.state.editor.layerLists"
         :key="index"
         :index="layer.zIndex"
+        :id="layer.id"
         :class="['dargDiv', {active: $store.state.editor.layerActive==index},'layer-item']"
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
@@ -63,15 +64,21 @@ export default {
     updateLayerList(evt) {
       const { newIndex } = evt;
       const { layerLists, typeCat } = this.$store.state.editor;
+      let { componentIds } = this.$store.state.page;
       const { type, num } = layerLists[newIndex];
       const newList = [];
       let newRditor = {};
+      componentIds = [];
       layerLists.map((item, i) => {
         const zin = layerLists.length - i;
         newList[i] = Object.assign(item, { zIndex: zin });
         const drags = this.$store.state.editor[typeCat[item.type][0]];
         drags[item.num] = Object.assign(drags[item.num], { dragIndex: zin });
         newRditor = Object.assign(newRditor, { [typeCat[item.type][0]]: drags });
+        componentIds.push({
+          name: item.name,
+          id: item.id,
+        });
         return true;
       });
       this.$store.commit('editor_update', {
@@ -80,6 +87,7 @@ export default {
         layerActive: newIndex,
       });
       this.dragClick(num, type);
+      this.$store.commit('page_update', { componentIds });
       // this.$store.dispatch('layerMove', { layerLists, newIndex });
     },
     dataMoving(evt) {

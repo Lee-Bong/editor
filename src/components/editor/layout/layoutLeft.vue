@@ -90,6 +90,7 @@ export default {
         (((((this.$store.state.page.phoneHeight - top) + 56) - 90) / 2) +
         top) - 42 : (this.$store.state.page.screenHeight - 90) / 2;
       const top2 = isScroll ? top - 56 - 24 : 0;
+      const id = this.getId();
       switch (type) {
         case 1:
         {
@@ -98,7 +99,7 @@ export default {
           layerName = `文本${!num ? '' : num + 1}`;
           drag = textActiveOff(drag, { index: 0, isAll: true });
           drag.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -135,7 +136,7 @@ export default {
           layerName = `图片${!num ? '' : num + 1}`;
           icon = 'ed-icon-tupian1';
           drag2.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -171,7 +172,7 @@ export default {
           icon = 'ed-icon-requm';
           drag3 = textActiveOff(drag3, { index: 0, isAll: true });
           drag3.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -210,7 +211,7 @@ export default {
           layerName = `多图拼接${!num ? '' : num + 1}`;
           icon = 'ed-icon-duotu';
           drag4.push({
-            id: this.getId(),
+            id,
             isUplaod: false,
             isShow: true,
             zIndex: 1000,
@@ -244,7 +245,7 @@ export default {
           icon = 'ed-icon-shipin';
           drag5 = textActiveOff(drag5, { index: 0, isAll: true });
           drag5.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -305,7 +306,7 @@ export default {
           icon = 'ed-icon-tubiao-';
           drag6 = textActiveOff(drag6, { index: 0, isAll: true });
           drag6.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -374,7 +375,7 @@ export default {
           icon = 'ed-icon-text3';
           drag7 = textActiveOff(drag7, { index: 0, isAll: true });
           drag7.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -409,7 +410,7 @@ export default {
           icon = 'ed-icon-duohangwenben';
           drag8 = textActiveOff(drag8, { index: 0, isAll: true });
           drag8.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -444,7 +445,7 @@ export default {
           icon = 'ed-icon-danxiangxuanze';
           drag9 = textActiveOff(drag9, { index: 0, isAll: true });
           drag9.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -485,7 +486,7 @@ export default {
           icon = 'ed-icon-duoxuan';
           drag10 = textActiveOff(drag10, { index: 0, isAll: true });
           drag10.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -526,7 +527,7 @@ export default {
           icon = 'ed-icon-shoujiduanxin';
           drag11 = textActiveOff(drag11, { index: 0, isAll: true });
           drag11.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -563,7 +564,7 @@ export default {
           icon = 'ed-icon-tijiao1';
           drag12 = textActiveOff(drag12, { index: 0, isAll: true });
           drag12.push({
-            id: this.getId(),
+            id,
             isShow: true,
             zIndex: 1000,
             isActive: true,
@@ -599,23 +600,28 @@ export default {
       }
 
       const { layerLists } = this.$store.state.editor;
+      const { componentIds } = this.$store.state.page;
       layerLists.unshift({
         display: true, // 是否显示
         lock: true, // 是否可以编辑
         name: `${layerName}`, // 图层名
-        id: num,
+        id,
         type,
         num,
         zIndex,
         editing: false,
         icon,
       });
+      componentIds.unshift({
+        name: `${layerName}`,
+        id,
+      });
       this.$store.commit('editor_update', Object.assign({}, updateEditor, newEditor, {
         layerLists,
         layerActive: 0,
       }));
       if (this.$store.state.page.pageSet) {
-        this.$store.commit('page_update', { pageSet: false });
+        this.$store.commit('page_update', { componentIds, pageSet: false });
       }
     },
     getId() {

@@ -14,6 +14,6 @@ export default {
     img: {
     },
     code: '',
-    componentIds: '',
+    componentIds: [],
   },
 };

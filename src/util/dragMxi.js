@@ -162,6 +162,16 @@ export function dragCom() {
             editor.isPhone = true;
           }
           this.$store.commit('editor_update', editor);
+          let { componentIds } = this.$store.state.page;
+          componentIds = [];
+          editor.layerLists.map((item) => {
+            componentIds.push({
+              name: item.name,
+              id: item.id,
+            });
+            return true;
+          });
+          this.$store.commit('page_update', { componentIds });
         }
       },
     },
