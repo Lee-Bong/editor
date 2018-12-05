@@ -42,8 +42,8 @@
             <div>组件id:</div>
             <div class="form-code-ids">
               <div v-for="(item, index) in $store.state.page.componentIds" :key="index">
-               <span>{{index+1}}.&nbsp;&nbsp;{{item.name}}:&nbsp;&nbsp;</span>
-               <span>{{item.id}}</span>
+               {{index+1}}.<span class="code-name">&nbsp;&nbsp;{{item.name}}</span>:&nbsp;&nbsp;
+               <span class="code-id">{{item.id}}</span>
               </div>
             </div>
             <!-- <el-input v-model="dragForm.componentIds"
@@ -153,5 +153,13 @@ export default {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   box-sizing: border-box;
+}
+.code-name {
+  display: inline-block;
+  max-width: 200px;
+      overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
 }
 </style>

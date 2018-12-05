@@ -116,8 +116,14 @@ export default {
     layoutNameBlur(index) {
       const layouts = this.$store.state.editor.layerLists;
       layouts[index].editing = false;
+
       this.$store.commit('editor_update', {
         layerLists: layouts,
+      });
+      const { componentIds } = this.$store.state.page;
+      componentIds[index].name = layouts[index].name;
+      this.$store.commit('page_update', {
+        componentIds,
       });
     },
   },
@@ -224,8 +230,11 @@ export default {
     height: 24px;
     padding: 5px;
     line-height: 24px;
-    width: 170px;
+    width: 220px;
     cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .name-editor{
   width: 230px;
