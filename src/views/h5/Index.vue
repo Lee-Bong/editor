@@ -47,6 +47,7 @@ export default {
       // 屏幕缩放比例
       scale: 1,
       form: {},
+      code: '',
     };
   },
   computed: {
@@ -143,9 +144,9 @@ export default {
       this.customComponentsJson = cjson.customComponentsJson;
       this.formComPonentsJson = cjson.formComPonentsJson;
       const {
-        shareDec, shareImg, shareTitle, title,
+        shareDec, shareImg, shareTitle, title, code,
       } = this.pageJson.page;
-
+      this.code = code;
       document.title = title;
       jssdk.callNative('topbar/title', { title });
 
@@ -162,6 +163,12 @@ export default {
           desc: shareDec,
           imgUrl: shareImg,
         });
+        // 执行自定义代码
+        if (this.code) {
+          /* eslint-disable no-new-func */
+          const runCode = new Function(this.code);
+          runCode();
+        }
       });
     } catch (error) {
       this.showError = true;

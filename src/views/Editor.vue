@@ -208,9 +208,10 @@ export default {
       const { editor, page } = this.$store.state;
       const {
         title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor,
+        code,
       } = page;
       eJson.editor.page = {
-        title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor,
+        title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor, code,
       };
       eJson.editor.page.shareImg = page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png';
       const dragArr = [];
