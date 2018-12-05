@@ -50,13 +50,6 @@ export default {
     };
   },
   methods: {
-    getdata() {
-      // console.log(evt.draggedContext.element.id);
-    },
-    datadragEnd() {
-      // console.log(`拖动前的索引：${evt.oldIndex}`);
-      // console.log(`拖动后的索引：${evt.newIndex}`);
-    },
     layerItemClick(index) {
       this.layerActive = index;
     },

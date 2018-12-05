@@ -2,7 +2,8 @@
   <div ref="form">
     <div v-for="(component, index) in form" :key="index" >
       <div class="container" :style="containerStyle(component)">
-        <div :is="formType(component.type)" :attr="component.attr"
+        <div :is="formType(component.type)" :attr="component.type !== 12 ? component.attr :
+        Object.assign(component.attr, {disabled: isStopCollect})"
         :ref="formType(component.type)+'Ref'"
         :fid ="component.id"
         :id="component.id" @valueEvent="valueChange" @clickEvent="formSubmit" :index="index"
@@ -32,11 +33,13 @@ export default {
       formArr: [],
       warn: {},
       phones: [], // 存放手机
+      isStop: false, // 是否停止收集
     };
   },
   props: {
     form: Array,
     scale: Number,
+    isStopCollect: Boolean,
   },
   components: {
     AudioPlay,

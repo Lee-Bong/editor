@@ -180,7 +180,6 @@ export default {
     },
   },
   updated() {
-    // console.log('editor.isFTextSet', this.editor.dragFormTexts[this.editor.fTextActive]);
   },
 };
 </script>

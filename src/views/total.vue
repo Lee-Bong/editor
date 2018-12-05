@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav-bar pageName="数据统计（h5标题）">
+    <nav-bar :pageName="`数据统计${showTitle}`">
       <template slot="btnGroup">
       </template>
     </nav-bar>
@@ -12,8 +12,8 @@
     </el-tabs>
     <transition name="fade" mode="out-in" >
       <keep-alive>
-        <web-total v-if="activeTab === 'webTotal'" />
-        <form-total v-if="activeTab === 'formTotal'" />
+        <web-total v-if="activeTab === 'webTotal' && isData" :webInfo="webInfo"/>
+        <form-total v-if="activeTab === 'formTotal' && isData" :formInfo="formInfo"/>
       </keep-alive>
     </transition>
   </div>
@@ -24,6 +24,7 @@ import merge from 'webpack-merge';
 import webTotal from '@/components/table/webTotal';
 import NavBar from '@/components/NavBar';
 import formTotal from '@/components/table/formTotal';
+import { getPageInfo } from '@/service';
 
 export default {
   components: {
@@ -46,6 +47,39 @@ export default {
         query: merge(this.$route.query, { tab: tab.name }),
       });
     },
+  },
+  data() {
+    return {
+      title: '',
+      showTitle: '',
+      webInfo: {},
+      formInfo: {},
+      isData: false, // page接口返回才可以加载表格
+    };
+  },
+  async mounted() {
+    try {
+      const { data } = await getPageInfo(this.$route.query.page_id);
+      this.title = data.public_title ? data.public_title : '';
+      this.showTitle = this.title ? `（${this.title}）` : '';
+      this.formInfo = { title: this.title };
+      const json = JSON.parse(data.state);
+      const { layerLists } = json.publish.editor;
+      const clickArr = [];
+      if (layerLists && layerLists.length) {
+        layerLists.map((item) => {
+          if (item.type === 3) {
+            clickArr[item.num] = item.name;
+          }
+          return true;
+        });
+      }
+      this.webInfo = { clickArr };
+      this.isData = true;
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('请求表格数据失败', err);
+    }
   },
 };
 </script>

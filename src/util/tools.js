@@ -73,7 +73,8 @@ export function formatDate(date) {
 export function formatTableData(data, isDraft) {
   const output = {
     id: data.id,
-    title: '',
+    title: isDraft ? data.draft_name : data.public_name,
+    name: isDraft ? data.draft_title : data.public_title,
     createdAt: formatDate(data.createdAt),
     visit: 0,
     online: data.visible ? 1 : 0, // 上线|下线
@@ -82,15 +83,6 @@ export function formatTableData(data, isDraft) {
   };
   if (data.state) {
     const json = JSON.parse(data.state);
-    let pageData;
-    if (json.page) {
-      pageData = json.page;
-    } else {
-      pageData = isDraft ? json.draft.page : json.publish.page;
-    }
-    if (pageData && pageData.title) {
-      output.title = pageData.title;
-    }
     const { layerLists } = json.publish.editor;
     const clickArr = [];
     if (layerLists && layerLists.length) {

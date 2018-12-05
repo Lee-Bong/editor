@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     submitForm() {
+      if (this.attr.disabled) return false;
       this.$emit('clickEvent');
     },
   },

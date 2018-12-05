@@ -18,6 +18,7 @@
         v-if="formComPonentsJson && formComPonentsJson.length"
         :form="formComPonentsJson"
         :scale="scale"
+        :isStopCollect="isStopCollect"
       >
       </form-component>
     </div>
@@ -48,6 +49,7 @@ export default {
       scale: 1,
       form: {},
       code: '',
+      isStopCollect: false,
     };
   },
   computed: {
@@ -134,11 +136,16 @@ export default {
   async mounted() {
     try {
       const {
-        data: { draft, public: formal, visible },
+        data: {
+          draft, public: formal, visible, forms,
+        },
       } = await getPageInfo(this.pageId);
       this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
-      if (this.isFormal === '1' && !visible) {
+      if (!visible) {
         this.showError = true;
+      }
+      if (forms && forms.length) {
+        this.isStopCollect = forms[0].stop_collect;
       }
       const cjson = this.getFinalComponentsJson();
       this.customComponentsJson = cjson.customComponentsJson;

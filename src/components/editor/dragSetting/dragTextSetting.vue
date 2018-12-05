@@ -195,9 +195,6 @@ export default {
     this.sizeList = list;
     this.lineNum = (this.dragForm.lineHeight / 3) * 100;
   },
-  destroyed() {
-    // console.log('destroyed');
-  },
   updated() {
 
   },
