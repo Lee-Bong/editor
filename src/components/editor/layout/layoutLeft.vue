@@ -91,6 +91,25 @@ export default {
         top) - 42 : (this.$store.state.page.screenHeight - 90) / 2;
       const top2 = isScroll ? top - 56 - 24 : 0;
       const id = this.getId();
+      const info = {
+        id,
+        isShow: true,
+        zIndex: 1000,
+        isActive: true,
+        dragIndex: zIndex,
+      };
+      const mediaSize = {
+        w: 375,
+        h: 300,
+      };
+      const mediaLocation = {
+        x: 0,
+        y: top2,
+      };
+      const formLocation = {
+        x: (375 - 325) / 2,
+        y: top1,
+      };
       switch (type) {
         case 1:
         {
@@ -98,12 +117,7 @@ export default {
           num = this.$store.state.editor.dragTexts.length;
           layerName = `文本${!num ? '' : num + 1}`;
           drag = textActiveOff(drag, { index: 0, isAll: true });
-          drag.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
+          drag.push(Object.assign({}, info, {
             content: '',
             fontSize: '12px',
             lineHeight: 1.5,
@@ -119,7 +133,7 @@ export default {
             },
             position: 'relative',
             icon,
-          });
+          }));
           newEditor = {
             textSet: true,
             isTextSet: true,
@@ -135,26 +149,15 @@ export default {
           num = drag2.length;
           layerName = `图片${!num ? '' : num + 1}`;
           icon = 'ed-icon-tupian1';
-          drag2.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
+          drag2.push(Object.assign({}, info, {
             img: {},
             imgList: [],
-            location: {
-              x: 0,
-              y: top2,
-            },
-            size: {
-              w: 375,
-              h: 300,
-            },
+            location: mediaLocation,
+            size: mediaSize,
             isUpload: false,
             position: 'relative',
             icon,
-          });
+          }));
           newEditor = {
             imgSet: true,
             isImgSet: true,
@@ -171,12 +174,7 @@ export default {
           layerName = `热区${!num ? '' : num + 1}`;
           icon = 'ed-icon-requm';
           drag3 = textActiveOff(drag3, { index: 0, isAll: true });
-          drag3.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
+          drag3.push(Object.assign({}, info, {
             appLink: '',
             outLink: '',
             location: {
@@ -194,7 +192,7 @@ export default {
             yybLink: '',
             position: 'relative',
             icon,
-          });
+          }));
           newEditor = {
             linkSet: true,
             isLinkSet: true,
@@ -210,24 +208,16 @@ export default {
           num = drag4.length;
           layerName = `多图拼接${!num ? '' : num + 1}`;
           icon = 'ed-icon-duotu';
-          drag4.push({
-            id,
+          drag4.push(Object.assign({}, info, {
             isUplaod: false,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
             location: {
               x: 0,
               y: 0,
             },
-            size: {
-              w: 375,
-              h: 300,
-            },
+            size: mediaSize,
             imgList: [],
             icon,
-          });
+          }));
           newEditor = {
             imgListSet: true,
             isImgListSet: true,
@@ -244,51 +234,26 @@ export default {
           layerName = `视频${!num ? '' : num + 1}`;
           icon = 'ed-icon-shipin';
           drag5 = textActiveOff(drag5, { index: 0, isAll: true });
-          drag5.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
+          drag5.push(Object.assign({}, info, {
             sourceType: '1', // 1.本地视频 2.在线视频
             source: '',
             videoTitle: '',
             loop: true,
-            location: {
-              x: 0,
-              y: top2,
-            },
-            size: {
-              w: 375,
-              h: 300,
-            },
             video: {
               position: 'relative',
               accept: '.mp4',
-              size: {
-                w: 375,
-                h: 300,
-              },
-              location: {
-                x: 0,
-                y: top2,
-              },
+              size: mediaSize,
+              location: mediaLocation,
             },
             lineVideo: {
               position: 'relative',
-              size: {
-                w: 375,
-                h: 300,
-              },
-              location: {
-                x: 0,
-                y: top2,
-              },
+              size: mediaSize,
+              location: mediaLocation,
             },
             isUpload: false,
             position: 'relative',
             icon,
-          });
+          }));
           newEditor = {
             videoSet: true,
             isVideoSet: true,
@@ -305,25 +270,12 @@ export default {
           layerName = `音频${!num ? '' : num + 1}`;
           icon = 'ed-icon-tubiao-';
           drag6 = textActiveOff(drag6, { index: 0, isAll: true });
-          drag6.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex + 1,
+          drag6.push(Object.assign({}, info, {
             sourceType: '1', // 1.本地音频 2.在线音频
             source: '',
             audioTitle: '',
             loop: true,
             isBorder: '2',
-            location: {
-              x: 0,
-              y: top2,
-            },
-            size: {
-              w: 375,
-              h: 82,
-            },
             play: {
               title: '',
               isUplaod: false,
@@ -331,10 +283,7 @@ export default {
               url: '',
               accept: '.mp3',
               position: 'relative',
-              location: {
-                x: 0,
-                y: top2,
-              },
+              location: mediaLocation,
               size: {
                 w: 375,
                 h: 82,
@@ -346,10 +295,7 @@ export default {
               duration: '00:00',
               url: '',
               position: 'relative',
-              location: {
-                x: 0,
-                y: top2,
-              },
+              location: mediaLocation,
               size: {
                 w: 375,
                 h: 82,
@@ -357,7 +303,7 @@ export default {
             },
             position: 'relative',
             icon,
-          });
+          }));
           newEditor = {
             audioSet: true,
             isAudioSet: true,
@@ -374,16 +320,8 @@ export default {
           layerName = `单行文本${!num ? '' : num + 1}`;
           icon = 'ed-icon-text3';
           drag7 = textActiveOff(drag7, { index: 0, isAll: true });
-          drag7.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
-            location: {
-              x: (375 - 325) / 2,
-              y: top1,
-            },
+          drag7.push(Object.assign({}, info, {
+            location: formLocation,
             size: {
               w: 325,
               h: 40,
@@ -392,7 +330,7 @@ export default {
             icon,
             isRequired: false,
             label: '单行文本',
-          });
+          }));
           newEditor = {
             fTextSet: true,
             isFTextSet: true,
@@ -409,16 +347,8 @@ export default {
           layerName = `多行文本${!num ? '' : num + 1}`;
           icon = 'ed-icon-duohangwenben';
           drag8 = textActiveOff(drag8, { index: 0, isAll: true });
-          drag8.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
-            location: {
-              x: (375 - 325) / 2,
-              y: top1,
-            },
+          drag8.push(Object.assign({}, info, {
+            location: formLocation,
             size: {
               w: 325,
               h: 140,
@@ -427,7 +357,7 @@ export default {
             icon,
             isRequired: false,
             label: '多行文本',
-          });
+          }));
           newEditor = {
             fTextareaSet: true,
             isFTextareaSet: true,
@@ -444,16 +374,8 @@ export default {
           layerName = `单项选择${!num ? '' : num + 1}`;
           icon = 'ed-icon-danxiangxuanze';
           drag9 = textActiveOff(drag9, { index: 0, isAll: true });
-          drag9.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
-            location: {
-              x: (375 - 325) / 2,
-              y: top1,
-            },
+          drag9.push(Object.assign({}, info, {
+            location: formLocation,
             size: {
               w: 325,
               h: 80,
@@ -468,7 +390,7 @@ export default {
             dragType: 9,
             list: [{ text: '选项1', label: 1 }],
             optionIndex: 1,
-          });
+          }));
           newEditor = {
             fRadioSet: true,
             isFRadioSet: true,
@@ -485,16 +407,8 @@ export default {
           layerName = `多项选择${!num ? '' : num + 1}`;
           icon = 'ed-icon-duoxuan';
           drag10 = textActiveOff(drag10, { index: 0, isAll: true });
-          drag10.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
-            location: {
-              x: (375 - 325) / 2,
-              y: top1,
-            },
+          drag10.push(Object.assign({}, info, {
+            location: formLocation,
             size: {
               w: 325,
               h: 80,
@@ -509,7 +423,7 @@ export default {
             dragType: 10,
             list: [{ text: '选项1', label: 1 }],
             optionIndex: 1,
-          });
+          }));
           newEditor = {
             fCheckboxSet: true,
             isFCheckboxSet: true,
@@ -526,16 +440,8 @@ export default {
           layerName = `手机短信${!num ? '' : num + 1}`;
           icon = 'ed-icon-shoujiduanxin';
           drag11 = textActiveOff(drag11, { index: 0, isAll: true });
-          drag11.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
-            location: {
-              x: (375 - 325) / 2,
-              y: top1,
-            },
+          drag11.push(Object.assign({}, info, {
+            location: formLocation,
             size: {
               w: 325,
               h: 94,
@@ -545,7 +451,7 @@ export default {
             isRequired: false,
             label: '请输入手机号',
             verify: 1,
-          });
+          }));
           newEditor = {
             fSmsSet: true,
             isFSmsSet: true,
@@ -563,12 +469,7 @@ export default {
           layerName = `提交按钮${!num ? '' : num + 1}`;
           icon = 'ed-icon-tijiao1';
           drag12 = textActiveOff(drag12, { index: 0, isAll: true });
-          drag12.push({
-            id,
-            isShow: true,
-            zIndex: 1000,
-            isActive: true,
-            dragIndex: zIndex,
+          drag12.push(Object.assign({}, info, {
             location: {
               x: (375 - 136) / 2,
               y: top1,
@@ -582,7 +483,7 @@ export default {
             label: '提交',
             bgColor: '#5AC7F9',
             textColor: '#fff',
-          });
+          }));
           newEditor = {
             fSubmitSet: true,
             isFSubmitSet: true,

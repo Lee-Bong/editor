@@ -227,14 +227,14 @@ export default {
   margin-right: 10px;
 }
 .layout-name{
-    height: 24px;
-    padding: 5px;
-    line-height: 24px;
-    width: 220px;
-    cursor: pointer;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  height: 24px;
+  padding: 5px;
+  line-height: 24px;
+  width: 220px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .name-editor{
   width: 230px;
