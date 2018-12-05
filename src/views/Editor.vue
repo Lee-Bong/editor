@@ -38,10 +38,10 @@ import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
 import layoutSetting from '@/components/editor/layout/layoutSetting';
-import NavBar from '@/components/NavBar';
 import phoneBanner from '@/components/editor/layout/phoneBanner';
+import NavBar from '@/components/NavBar';
+import { postPageInfo, getPageInfo, patchPageInfo, publishPage } from '@/service';
 import { dragCom } from '@/util/dragMxi';
-import * as service from '@/service';
 
 export default {
   mixins: [dragCom()],
@@ -114,9 +114,9 @@ export default {
         };
         let data;
         if (this.isFirst) {
-          data = await service.postPageInfo(params);
+          data = await postPageInfo(params);
         } else {
-          data = await service.patchPageInfo(this.$route.query.page_id, params);
+          data = await patchPageInfo(this.$route.query.page_id, params);
         }
         this.beforeState = JSON.stringify(this.$store.state);
         if (data && data.status === 'ok' && data.data) {
@@ -151,7 +151,7 @@ export default {
         const ele = this;
         const isOk = await this.saveEditor(false, true);
         if (isOk) {
-          const { data } = await service.publishPage(this.$route.query.page_id);
+          const { data } = await publishPage(this.$route.query.page_id);
           if (data) {
             ele.optSucsess('发布页面');
             ele.$router.push({
@@ -639,7 +639,7 @@ export default {
     if (this.$route.query.page_id) {
       try {
         this.isFirst = false;
-        const { data } = await service.getPageInfo(this.$route.query.page_id);
+        const { data } = await getPageInfo(this.$route.query.page_id);
         this.editorInit(data.state);
       } catch (err) {
         this.optError('获取编辑器数据');

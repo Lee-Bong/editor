@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import * as service from '../service';
-import Storage from '../util/storage';
+import { getUserInfo, loginByAccount } from '@/service';
+import Storage from '@/util/storage';
 
 export default {
   data() {
@@ -53,7 +53,7 @@ export default {
   methods: {
     async getUserInfo() {
       try {
-        const data = await service.getUserInfo();
+        const data = await getUserInfo();
         if (data && data.status === 'ok' && data.data) {
           this.$store.commit('setUser', data.data);
           this.$router.push({
@@ -83,7 +83,7 @@ export default {
       formData.append('username', this.loginForm.username);
       formData.append('password', this.loginForm.password);
       try {
-        const { data } = await service.loginByAccount(formData);
+        const { data } = await loginByAccount(formData);
         if (data.status && data.status === 'ok') {
           this.$message({
             type: 'success',

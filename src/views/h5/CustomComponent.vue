@@ -2,7 +2,7 @@
     <div
         class="container"
         :class="{ 'ipx-padding': isFixed }"
-        :id="componentId"
+        :id="component.id"
         :style="containerStyle()"
     >
         <div
@@ -57,20 +57,14 @@
             :style="component.style"
             :play="component.play"
         ></audio-play>
-      <div :is="type" :attr="component.attr" :clickEvent="formSubmit"></div>
     </div>
 </template>
 
 <script>
 import generate from 'nanoid/generate';
-import hotSpot from '../../util/hotSpot.js';
-import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
-import gaReport from '../../util/gaReport.js';
-import wText from '../../components/element/wtext';
-import wTextarea from '../../components/element/wtextarea';
-import wRadio from '../../components/element/wradio';
-import wSmscode from '../../components/element/wsmscode';
-import wSubmit from '../../components/element/wsubmit';
+import AudioPlay from '@/components/editor/dragSetting/upload/audioPlay';
+import hotSpot from '@/util/hotSpot.js';
+import gaReport from '@/util/gaReport.js';
 
 export default {
   data() {
@@ -82,11 +76,6 @@ export default {
 
   components: {
     AudioPlay,
-    wText,
-    wTextarea,
-    wRadio,
-    wSmscode,
-    wSubmit,
   },
 
   computed: {
@@ -105,30 +94,6 @@ export default {
         positionInfo,
       } = this.component;
       return positionInfo.position !== 'relative';
-    },
-    type() {
-      switch (this.component.type) {
-        case 7:
-        {
-          return 'wText';
-        }
-        case 8:
-        {
-          return 'wTextarea';
-        }
-        case 9: {
-          return 'wRadio';
-        }
-        case 11: {
-          return 'wSmscode';
-        }
-        case 12: {
-          return 'wSubmit';
-        }
-        default: {
-          break;
-        }
-      }
     },
   },
 
@@ -173,11 +138,13 @@ export default {
       const {
         sourceType, awakeLink, outLink, appLink,
       } = this.component;
-      gaReport({
-        type: 'click',
-        value: `${index}` || '0',
-        pageId: `weditor_${this.$route.query.page_id}`,
-      });
+      if (this.$route.query.is_formal) {
+        gaReport({
+          type: 'click',
+          value: `${index}` || '0',
+          pageId: `weditor_${this.$route.query.page_id}`,
+        });
+      }
       hotSpot.handleClick({
         sourceType,
         awakeLink,

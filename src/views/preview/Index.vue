@@ -44,10 +44,10 @@
   </div>
 </template>
 <script>
-import NavBar from '../../components/NavBar';
-import PhoneView from '../../components/PhoneView.vue';
-import QrCode from '../../components/QrCode.vue';
-import * as service from '../../service';
+import NavBar from '@/components/NavBar';
+import PhoneView from '@/components/PhoneView.vue';
+import QrCode from '@/components/QrCode.vue';
+import { getPageInfo, publishPage } from '@/service';
 
 export default {
   data() {
@@ -64,7 +64,7 @@ export default {
   },
   async mounted() {
     try {
-      const { data: { draft } } = await service.getPageInfo(this.pageId);
+      const { data: { draft } } = await getPageInfo(this.pageId);
       this.pageJson = JSON.parse(draft);
       if (!this.pageJson) {
         this.$router.replace('/error');
@@ -79,7 +79,7 @@ export default {
     },
     async publish() {
       try {
-        await service.publishPage(this.pageId);
+        await publishPage(this.pageId);
         this.$message({
           message: '发布成功~',
           type: 'success',

@@ -28,12 +28,13 @@
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
 import jssdk from 'meetyou.jssdk';
-import hotSpot from '../../util/hotSpot';
-import * as service from '../../service';
+import { getPageInfo } from '@/service';
+import hotSpot from '@/util/hotSpot';
+import gaReport from '@/util/gaReport.js';
 import CustomComponent from './CustomComponent.vue';
 import FormComponent from './FormComponent.vue';
 import Error from '../Error.vue';
-import gaReport from '../../util/gaReport.js';
+
 
 export default {
   data() {
@@ -92,7 +93,7 @@ export default {
         } else {
           customComponentsJson.push(componentJsonTemp);
         }
-        return componentJsonTemp;
+        return formComPonentsJson;
       });
       return { formComPonentsJson, customComponentsJson };
     },
@@ -133,7 +134,7 @@ export default {
     try {
       const {
         data: { draft, public: formal, visible },
-      } = await service.getPageInfo(this.pageId);
+      } = await getPageInfo(this.pageId);
       this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
       if (this.isFormal === '1' && !visible) {
         this.showError = true;
@@ -165,10 +166,12 @@ export default {
     } catch (error) {
       this.showError = true;
     }
-    gaReport({
-      type: 'pv',
-      pageId: `weditor_${this.$route.query.page_id}`,
-    });
+    if (this.$route.query.is_formal) {
+      gaReport({
+        type: 'pv',
+        pageId: `weditor_${this.$route.query.page_id}`,
+      });
+    }
   },
 };
 </script>

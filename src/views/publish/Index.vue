@@ -42,10 +42,10 @@
   </div>
 </template>
 <script>
-import * as service from '../../service';
-import PhoneView from '../../components/PhoneView.vue';
-import QrCode from '../../components/QrCode.vue';
-import NavBar from '../../components/NavBar';
+import PhoneView from '@/components/PhoneView.vue';
+import QrCode from '@/components/QrCode.vue';
+import NavBar from '@/components/NavBar';
+import { getPageInfo } from '@/service';
 
 export default {
   data() {
@@ -62,7 +62,7 @@ export default {
   },
   async mounted() {
     try {
-      const { data: { public: formal } } = await service.getPageInfo(this.pageId);
+      const { data: { public: formal } } = await getPageInfo(this.pageId);
       this.pageJson = JSON.parse(formal);
       if (!this.pageJson) {
         this.$router.replace('/error');

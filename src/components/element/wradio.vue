@@ -22,7 +22,6 @@ export default {
       type: Object,
       default: () => {},
     },
-    id: String,
     index: Number,
   },
   data() {

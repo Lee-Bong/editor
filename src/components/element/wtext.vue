@@ -8,19 +8,13 @@
 <script>
 
 export default {
-  name: 'texg',
+  name: 'wtext',
   props: {
     attr: {
       type: Object,
       default: () => ({ label: '单行文本' }),
     },
-    id: String,
     index: Number,
-  },
-  data() {
-    return {
-      dragName: 'dragFormTexts',
-    };
   },
   methods: {
     valueChange(val) {
