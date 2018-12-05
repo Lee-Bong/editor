@@ -15,7 +15,7 @@
 <script>
 
 export default {
-  name: 'DragSetting',
+  name: 'baseSetting',
   props: {
     dragForm: Object,
     setForm: Object,

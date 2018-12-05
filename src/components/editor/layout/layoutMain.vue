@@ -18,7 +18,7 @@
       height: page.phoneHeight + 'px',
       backgroundColor: page.backgroundColor}">
       <drag-text v-for="(drag, index) in dragTexts" v-if="drag.isShow"
-       :key="drag.id" :list-index="index" :dragForm="drag" @inputChange="inputChange"
+       :key="drag.id" :list-index="index" :dragForm="drag"
        @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" ref="textRef"/>
 
       <drag-img v-for="(drag, index) in dragImages" :key="drag.id"
@@ -94,8 +94,6 @@ import { mapState } from 'vuex';
 export default {
   mixins: [dragCom()],
   name: 'layoutMain',
-  props: {
-  },
   components: {
     dragText,
     dragImg,
@@ -145,9 +143,6 @@ export default {
     }),
   },
   methods: {
-    inputChange() { // 组件-文本值改变
-
-    },
     inputDragStop(form, ev, index) { // 拖动组件同步设置
       const dragItems = this.$store.state.editor[form];
       const dragItem = dragItems[index];

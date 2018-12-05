@@ -120,8 +120,6 @@ import { dragCom } from '@/util/dragMxi';
 export default {
   name: 'layoutSetting',
   mixins: [dragCom()],
-  props: {
-  },
   components: {
     dragTextSetting,
     dragImgSetting,

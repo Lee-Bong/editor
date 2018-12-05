@@ -24,7 +24,7 @@ import locationSetting from '@/components/editor/dragSetting/formSetting/common/
 import { settingCom } from '@/util/settingMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'fSmsSetting',
   mixins: [settingCom()],
   props: {
     dragForm: Object,

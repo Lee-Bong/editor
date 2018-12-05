@@ -145,7 +145,7 @@
 
 <script>
 import { timeForMat } from '@/util/tools';
-import * as service from '@/service';
+import { stateBI } from '@/service';
 import NavBar from '@/components/NavBar';
 
 export default {
@@ -259,7 +259,7 @@ export default {
     async updateTotal(s, n, type, cb) {
       try {
         this[`loading${type}`] = true;
-        const data = await service.stateBI(
+        const data = await stateBI(
           `weditor_${this.$route.query.page_id}`,
           s,
           n,

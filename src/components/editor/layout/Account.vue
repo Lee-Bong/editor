@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import * as service from '../../../service';
+import { getUserInfo, logout } from '@/service';
 
 export default {
   async mounted() {
     if (!this.user) {
-      const data = await service.getUserInfo();
+      const data = await getUserInfo();
       if (data.status && data.status === 'ok') {
         this.$store.commit('setUser', data.data);
       }
@@ -25,7 +25,7 @@ export default {
   methods: {
     async logout() {
       try {
-        const { data } = await service.logout();
+        const { data } = await logout();
         if (data.status && data.status === 'ok') {
           this.$message({
             type: 'success',

@@ -1,19 +1,11 @@
 <template>
     <div class="container" :id="component.componentId" :style="containerStyle(component)">
-        <slot name="formItem" />
+      <slot name="formItem" />
     </div>
 </template>
 
 <script>
 import generate from 'nanoid/generate';
-import hotSpot from '../../util/hotSpot.js';
-import AudioPlay from '../../components/editor/dragSetting/upload/audioPlay';
-import gaReport from '../../util/gaReport.js';
-import wText from '../../components/element/wtext';
-import wTextarea from '../../components/element/wtextarea';
-import wRadio from '../../components/element/wradio';
-import wSmscode from '../../components/element/wsmscode';
-import wSubmit from '../../components/element/wsubmit';
 
 export default {
   data() {
@@ -25,17 +17,6 @@ export default {
   props: {
     component: Object,
     scale: Number,
-  },
-  components: {
-    AudioPlay,
-    wText,
-    wTextarea,
-    wRadio,
-    wSmscode,
-    wSubmit,
-  },
-
-  computed: {
   },
   methods: {
     containerStyle() {
@@ -67,31 +48,6 @@ export default {
         };
       }
       return style;
-    },
-    transformImgUrl(url, h, w) {
-      let optUrl = url.replace(/^https?:/, '');
-      optUrl += `?x-oss-process=image/resize,m_fixed,h_${Math.ceil(h * 2)},w_${Math.ceil(w * 2)}`;
-      return optUrl;
-    },
-    handleLinkClick(index) {
-      const {
-        sourceType, awakeLink, outLink, appLink,
-      } = this.component;
-      gaReport({
-        type: 'click',
-        value: `${index}` || '0',
-        pageId: `weditor_${this.$route.query.page_id}`,
-      });
-      hotSpot.handleClick({
-        sourceType,
-        awakeLink,
-        outLink,
-        appLink,
-        downloadUrls: this.downloadUrls,
-      });
-    },
-    formSubmit() {
-      this.$emit('clickEvent');
     },
   },
 };

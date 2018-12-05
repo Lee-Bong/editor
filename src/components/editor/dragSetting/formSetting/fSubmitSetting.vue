@@ -20,7 +20,7 @@ import colorSetting from '@/components/editor/dragSetting/formSetting/common/col
 import locationSetting from '@/components/editor/dragSetting/formSetting/common/locationSetting';
 
 export default {
-  name: 'DragSetting',
+  name: 'fSubmitSetting',
   props: {
     dragForm: Object,
     setForm: Object,

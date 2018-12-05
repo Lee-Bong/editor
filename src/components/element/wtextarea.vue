@@ -11,13 +11,12 @@
 <script>
 
 export default {
-  name: 'texg',
+  name: 'wtextarea',
   props: {
     attr: {
       type: Object,
       default: () => {},
     },
-    id: String,
     index: Number,
   },
   data() {

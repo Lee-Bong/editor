@@ -40,8 +40,16 @@
           </div>
           <div class="form-item-code">
             <div>组件id:</div>
-            <el-input v-model="dragForm.componentIds"
-             class="color-item" type="textarea" rows="8" resize="none"></el-input>
+            <div class="form-code-ids">
+              <div v-for="(item, index) in $store.state.page.componentIds" :key="index">
+               {{index+1}}.<span class="code-name">&nbsp;&nbsp;{{item.name}}</span>:&nbsp;&nbsp;
+               <span class="code-id">{{item.id}}</span>
+              </div>
+            </div>
+            <!-- <el-input v-model="dragForm.componentIds"
+             class="color-item" type="textarea" rows="8" resize="none">
+             {{$store.state.page.componentIds}}
+            </el-input> -->
           </div>
         </el-form>
       </div>
@@ -53,7 +61,7 @@
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 
 export default {
-  name: 'DragSetting',
+  name: 'pageSetting',
   props: {
     dragForm: Object,
     setForm: Object,
@@ -137,5 +145,21 @@ export default {
   font-size: 14px;
   color: #606266;
   padding: 10px 20px;
+}
+.form-code-ids {
+  width: 330px;
+  padding: 5px 10px;
+  margin:  0 auto;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.code-name {
+  display: inline-block;
+  max-width: 200px;
+      overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
 }
 </style>

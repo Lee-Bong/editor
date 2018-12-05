@@ -30,7 +30,7 @@ import colorSetting from '@/components/editor/dragSetting/formSetting/common/col
 import { settingCom } from '@/util/settingMxi';
 
 export default {
-  name: 'dragFormRadios',
+  name: 'fRadioSetting',
   mixins: [settingCom()],
   props: {
     dragForm: Object,

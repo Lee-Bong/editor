@@ -17,7 +17,6 @@
 <script>
 import phoneBanner from '@/components/editor/layout/phoneBanner';
 
-
 export default {
   components: { phoneBanner },
   props: ['pageJson', 'HeadHeight', 'url'],

@@ -1,31 +1,29 @@
 <template>
   <div ref="form">
     <div v-for="(component, index) in form" :key="index" >
-    <div>
-      <div class="container" :id="getElementId()" :style="containerStyle(component)">
+      <div class="container" :style="containerStyle(component)">
         <div :is="formType(component.type)" :attr="component.attr"
         :ref="formType(component.type)+'Ref'"
+        :fid ="component.id"
         :id="component.id" @valueEvent="valueChange" @clickEvent="formSubmit" :index="index"
         @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent"></div>
       </div>
-      </div>
     </div>
-    <f-warn :warn="this.warn" ref="fwarnRef"/>
+    <w-warn :warn="this.warn" ref="fwarnRef"/>
   </div>
 </template>
 
 <script>
 import md5 from 'js-md5';
-import generate from 'nanoid/generate';
-import * as service from '@/service/index';
 import AudioPlay from '@/components/editor/dragSetting/upload/audioPlay';
 import wText from '@/components/element/wtext';
 import wTextarea from '@/components/element/wtextarea';
 import wRadio from '@/components/element/wradio';
 import wSmscode from '@/components/element/wsmscode';
 import wSubmit from '@/components/element/wsubmit';
+import wWarn from '@/components/element/wwarn';
+import { formSubmit, smsCode, smsVerify } from '@/service/index';
 import ScaleStyle from './ScaleStyle';
-import fWarn from './fWarn';
 
 export default {
   data() {
@@ -48,7 +46,7 @@ export default {
     wSmscode,
     wSubmit,
     ScaleStyle,
-    fWarn,
+    wWarn,
   },
 
   mounted() {
@@ -130,9 +128,6 @@ export default {
       });
       return ps;
     },
-    getElementId() {
-      return generate('abcdefghijklmn', 10);
-    },
     valueChange(val, index) {
       if (this.formArr[index]) {
         this.formArr[index].value = val;
@@ -146,9 +141,13 @@ export default {
     async formSubmit() {
       const isOk = await this.inputCheck();
       if (isOk) {
+        if (!this.$route.query.is_formal) { // 预览不统计数据
+          this.openWarning({ text: '提交成功～' });
+          return false;
+        }
         try {
           const ele = this;
-          const res = await service.formSubmit({
+          const res = await formSubmit({
             page_id: this.$route.query.page_id,
             formDatas: this.formArr,
           });
@@ -168,7 +167,7 @@ export default {
           const ts = Math.round(Date.parse(new Date()) / 1000);
           const phone = this.getPhoneItem(this.phones[0].id).value;
           const params = `phone=${phone}&ts=${ts}&sign=${this.getSign(`classsmsphone${phone}ts${ts}Ixv&EwN^e#gP%Gl4NhR7m9Z0P#UOH^EU`)}`;
-          const data = await service.smsCode(params);
+          const data = await smsCode(params);
           if (data && data.code === 0) {
             // 倒计时
             this.$refs.wSmscodeRef[0].sendToast('验证码发送成功～');
@@ -235,14 +234,14 @@ export default {
         const ts = Math.round(Date.parse(new Date()) / 1000);
         const phone = this.getPhoneItem(this.phones[0].id).value;
         const params = `phone=${phone}&ts=${ts}&code=${code}&sign=${this.getSign(`classsms_verifycode${code}phone${phone}ts${ts}Ixv&EwN^e#gP%Gl4NhR7m9Z0P#UOH^EU`)}`;
-        const data = await service.smsVerify(params);
+        const data = await smsVerify(params);
         if (data && data.code === 0) {
           return true;
         }
-        this.openWarning({ text: '验证码输入错误，请重新输入～' });
+        this.openWarning({ text: '验证码错误，请重新输入～' });
         return false;
       } catch (err) {
-        this.openWarning({ text: '验证码输入错误，请重新输入～' });
+        this.openWarning({ text: '验证码错误，请重新输入～' });
         return false;
       }
     },

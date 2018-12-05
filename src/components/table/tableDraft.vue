@@ -25,7 +25,7 @@
 
 <script>
 import { formatTableData } from '@/util/tools';
-import * as API from '@/service';
+import { getPageList, patchPageInfo } from '@/service';
 
 export default {
   data() {
@@ -53,7 +53,7 @@ export default {
       const q = { ...this.pager, ...this.query };
       this.loading = true;
 
-      API.getPageList(q)
+      getPageList(q)
         .then((res) => {
           if (res.status === 'ok') {
             const list = res.data.pages;
@@ -105,7 +105,7 @@ export default {
         });
     },
     deletePage(row) {
-      API.patchPageInfo(row.id, {
+      patchPageInfo(row.id, {
         state: row.state, draft: '',
       }).then((res) => {
         if (res.status === 'ok') {

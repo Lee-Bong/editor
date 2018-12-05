@@ -9,10 +9,10 @@
   </div>
 </template>
 <script>
-import wSubmit from '../../components/element/wsubmit';
+import wSubmit from '@/components/element/wsubmit';
 
 export default {
-  name: 'wsubmit',
+  name: 'wwarn',
   props: {
     warn: {
       type: Object,

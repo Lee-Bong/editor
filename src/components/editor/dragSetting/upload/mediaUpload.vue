@@ -21,7 +21,7 @@
 import oss from '@/service/oss';
 
 export default {
-  name: 'HelloWorld',
+  name: 'mediaUpload',
   props: {
     source: Object,
     dec: String,

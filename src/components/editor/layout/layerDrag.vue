@@ -8,6 +8,7 @@
         v-for="(layer, index) in $store.state.editor.layerLists"
         :key="index"
         :index="layer.zIndex"
+        :id="layer.id"
         :class="['dargDiv', {active: $store.state.editor.layerActive==index},'layer-item']"
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
@@ -27,12 +28,11 @@
 <script>
 import sortable from 'sortable';
 import VueDraggable from 'vuedraggable';
-
 import { dragCom } from '@/util/dragMxi';
 
 export default {
   mixins: [dragCom()],
-  name: 'DragSetting',
+  name: 'layerDrag',
   props: {},
   components: {
     draggable: VueDraggable,
@@ -63,15 +63,21 @@ export default {
     updateLayerList(evt) {
       const { newIndex } = evt;
       const { layerLists, typeCat } = this.$store.state.editor;
+      let { componentIds } = this.$store.state.page;
       const { type, num } = layerLists[newIndex];
       const newList = [];
       let newRditor = {};
+      componentIds = [];
       layerLists.map((item, i) => {
         const zin = layerLists.length - i;
         newList[i] = Object.assign(item, { zIndex: zin });
         const drags = this.$store.state.editor[typeCat[item.type][0]];
         drags[item.num] = Object.assign(drags[item.num], { dragIndex: zin });
         newRditor = Object.assign(newRditor, { [typeCat[item.type][0]]: drags });
+        componentIds.push({
+          name: item.name,
+          id: item.id,
+        });
         return true;
       });
       this.$store.commit('editor_update', {
@@ -80,6 +86,7 @@ export default {
         layerActive: newIndex,
       });
       this.dragClick(num, type);
+      this.$store.commit('page_update', { componentIds });
       // this.$store.dispatch('layerMove', { layerLists, newIndex });
     },
     dataMoving(evt) {
@@ -108,8 +115,14 @@ export default {
     layoutNameBlur(index) {
       const layouts = this.$store.state.editor.layerLists;
       layouts[index].editing = false;
+
       this.$store.commit('editor_update', {
         layerLists: layouts,
+      });
+      const { componentIds } = this.$store.state.page;
+      componentIds[index].name = layouts[index].name;
+      this.$store.commit('page_update', {
+        componentIds,
       });
     },
   },
@@ -213,11 +226,14 @@ export default {
   margin-right: 10px;
 }
 .layout-name{
-    height: 24px;
-    padding: 5px;
-    line-height: 24px;
-    width: 170px;
-    cursor: pointer;
+  height: 24px;
+  padding: 5px;
+  line-height: 24px;
+  width: 220px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .name-editor{
   width: 230px;

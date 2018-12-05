@@ -42,10 +42,10 @@
 
 <script>
 import { formatTableData } from '@/util/tools';
-import * as API from '@/service';
+import { api, getPageList, duplicatePage, markPage } from '@/service';
 import qrCode from '@/components/QrCode';
 
-const getTipUrl = id => `${API.api}/we/view?page_id=${id}&is_formal=1`;
+const getTipUrl = id => `${api}/we/view?page_id=${id}&is_formal=1`;
 
 export default {
   components: {
@@ -81,7 +81,7 @@ export default {
     getList(isCope) { // 获取页面数据, isCope 复制引起的刷新
       const q = { ...this.pager, ...this.query };
       this.loading = true;
-      API.getPageList(q)
+      getPageList(q)
         .then((res) => {
           if (res.status === 'ok') {
             const list = res.data.pages;
@@ -123,7 +123,7 @@ export default {
     },
     handleAdd(index, { id }) { // 复制
       const ele = this;
-      API.duplicatePage(id)
+      duplicatePage(id)
         .then((res) => {
           if (res.status === 'ok') {
             ele.$message.success('复制成功');
@@ -145,7 +145,7 @@ export default {
     },
     handlePublish(index, { id, online }) {
       if (online) { // 已上线
-        API.markPage(id, 0)
+        markPage(id, 0)
           .then((res) => {
             if (res.status === 'ok') {
               const updatedData = formatTableData(res.data);
@@ -159,8 +159,8 @@ export default {
             this.$message.error('出错了，请稍后再试~');
           });
       } else { // 未上线
-        // API.publishPage(id)
-        API.markPage(id, 1)
+        // publishPage(id)
+        markPage(id, 1)
           .then((res) => {
             if (res.status === 'ok') {
               const updatedData = formatTableData(res.data);

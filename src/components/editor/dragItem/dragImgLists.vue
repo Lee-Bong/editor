@@ -19,13 +19,8 @@
   </div>
 </template>
 <script>
-import VueDragResize from 'vue-drag-resize';
-
 export default {
   name: 'dragImgLists',
-  components: {
-    'vue-drag-resize': VueDragResize,
-  },
   props: {
     dragForm: Object,
     listIndex: Number,

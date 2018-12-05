@@ -32,7 +32,7 @@ import VueDraggable from 'vuedraggable';
 import { settingCom } from '@/util/settingMxi';
 
 export default {
-  name: 'DragSetting',
+  name: 'optionsSetting',
   mixins: [settingCom()],
   props: {
     list: Array,
