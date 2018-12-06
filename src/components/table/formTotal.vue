@@ -23,7 +23,12 @@
         </el-button>
       </div>
         <div class="filter-right">
-          <el-button icon="el-icon-bell" @click="stopCollect" :disabled="isStop">停止收集</el-button>
+          <el-button @click="stopCollect">
+            <i class="el-icon-bell" v-if="!isStop"></i>
+            <i class="el-icon-time" v-if="isStop"></i>
+            <span v-if="formInfo.isStop">开始收集</span>
+            <span v-if="!formInfo.isStop">停止收集</span>
+          </el-button>
           <el-button icon="el-icon-upload2" @click="exportTable">导出表格</el-button>
         </div>
       </div>
@@ -217,7 +222,7 @@ export default {
         link.style.display = 'none';
         link.href = url;
         const title = this.formInfo.title ? this.formInfo.title : '表单汇总';
-        link.setAttribute('download', `${title}.xsl`);
+        link.setAttribute('download', `${title}.xls`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -236,9 +241,9 @@ export default {
     // 导出表格
     async stopCollect() {
       try {
-        const { status } = await formStopCollect(this.$route.query.page_id);
+        const { status } = await formStopCollect(this.$route.query.page_id, !this.formInfo.isStop);
         if (status === 'ok') {
-          this.isStop = true;
+          this.$emit('isStopChange', !this.formInfo.isStop);
           this.$message.success('停止收集设置成功～');
         } else {
           this.$message.error('操作失败，请重试～');

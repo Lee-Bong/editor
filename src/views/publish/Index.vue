@@ -16,8 +16,8 @@
                     v-if="pageJson"
                     class="phone-view-container"
                     :style="{
-                      width: `${pageJson.page.phoneWidth}px`,
-                      height: `${pageJson.page.phoneHeight + HeadHeight}px`
+                      width: `${pageJson.page.phoneWidth || 375}px`,
+                      height: `${pageJson.page.phoneHeight + HeadHeight || 603}px`
                   }"
                   >
                     <phone-view
@@ -63,12 +63,17 @@ export default {
   async mounted() {
     try {
       const { data: { public: formal } } = await getPageInfo(this.pageId);
-      this.pageJson = JSON.parse(formal);
-      if (!this.pageJson) {
-        this.$router.replace('/error');
+      if (formal) {
+        this.pageJson = JSON.parse(formal);
+      } else {
+        this.pageJson = {
+          page: {
+            phoneWidth: 375,
+            phoneHeight: 603,
+          },
+        };
       }
     } catch (error) {
-      console.error(error.message);
       this.$router.replace('/error');
     }
   },

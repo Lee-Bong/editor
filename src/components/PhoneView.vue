@@ -7,7 +7,7 @@
 
         <div
             class="content-container"
-            :style="{ height: `${pageJson.page.phoneHeight}px` }"
+            :style="{ height: `${pageJson.page.phoneHeight || 603}px` }"
         >
             <iframe :src="url" frameborder="no" class="frame"/>
         </div>
