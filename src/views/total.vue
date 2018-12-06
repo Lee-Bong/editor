@@ -13,7 +13,8 @@
     <transition name="fade" mode="out-in" >
       <keep-alive>
         <web-total v-if="activeTab === 'webTotal' && isData" :webInfo="webInfo"/>
-        <form-total v-if="activeTab === 'formTotal' && isData" :formInfo="formInfo"/>
+        <form-total v-if="activeTab === 'formTotal' && isData" :formInfo="formInfo"
+        @isStopChange="isStopChange"/>
       </keep-alive>
     </transition>
   </div>
@@ -47,6 +48,10 @@ export default {
         query: merge(this.$route.query, { tab: tab.name }),
       });
     },
+    // 停止收集
+    isStopChange(isStop) {
+      this.formInfo.isStop = isStop;
+    },
   },
   data() {
     return {
@@ -62,7 +67,7 @@ export default {
       const { data } = await getPageInfo(this.$route.query.page_id);
       this.title = data.public_title ? data.public_title : '';
       this.showTitle = this.title ? `（${this.title}）` : '';
-      this.formInfo = { title: this.title };
+      this.formInfo = { title: this.title, isStop: data.forms[0].stop_collect };
       const json = JSON.parse(data.state);
       const { layerLists } = json.publish.editor;
       const clickArr = [];

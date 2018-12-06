@@ -51,7 +51,8 @@ const stateBI = (pageId, start, end) => axios.get(`${api}/api/stat-bi?page_id=${
 const formSubmit = data => axios.post(`${api}/api/we/form-sumbit`, data).then(property('data'));
 // 表单-汇总
 const formSummary = params => axios.get(`${api}/api/we/form-summary`, { params }).then(property('data'));
-const formStopCollect = pageId => axios.patch(`${api}/api/we/form-stop-collect?page_id=${pageId}`, {}).then(property('data'));
+// 表单-停止／开始 收集
+const formStopCollect = (pageId, stop) => axios.patch(`${api}/api/we/switch-form-collect?page_id=${pageId}`, { stop_collect: stop }).then(property('data'));
 
 // 汇总-导出
 const formExport = pageId =>
