@@ -41,7 +41,6 @@ export default {
       this.$emit('dragStop', this.dragName, evs, this.listIndex);
     },
     forceUpdate() {
-      console.log('forceUpdate', this.dragForm.position);
       this.$forceUpdate();
     },
   },
@@ -51,9 +50,6 @@ export default {
 </script>
 
 <style>
-.drag-item textarea {
-  background-color: rgba(0, 0, 0, 0);
-}
 .drag-text {
   cursor: move;
   position: absolute;

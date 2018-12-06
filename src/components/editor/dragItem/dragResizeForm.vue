@@ -135,9 +135,6 @@ export default {
 </script>
 
 <style>
-.drag-item textarea {
-  background-color: rgba(0, 0, 0, 0);
-}
 .drag-text {
   cursor: move;
   position: absolute;
