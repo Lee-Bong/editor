@@ -33,7 +33,7 @@
             {{ scope.row.online | isOnline }}
           </el-button>
            <el-button size="mini" type="info" plain
-            :disabled="scope.row.online"
+            :disabled="Boolean(scope.row.online)"
             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>

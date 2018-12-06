@@ -89,7 +89,6 @@ export default {
     },
     handleSearch() {
       const value = this.searchValue;
-      if (!value || !value.trim()) return false;
       if (this.activeTab === 'pages') {
         this.$refs.tableList.search(value);
       } else if (this.activeTab === 'draft') {

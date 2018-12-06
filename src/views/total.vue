@@ -4,7 +4,7 @@
       <template slot="btnGroup">
       </template>
     </nav-bar>
-    <el-tabs  v-model="activeTab" type="card" class="main-total-wrap" @tab-click="tabChange">
+    <el-tabs v-model="activeTab" type="card" class="main-total-wrap" @tab-click="tabChange">
       <el-tab-pane name="webTotal" label="页面统计">
       </el-tab-pane>
       <el-tab-pane name="formTotal" label="表单汇总">

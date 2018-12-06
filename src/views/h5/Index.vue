@@ -140,7 +140,8 @@ export default {
           draft, public: formal, visible, forms, draft: intend,
         },
       } = await getPageInfo(this.pageId);
-      if ((this.$route.is_formal && (!visible || !formal)) || (!this.$route.is_formal && !intend)) {
+      if ((this.$route.query.is_formal && (!visible || !formal)) ||
+       (!this.$route.query.is_formal && !intend)) {
         this.showError = true;
       }
       this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);

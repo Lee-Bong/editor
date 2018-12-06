@@ -9,14 +9,14 @@
         <transition-group name="list-complete" >
           <el-row type="flex" v-for="(item, index) in list" :key="index" class="moving">
             <el-input :placeholder="'选项' + (index+1)" class="option-item"
-            ref="optionText" clearable
+            ref="optionText"
             v-model="item.text" @change="optionTextChange(index)"
             @clear="optionTextChange(index, '')"></el-input>
             <el-button v-if="list.length && list.length > 1"
-            type="text" icon="el-icon-delete"
+            icon="el-icon-delete"
             class="del" @click="delOption(index)"></el-button>
             <el-button v-if="list.length && list.length > 1"
-            type="text" icon="el-icon-rank"></el-button>
+            icon="el-icon-rank" class="move"></el-button>
           </el-row>
         </transition-group>
       </draggable>
@@ -91,8 +91,14 @@ export default {
   margin-left: 20px;
 }
 .options-manage .option-item {
-    width: 250px;
-  }
+  width: 260px;
+}
+.options-manage .option-item input {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+}
 .options-manage .del {
   margin-left: 10px;
 }
@@ -104,5 +110,12 @@ export default {
 }
 .options-manage .el-row--flex {
   margin-bottom: 8px;
+}
+.options-manage .del, .options-manage .move {
+  border: 1px solid rgba(0, 0, 0, 0) !important;
+  background-color: #fff !important;
+  padding: 5px;
+  cursor: pointer;
+  margin-left: 2px;
 }
 </style>

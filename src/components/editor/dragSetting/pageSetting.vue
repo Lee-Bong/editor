@@ -153,6 +153,8 @@ export default {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   box-sizing: border-box;
+  min-height: 30px;
+  line-height: 20px;
 }
 .code-name {
   display: inline-block;
