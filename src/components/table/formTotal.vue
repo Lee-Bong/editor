@@ -217,7 +217,7 @@ export default {
         link.style.display = 'none';
         link.href = url;
         const title = this.formInfo.title ? this.formInfo.title : '表单汇总';
-        link.setAttribute('download', `${title}.xsl`);
+        link.setAttribute('download', `${title}.xls`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
