@@ -97,11 +97,20 @@ export default {
   beforeUpdate() {
   },
   computed: {
-    parentH() {
-      if (this.dragForm.position === 'relative') {
-        return this.$store.state.page.phoneHeight;
-      }
-      return this.$store.state.page.screenHeight;
+    parentH: {
+      get() {
+        const height = this.dragForm.position === 'relative' ? this.$store.state.page.phoneHeight : this.$store.state.page.screenHeight;
+        // if (this.dragForm.position === 'relative') {
+        //   console.log('relative', this.$store.state.page.phoneHeight);
+        //   return this.$store.state.page.phoneHeight;
+        // }
+        // console.log('fixed', this.$store.state.page.screenHeight);
+        return height;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
     },
     isResizable() {
       let isResize = true;
@@ -148,6 +157,9 @@ export default {
         [form]: dragItems,
       });
     },
+  },
+  updated() {
+    console.log('ssss', this.parentH);
   },
 };
 </script>

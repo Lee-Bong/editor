@@ -28,7 +28,7 @@
           >近30天</div>
         </div>
         <el-table
-          class="table-box"
+          class="total-table"
           style="width: 100%"
           v-loading="loading0"
           :data="viewData"
@@ -104,7 +104,7 @@
           >总计</div>
         </div>
         <el-table
-          class="table-box"
+          class="total-table"
           style="width: 100%"
           v-loading="loading1"
           :data="clickData"
@@ -367,12 +367,6 @@ export default {
 };
 </script>
 <style>
-.table-box {
-  margin-top: 20px;
-}
-.table-box .el-button + .el-button:nth-child(2n + 1) {
-  margin-left: 10px;
-}
 .table-page {
   margin-top: 20px;
   height: 40px;
@@ -423,4 +417,8 @@ export default {
 .table-wrap .el-date-editor--daterange.el-input__inner {
   width: 250px;
 }
+.total-table.el-table th {
+  background: #fff;
+}
+
 </style>

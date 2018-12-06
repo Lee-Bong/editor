@@ -30,9 +30,15 @@ export default {
   methods: {
     show() {
       this.isShow = true;
+      document.body.addEventListener('touchmove', this.bodyScroll, false);
+      document.body.style.position = 'fixed';
     },
     hide() {
       this.isShow = false;
+      document.body.style.position = 'initial';
+    },
+    bodyScroll(event) {
+      event.preventDefault();
     },
   },
 };

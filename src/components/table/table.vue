@@ -235,6 +235,7 @@ export default {
 }
 .table-box .el-button.view-total {
   margin-left: 0;
+  color: #409EFF;
 }
 .table-box.el-table th {
   background: #f5f7fa;

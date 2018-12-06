@@ -41,6 +41,7 @@ export default {
       this.$emit('dragStop', this.dragName, evs, this.listIndex);
     },
     forceUpdate() {
+      console.log('forceUpdate', this.dragForm.position);
       this.$forceUpdate();
     },
   },

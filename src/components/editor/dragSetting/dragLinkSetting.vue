@@ -139,6 +139,11 @@ export default {
         });
         return false;
       }
+      const { dragLinks, imgActive } = this.editor;
+      dragLinks[imgActive].position = val;
+      this.$store.commit('editor_update', {
+        dragLinks,
+      });
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;

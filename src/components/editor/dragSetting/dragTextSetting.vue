@@ -170,13 +170,22 @@ export default {
           type: 'error',
           duration: 2000,
         });
-        const { dragTexts, textActive } = this.editor;
+        const { textActive } = this.editor;
+        let { dragTexts } = this.editor;
         dragTexts[textActive].position = 'relative';
+        dragTexts = Object.assign([], dragTexts);
         this.$store.commit('editor_update', {
           dragTexts,
         });
         return false;
       }
+      const { textActive } = this.editor;
+      let { dragTexts } = this.editor;
+      dragTexts[textActive].position = val;
+      dragTexts = Object.assign([], dragTexts);
+      this.$store.commit('editor_update', {
+        dragTexts,
+      });
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;

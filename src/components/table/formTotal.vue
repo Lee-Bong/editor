@@ -14,7 +14,7 @@
             :disabled="item.id === 'fId'"
             v-for="item in formItems"
             :key="item.value"
-            :label="item.label"
+            :label="item.label? item.label : '   '"
             :selected="true"
             :value="item.id">
           </el-option>
@@ -24,15 +24,15 @@
       </div>
         <div class="filter-right">
           <el-button @click="stopCollect">
-            <i class="el-icon-bell" v-if="!isStop"></i>
-            <i class="el-icon-time" v-if="isStop"></i>
-            <span v-if="formInfo.isStop">开始收集</span>
-            <span v-if="!formInfo.isStop">停止收集</span>
+            <i class="el-icon-bell" v-if="!isStopCollect"></i>
+            <i class="el-icon-time" v-if="isStopCollect"></i>
+            <span v-if="isStopCollect">开始收集</span>
+            <span v-if="!isStopCollect">停止收集</span>
           </el-button>
           <el-button icon="el-icon-upload2" @click="exportTable">导出表格</el-button>
         </div>
       </div>
-      <el-table class="table-box" style="width: 100%" border v-loading="loading1" ref="tableRef"
+      <el-table class="form-table" style="width: 100%" border v-loading="loading1" ref="tableRef"
         :data="formData" >
         <el-table-column v-for="(item, index) in formShowItems" :key="index" class="table-col"
         :prop="item.id" :label="item.label" min-width="80" :width="item.id === 'fId' &&
@@ -88,11 +88,23 @@ export default {
       formData: [],
       filters: [], // 当前显示的表格列['id', ***]
       filtersBefore: [],
-      isStop: false,
+      isStopCollect: false,
     };
   },
   mounted() {
     this.formSummary();
+  },
+  computed: {
+    isStop: {
+      get() {
+        return this.formInfo.isStop || false;
+      },
+      set() {
+      },
+      immediate: true,
+      deep: true,
+      stopCollect: false,
+    },
   },
   methods: {
     formItemShow(i) {
@@ -104,6 +116,7 @@ export default {
     },
     async formSummary(pager) {
       try {
+        this.isStopCollect = this.formInfo.isStop;
         const data = await formSummary({
           page_id: this.$route.query.page_id,
           currentPage: pager || 1,
@@ -241,10 +254,11 @@ export default {
     // 导出表格
     async stopCollect() {
       try {
-        const { status } = await formStopCollect(this.$route.query.page_id, !this.formInfo.isStop);
+        const { status } = await formStopCollect(this.$route.query.page_id, !this.isStopCollect);
         if (status === 'ok') {
-          this.$emit('isStopChange', !this.formInfo.isStop);
-          this.$message.success('停止收集设置成功～');
+          this.isStopCollect = !this.isStopCollect;
+          this.$emit('isStopChange', !this.isStop);
+          this.$message.success('设置成功～');
         } else {
           this.$message.error('操作失败，请重试～');
         }
@@ -254,7 +268,6 @@ export default {
     },
   },
   updated() {
-
   },
 
 };
@@ -266,6 +279,9 @@ export default {
   color: #999;
   line-height: 50px;
   font-size: 14px;
+}
+.perate-wrap {
+  margin-bottom: 15px;
 }
 .perate-wrap .el-select {
   position: relative;
@@ -310,9 +326,18 @@ export default {
   color: #333;
 }
 .filter-option {
-  width: 150px;
+    width: auto;
+    min-width: 150px;
+    max-width: 400px;
+    border-top: 1px solid #dddddd5c;
 }
-.table-box .cell-show  {
+.filter-option:first-child {
+  border-top: 0;
+}
+.filter-option.el-select-dropdown.is-multiple .el-select-dropdown__item.selected::after {
+  right: 16px;
+}
+.form-table .cell-show  {
   max-height: 67px;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -320,14 +345,21 @@ export default {
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
-.table-box .cell-hide {
+.form-table .cell-hide {
   position: absolute;
   top: 0;
   opacity: 1;
   z-index: -1;
-  background: red;
 }
-
+.form-table.el-table th {
+  background: #f5f7fa;
+}
+.form-table.el-table th.is-leaf .cell{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: break-all;
+}
 .filter-right {
   float: right;
 }

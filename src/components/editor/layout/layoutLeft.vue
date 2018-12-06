@@ -330,6 +330,7 @@ export default {
             icon,
             isRequired: false,
             label: '单行文本',
+            place: '单行文本',
           }));
           newEditor = {
             fTextSet: true,

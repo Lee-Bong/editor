@@ -1,7 +1,7 @@
 <template>
   <div class="manage-wrap">
     <div class="header-fixed flex">
-        <el-tabs v-model="activeTab" @tab-click="tabChange">
+        <el-tabs v-model="activeTab" @tab-click="tabChange" class="manage-tabs">
           <el-tab-pane name="pages">
             <span slot="label">
               <i class="el-icon-date"></i>H5 管理</span>
@@ -119,7 +119,7 @@ export default {
   line-height: 56px;
 }
 
-.el-tabs__nav-scroll {
+.manage-tabs .el-tabs__nav-scroll {
   border: 1px solid #fafafa;
 }
 

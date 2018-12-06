@@ -3,8 +3,9 @@
     <template slot="form">
       <el-form ref="form" label-width="90px">
         <el-form-item label="标题：" size="mini">
-          <el-input type="text" :placeholder="setForm.place" v-model="dragForm.label"
-          @change="labelEvent"></el-input>
+          <el-input type="text" v-model="dragForm.label"
+          @change="labelEvent" maxlength="15"></el-input>
+          <span class="title-tip">标题最多输入15个字</span>
         </el-form-item>
         <el-form-item label="" size="mini" v-if="!setForm.noReauired">
           <div style="width: 90px; display: inline-block;"></div>
@@ -93,5 +94,9 @@ export default {
   color: #999;
   display: inline-block;
   margin-left: 5px;
+}
+.title-tip {
+  color: #999;
+  font-size: 12px;
 }
 </style>

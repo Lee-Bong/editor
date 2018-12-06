@@ -67,7 +67,10 @@ export default {
       const { data } = await getPageInfo(this.$route.query.page_id);
       this.title = data.public_title ? data.public_title : '';
       this.showTitle = this.title ? `（${this.title}）` : '';
-      this.formInfo = { title: this.title, isStop: data.forms[0].stop_collect };
+      this.formInfo = { title: this.title };
+      if (data.forms[0]) {
+        this.formInfo.isStop = data.forms[0].stop_collect || false;
+      }
       const json = JSON.parse(data.state);
       const { layerLists } = json.publish.editor;
       const clickArr = [];
@@ -92,12 +95,6 @@ export default {
 .main-total-wrap .el-tabs__nav.is-top {
   height: 41px !important;
   line-height: 39px;
-}
-.table-box {
-  margin-top: 20px;
-}
-.table-box .el-button + .el-button:nth-child(2n + 1) {
-  margin-left: 10px;
 }
 .table-page {
   margin-top: 20px;
