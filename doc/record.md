@@ -46,3 +46,15 @@ http://apidoc.seeyouyima.com/edit/5c00a0363b82db1c76e4443c
 
 ## url参数说明
 h5: query is_formal=1网页已发布状态，预览的页面没有该参数
+
+
+判断一个网页是否被删除：
+发布： public !== ''
+上线： visible: true
+下线： visible: false
+删除： public === ''
+h5判断页面状态
+
+发布过的页面： this.$route.is_formal && （!visible || !public） （visible: false只表示线上数据被下线）
+草稿： !this.$route.is_formal && !draft
+

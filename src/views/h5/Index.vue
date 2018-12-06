@@ -137,10 +137,10 @@ export default {
     try {
       const {
         data: {
-          draft, public: formal, visible, forms,
+          draft, public: formal, visible, forms, draft: intend,
         },
       } = await getPageInfo(this.pageId);
-      if (!visible) {
+      if ((this.$route.is_formal && (!visible || !formal)) || (!this.$route.is_formal && !intend)) {
         this.showError = true;
       }
       this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
