@@ -140,10 +140,10 @@ export default {
           draft, public: formal, visible, forms,
         },
       } = await getPageInfo(this.pageId);
-      this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
       if (!visible) {
         this.showError = true;
       }
+      this.pageJson = JSON.parse(this.isFormal === '1' ? formal : draft);
       if (forms && forms.length) {
         this.isStopCollect = forms[0].stop_collect;
       }
