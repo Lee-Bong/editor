@@ -34,6 +34,7 @@
 </template>
 <script>
 import merge from 'webpack-merge';
+import { isEqual } from 'lodash';
 import layoutMain from '@/components/editor/layout/layoutMain';
 import layer from '@/components/editor/layout/layer';
 import layoutLeft from '@/components/editor/layout/layoutLeft';
@@ -42,6 +43,7 @@ import phoneBanner from '@/components/editor/layout/phoneBanner';
 import NavBar from '@/components/NavBar';
 import { postPageInfo, getPageInfo, patchPageInfo, publishPage } from '@/service';
 import { dragCom } from '@/util/dragMxi';
+
 
 export default {
   mixins: [dragCom()],
@@ -618,7 +620,10 @@ export default {
       this.isPublish = !!this.$route.query.public;
       const curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
       this.initState = JSON.stringify(curState);
-      this.beforeState = JSON.stringify(curState);
+      this.beforeState = curState;
+
+      console.log('this.beforeState', this.beforeState);
+      console.log('curState', curState);
       this.$store.commit('editor_update', curState.editor);
       this.$store.commit('page_update', curState.page);
     },
@@ -636,9 +641,8 @@ export default {
       return isContain;
     },
     goCheck() { // 离开页面，检测是否操作都保存
-      const curState = JSON.stringify(this.$store.state);
-      let isOk = true;
-      if (curState !== this.beforeState) isOk = false;
+      const isOk = isEqual(this.beforeState.page, this.$store.state.page)
+      && isEqual(this.beforeState.editor, this.$store.state.editor);
       return isOk;
     },
   },
