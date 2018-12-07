@@ -76,7 +76,7 @@
               class="number-item">
               <el-input-number
                 v-model="fixedBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>

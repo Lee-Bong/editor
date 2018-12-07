@@ -1,47 +1,48 @@
 <template>
     <div
-        class="container"
-        :class="{ 'ipx-padding': isFixed }"
-        :id="component.id"
-        :style="containerStyle()"
-    >
+      class="container"
+      :class="{ 'ipx-padding': isFixed }"
+      :style="containerStyle()">
         <div
-          v-if="component.type === 1"
-          :style="component.style"
-          v-html="component.content"
-          style="white-space: pre-wrap"
-        >
+        :id="component.id"
+        v-if="component.type === 1"
+        :style="component.style"
+        v-html="component.content"
+        style="white-space: pre-wrap" >
         </div>
         <img
-            v-if="component.type === 2"
-            :style="component.style"
-            v-lazy="transformImgUrl(component.url, component.size.h, component.size.w)"
-            class="image"
+          :id="component.id"
+          v-if="component.type === 2"
+          :style="component.style"
+          v-lazy="transformImgUrl(component.url, component.size.h, component.size.w)"
+          class="image"
         />
         <div
-            v-if="component.type === 3"
-            class="link"
-            :style="component.style"
-            @click="handleLinkClick(component.key)"
+          :id="component.id"
+          v-if="component.type === 3"
+          class="link"
+          :style="component.style"
+          @click="handleLinkClick(component.key)"
         >
         </div>
         <div
-            v-if="component.type === 4"
-            :style="component.style"
-        >
+          :id="component.id"
+          v-if="component.type === 4"
+          :style="component.style">
             <img
-                v-for="(image, index) in component.imgList"
-                :key="index"
-                v-lazy="transformImgUrl(image.url, image.size.h * scale, image.size.w * scale)"
-                :style="{
-                    height: `${image.size.h * scale}px`,
-                    width: `${image.size.w * scale}px`,
-                }"
-                class="image"
-                alt=""
+              v-for="(image, index) in component.imgList"
+              :key="index"
+              v-lazy="transformImgUrl(image.url, image.size.h * scale, image.size.w * scale)"
+              :style="{
+                height: `${image.size.h * scale}px`,
+                width: `${image.size.w * scale}px`,
+              }"
+              class="image"
+              alt=""
             />
         </div>
         <video
+            :id="component.id"
             v-if="component.type === 5"
             :style="component.style"
             :src="component.source"
@@ -53,6 +54,7 @@
             x5-playsinline
         />
         <audio-play
+            :id="component.id"
             v-if="component.type === 6"
             :style="component.style"
             :play="component.play"

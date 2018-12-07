@@ -111,9 +111,10 @@ export default {
         const { title, name } = this.$store.state.page;
         const stitle = isPublish ? 'public_title' : 'draft_title';
         const sname = isPublish ? 'public_name' : 'draft_name';
+        const updateInfo = isPublish ? 'public' : 'draft';
         const params = {
           state,
-          draft,
+          [updateInfo]: draft,
           [stitle]: title,
           [sname]: name,
         };

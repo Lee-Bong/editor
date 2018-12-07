@@ -8,7 +8,7 @@
     <div class="setting-title">
       <span>组件设置</span>
       <span class="header-btn">
-          <i class="el-icon-close" @click="settingClose"></i>
+        <i class="el-icon-close" @click="settingClose"></i>
       </span>
     </div>
     <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
@@ -90,7 +90,7 @@
           class="number-item">
           <el-input-number
             :value="fixedBottom" @change="fixedBottomChange"
-            :min="location.ymin" :max="(page.phoneHeight-dragForm.size.h)"
+            :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
         </el-form>
@@ -205,7 +205,6 @@ export default {
     this.lineNum = (this.dragForm.lineHeight / 3) * 100;
   },
   updated() {
-
   },
 };
 </script>

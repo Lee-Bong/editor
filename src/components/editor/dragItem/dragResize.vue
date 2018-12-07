@@ -159,14 +159,13 @@ export default {
     },
   },
   updated() {
-    console.log('ssss', this.parentH);
   },
 };
 </script>
 
 <style>
 .drag-item textarea {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: #fff;
 }
 .drag-text {
   cursor: move;
