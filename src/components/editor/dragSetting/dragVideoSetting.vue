@@ -216,11 +216,11 @@ export default {
   },
   methods: {
     sourceChange(type) {
-      const isActive = Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
-       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
-      if (!isActive && (this.dragForm.size.h !== this.editor.mediaHeight
-        || this.dragForm.size.w !== this.page.phoneWidth
-        || !this.dragForm.isLineUpload)) {
+      const curSrouce = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+      const isActive = Boolean(curSrouce.url);
+      if ((!isActive && (this.dragForm.size && (this.dragForm.size.h !== this.editor.mediaHeight ||
+       this.dragForm.size.w !== this.page.phoneWidth)))
+        || !this.dragForm.isLineUpload) {
         this.setVideoInit();
       } else {
         const videoObj = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
@@ -542,7 +542,7 @@ export default {
         },
       };
       if (newVideo) {
-        newObj = Object.assign({}, newObj, newVideo);
+        newObj = Object.assign(newObj, newVideo);
       }
       if (isClear) {
         if (this.dragForm.sourceType === '1' && this.dragForm.video.url) {
@@ -556,6 +556,7 @@ export default {
       drags = Object.assign({}, drags, newObj);
       videos[this.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
+      this.ratioSet(this, 'dragVideos', 'videoActive');
     },
   },
   mounted() {

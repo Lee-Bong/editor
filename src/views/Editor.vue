@@ -621,9 +621,12 @@ export default {
       const curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
       this.initState = JSON.stringify(curState);
       this.beforeState = curState;
-
       this.$store.commit('editor_update', curState.editor);
       this.$store.commit('page_update', curState.page);
+      if (!curState.page.name) {
+        const name = this.isPublish ? this.gobalState.publish_title : this.gobalState.draft_name;
+        this.$store.commit('page_update', { name });
+      }
     },
     delCheck() {
       const { className } = document.activeElement;
