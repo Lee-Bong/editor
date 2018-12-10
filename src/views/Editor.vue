@@ -126,7 +126,7 @@ export default {
         } else {
           data = await patchPageInfo(this.$route.query.page_id, params);
         }
-        this.beforeState = JSON.stringify(this.$store.state);
+        this.beforeState = this.$store.state;
         if (data && data.status === 'ok' && data.data) {
           if (isTrigger) {
             this.optSucsess('保存草稿');
@@ -622,8 +622,6 @@ export default {
       this.initState = JSON.stringify(curState);
       this.beforeState = curState;
 
-      console.log('this.beforeState', this.beforeState);
-      console.log('curState', curState);
       this.$store.commit('editor_update', curState.editor);
       this.$store.commit('page_update', curState.page);
     },
