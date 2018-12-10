@@ -165,8 +165,9 @@ export default {
     },
     locationBottom: {
       get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
         return this.$store.state.page.screenHeight - this.locationY
-            - this.dragForm.size.h;
+            - curPlay.size.h;
       },
       set() {
       },
@@ -383,7 +384,7 @@ export default {
     },
     positionChange(val) {
       const curPlay = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
-      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - curPlay.size.h;
       const audios = this.editor.dragAudios;
       let drags = audios[this.editor.audioActive];
       if (val !== 'relative' && drags[curPlay].size.h > this.page.screenHeight) {
