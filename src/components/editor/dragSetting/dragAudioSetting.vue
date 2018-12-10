@@ -50,7 +50,8 @@
             :disabled="!isAction" controls-position="right"
             class="num-input"></el-input-number>
           <el-input-number v-model="locationY" @change="locationYchange"
-            :min="location.ymin" :max="yMax"
+            :min="location.ymin"
+            :max="mediaSource.size ? (page.phoneHeight-mediaSource.size.h) : 667"
             :disabled="!isAction" controls-position="right"
             class="num-input"></el-input-number>
         </el-form-item>
@@ -165,8 +166,9 @@ export default {
     },
     locationBottom: {
       get() {
+        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.play : this.dragForm.linePlay;
         return this.$store.state.page.screenHeight - this.locationY
-            - this.dragForm.size.h;
+            - curPlay.size.h;
       },
       set() {
       },
@@ -383,7 +385,7 @@ export default {
     },
     positionChange(val) {
       const curPlay = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
-      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - this.dragForm[curPlay].size.h;
       const audios = this.editor.dragAudios;
       let drags = audios[this.editor.audioActive];
       if (val !== 'relative' && drags[curPlay].size.h > this.page.screenHeight) {
@@ -480,14 +482,16 @@ export default {
       this.$store.commit('editor_update', { dragAudios: audios });
     },
     sizeWChange(val) {
+      const curPlay = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
       this.sizeChange({
         w: val,
-        h: this.dragForm.size.h,
+        h: this.dragForm[curPlay].size.h,
       });
     },
     sizeHChange(val) {
+      const curPlay = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
       this.sizeChange({
-        w: this.dragForm.size.w,
+        w: this.dragForm[curPlay].size.w,
         h: val,
       });
     },
