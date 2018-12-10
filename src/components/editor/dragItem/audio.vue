@@ -3,74 +3,58 @@
       :isActive="dragForm.isActive"
       :w="form.size.w"
       :h="form.size.h"
-      :sticks="['tl','tr','br','bl']"
+      :sticks="['tm','bm','ml','mr']"
       :x="form.location.x"
       :y="form.location.y"
       :z="dragForm.zIndex"
       :isDraggable="isAction"
       :isResizable="isAction"
+      :aspectRatio="false"
       :index="dragForm.dragIndex"
       :listIndex="listIndex"
       :parentLimitation="true"
-      :aspectRatio="dragForm.isUpload ? true: false"
       :preventActiveBehavior="true"
       :parentH="parentH"
-      :minw="218"
-      :minh="minh"
+      :minh="80"
+      :minw="186"
+
       @clicked="dragTextClick"
       @resizing="resize"
       @dragging="resize"
       @dragstop="dragstop"
       @resizestop="resizestop"
       :class="{ 'drag-item': isAction }"
-      >
+    >
       <i class="el-icon-circle-close-outline drag-del drag-del-bottom"
       v-if="dragForm.isActive"
       @click="dragDel">
       </i>
-      <div class="drag-img" v-if="!isAction">
-        <div class="video-play">
-          <i class="el-icon-caret-right"></i>
-        </div>
+      <div>
+        <audio-play :isBorder="(this.dragForm.isBorder === '1')"
+          :play="this.dragForm.sourceType === '1' ? dragForm.play : dragForm.linePlay"/>
       </div>
-      <video v-if="dragForm.sourceType === '1' &&  dragForm.video.url"
-        ref="videoPlay"
-        class="video-show"
-        width="100%"
-        height="100%"
-        :src="dragForm.video.url"
-        controlsList="nodownload"
-        :poster="dragForm.video.poster" controls>
-          <source :src="dragForm.video.url"
-           type="video/mp4">
-        </video>
-        <video v-if="dragForm.sourceType === '2' &&  dragForm.lineVideo.url"
-        ref="lineVideoPlay"
-        class="video-show"
-        width="100%"
-        height="100%"
-        :poster="dragForm.lineVideo.poster" controls>
-          <source :src="dragForm.lineVideo.url">
-        </video>
     </vue-drag-resize>
 
 </template>
 <script>
 import VueDragResize from 'vue-drag-resize';
+import audioPlay from '@/components/editor/dragSetting/upload/audioPlay';
 
 export default {
-  name: 'dragVideo',
+  name: 'dragAudio',
   components: {
     'vue-drag-resize': VueDragResize,
+    audioPlay,
   },
   props: {
-    listIndex: Number,
     dragForm: Object,
+    listIndex: Number,
     form: Object,
   },
   data() {
     return {
-      dragName: 'dragVideos',
+      isPlay: false,
+      dragName: 'dragAudios',
       beforeZ: 0,
       inputValue: '',
       input: '',
@@ -92,11 +76,6 @@ export default {
     },
     isAction() {
       return Boolean(this.form && this.form.url);
-    },
-    minh: {
-      get() {
-        return this.form.size ? (this.form.size.h * 218) / this.form.size.w : 100;
-      },
     },
   },
 
@@ -120,10 +99,7 @@ export default {
     dragDel() {
       this.$emit('dragDel');
     },
-    dragDeactivated() { // 点击组件外区域
-    },
     dragstop(ev) {
-      // this.$emit('dragStop', this.dragName, ev, this.listIndex);
       this.locationChange({
         x: ev.left,
         y: ev.top,
@@ -143,34 +119,42 @@ export default {
         w: ev.width,
         h: ev.height,
       };
+      curPlay.location = {
+        x: ev.left,
+        y: ev.top,
+      };
       let playObj = {};
       if (isAction) {
-        playObj = { video: curPlay };
+        playObj = { play: curPlay };
       } else {
-        playObj = { lineVideo: curPlay };
+        playObj = { linePlay: curPlay };
       }
-      this.updateVideo(playObj);
+      this.updateAudio(playObj);
+    },
+    updateAudio(playObj) {
+      const { dragAudios, audioActive } = this.$store.state.editor;
+      let drags = dragAudios[audioActive];
+      drags = Object.assign({}, drags, playObj);
+      dragAudios[audioActive] = drags;
+      const lists = Object.assign([], dragAudios);
+      this.$store.commit('editor_update', { dragAudios: lists });
     },
     locationChange(location) { // 位置值发生改变
       const isAction = this.dragForm.sourceType === '1';
       const curPlay = this.form;
       curPlay.location = location;
-
       let playObj = {};
       if (isAction) {
-        playObj = { video: curPlay };
+        playObj = { play: curPlay };
       } else {
-        playObj = { lineVideo: curPlay };
+        playObj = { linePlay: curPlay };
       }
-      this.updateVideo(playObj);
-    },
-    updateVideo(playObj) {
-      const { dragVideos, videoActive } = this.$store.state.editor;
-      let drags = dragVideos[videoActive];
+      const { dragAudios, audioActive } = this.$store.state.editor;
+      let drags = dragAudios[audioActive];
       drags = Object.assign({}, drags, playObj);
-      dragVideos[videoActive] = drags;
-      const lists = Object.assign([], dragVideos);
-      this.$store.commit('editor_update', { dragVideos: lists });
+      dragAudios[audioActive] = drags;
+      const lists = Object.assign([], dragAudios);
+      this.$store.commit('editor_update', { dragAudios: lists });
     },
     forceUpdate() {
       this.$forceUpdate();
@@ -178,30 +162,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.video-wrap {
-  background: red;
-}
-.video-play {
-  width: 44px;
-  height: 44px;
-  background-color: #211e1e61;
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -22px;
-  margin-top: -22px;
-}
-.video-play i {
-  font-size: 40px;
-  color: #ffffffab;
-}
-.video-show {
-  cursor: move !important;
-}
-</style>

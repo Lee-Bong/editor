@@ -1,9 +1,11 @@
 <template>
 <div class="video-wrap">
   <d-video :form="dragForm.video" :dragForm="dragForm" :listIndex="listIndex"
-   v-show="dragForm.sourceType === '1'" @dragTextClick="dragTextClick"/>
+   v-show="dragForm.sourceType === '1'" @dragTextClick="dragTextClick"
+   @dragDel="dragDel" ref="videoRef"/>
   <d-video :form="dragForm.lineVideo" :dragForm="dragForm" :listIndex="listIndex"
-   v-show="dragForm.sourceType === '2'" @dragTextClick="dragTextClick"/>
+   v-show="dragForm.sourceType === '2'" @dragTextClick="dragTextClick"
+   @dragDel="dragDel" ref="videolineRef"/>
 </div>
 </template>
 <script>
@@ -38,10 +40,14 @@ export default {
 
   methods: {
     forceUpdate() {
-      this.$forceUpdate();
+      this.$refs.videoRef.forceUpdate();
+      this.$refs.videolineRef.forceUpdate();
     },
-    dragTextClick(index) {
-      this.$emit('dragTextClick', index, 5);
+    dragTextClick() {
+      this.$emit('dragTextClick', this.listIndex, 5);
+    },
+    dragDel() {
+      this.$emit('dragDel', 5, this.listIndex, this.dragForm.dragIndex);
     },
   },
 };
