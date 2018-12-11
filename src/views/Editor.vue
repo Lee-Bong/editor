@@ -615,16 +615,16 @@ export default {
         publish: JSON.parse(this.dataInit),
       };
       if (data) {
-        this.gobalState = JSON.parse(data);
+        this.gobalState = JSON.parse(data.state);
       }
-      this.isPublish = !!this.$route.query.public;
+      this.isPublish = Number(this.$route.query.public);
       const curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
       this.initState = JSON.stringify(curState);
       this.beforeState = curState;
       this.$store.commit('editor_update', curState.editor);
       this.$store.commit('page_update', curState.page);
-      if (!curState.page.name) {
-        const name = this.isPublish ? this.gobalState.publish_title : this.gobalState.draft_name;
+      if (!curState.page.name && data) {
+        const name = this.isPublish ? data.publish_name : data.draft_name;
         this.$store.commit('page_update', { name });
       }
     },
@@ -652,7 +652,7 @@ export default {
       try {
         this.isFirst = false;
         const { data } = await getPageInfo(this.$route.query.page_id);
-        this.editorInit(data.state);
+        this.editorInit(data);
       } catch (err) {
         this.optError('获取编辑器数据');
         this.editorInit();
