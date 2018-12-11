@@ -240,8 +240,7 @@ export default {
           });
           formShowItems = formShowItems.filter(t => t && t !== undefined && t !== null);
           this.formShowItems = formShowItems;
-          this.$refs.tableRef.doLayout();
-          this.expendSet();
+          this.formSummary(this.formPager.pager);
         }
       }
     },
