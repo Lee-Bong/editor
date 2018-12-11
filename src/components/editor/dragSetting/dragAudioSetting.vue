@@ -82,13 +82,13 @@
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedTop'">
               <el-input-number
                 v-model="locationY" @change="fixedTopChange"
-                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-mediaSource.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
             <el-form-item label="距离：" size="mini" v-if="playPositon === 'fixedBottom'">
               <el-input-number
                 v-model="locationBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
+                :min="location.ymin" :max="(page.screenHeight-mediaSource.size.h)"
                 controls-position="right" class="num-input"></el-input-number>
             </el-form-item>
           </div>
@@ -405,6 +405,11 @@ export default {
         drags[curPlay].location.y = maxBottom;
       }
       drags[curPlay].position = val;
+      drags[curPlay].size = {
+        w: drags[curPlay].size.w,
+        h: drags[curPlay].size.h,
+      };
+      drags.isUpload = false;
       drags = Object.assign({}, drags, drags[curPlay]);
       audios[this.editor.audioActive] = drags;
       this.$store.commit('editor_update', { dragAudios: audios });
