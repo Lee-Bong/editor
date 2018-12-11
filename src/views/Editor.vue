@@ -624,7 +624,7 @@ export default {
       this.$store.commit('editor_update', curState.editor);
       this.$store.commit('page_update', curState.page);
       if (!curState.page.name && data) {
-        const name = this.isPublish ? data.publish_name : data.draft_name;
+        const name = this.isPublish ? data.publish_title : data.draft_title;
         this.$store.commit('page_update', { name });
       }
     },
