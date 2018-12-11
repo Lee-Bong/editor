@@ -6,6 +6,7 @@
         <div class="filter-text">表格过滤：</div>
         <div class="filter">
           <el-select v-model="showItems"
+          class="filter-select"
           multiple
           @change="filterChange"
           @visible-change="filterFocus"
@@ -176,14 +177,7 @@ export default {
               });
               this.formData = formData;
               this.$nextTick(() => {
-                const cellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'), 1);
-                const expendRef = Array.prototype.slice.call(document.getElementsByClassName('expend-all'), 1);
-                cellRef.map((item, index) => {
-                  if (item.offsetHeight > 67) {
-                    expendRef[index].style.display = 'block';
-                  }
-                  return true;
-                });
+                this.expendSet(true);
               });
             } else {
               this.hasData = false;
@@ -198,6 +192,31 @@ export default {
         }
       } catch (err) {
         this.loading1 = false;
+      }
+    },
+    expendSet(isFirst) {
+      if (isFirst) {
+        const cellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'), 1);
+        const expendRef = Array.prototype.slice.call(document.getElementsByClassName('expend-all'), 1);
+        cellRef.map((item, index) => {
+          if (item.offsetHeight > 67) {
+            expendRef[index].style.display = 'block';
+            cellRef[index].className += ' expend-cell';
+            expendRef[index].className += ' expend-cell-all';
+          }
+          return true;
+        });
+      } else {
+        const overCellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'), 1);
+        const overRef = Array.prototype.slice.call(document.getElementsByClassName('expend-cell-all'), 1);
+        overCellRef.map((item, index) => {
+          if (item.offsetHeight > 67) {
+            overRef[index].style.display = 'block';
+          } else {
+            overRef[index].style.display = 'none';
+          }
+          return true;
+        });
       }
     },
     filterChange(list) {
@@ -222,6 +241,7 @@ export default {
           formShowItems = formShowItems.filter(t => t && t !== undefined && t !== null);
           this.formShowItems = formShowItems;
           this.$refs.tableRef.doLayout();
+          this.expendSet();
         }
       }
     },
@@ -351,6 +371,9 @@ export default {
 }
 .el-select-dropdown.is-multiple .el-select-dropdown__item.filter-option.selected::after {
   right: 10px !important;
+}
+.el-select-dropdown__wrap {
+  max-height: 320px;
 }
 .form-table .cell-show  {
   max-height: 67px;

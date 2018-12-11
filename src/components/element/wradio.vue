@@ -52,6 +52,7 @@ export default {
 </script>
 
 <style>
+a,input,label{-webkit-tap-highlight-color:rgba(255,0,0,0);}
 .radio-required {
   display: inline-block;
   margin-right: 2px;
