@@ -134,7 +134,7 @@ export default {
     locationBottom: {
       get() {
         return this.$store.state.page.screenHeight - this.locationY
-            - this.dragForm.size.h;
+            - this.mediaSource.size.h;
       },
       set() {
       },
@@ -216,14 +216,12 @@ export default {
   },
   methods: {
     sourceChange(type) {
-      const curSrouce = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+      const curSrouce = type === '1' ? this.dragForm.video : this.dragForm.lineVideo;
       const isActive = Boolean(curSrouce.url);
-      if ((!isActive && (this.dragForm.size && (this.dragForm.size.h !== this.editor.mediaHeight ||
-       this.dragForm.size.w !== this.page.phoneWidth)))
-        || !this.dragForm.isLineUpload) {
+      if (!isActive) {
         this.setVideoInit();
       } else {
-        const videoObj = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
+        const videoObj = type === '1' ? this.dragForm.video : this.dragForm.lineVideo;
         this.setVideoInit({
           size: {
             w: videoObj.w,
@@ -274,12 +272,12 @@ export default {
     sizeWChange(val) {
       this.sizeChange({
         w: val,
-        h: this.dragForm.size.h,
+        h: this.mediaSource.size.h,
       }, 1);
     },
     sizeHChange(val) {
       this.sizeChange({
-        w: this.dragForm.size.w,
+        w: this.mediaSource.size.w,
         h: val,
       }, 2);
     },
@@ -485,7 +483,7 @@ export default {
     },
     positionChange(val) {
       const curPlay = this.dragForm.sourceType === '1' ? 'video' : 'lineVideo';
-      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
+      const maxBottom = this.page.screenHeight - this.mediaSource.size.h;
       const videos = this.editor.dragVideos;
       let drags = videos[this.editor.videoActive];
       if (val !== 'relative' && drags[curPlay].size.h > this.page.screenHeight) {
@@ -505,9 +503,15 @@ export default {
         drags[curPlay].location.y = maxBottom;
       }
       drags[curPlay].position = val;
+      drags[curPlay].size = {
+        w: drags[curPlay].size.w,
+        h: drags[curPlay].size.h,
+      };
+      drags.isUpload = false;
       drags = Object.assign({}, drags, drags[curPlay]);
       videos[this.editor.videoActive] = drags;
       this.$store.commit('editor_update', { dragVideos: videos });
+      this.ratioSet(this, 'dragVideos', 'videoActive');
     },
     lineSourceBlur() {
       const val = this.lineSource;

@@ -174,6 +174,7 @@ export default {
     },
     forceUpdate() {
       this.$forceUpdate();
+      console.log('forceUpdate', `${this.dragForm.sourceType}ss${this.form.size.h}`);
     },
   },
 };
@@ -203,5 +204,20 @@ export default {
 }
 .video-show {
   cursor: move !important;
+}
+
+video::-webkit-media-controls-panel {
+    width: calc(100% + 30px);
+}
+video::-webkit-media-controls {
+    overflow: hidden !important;
+}
+video::-webkit-media-controls-enclosure {
+    overflow:hidden !important;
+    width: calc(100% + 32px);
+    margin-left: auto;
+}
+video::-internal-media-controls-download-button {
+    display: none;
 }
 </style>
