@@ -532,7 +532,7 @@ export default {
       //   const v = (c === 'x') ? r : ((r && 0x3) || 0x8);
       //   return v.toString(16);
       // });
-      return generate('1234567890abcdefghijklmn', 10);
+      return generate('abcdefghijklmnxyz', 10);
     },
   },
 };

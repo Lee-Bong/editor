@@ -33,27 +33,30 @@ export default {
     top: 13px;
     left: 7px;
 }
+.w-text .el-input__inner {
+  line-height: 18px;
+}
 .drag-form-item .el-input__inner::-webkit-input-placeholder,
 .w-text .el-input__inner::-webkit-input-placeholder{
-  padding-top: 12px;
+  /* padding-top: 12px; */
   color: #909399;
   font-size: 14px;
 }
 .drag-form-item .el-input__inner:-moz-placeholder
 .w-text .el-input__inner:-moz-placeholder{
-  padding-top: 12px;
+  /* padding-top: 12px; */
   color: #909399;
   font-size: 14px;
 }
 .drag-form-item .el-input__inner::-moz-placeholder
 .w-text .el-input__inner::-moz-placeholder{
-  padding-top: 12px;
+  /* padding-top: 12px; */
   color: #909399;
   font-size: 14px;
 }
 .drag-form-item .el-input__inner:-ms-input-placeholder
 .w-text .el-input__inner:-ms-input-placeholder{
-  padding-top: 12px;
+  /* padding-top: 12px; */
   color: #909399;
   font-size: 14px;
 }
