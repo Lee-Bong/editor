@@ -108,7 +108,7 @@ export default {
 .main-total-wrap {
   margin-top: 57px;
   /* background-color: #eee; */
-  padding: 20px 30px 30px 30px;
+  padding: 20px 15px 30px 15px;
 }
 .content-wrap {
   background-color: #fff;
