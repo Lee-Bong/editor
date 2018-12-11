@@ -83,17 +83,20 @@ export function formatTableData(data, isDraft) {
   };
   if (data.state) {
     const json = JSON.parse(data.state);
-    const { layerLists } = json.publish.editor;
-    const clickArr = [];
-    if (layerLists && layerLists.length) {
-      layerLists.map((item) => {
-        if (item.type === 3) {
-          clickArr[item.num] = item.name;
-        }
-        return true;
-      });
+    const pData = json.publish;
+    if (pData && pData.editor) {
+      const list = pData.editor.layerLists;
+      const clickArr = [];
+      if (list && list.length) {
+        list.map((item) => {
+          if (item.type === 3) {
+            clickArr[item.num] = item.name;
+          }
+          return true;
+        });
+      }
+      output.clickArr = clickArr;
     }
-    output.clickArr = clickArr;
   }
   return output;
 }

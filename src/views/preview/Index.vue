@@ -47,7 +47,7 @@
 import NavBar from '@/components/NavBar';
 import PhoneView from '@/components/PhoneView.vue';
 import QrCode from '@/components/QrCode.vue';
-import { getPageInfo, publishPage } from '@/service';
+import { getPageInfo, patchPageInfo } from '@/service';
 
 export default {
   data() {
@@ -55,6 +55,7 @@ export default {
       pageJson: null,
       // 预览手机头部的高度
       HeadHeight: 64,
+      pageData: null,
     };
   },
   components: {
@@ -64,8 +65,9 @@ export default {
   },
   async mounted() {
     try {
-      const { data: { draft } } = await getPageInfo(this.pageId);
-      this.pageJson = JSON.parse(draft);
+      const { data } = await getPageInfo(this.pageId);
+      this.pageData = data;
+      this.pageJson = JSON.parse(data.draft);
       if (!this.pageJson) {
         this.$router.replace('/error');
       }
@@ -78,15 +80,29 @@ export default {
       this.$router.push(`/editor?page_id=${this.pageId}`);
     },
     async publish() {
+      const draft = JSON.parse(this.pageData.state);
+      const state = {
+        draft: draft.draft,
+        publish: draft.draft,
+      };
       try {
-        await publishPage(this.pageId);
-        this.$message({
-          message: '发布成功~',
-          type: 'success',
+        const data = await patchPageInfo(this.pageId, {
+          state: JSON.stringify(state),
+          draft: '',
+          public: this.pageData.draft,
+          public_title: this.pageData.draft_title,
+          public_name: this.pageData.draft_name,
+          visible: true,
         });
-        setTimeout(() => {
-          this.$router.push(`publish?page_id=${this.pageId}`);
-        }, 3000);
+        if (data && data.status === 'ok') {
+          this.$message({
+            message: '发布成功~',
+            type: 'success',
+          });
+          setTimeout(() => {
+            this.$router.push(`publish?page_id=${this.pageId}`);
+          }, 3000);
+        }
       } catch (error) {
         this.$message.error(error.message);
       }
