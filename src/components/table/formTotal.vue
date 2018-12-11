@@ -35,8 +35,7 @@
       <el-table class="form-table" style="width: 100%" border v-loading="loading1" ref="tableRef"
         :data="formData" >
         <el-table-column v-for="(item, index) in formShowItems" :key="index" class="table-col"
-        :prop="item.id" :label="item.label" min-width="80" :width="item.id === 'fId' &&
-        formShowItems.length > 1 ? 80 : 'auto'">
+        :prop="item.id" :label="item.label" min-width="80" :width="setTWidth(item)">
         <template slot-scope="scope">
           <div>
             <div class="cell-show">{{scope.row[item.id]}}</div>
@@ -107,6 +106,19 @@ export default {
     },
   },
   methods: {
+    setTWidth(item) {
+      const w = window.innerWidth
+      || document.documentElement.clientWidth
+      || document.body.clientWidth;
+      if (item.id === 'fId') {
+        if (this.formShowItems.length === 1) return 'auto';
+        if (this.formShowItems.length > 1) return 80;
+      } else if (w - 30 > ((this.formShowItems.length - 1) * 181) + 80) {
+        return 'auto';
+      } else {
+        return 180;
+      }
+    },
     formItemShow(i) {
       return this.formShowItems.filter(item => item.id === this.formItems[i].id);
     },
@@ -334,8 +346,11 @@ export default {
 .filter-option:first-child {
   border-top: 0;
 }
-.filter-option.el-select-dropdown.is-multiple .el-select-dropdown__item.selected::after {
-  right: 16px;
+.el-select-dropdown__item {
+  padding-right: 30px;
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.filter-option.selected::after {
+  right: 10px !important;
 }
 .form-table .cell-show  {
   max-height: 67px;
