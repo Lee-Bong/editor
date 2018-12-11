@@ -13,7 +13,7 @@
           placeholder="表格过滤">
           <el-option :class="['filter-option']"
             :disabled="item.id === 'fId'"
-            v-for="item in formItems"
+            v-for="item in formItems.slice(1)"
             :key="item.value"
             :label="item.label? item.label : '   '"
             :selected="true"
@@ -196,8 +196,8 @@ export default {
     },
     expendSet(isFirst) {
       if (isFirst) {
-        const cellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'), 1);
-        const expendRef = Array.prototype.slice.call(document.getElementsByClassName('expend-all'), 1);
+        const cellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'));
+        const expendRef = Array.prototype.slice.call(document.getElementsByClassName('expend-all'));
         cellRef.map((item, index) => {
           if (item.offsetHeight > 67) {
             expendRef[index].style.display = 'block';
@@ -207,8 +207,8 @@ export default {
           return true;
         });
       } else {
-        const overCellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'), 1);
-        const overRef = Array.prototype.slice.call(document.getElementsByClassName('expend-cell-all'), 1);
+        const overCellRef = Array.prototype.slice.call(document.getElementsByClassName('expend-cell'));
+        const overRef = Array.prototype.slice.call(document.getElementsByClassName('expend-cell-all'));
         overCellRef.map((item, index) => {
           if (item.offsetHeight > 67) {
             overRef[index].style.display = 'block';
