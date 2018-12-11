@@ -32,6 +32,7 @@ export default {
       this.isShow = true;
       document.body.addEventListener('touchmove', this.bodyScroll, false);
       document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     },
     hide() {
       this.isShow = false;
