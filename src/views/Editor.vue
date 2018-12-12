@@ -44,7 +44,6 @@ import NavBar from '@/components/NavBar';
 import { postPageInfo, getPageInfo, patchPageInfo, publishPage } from '@/service';
 import { dragCom } from '@/util/dragMxi';
 
-
 export default {
   mixins: [dragCom()],
   name: 'editor',
@@ -718,7 +717,7 @@ body {
   height: 100%;
   width: 100%;
 }
-
+input,button,select,textarea{outline:none;}
 .el-aside {
   position: fixed;
   top: 57px;

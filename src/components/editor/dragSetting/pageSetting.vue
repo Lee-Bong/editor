@@ -35,6 +35,10 @@
           </el-form-item>
           <div class="form-item-code">
             <div>自定义代码区:</div>
+            <el-tooltip class="item iconFont" effect="dark" content="脚本写法说明" placement="top">
+              <i class="el-icon-question icon-font" @click="codeTips"></i>
+            </el-tooltip>
+            <!-- <el-button icon="el-icon-question">写法说明</el-button> -->
             <el-input v-model="dragForm.code" class="color-item"
              type="textarea" rows="8" resize="none"></el-input>
           </div>
@@ -101,6 +105,9 @@ export default {
         img: {},
       });
     },
+    codeTips() {
+      window.open('https://www.yuque.com/evan/vvgcu9/sul6hd');
+    },
   },
 };
 </script>
@@ -142,9 +149,16 @@ export default {
   margin-left: 5px;
 }
 .form-item-code {
+  position: relative;
   font-size: 14px;
   color: #606266;
   padding: 10px 20px;
+}
+.form-item-code .iconFont {
+  position: absolute;
+  right: 20px;
+  top: 12px;
+  cursor: pointer;
 }
 .form-code-ids {
   width: 330px;
@@ -159,9 +173,15 @@ export default {
 .code-name {
   display: inline-block;
   max-width: 200px;
-      overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.icon-font {
+  outline: none;
+}
+.icon-font:hover {
+  color: #409EFF
 }
 </style>

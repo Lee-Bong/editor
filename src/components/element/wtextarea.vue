@@ -53,6 +53,9 @@ export default {
   position: relative;
   outline: none;
 }
+.w-textarea:focus {
+  border: 1px solid #409EFF;
+}
 .w-textarea::-webkit-input-placeholder {
   color: #909399;
   font-size: 14px;
