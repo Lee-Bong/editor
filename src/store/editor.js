@@ -20,6 +20,11 @@ export default {
     audioActive: 0,
     videoActive: 0,
     fTextActive: 0,
+    fTextareaActive: 0,
+    fRadioActive: 0,
+    fCheckboxActive: 0,
+    fSmsActive: 0,
+    fSubmitActive: 0,
     textSet: false, // 是否显示文本设置
     isTextSet: false, // 是否显示文本设置
     imgSet: false,
