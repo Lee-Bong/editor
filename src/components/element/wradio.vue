@@ -52,7 +52,10 @@ export default {
 </script>
 
 <style>
-a,input,label{-webkit-tap-highlight-color:rgba(255,0,0,0);}
+a,input,label{
+  -webkit-tap-highlight-color:rgba(255,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+  }
 .radio-required {
   display: inline-block;
   margin-right: 2px;
@@ -124,5 +127,9 @@ a,input,label{-webkit-tap-highlight-color:rgba(255,0,0,0);}
 .radio-item .el-checkbox__inner::after {
   left: 7px;
   top: 4px;
+}
+
+.el-radio:focus:not(.is-focus):not(:active):not(.is-disabled) .el-radio__inner {
+  box-shadow: none;
 }
 </style>
