@@ -36,7 +36,6 @@ import CustomComponent from './CustomComponent.vue';
 import FormComponent from './FormComponent.vue';
 import Error from '../Error.vue';
 
-
 export default {
   data() {
     return {
@@ -174,8 +173,14 @@ export default {
         // 执行自定义代码
         if (this.code) {
           /* eslint-disable no-new-func */
-          const runCode = new Function(this.code);
-          runCode();
+          const script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.src = 'https://static.seeyouyima.com/bfe/we/simJQ-2.2.min.js';
+          document.getElementsByTagName('head')[0].appendChild(script);
+          script.onload = () => {
+            const runCode = new Function(this.code);
+            runCode();
+          };
         }
       });
     } catch (error) {
