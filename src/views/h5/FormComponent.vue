@@ -165,7 +165,8 @@ export default {
       }
     },
     async sendCodeEvent() {
-      if (this.phoneVerify(true)) {
+      const isOk = await this.phoneVerify(true);
+      if (isOk) {
         try {
           const ts = Math.round(Date.parse(new Date()) / 1000);
           const phone = this.getPhoneItem(this.phones[0].id).value;
