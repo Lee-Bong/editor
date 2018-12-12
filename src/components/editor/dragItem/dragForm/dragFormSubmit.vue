@@ -9,7 +9,7 @@
       <template slot="content">
         <div>
           <form-submit :attr="{label:dragForm.label,bgColor:dragForm.bgColor,
-          textColor:dragForm.textColor}" />
+          textColor:dragForm.textColor,classList:['drag-submit']}" />
         </div>
       </template>
     </drag-resize-form>
@@ -44,4 +44,8 @@ export default {
 </script>
 
 <style>
+.drag-submit.w-form-submit {
+  cursor: move !important;
+  outline: none;
+}
 </style>

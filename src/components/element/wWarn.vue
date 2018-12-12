@@ -25,21 +25,22 @@ export default {
   data() {
     return {
       isShow: false,
+      offsetY: 0,
     };
   },
   methods: {
     show() {
       this.isShow = true;
-      document.body.addEventListener('touchmove', this.bodyScroll, false);
+      this.offsetY = Number(window.pageYOffset);
+      document.body.style.marginTop = `-${this.offsetY}px`;
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
     },
     hide() {
       this.isShow = false;
       document.body.style.position = 'initial';
-    },
-    bodyScroll(event) {
-      event.preventDefault();
+      document.body.style.marginTop = '0';
+      window.scrollTo(0, this.offsetY);
     },
   },
 };

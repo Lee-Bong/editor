@@ -1,8 +1,8 @@
 <template>
-  <button :class="['w-form-submit', attr.disabled ? 'w-submit-disabled': '']"
+  <button :class="[...attr.classList, 'w-form-submit', attr.disabled ? 'w-submit-disabled': '']"
   @click="submitForm"
   :style="{backgroundColor: attr.bgColor, color: attr.textColor}">
-    {{attr.label}}
+    {{!attr.disabled ? attr.label : '已停止提交'}}
   </button>
 </template>
 <script>

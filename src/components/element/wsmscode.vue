@@ -51,7 +51,7 @@ export default {
     },
     setCodeTip() {
       this.isSending = true;
-      this.codeTip = `${60}S`;
+      this.codeTip = `${60}s`;
       let i = 60;
       const timer = setInterval(() => {
         if (i === 1) {

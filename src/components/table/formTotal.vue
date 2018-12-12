@@ -41,7 +41,7 @@
           <div>
             <div class="cell-show">{{scope.row[item.id]}}</div>
             <div class="cell-hide" >{{scope.row[item.id]}}</div>
-            <div class="expend-all" @click="expendAll(scope.row[item.id])">展开全部 >></div>
+            <div class="expend-all" @click="expendAll(scope.row[item.id])">查看全部 >></div>
           </div>
         </template>
         </el-table-column>
@@ -242,6 +242,8 @@ export default {
           this.formShowItems = formShowItems;
           this.formSummary(this.formPager.pager);
         }
+      } else { // 展开列表
+        document.getElementsByClassName('el-select-dropdown el-popper is-multiple');
       }
     },
     getTableLabel(id) {
@@ -322,7 +324,7 @@ export default {
   z-index: 10;
   opacity: 0;
   cursor: pointer;
-  margin-left: 10px;
+  margin-left: 0;
 }
 .perate-wrap .el-select__tags {
   max-width: 30px;
@@ -337,7 +339,9 @@ export default {
   width: 30px;
   height: 30px;
   z-index: 1;
-  margin-left: 10px;
+  margin-left: 0;
+  padding: 0;
+  margin-top: 5px;
 }
 .table-fliter-btn .ed-icon-icon-test {
   font-size: 24px;

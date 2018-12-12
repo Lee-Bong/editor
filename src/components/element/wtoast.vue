@@ -44,7 +44,7 @@ export default {
   .tos{
     background-color: rgba(0, 0, 0, 0.9);
     border-radius: 4px;
-    z-index: 11;
+    z-index: 1005;
     position: relative;
     width: auto;
     max-width: 80%;
