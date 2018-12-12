@@ -61,7 +61,7 @@ export default {
           return false;
         }
         i -= 1;
-        this.codeTip = `${i}S`;
+        this.codeTip = `${i}s`;
       }, 1000);
     },
   },
