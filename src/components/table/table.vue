@@ -32,8 +32,7 @@
             plain @click="handlePublish(scope.$index, scope.row)">
             {{ scope.row.online | isOnline }}
           </el-button>
-           <el-button size="mini" type="info" plain
-            :disabled="Boolean(scope.row.online)"
+           <el-button v-if="!Boolean(scope.row.online)" size="mini" type="info" plain
             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>

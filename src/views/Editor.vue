@@ -79,7 +79,7 @@ export default {
       wrapHeight: 603, // 包括头部的高度x
       clientHeight: 603, // 编辑内容高度
       isFirst: true, // 空白编辑页
-      dataInit: '{"editor":{"isSubmit": true,"isPhone": true,"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"dragFormTexts":[],"dragFormTextareas":[],"dragFormRadios":[],"dragFormCheckboxs":[],"dragFormSmscodes":[],"dragFormSubmits":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"fTextSet":false,"isFTextSet":false,"fTextareaSet":false,"isFTextareaSet":false,"fRadioSet":false,"isFRadioSet":false,"fCheckboxSet":false,"isFCheckboxSet":false,"fSmsSet":false,"isFSmsSet":false,"fSubmitSet":false,"isFSubmitSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"], "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"], "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"], "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"], "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"], "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"], "12":["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","name": "", "phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"code":"","componentIds":[]}}',
+      dataInit: '{"editor":{"isSubmit": true,"isPhone": true,"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"dragFormTexts":[],"dragFormTextareas":[],"dragFormRadios":[],"dragFormCheckboxs":[],"dragFormSmscodes":[],"dragFormSubmits":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"fTextActive":0,"fTextareaActive":0,"fRadioActive":0,"fCheckboxActive":0,"fSmsActive":0,"fSubmitActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"fTextSet":false,"isFTextSet":false,"fTextareaSet":false,"isFTextareaSet":false,"fRadioSet":false,"isFRadioSet":false,"fCheckboxSet":false,"isFCheckboxSet":false,"fSmsSet":false,"isFSmsSet":false,"fSubmitSet":false,"isFSubmitSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"], "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"], "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"], "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"], "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"], "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"], "12":["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","name": "", "phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"code":"","componentIds":[]}}',
       beforeState: null,
       gobalState: null,
       isPublish: false,
@@ -125,7 +125,7 @@ export default {
         } else {
           data = await patchPageInfo(this.$route.query.page_id, params);
         }
-        this.beforeState = this.$store.state;
+        this.beforeState = JSON.stringify(this.$store.state);
         if (data && data.status === 'ok' && data.data) {
           if (isTrigger) {
             this.optSucsess('保存草稿');
@@ -627,7 +627,7 @@ export default {
       this.isPublish = Number(this.$route.query.public);
       const curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
       this.initState = JSON.stringify(curState);
-      this.beforeState = curState;
+      this.beforeState = JSON.stringify(curState);
       this.$store.commit('editor_update', curState.editor);
       this.$store.commit('page_update', curState.page);
       if (!curState.page.name && data) {
@@ -649,9 +649,18 @@ export default {
       return isContain;
     },
     goCheck() { // 离开页面，检测是否操作都保存
-      const isOk = isEqual(this.beforeState.page, this.$store.state.page)
-      && isEqual(this.beforeState.editor, this.$store.state.editor);
-      return isOk;
+      const { page, editor } = JSON.parse(this.beforeState);
+      page.pageSet = this.$store.state.page.pageSet;
+      const isOk = isEqual(page, this.$store.state.page);
+      let isEditorOk = true;
+      const { typeCat } = editor;
+      for (const k in typeCat) {
+        if (!isEqual(editor[k[0]], this.$store.state.editor[k[0]])) {
+          isEditorOk = false;
+          return false;
+        }
+      }
+      return isOk && isEditorOk;
     },
   },
   async mounted() {
