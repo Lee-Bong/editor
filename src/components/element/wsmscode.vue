@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input :class="[attr.isRequired? 'from-required': '']"
+    <el-input :class="[attr.isRequired? 'from-required': '', 'iphone-input']"
     :placeholder="attr.label" @change="valueChange">
     </el-input>
     <div style="margin-top: 14px" class="code-cont" v-if="attr.verify === 1">
@@ -92,6 +92,10 @@ export default {
 .w-form-submit,
 .w-form-submit:hover{
   background-color: #9B9B9B;
+}
+.iphone-input .el-input__inner,
+.code-left .el-input__inner{
+  line-height: 18px;
 }
 
 
