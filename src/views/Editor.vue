@@ -655,12 +655,33 @@ export default {
       let isEditorOk = true;
       const { typeCat } = editor;
       for (const k in typeCat) {
-        if (!isEqual(editor[k[0]], this.$store.state.editor[k[0]])) {
-          isEditorOk = false;
-          return false;
+        const beforeItems = editor[typeCat[k][0]];
+        const afterItems = this.$store.state.editor[typeCat[k][0]];
+        if (!isEqual(beforeItems, afterItems)) {
+          isEditorOk = this.setSamPro(beforeItems, afterItems);
+          if (isEditorOk) {
+            // eslint-disable-next-line no-continue
+            continue;
+          } else {
+            break;
+          }
         }
       }
       return isOk && isEditorOk;
+    },
+    setSamPro(bItems, aItems) {
+      const bI = Object.assign([], bItems);
+      const aI = Object.assign([], aItems);
+      if (bI.length !== aI.length) {
+        return false;
+      }
+      for (let i = 0; i < bI.length; i++) {
+        bI[i].isActive = aI[i].isActive;
+        bI[i].isShow = aI[i].isShow;
+        bI[i].zIndex = aI[i].zIndex;
+      }
+      if (isEqual(bI, aI)) return true;
+      return false;
     },
   },
   async mounted() {

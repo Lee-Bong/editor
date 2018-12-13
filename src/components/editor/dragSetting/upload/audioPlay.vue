@@ -38,7 +38,7 @@ export default {
       playPrecent: 1,
       showPre: '00:00',
       isEnd: false,
-      isLoad: false,
+      isLoad: false, // 默认提示音频加载中
     };
   },
   mounted() {
@@ -76,15 +76,24 @@ export default {
           ele.showPre = '00:00';
         }
       }, false);
-      this.$refs.aduioObj.addEventListener('loadeddata', () => {
-        this.isLoad = true;
-      });
+
       this.$refs.aduioObj.addEventListener('waiting', () => {
         if (this.isLoad) this.isLoad = false;
       });
-      this.$refs.aduioObj.addEventListener('playing', () => {
-        if (!this.isLoad) this.isLoad = true;
-      });
+      const u = navigator.userAgent;
+      const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; // android终端
+      if (isAndroid) {
+        this.$refs.aduioObj.addEventListener('playing', () => {
+          if (!this.isLoad) this.isLoad = true;
+        });
+        this.$refs.aduioObj.addEventListener('canplay', () => {
+          this.isLoad = true;
+        });
+      } else {
+        this.$refs.aduioObj.addEventListener('canplaythrough', () => {
+          this.isLoad = true;
+        });
+      }
     },
     formatTooltip(val) {
       return formatSecond((this.play.second * val) / 100);
