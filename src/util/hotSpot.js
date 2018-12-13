@@ -115,6 +115,7 @@ const handleClick = ({
       }
       const openTime = +new Date();
       window.location.href = awakeLink;
+      alert('ss');
       const timer = setTimeout(() => {
         if ((+new Date()) - openTime < 2200) {
           // 加了200ms基准误差

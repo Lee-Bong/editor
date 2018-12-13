@@ -1,11 +1,11 @@
 <template>
 <div>
-  <el-form-item label="主题颜色：" size="mini">
+  <el-form-item :label="`${colorForm.bgText ? colorForm.bgText: '主题颜色'}：`" size="mini">
         <el-color-picker :value="colorForm.bgColor"
           :show-alpha="true" class="color-item" @change="bgcolorChange"></el-color-picker>
         <el-button type="text" class="bg-reset" @click="bgcolorReset">重置</el-button>
       </el-form-item>
-    <el-form-item label="标题颜色：" size="mini">
+    <el-form-item :label="`${colorForm.textText ? colorForm.textText: '标题颜色'}：`" size="mini">
     <el-color-picker :value="colorForm.textColor"
         :show-alpha="true" class="color-item" @change="textcolorChange"></el-color-picker>
     <el-button type="text" class="bg-reset" @click="textcolorReset">重置</el-button>

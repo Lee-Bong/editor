@@ -444,7 +444,7 @@ export default {
       if (dragFormSmscodes.length) {
         dragFormSmscodes.map((item) => {
           const {
-            location, size, label, verify, isRequired, id,
+            location, size, label, verify, isRequired, id, bgColor, textColor,
           } = item;
           dragArr.push({
             id,
@@ -464,6 +464,8 @@ export default {
               verify,
               isRequired,
               classList: [],
+              bgColor,
+              textColor,
             },
           });
           return true;

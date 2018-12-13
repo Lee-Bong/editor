@@ -452,6 +452,8 @@ export default {
             isRequired: false,
             label: '请输入手机号',
             verify: 1,
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
           }));
           newEditor = {
             fSmsSet: true,

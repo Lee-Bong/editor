@@ -99,4 +99,8 @@ export default {
   color: #999;
   font-size: 12px;
 }
+.setting-box .el-form-item--mini.el-form-item,
+.setting-box .el-form-item--small.el-form-item {
+  margin-bottom: 8px;
+}
 </style>

@@ -7,7 +7,8 @@
       <el-input class="code-left" placeholder="验证码"
       @change="codeChange">
       </el-input>
-      <el-button type="primary" class="code-right" :disabled="this.isSending"
+      <el-button type="primary" class="code-right w-form-sms" :disabled="this.isSending"
+      :style="[!this.isSending && {backgroundColor: attr.bgColor, color: attr.textColor}]"
       @click="sendCode">{{codeTip}}</el-button>
     </div>
     <w-toast :text="sendTip" ref="toastRef"/>
@@ -97,6 +98,7 @@ export default {
 .code-left .el-input__inner{
   line-height: 18px;
 }
-
-
+.w-form-sms:hover, .w-form-sms:active {
+  opacity: 0.85;
+}
 </style>

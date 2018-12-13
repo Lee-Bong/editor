@@ -9,7 +9,7 @@
       >
       <template slot="content">
         <form-sms :attr="{label:dragForm.label,verify:dragForm.verify,
-        isRequired:dragForm.isRequired }"/>
+        isRequired:dragForm.isRequired, bgColor:dragForm.bgColor,textColor:dragForm.textColor}"/>
       </template>
     </drag-resize-form>
 </template>
