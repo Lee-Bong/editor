@@ -359,6 +359,7 @@ export default {
           const { position, location, size } = curPlay;
           const positionInfo = this.getPositionInfo({ position, location, size });
           dragArr.push({
+            isBorder: item.isBorder,
             id: item.id,
             type: 6,
             positionInfo,

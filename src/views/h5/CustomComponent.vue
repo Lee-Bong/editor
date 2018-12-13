@@ -58,6 +58,7 @@
             v-if="component.type === 6"
             :style="component.style"
             :play="component.play"
+            :isBorder="component.isBorder"
         ></audio-play>
     </div>
 </template>

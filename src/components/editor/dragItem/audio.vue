@@ -30,7 +30,7 @@
       @click="dragDel">
       </i>
       <div>
-        <audio-play :isBorder="(this.dragForm.isBorder === '1')"
+        <audio-play :isBorder="this.dragForm.isBorder"
           :play="this.dragForm.sourceType === '1' ? dragForm.play : dragForm.linePlay"/>
       </div>
     </vue-drag-resize>
