@@ -10,6 +10,7 @@
           multiple
           @change="filterChange"
           @visible-change="filterFocus"
+          :popper-append-to-body="true"
           placeholder="表格过滤">
           <el-option :class="['filter-option']"
             :disabled="item.id === 'fId'"
@@ -243,7 +244,9 @@ export default {
           this.formSummary(this.formPager.pager);
         }
       } else { // 展开列表
-        document.getElementsByClassName('el-select-dropdown el-popper is-multiple');
+        const select = document.getElementsByClassName('el-select-dropdown el-popper is-multiple');
+        select[0].style.marginLeft = '-27px';
+        select[0].style.marginTop = '-11px';
       }
     },
     getTableLabel(id) {
