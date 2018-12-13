@@ -116,10 +116,11 @@ export default {
           style = {
             ...style,
             bottom: `${positionInfo.bottom}px`,
+            left: `${location.x}px`,
           };
         }
         if (positionInfo.position === 'fixedTop') {
-          style = { ...style, top: `${positionInfo.top}px` };
+          style = { ...style, top: `${positionInfo.top}px`, left: `${location.x}px` };
         }
       } else {
         style = {
