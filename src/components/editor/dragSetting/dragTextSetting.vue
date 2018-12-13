@@ -27,6 +27,7 @@
         </el-form-item>
         <el-form-item label="字体大小：" size="mini" prop="name">
         <el-select v-model="dragForm.fontSize"
+          @change="fontSizeChange"
           filterable remote :remote-method="remoteMethod" placeholder="请选择">
           <el-option
             v-for="item in sizeList"
@@ -48,7 +49,8 @@
           <el-radio v-model="dragForm.textAlign" label="right">右对齐</el-radio>
         </el-form-item>
         <el-form-item label="文本颜色：" size="mini">
-          <el-color-picker v-model="dragForm.textColor" :show-alpha="true"></el-color-picker>
+          <el-color-picker v-model="dragForm.textColor" :show-alpha="true"
+           @change="textColorChange"></el-color-picker>
           <el-button type="text" class="bg-reset" @click="textColorReset">重置</el-button>
         </el-form-item>
         <el-form-item label="位置：" size="mini" class="number-item">
@@ -140,8 +142,20 @@ export default {
         textSet: true,
       });
     },
+    fontSizeChange(val) {
+      this.updateTextSetting('fontSize', val);
+    },
+    textColorChange(val) {
+      this.updateTextSetting('textColor', val);
+    },
     remoteMethod() { // 字体输入监听
-
+    },
+    updateTextSetting(label, val) {
+      const { dragTexts, textActive } = this.editor;
+      dragTexts[textActive][label] = val;
+      this.$store.commit('editor_update', {
+        dragTexts,
+      });
     },
     textColorReset() { // 字体颜色重置
       const { dragTexts, textActive } = this.editor;
