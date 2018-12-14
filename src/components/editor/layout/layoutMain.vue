@@ -216,6 +216,8 @@ export default {
   right: 0;
   width: 375px;
   background: #fff url(../../../assets/images/phone.png) repeat;
+  background-position-x: -3px;
+  background-position-y: -9px;
 }
 .phone-content > .vdr-stick.vdr-stick-bm {
   height: 35px !important;
