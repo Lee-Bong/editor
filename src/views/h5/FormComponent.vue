@@ -11,6 +11,7 @@
       </div>
     </div>
     <w-warn :warn="this.warn" ref="fwarnRef"/>
+    <w-toast :text="sendTip" ref="toastRef"/>
   </div>
 </template>
 
@@ -23,6 +24,7 @@ import wRadio from '@/components/element/wradio';
 import wSmscode from '@/components/element/wsmscode';
 import wSubmit from '@/components/element/wsubmit';
 import wWarn from '@/components/element/wwarn';
+import wToast from '@/components/element/wtoast';
 import { formSubmit, smsCode, smsVerify } from '@/service/index';
 import ScaleStyle from './ScaleStyle';
 
@@ -34,6 +36,7 @@ export default {
       warn: {},
       phones: [], // 存放手机
       isStop: false, // 是否停止收集
+      sendTip: '',
     };
   },
   props: {
@@ -50,6 +53,7 @@ export default {
     wSubmit,
     ScaleStyle,
     wWarn,
+    wToast,
   },
 
   mounted() {
@@ -171,16 +175,18 @@ export default {
           const ts = Math.round(Date.parse(new Date()) / 1000);
           const phone = this.getPhoneItem(this.phones[0].id).value;
           const params = `phone=${phone}&ts=${ts}&sign=${this.getSign(`classsmsphone${phone}ts${ts}Ixv&EwN^e#gP%Gl4NhR7m9Z0P#UOH^EU`)}`;
+          this.$refs.wSmscodeRef[0].apiSending = true;
           const data = await smsCode(params);
+          this.$refs.wSmscodeRef[0].apiSending = false;
           if (data && data.code === 0) {
             // 倒计时
-            this.$refs.wSmscodeRef[0].sendToast('验证码发送成功～');
+            this.sendToast('验证码发送成功～');
             this.$refs.wSmscodeRef[0].setCodeTip();
           } else {
-            this.$refs.wSmscodeRef[0].sendToast('验证码发送失败，请重试～');
+            this.sendToast('验证码发送失败，请重试～');
           }
         } catch (err) {
-          this.$refs.wSmscodeRef[0].sendToast('验证码发送失败，请重试～');
+          this.sendToast('验证码发送失败，请重试～');
         }
       }
     },
@@ -268,6 +274,10 @@ export default {
         return true;
       }
       return false;
+    },
+    sendToast(text) {
+      this.sendTip = text;
+      this.$refs.toastRef.show();
     },
 
   },

@@ -32,9 +32,10 @@ import jssdk from 'meetyou.jssdk';
 import { getPageInfo } from '@/service';
 import hotSpot from '@/util/hotSpot';
 import gaReport from '@/util/gaReport.js';
-import CustomComponent from './CustomComponent.vue';
-import FormComponent from './FormComponent.vue';
-import Error from '../Error.vue';
+import { init } from '@/util/sdkRequest.js';
+import CustomComponent from './CustomComponent';
+import FormComponent from './FormComponent';
+import Error from '../Error';
 
 export default {
   data() {
@@ -157,10 +158,6 @@ export default {
       document.title = title;
       jssdk.callNative('topbar/title', { title });
 
-      // const { _czc: czc } = window;
-      // if (this.isFormal && czc) {
-      //   czc.push(['_trackEvent', '页面浏览量', title]);
-      // }
 
       // 初始化app内分享
       this.$nextTick(() => {
@@ -172,15 +169,8 @@ export default {
         });
         // 执行自定义代码
         if (this.code) {
-          /* eslint-disable no-new-func */
-          const script = document.createElement('script');
-          script.type = 'text/javascript';
-          script.src = 'https://static.seeyouyima.com/bfe/we/simJQ-2.2.min.js';
-          document.getElementsByTagName('head')[0].appendChild(script);
-          script.onload = () => {
-            const runCode = new Function(this.code);
-            runCode();
-          };
+          const { query } = this.$route;
+          init(this.code, query);
         }
       });
     } catch (error) {
