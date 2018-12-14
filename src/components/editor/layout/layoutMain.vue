@@ -16,7 +16,7 @@
     </div>
     <div class="drag-items" :style="{
       height: page.phoneHeight + 'px',
-      backgroundColor: page.backgroundColor}">
+      background: page.backgroundColor === '#fff' ? 'rgba(0, 0, 0, 0)': page.backgroundColor}">
       <drag-text v-for="(drag, index) in dragTexts" v-if="drag.isShow"
        :key="drag.id" :list-index="index" :dragForm="drag"
        @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" ref="textRef"/>
@@ -216,7 +216,7 @@ export default {
   left: 0;
   right: 0;
   width: 375px;
-  background-color: #fff;
+  background: #fff url(../../../assets/images/phone.png) repeat;
 }
 .phone-content > .vdr-stick.vdr-stick-bm {
   height: 35px !important;

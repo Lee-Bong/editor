@@ -7,16 +7,13 @@
       <el-input class="code-left" placeholder="验证码"
       @change="codeChange">
       </el-input>
-      <el-button type="primary" class="code-right w-form-sms" :disabled="this.isSending"
-      :style="[!this.isSending && {backgroundColor: attr.bgColor, color: attr.textColor}]"
-      @click="sendCode">{{codeTip}}</el-button>
+      <el-button type="primary" :class="['code-right', apiSending?'sending-code':'']"
+      :disabled="this.isSending"
+      @click="sendCode">{{!apiSending ? codeTip : '发送中...'}}</el-button>
     </div>
-    <w-toast :text="sendTip" ref="toastRef"/>
   </div>
 </template>
 <script>
-import wToast from './wtoast';
-
 export default {
   name: 'wsmscode',
   props: {
@@ -26,14 +23,11 @@ export default {
     },
     index: Number,
   },
-  components: {
-    wToast,
-  },
   data() {
     return {
       codeTip: '发送验证码',
       isSending: false,
-      sendTip: '',
+      apiSending: false, // 发送验证码接口已经发送，等待接口返回
     };
   },
   methods: {
@@ -98,7 +92,15 @@ export default {
 .code-left .el-input__inner{
   line-height: 18px;
 }
+<<<<<<< HEAD
 .w-form-sms:hover, .w-form-sms:active {
   opacity: 0.85;
 }
+=======
+.sending-code {
+  background-color: #66b1ff;
+}
+
+
+>>>>>>> develop-clz
 </style>
