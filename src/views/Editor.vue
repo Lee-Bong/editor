@@ -850,7 +850,6 @@ input,button,select,textarea{outline:none;}
   width: 375px;
   height: 667px;
   top: 0;
-  background-color: #fff;
   border: 1px solid #e5e5d5;
 }
 .phone-container.active {
@@ -913,6 +912,7 @@ body {
   position: relative;
   margin-top: 20px;
   margin-bottom: 30px;
+  background-color: #fff;
 }
 
 .phone-hidden {

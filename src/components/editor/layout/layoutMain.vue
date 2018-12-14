@@ -7,7 +7,6 @@
     :minh='page.screenHeight'
     :style="{
     width: page.phoneWidth+'px',
-    backgroundColor: page.backgroundColor,
   }">
     <div class="phone-resize">
       <i class="el-icon-back resize-icon resize-up"></i>
