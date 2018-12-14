@@ -55,4 +55,4 @@ const init = (code, qy) => {
   sdk.goFun(code);
 };
 
-export {init};
+export { init };
