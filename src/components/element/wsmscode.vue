@@ -92,15 +92,9 @@ export default {
 .code-left .el-input__inner{
   line-height: 18px;
 }
-<<<<<<< HEAD
-.w-form-sms:hover, .w-form-sms:active {
-  opacity: 0.85;
-}
-=======
 .sending-code {
   background-color: #66b1ff;
 }
 
 
->>>>>>> develop-clz
 </style>
