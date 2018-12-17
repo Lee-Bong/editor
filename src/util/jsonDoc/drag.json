@@ -1,0 +1,16 @@
+{
+    "typeCat": {
+        "1": ["dragTexts", "textSet", "isTextSet", "textActive"],
+        "2": ["dragImages", "imgSet", "isImgSet", "imgActive"],
+        "3": ["dragLinks", "linkSet", "isLinkSet", "linkActive"],
+        "4": ["dragImgLists", "imgListSet", "isImgListSet", "imgListActive"],
+        "5": ["dragVideos", "videoSet", "isVideoSet", "videoActive"],
+        "6": ["dragAudios", "audioSet", "isAudioSet", "audioActive"],
+        "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"],
+        "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"],
+        "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"],
+        "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"],
+        "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"],
+        "12": ["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]
+    }
+}

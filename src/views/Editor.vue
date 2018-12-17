@@ -43,6 +43,7 @@ import phoneBanner from '@/components/editor/layout/phoneBanner';
 import NavBar from '@/components/NavBar';
 import { postPageInfo, getPageInfo, patchPageInfo, publishPage } from '@/service';
 import { dragCom } from '@/util/dragMxi';
+import dragJson from '@/util/jsonDoc/drag.json';
 
 export default {
   mixins: [dragCom()],
@@ -627,8 +628,10 @@ export default {
       if (data) {
         this.gobalState = JSON.parse(data.state);
       }
+
       this.isPublish = Number(this.$route.query.public);
-      const curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
+      let curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
+      curState = this.complateEditorJson(curState);
       this.initState = JSON.stringify(curState);
       this.beforeState = JSON.stringify(curState);
       this.$store.commit('editor_update', curState.editor);
@@ -637,6 +640,23 @@ export default {
         const name = this.isPublish ? data.publish_title : data.draft_title;
         this.$store.commit('page_update', { name });
       }
+    },
+    complateEditorJson(state) {
+      const curState = state;
+      const { typeCat } = dragJson;
+      curState.editor.typeCat = typeCat;
+      if (curState.editor.isSubmit === undefined) {
+        curState.editor.isSubmit = true;
+      }
+      if (curState.editor.isPhone === undefined) {
+        curState.editor.isPhone = true;
+      }
+      for (const k in typeCat) {
+        if (curState.editor[typeCat[k][0]] === undefined) {
+          curState.editor[typeCat[k][0]] = [];
+        }
+      }
+      return curState;
     },
     delCheck() {
       const { className } = document.activeElement;
