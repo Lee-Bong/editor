@@ -7,8 +7,8 @@
       <el-input class="code-left" placeholder="验证码"
       @change="codeChange">
       </el-input>
-      <el-button type="primary" :class="['code-right', apiSending?'sending-code':'']"
-      :disabled="this.isSending"
+      <el-button type="primary" class="code-right w-form-sms" :disabled="this.isSending"
+      :style="[!this.isSending && {backgroundColor: attr.bgColor, color: attr.textColor}]"
       @click="sendCode">{{!apiSending ? codeTip : '发送中...'}}</el-button>
     </div>
   </div>
@@ -95,6 +95,7 @@ export default {
 .sending-code {
   background-color: #66b1ff;
 }
-
-
+.w-form-sms:hover, .w-form-sms:active {
+  opacity: 0.85;
+}
 </style>

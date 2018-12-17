@@ -270,7 +270,7 @@ export default {
   line-height: 30px;
   color: #606266;
   font-size: 13px;
-  margin-top: -18px;
+  margin-top: -10px;
 }
 .dec-label label {
   display: inline-block;
