@@ -29,7 +29,8 @@
                v-model="lineSource" @blur="lineSourceBlur"></el-input>
           </el-form-item>
           <el-form-item label="视频封面：" size="mini" class="video-el">
-            <img-uplaod :imgObj="imgObj" @upload-done="uploadDone" @file-remove="fileRemove"
+            <img-uplaod :imgObj="{url: dragForm.poster === videoPoster ? '': dragForm.poster}"
+              @upload-done="uploadDone" @file-remove="fileRemove"
               :dec="String('图片尺寸16:9, 不传即为透明')"/>
           </el-form-item>
           <el-form-item label="位置：" size="mini" class="number-item">
@@ -160,17 +161,6 @@ export default {
       immediate: true,
       deep: true,
     },
-    imgObj: {
-      get() {
-        const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
-        return curPlay.poster !== 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png' ?
-          { url: curPlay.poster } : { url: '' };
-      },
-      set() {
-      },
-      immediate: true,
-      deep: true,
-    },
     videoW: {
       get() {
         const curPlay = this.dragForm.sourceType === '1' ? this.dragForm.video : this.dragForm.lineVideo;
@@ -212,6 +202,7 @@ export default {
       isLineUpload: false,
       lastCont: '', // 标记二次在线url是否一致
       mediaDec: '仅支持MP4格式',
+      videoPoster: 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
     };
   },
   methods: {
@@ -446,14 +437,12 @@ export default {
     uploadDone(file) { // 封面上传成功
       let newFile;
       if (file && file.url) {
-        this.imgObj = { url: file.url };
         newFile = {
           poster: file.url,
           posterTitle: file.name,
           isPoster: true,
         };
       } else {
-        this.imgObj = {};
         newFile = {
           poster: 'https://sc.seeyouyima.com/bfe/we/e4af0bea1d97f51eab3c80d99e34f0ce.png',
           posterTitle: '',

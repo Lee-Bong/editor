@@ -62,7 +62,6 @@ export default {
   text-align: center;
   resize: none;
   box-sizing: border-box;
-  background: red;
   padding: 5px;
   white-space: normal;
   word-break: break-all;

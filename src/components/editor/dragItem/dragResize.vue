@@ -165,7 +165,7 @@ export default {
 
 <style>
 .drag-item textarea {
-  background-color: #fff;
+  background-color: rgba(0, 0, 0, 0);
 }
 .drag-text {
   cursor: move;
@@ -179,7 +179,6 @@ export default {
   text-align: center;
   resize: none;
   box-sizing: border-box;
-  background: red;
   padding: 5px;
   white-space: normal;
   word-break: break-all;

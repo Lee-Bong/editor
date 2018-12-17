@@ -181,9 +181,6 @@ export default {
 </script>
 
 <style>
-.video-wrap {
-  background: red;
-}
 .video-play {
   width: 44px;
   height: 44px;
