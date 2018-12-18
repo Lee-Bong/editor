@@ -331,9 +331,9 @@ export default {
             this.viewData = this.viewDataTotal.slice(0, 10);
             this.viewPager.total = this.viewDataTotal.length;
           } else {
-            const pre = !(pvCount + pvOutCount)
+            const pre = !pvCount
               ? 0
-              : ((shareCount / (pvCount + pvOutCount)) * 100).toFixed(2);
+              : ((shareCount / (pvCount)) * 100).toFixed(2);
             this.clickDataTotal.push({
               name: '分享',
               click: shareCount,
