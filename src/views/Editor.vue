@@ -876,7 +876,7 @@ input,button,select,textarea{outline:none;}
   border: 1px solid #59c7f9;
 }
 
-.el-button.el-button--text {
+.editor-box .el-button.el-button--text {
   color: #606266;
   padding: 5px;
 }

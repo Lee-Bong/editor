@@ -427,6 +427,7 @@ export default {
       }
     },
     setMediaInit(newMedia, isClear) {
+      const curPlay = this.dragForm.sourceType === '1' ? 'play' : 'linePlay';
       let newObj = {
         sourceType: this.dragForm.sourceType,
         isUpload: false,
@@ -434,10 +435,10 @@ export default {
           w: this.page.phoneWidth,
           h: this.editor.audioHeight,
         },
-        // location: {
-        //   x: 0,
-        //   y: 0,
-        // },
+        location: {
+          x: 0,
+          y: 0,
+        },
       };
       if (newMedia) {
         newObj = Object.assign({}, newObj, newMedia);
@@ -448,6 +449,14 @@ export default {
           isUplaod: false,
           duration: '00:00',
           url: '',
+          size: {
+            w: this.page.phoneWidth,
+            h: this.editor.audioHeight,
+          },
+          location: {
+            x: 0,
+            y: this.dragForm[curPlay].location.y,
+          },
         };
         if (this.dragForm.sourceType === '1' && this.dragForm.play.url) {
           this.title = '';

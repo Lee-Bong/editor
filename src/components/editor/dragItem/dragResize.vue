@@ -164,7 +164,7 @@ export default {
 </script>
 
 <style>
-.drag-item textarea {
+textarea.drag-text {
   background-color: rgba(0, 0, 0, 0);
 }
 .drag-text {

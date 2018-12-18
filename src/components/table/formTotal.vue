@@ -200,7 +200,7 @@ export default {
         const cellRef = Array.prototype.slice.call(document.getElementsByClassName('cell-hide'));
         const expendRef = Array.prototype.slice.call(document.getElementsByClassName('expend-all'));
         cellRef.map((item, index) => {
-          if (item.offsetHeight > 67) {
+          if (item.offsetHeight > 69) { // line-height 23 * 3
             expendRef[index].style.display = 'block';
             cellRef[index].className += ' expend-cell';
             expendRef[index].className += ' expend-cell-all';
@@ -211,7 +211,7 @@ export default {
         const overCellRef = Array.prototype.slice.call(document.getElementsByClassName('expend-cell'));
         const overRef = Array.prototype.slice.call(document.getElementsByClassName('expend-cell-all'));
         overCellRef.map((item, index) => {
-          if (item.offsetHeight > 67) {
+          if (item.offsetHeight > 69) {
             overRef[index].style.display = 'block';
           } else {
             overRef[index].style.display = 'none';
@@ -303,9 +303,6 @@ export default {
       }
     },
   },
-  updated() {
-  },
-
 };
 </script>
 
@@ -350,8 +347,8 @@ export default {
   font-size: 24px;
 }
 .table-fliter-btn .ed-icon-icon-test::before{
-      margin-top: -10px;
-    display: block;
+  margin-top: -10px;
+  display: block;
 }
 .filter {
   position: relative;
@@ -364,10 +361,10 @@ export default {
   color: #333;
 }
 .filter-option {
-    width: auto;
-    min-width: 150px;
-    max-width: 400px;
-    border-top: 1px solid #dddddd5c;
+  width: auto;
+  min-width: 150px;
+  max-width: 400px;
+  border-top: 1px solid #dddddd5c;
 }
 .filter-option:first-child {
   border-top: 0;
@@ -382,7 +379,7 @@ export default {
   max-height: 320px;
 }
 .form-table .cell-show  {
-  max-height: 67px;
+  max-height: 69px;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -414,9 +411,13 @@ export default {
   color: #409EFF;
 }
 .expend-dialog.el-message-box {
-    width: auto;
-    max-width: 550px;
-    max-height: 600px;
-    overflow-y: auto;
+  width: auto;
+  max-width: 550px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+.expend-dialog .el-message-box__header {
+  height: 3px;
+  z-index: 10;
 }
 </style>
