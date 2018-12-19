@@ -170,7 +170,8 @@ export default {
         // 执行自定义代码
         if (this.code) {
           const { query } = this.$route;
-          init(this.code, query);
+          this.scale = window.innerWidth / this.pageJson.page.phoneWidth;
+          init(this.code, query, this.scale);
         }
       });
     } catch (error) {

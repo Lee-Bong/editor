@@ -174,7 +174,6 @@ export default {
     },
     forceUpdate() {
       this.$forceUpdate();
-      console.log('forceUpdate', `${this.dragForm.sourceType}ss${this.form.size.h}`);
     },
   },
 };

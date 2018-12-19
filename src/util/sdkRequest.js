@@ -7,6 +7,7 @@ const sdk = {
   isMeetyouWebview,
   jssdk,
   query: null,
+  scale: 1,
   get: (param, cb) => {
     const params = Object.assign({ method: 'get' }, param);
     sdk.requestSend(params, cb);
@@ -50,8 +51,9 @@ const sdk = {
   },
 };
 
-const init = (code, qy) => {
+const init = (code, qy, scale) => {
   sdk.query = qy;
+  sdk.scale = scale;
   sdk.goFun(code);
 };
 
