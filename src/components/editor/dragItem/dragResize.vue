@@ -15,7 +15,7 @@
       contenteditable="true"
       :minh="infoForm.minH || 15"
       :minw="infoForm.minW || 15"
-      :isResizable="isResizable"
+      :isResizable="true"
       :isDraggable="isResizable"
       :aspectRatio="aspectRatio"
       :class="classList"
@@ -115,14 +115,14 @@ export default {
     isResizable() {
       let isResize = true;
       if (this.infoForm.type === 2) {
-        isResize = JSON.stringify(this.dragForm.img) !== '{}' ? Boolean(true) : false;
+        isResize = JSON.stringify(this.dragForm.img) !== '{}';
       }
       return isResize;
     },
     aspectRatio() {
       let isRatio = false;
       if (this.infoForm.type === 2) {
-        isRatio = this.dragForm.isUpload ? Boolean(true) : false;
+        isRatio = !!this.dragForm.isUpload;
       }
       return isRatio;
     },

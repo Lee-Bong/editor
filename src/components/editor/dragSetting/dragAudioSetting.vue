@@ -137,12 +137,12 @@ export default {
   },
   computed: {
     isAction() {
-      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.url)
-       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.url);
+      return (this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.url)
+       || (this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.url);
     },
     locationAble() {
-      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.location)
-       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.location);
+      return (this.dragForm.sourceType === '1' && this.dragForm.play && this.dragForm.play.location)
+       || (this.dragForm.sourceType === '2' && this.dragForm.linePlay && this.dragForm.linePlay.location);
     },
     locationX: {
       get() {

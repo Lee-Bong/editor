@@ -105,12 +105,12 @@ export default {
   },
   computed: {
     isAction() {
-      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
-       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
+      return (this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.url)
+       || (this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.url);
     },
     locationAble() {
-      return Boolean(this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.location)
-       || Boolean(this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.location);
+      return (this.dragForm.sourceType === '1' && this.dragForm.video && this.dragForm.video.location)
+       || (this.dragForm.sourceType === '2' && this.dragForm.lineVideo && this.dragForm.lineVideo.location);
     },
     locationX: {
       get() {
@@ -208,7 +208,7 @@ export default {
   methods: {
     sourceChange(type) {
       const curSrouce = type === '1' ? this.dragForm.video : this.dragForm.lineVideo;
-      const isActive = Boolean(curSrouce.url);
+      const isActive = !!curSrouce.url;
       if (!isActive) {
         this.setVideoInit();
       } else {

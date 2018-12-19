@@ -91,7 +91,7 @@ export default {
       return this.$store.state.page.screenHeight;
     },
     isAction() {
-      return Boolean(this.form && this.form.url);
+      return !!(this.form && this.form.url);
     },
     minh: {
       get() {
