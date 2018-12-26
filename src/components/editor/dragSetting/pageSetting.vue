@@ -9,24 +9,35 @@
         </span>
       </div>
       <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
-        <el-form ref="form" label-width="90px">
+        <el-form ref="form" label-width="100px">
           <el-form-item label="页面名称：" size="mini" class="is-require" >
             <el-input type="text" v-model="dragForm.name" placeholder="页面名称，最多输入10个字"></el-input>
           </el-form-item>
           <el-form-item label="页面标题：" size="mini" class="is-require" >
             <el-input type="text" v-model="dragForm.title" placeholder="H5标题，最多输入10个字"></el-input>
           </el-form-item>
-          <el-form-item label="分享标题：" size="mini">
-            <el-input type="text" v-model="dragForm.shareTitle" maxlength=15
-             placeholder="微信分享标题，最多输入15个字"></el-input>
+          <el-form-item label="右上角分享：" size="mini">
+            <el-radio v-model="dragForm.isShare" label="1">显示</el-radio>
+            <el-radio v-model="dragForm.isShare" label="2">不显示</el-radio>
           </el-form-item>
-          <el-form-item label="分享描述：" size="mini">
-            <el-input :rows="2" maxlength=40 v-model="dragForm.shareDec" type="textarea"
-             placeholder="微信分享描述，最多输入40个字" resize="none"></el-input>
-          </el-form-item>
-          <el-form-item label="分享缩略图：" size="mini" class="share-img">
-            <img-uplaod :imgObj="dragForm.img" @upload-done="uploadDone"
-             @file-remove="fileRemove" :dec="String('图片尺寸200X200')"/>
+          <div v-if="dragForm.isShare === '1'">
+            <el-form-item label="分享标题：" size="mini">
+              <el-input type="text" v-model="dragForm.shareTitle" maxlength=15
+              placeholder="微信分享标题，最多输入15个字"></el-input>
+            </el-form-item>
+            <el-form-item label="分享描述：" size="mini">
+              <el-input :rows="2" maxlength=40 v-model="dragForm.shareDec" type="textarea"
+              placeholder="微信分享描述，最多输入40个字" resize="none"></el-input>
+            </el-form-item>
+            <el-form-item label="分享缩略图：" size="mini" class="share-img">
+              <img-uplaod :imgObj="dragForm.img" @upload-done="uploadDone"
+              @file-remove="fileRemove" :dec="String('图片尺寸200X200')"/>
+            </el-form-item>
+          </div>
+          <el-form-item label="iphonex适配：" size="mini">
+            <el-radio v-model="dragForm.phonexFit" label="1">适配</el-radio>
+            <el-radio v-model="dragForm.phonexFit" label="2">不适配</el-radio>
+            <div class="label-dec">适配iphonex将在h5底部显示白色安全区</div>
           </el-form-item>
           <el-form-item label="背景颜色：" size="mini">
             <el-color-picker v-model="dragForm.backgroundColor"

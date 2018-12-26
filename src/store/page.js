@@ -7,6 +7,7 @@ export default {
     phoneHeight: 603,
     screenHeight: 603,
     clientHeight: 603 + 64,
+    isShare: '1',
     shareTitle: '',
     shareDec: '',
     shareImg: '',
@@ -15,5 +16,6 @@ export default {
     },
     code: '',
     componentIds: [],
+    phonexFit: '2',
   },
 };

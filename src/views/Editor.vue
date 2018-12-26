@@ -216,7 +216,7 @@ export default {
       const { editor, page } = this.$store.state;
       const {
         title, phoneWidth, phoneHeight, clientHeight, shareTitle, shareDec, backgroundColor, name,
-        code,
+        code, isShare, phonexFit,
       } = page;
       eJson.editor.page = {
         title,
@@ -228,6 +228,8 @@ export default {
         backgroundColor,
         name,
         code,
+        isShare: !!(isShare === undefined || isShare === '1'),
+        phonexFit: !(phonexFit === undefined || phonexFit === '2'),
       };
       eJson.editor.page.shareImg = page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png';
       const dragArr = [];
@@ -639,6 +641,9 @@ export default {
       if (!curState.page.name && data) {
         const name = this.isPublish ? data.publish_title : data.draft_title;
         this.$store.commit('page_update', { name });
+      }
+      if (curState.page.phonexFit === undefined) {
+        this.$store.commit('page_update', { phonexFit: '2' });
       }
     },
     complateEditorJson(state) {

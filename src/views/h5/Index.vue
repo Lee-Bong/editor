@@ -61,6 +61,10 @@ export default {
     },
   },
   methods: {
+    curPhone() {
+      const ipx = /iphone/gi.test(navigator.userAgent) && (window.screen.height === 812 && window.screen.width === 375);
+      return ipx && this.pageJson.page.phonexFit;
+    },
     // 对页面数据进行加工转换
     getFinalComponentsJson() {
       // 按照 y 进行排序
@@ -161,7 +165,9 @@ export default {
 
       // 初始化app内分享
       this.$nextTick(() => {
-        this.initShare();
+        if (this.pageJson.page.isShare === undefined || this.pageJson.page.isShare === true) {
+          this.initShare();
+        }
         hotSpot.wxShare({
           title: shareTitle || title,
           desc: shareDec,
@@ -172,6 +178,9 @@ export default {
           const { query } = this.$route;
           this.scale = window.innerWidth / this.pageJson.page.phoneWidth;
           init(this.code, query, this.scale);
+        }
+        if (this.curPhone()) {
+          document.getElementsByTagName('body')[0].classList.add('ipx-padding');
         }
       });
     } catch (error) {
