@@ -20,6 +20,10 @@ body {
   padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
 }
 
+.ipx-fixed {
+  padding-bottom: 34px;
+}
+
 .opentip {
   position: absolute;
   left: 0;

@@ -1,7 +1,7 @@
 <template>
     <div
       class="container"
-      :class="{ 'ipx-padding': isFixed }"
+      :class="{ 'ipx-fixed': isFixed }"
       :style="containerStyle()">
         <div
         :id="component.id"
@@ -96,7 +96,8 @@ export default {
       const {
         positionInfo,
       } = this.component;
-      return positionInfo.position !== 'relative';
+      const ipx = /iphone/gi.test(navigator.userAgent) && (window.screen.height === 812 && window.screen.width === 375);
+      return positionInfo.position !== 'relative' && ipx;
     },
   },
 
