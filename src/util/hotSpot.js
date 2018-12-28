@@ -103,7 +103,11 @@ const handleClick = ({
 }) => {
   if (sourceType === '1') {
     // 内部链接和外部链接不一样
-    window.location.href = isMeetyouWebview ? appLink : outLink;
+    if (isMeetyouWebview && appLink) {
+      window.location.href = appLink;
+    } else if (!isMeetyouWebview && outLink) {
+      window.location.href = outLink;
+    }
   } else if (!isMeetyouWebview) {
     const download = getDownLoadUrl(downloadUrls);
     // 有填写 唤起 app 链接, 首先尝试唤起
