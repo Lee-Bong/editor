@@ -8,7 +8,7 @@ if (!views.includes('view')) {
   const buildAt = now.toLocaleString();
 
   const config = JSON.stringify(
-    'view'{
+    'we/view': {
     index: 'view.html',
     api: '',
     buildAt,
