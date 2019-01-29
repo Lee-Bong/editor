@@ -117,6 +117,13 @@ export default {
     getFormModel() {
       const ps = [];
       const model = {};
+      if (this.$route.query.myuid) {
+        this.formArr.push({
+          id: 'uid',
+          label: 'UID',
+          value: this.$route.query.myuid,
+        });
+      }
       this.form.map((item) => {
         if (item.type !== 12) {
           model[item.id] = {

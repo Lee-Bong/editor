@@ -21,16 +21,25 @@ https://axhub.im/pro/b3ca8072ecf0a0d8/#g=1&p=%E5%B0%81%E9%9D%A2  密码：meiyou
 http://apidoc.seeyouyima.com/edit/5c00a0363b82db1c76e4443c
 
 ### ga统计
-> 站内 注意不要上报中文
+### 站内使用协议上报 
 
-    ga('/bfe_event', {
-    page_id: '3a8721f9-a8fb-4135-82ec-b5f959276113',
-    type: 'pv|click|share',
-    value: 'event_id'  // click 控件 ID,
-    label: '',
-    category: ''
-    })
-> 站外用接口统计
+    > const params = {
+      page_id: '82ec-b5f959276113', // page_id
+      type: 'pv|click|share', // 统计类型
+      value: 'event_id'  // 触发元素 ID,
+      label: '',
+      category: ''
+    };
+    jssdk.callNative('ga', {
+      '/bfe_event',
+      params,
+    });
+
+### 站外用接口统计
+https://ga.seeyouyima.com/bfe_event
+method: post
+
+> ga统计上报注意： 注意不要上报中文参试
 
 > 验证
 注意因为ga只统计正式环境数据，要验证测试环境的数据准确性，就需要将测试数据的统计数据上报到正式环境。

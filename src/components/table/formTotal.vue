@@ -161,9 +161,11 @@ export default {
                 formData.push(tdata);
                 return true;
               });
+              // formItems = this.shiftUid(formItems);
+
 
               if (!pager) {
-                this.formItems = this.formItems.concat(formItems, {
+                this.formItems = this.formItems.concat(this.shiftUid(formItems), {
                   id: 'createdAt',
                   label: '提交时间',
                 });
@@ -194,6 +196,21 @@ export default {
       } catch (err) {
         this.loading1 = false;
       }
+    },
+    shiftUid(formItems) { // uid 放到第一位
+      const len = formItems.length;
+      const isUID = formItems.filter(ele => ele.label === 'UID');
+      if (isUID.length) {
+        for (let i = 0; i < len; i++) {
+          const ele = formItems[i];
+          if (ele.label === 'UID') {
+            formItems.splice(i, 1);
+            break;
+          }
+        }
+        formItems.unshift(isUID[0]);
+      }
+      return formItems;
     },
     expendSet(isFirst) {
       if (isFirst) {

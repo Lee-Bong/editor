@@ -1,33 +1,29 @@
 const fs = require('fs');
 const views = fs.readdirSync(`${__dirname}/dist/`);
+const now = new Date;
+const buildAt = now.toLocaleString();
 // step 1
 if (!views.includes('view')) {
   fs.mkdir(`${__dirname}/dist/view`, 0777, (err) => {});
   // step2 生成config.json
-  const now = new Date;
-  const buildAt = now.toLocaleString();
-
-  const config = JSON.stringify(
+  const config = JSON.stringify({
     'we/view': {
     index: 'view.html',
     api: '',
     buildAt,
-  });
-  fs.writeFile(`${__dirname}/dist/view/config.json`), JSON.stringify({ 
-    
-  }), (err) => {
+  }});
+  fs.writeFile(`${__dirname}/dist/view/config.json`, config, (err) => {
     if (err) {
       console.log('write config.json fail');
     } else {
       console.log('success');
     }
   });
-};
+}
 
 const buildFiles = () => {
   try {
     views.map((item) => {
-      console.log('sss', item);
       if (item !== 'view' && item.indexOf('admin') === -1) {
         const curDir = `${__dirname}/dist/${item}`;
         const afterDir = `${__dirname}/dist/view/${item}`;
@@ -36,8 +32,12 @@ const buildFiles = () => {
     });
     setTimeout(() => {
       console.log('build zip');
-      const shell = 'cd dist/view/ && zip -qrd view11.zip . && cd -';
+      const shell = 'cd dist/view/ && zip -qr view.zip . && cd -';
       require('child_process').exec(shell);
+      // 移动zip到dist目录
+      fs.renameSync(`${__dirname}/dist/view/view.zip`, `${__dirname}/dist/view.zip`)
+      // 移除view目录 todo 需要遍历删除，空目录才可以删除
+      // fs.rmdirSync(`${__dirname}/dist/view/`);
     }, 3000);
   } catch (e) {
     console.log('build fail');
