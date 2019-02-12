@@ -11,6 +11,7 @@
         "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"],
         "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"],
         "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"],
-        "12": ["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]
+        "12": ["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"],
+        "13": ["dragFormUploads", "fUploadSet", "isFUploadSet", "fUploadActive"]
     }
 }

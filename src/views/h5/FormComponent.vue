@@ -6,8 +6,9 @@
         Object.assign(component.attr, {disabled: isStopCollect})"
         :ref="formType(component.type)+'Ref'"
         :fid ="component.id"
-        :id="component.id" @valueEvent="valueChange" @clickEvent="formSubmit" :index="index"
-        @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent"></div>
+        :id="component.id" @clickEvent="formSubmit" :index="index"
+        @valueEvent="valueChange" @propsSetting="propsSetting"
+        @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent" @sendToast="sendToast" ></div>
       </div>
     </div>
     <w-warn :warn="this.warn" ref="fwarnRef"/>
@@ -23,6 +24,7 @@ import wTextarea from '@/components/element/wtextarea';
 import wRadio from '@/components/element/wradio';
 import wSmscode from '@/components/element/wsmscode';
 import wSubmit from '@/components/element/wsubmit';
+import wUpload from '@/components/element/wupload';
 import wWarn from '@/components/element/wwarn';
 import wToast from '@/components/element/wtoast';
 import { formSubmit, smsCode, smsVerify } from '@/service/index';
@@ -51,6 +53,7 @@ export default {
     wRadio,
     wSmscode,
     wSubmit,
+    wUpload,
     ScaleStyle,
     wWarn,
     wToast,
@@ -67,8 +70,10 @@ export default {
       let style = {
         width: `${size.w}px`,
         height: `${size.h}px`,
-        'z-index': component.style['z-index'] || 0,
       };
+      if (component.type !== 13) {
+        style['z-index'] = component.style['z-index'] || 0;
+      }
       if (this.isFixed) {
         style = { ...style, position: 'fixed' };
         if (positionInfo.position === 'fixedBottom') {
@@ -109,6 +114,9 @@ export default {
         case 12: {
           return 'wSubmit';
         }
+        case 13: {
+          return 'wUpload';
+        }
         default: {
           break;
         }
@@ -117,6 +125,13 @@ export default {
     getFormModel() {
       const ps = [];
       const model = {};
+      if (this.$route.query.myuid) {
+        this.formArr.push({
+          id: 'uid',
+          label: 'UID',
+          value: this.$route.query.myuid,
+        });
+      }
       this.form.map((item) => {
         if (item.type !== 12) {
           model[item.id] = {
@@ -138,6 +153,11 @@ export default {
     valueChange(val, index) {
       if (this.formArr[index]) {
         this.formArr[index].value = val;
+      }
+    },
+    propsSetting(prop, val, index) {
+      if (this.formArr[index]) {
+        this.formArr[index][prop] = val;
       }
     },
     codeChange(val, index) { // 验证码
@@ -199,7 +219,7 @@ export default {
       const len = this.formArr.length;
       for (let k = 0; k < len; k++) {
         if (this.formArr[k].isRequired && (!this.formArr[k].value ||
-        !(this.formArr[k].value && this.formArr[k].value.trim()))) {
+        (typeof (this.formArr[k].value) === 'string' && this.formArr[k].value.trim() === ''))) {
           this.openWarning({});
           isOk = false;
           return false;

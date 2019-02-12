@@ -72,7 +72,8 @@ export default {
         item => item.location.y,
       ]);
       // 屏幕缩放比例
-      this.scale = window.innerWidth / this.pageJson.page.phoneWidth;
+      const wWidth = window.innerWidth > 750 ? 750 : window.innerWidth;
+      this.scale = wWidth / this.pageJson.page.phoneWidth;
       const formComPonentsJson = [];
       const customComponentsJson = [];
       map(cjson, (componentJson) => {
@@ -200,6 +201,8 @@ export default {
 .wrap {
   overflow: hidden;
   position: relative;
+  max-width: 750px;
+  margin: 0 auto;
   .bottom-download {
     bottom: 0;
     position: fixed;

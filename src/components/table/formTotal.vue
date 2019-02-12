@@ -39,10 +39,17 @@
         <el-table-column v-for="(item, index) in formShowItems" :key="index" class="table-col"
         :prop="item.id" :label="item.label" min-width="80" :width="setTWidth(item)">
         <template slot-scope="scope">
-          <div>
+          <div v-if="typeof scope.row[item.id] === 'string'">
             <div class="cell-show">{{scope.row[item.id]}}</div>
             <div class="cell-hide" >{{scope.row[item.id]}}</div>
             <div class="expend-all" @click="expendAll(scope.row[item.id])">查看全部 >></div>
+          </div>
+          <div v-if="typeof scope.row[item.id] === 'object' && scope.row[item.id].images">
+            <div v-for="(ele, i) in scope.row[item.id].images" :key="i"
+            :style="{background: '#ddd url('+ ele.url +
+            ') center center / cover no-repeat'}" class="form-img-pre"
+            @click="imagesPreview(i, scope.row[item.id].images)" >
+        </div>
           </div>
         </template>
         </el-table-column>
@@ -56,6 +63,17 @@
         :total="formPager.total" >
       </el-pagination>
     </div>
+    <el-dialog :visible.sync="dialogVisible" width="600px"
+    :close-on-click-modal="true" @close="dialogClose" :lock-scroll="true">
+      <div class="pre-img-wrap" :style="{maxHeight: maxH}">
+        <i :class="['view-btn','pre-view','iconfont','ed-icon-prev',
+        dialogImageKey === 0 ? 'is-disabled' : '']" @click="preImageView"></i>
+        <img width="100%" :src="dialogImageList[dialogImageKey].url" alt="" class="pre-img">
+        <i :class="['view-btn','next-view','iconfont','ed-icon-next',
+        dialogImageKey === dialogImageList.length -1 ? 'is-disabled' : '']"
+        @click="nextImageView"></i>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -90,10 +108,15 @@ export default {
       filters: [], // 当前显示的表格列['id', ***]
       filtersBefore: [],
       isStopCollect: false,
+      dialogVisible: false,
+      dialogImageKey: 0,
+      dialogImageList: [{ url: '' }],
+      maxH: 0,
     };
   },
   mounted() {
     this.formSummary();
+    this.maxH = `${window.innerHeight * 0.7}px`;
   },
   computed: {
     isStop: {
@@ -151,7 +174,13 @@ export default {
                     const fEle = formItems[i];
                     const pro = item.data.filter(ei => ei.id === fEle.id);
                     if (pro && pro.length) {
-                      tdata[fEle.id] = pro[0].value;
+                      if (pro[0].images && pro[0].images.length) { // 图片上传组件
+                        tdata[fEle.id] = {};
+                        tdata[fEle.id].value = pro[0].value;
+                        tdata[fEle.id].images = pro[0].images;
+                      } else {
+                        tdata[fEle.id] = pro[0].value;
+                      }
                     } else {
                       tdata[fEle.id] = '';
                     }
@@ -161,9 +190,8 @@ export default {
                 formData.push(tdata);
                 return true;
               });
-
               if (!pager) {
-                this.formItems = this.formItems.concat(formItems, {
+                this.formItems = this.formItems.concat(this.shiftUid(formItems), {
                   id: 'createdAt',
                   label: '提交时间',
                 });
@@ -194,6 +222,21 @@ export default {
       } catch (err) {
         this.loading1 = false;
       }
+    },
+    shiftUid(formItems) { // uid 放到第一位
+      const len = formItems.length;
+      const isUID = formItems.filter(ele => ele.label === 'UID');
+      if (isUID.length) {
+        for (let i = 0; i < len; i++) {
+          const ele = formItems[i];
+          if (ele.label === 'UID') {
+            formItems.splice(i, 1);
+            break;
+          }
+        }
+        formItems.unshift(isUID[0]);
+      }
+      return formItems;
     },
     expendSet(isFirst) {
       if (isFirst) {
@@ -300,6 +343,31 @@ export default {
         }
       } catch (err) {
         this.$message.error('操作失败，请重试～');
+      }
+    },
+    // 图片预览
+    imagesPreview(i, list) {
+      this.dialogImageKey = i;
+      this.dialogVisible = true;
+      this.dialogImageList = list;
+    },
+    preImageView() {
+      this.resetDialogScroll();
+      if (this.dialogImageKey === 0) return false;
+      this.dialogImageKey--;
+    },
+    nextImageView() {
+      this.resetDialogScroll();
+      if (this.dialogImageKey === this.dialogImageList.length) return false;
+      this.dialogImageKey++;
+    },
+    dialogClose() {
+      this.resetDialogScroll();
+    },
+    resetDialogScroll() {
+      const imgWrap = document.getElementsByClassName('pre-img-wrap')[0];
+      if (imgWrap) {
+        imgWrap.scrollTop = 0;
       }
     },
   },
@@ -419,5 +487,43 @@ export default {
 .expend-dialog .el-message-box__header {
   height: 3px;
   z-index: 10;
+}
+.form-img-pre {
+  width: 60px;
+  height: 60px;
+  float: left;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.content-wrap .pre-img {
+  max-width: 450px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+.view-btn {
+  position: absolute;
+  top: 50%;
+  display: block;
+  height: 30px;
+  width: 20px;
+  font-size: 25px;
+  cursor: pointer;
+}
+.view-btn.is-disabled {
+  color: #ddd;
+}
+.view-btn:hover {
+  opacity: .9;
+}
+.pre-view {
+  left: 30px;
+}
+.next-view {
+  right: 35px;
+}
+.pre-img-wrap {
+  max-height: 600px;
+  overflow-y: auto;
 }
 </style>
