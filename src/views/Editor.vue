@@ -80,7 +80,8 @@ export default {
       wrapHeight: 603, // 包括头部的高度x
       clientHeight: 603, // 编辑内容高度
       isFirst: true, // 空白编辑页
-      dataInit: '{"editor":{"isSubmit": true,"isPhone": true,"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"dragFormTexts":[],"dragFormTextareas":[],"dragFormRadios":[],"dragFormCheckboxs":[],"dragFormSmscodes":[],"dragFormSubmits":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"fTextActive":0,"fTextareaActive":0,"fRadioActive":0,"fCheckboxActive":0,"fSmsActive":0,"fSubmitActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"fTextSet":false,"isFTextSet":false,"fTextareaSet":false,"isFTextareaSet":false,"fRadioSet":false,"isFRadioSet":false,"fCheckboxSet":false,"isFCheckboxSet":false,"fSmsSet":false,"isFSmsSet":false,"fSubmitSet":false,"isFSubmitSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"], "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"], "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"], "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"], "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"], "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"], "12":["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","name": "", "phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"code":"","componentIds":[]}}',
+      // dataInit: '{"editor":{"isSubmit": true,"isPhone": true,"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"dragFormTexts":[],"dragFormTextareas":[],"dragFormRadios":[],"dragFormCheckboxs":[],"dragFormSmscodes":[],"dragFormSubmits":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"fTextActive":0,"fTextareaActive":0,"fRadioActive":0,"fCheckboxActive":0,"fSmsActive":0,"fSubmitActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"fTextSet":false,"isFTextSet":false,"fTextareaSet":false,"isFTextareaSet":false,"fRadioSet":false,"isFRadioSet":false,"fCheckboxSet":false,"isFCheckboxSet":false,"fSmsSet":false,"isFSmsSet":false,"fSubmitSet":false,"isFSubmitSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"], "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"], "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"], "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"], "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"], "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"], "12":["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","name": "", "phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"code":"","componentIds":[]}}',
+      dataInit: '',
       beforeState: null,
       gobalState: null,
       isPublish: false,
@@ -235,7 +236,7 @@ export default {
       const dragArr = [];
       const {
         dragTexts, dragImages, dragLinks, dragVideos, dragAudios, dragFormTexts, dragFormTextareas,
-        dragFormRadios, dragFormCheckboxs, dragFormSmscodes, dragFormSubmits,
+        dragFormRadios, dragFormCheckboxs, dragFormSmscodes, dragFormSubmits, dragFormUploads,
         dragImgLists, layerLists,
       } = editor;
       if (dragTexts.length) {
@@ -447,7 +448,7 @@ export default {
       if (dragFormSmscodes.length) {
         dragFormSmscodes.map((item) => {
           const {
-            location, size, label, verify, isRequired, id, bgColor, textColor,
+            location, size, label, isRequired, id, bgColor, textColor,
           } = item;
           dragArr.push({
             id,
@@ -464,7 +465,6 @@ export default {
             },
             attr: {
               label,
-              verify,
               isRequired,
               classList: [],
               bgColor,
@@ -501,6 +501,36 @@ export default {
           return true;
         });
       }
+      if (dragFormUploads.length) {
+        dragFormUploads.map((item) => {
+          const {
+            location, size, label, bgColor, textColor, id, isRequired,
+          } = item;
+          dragArr.push({
+            id,
+            isForm: true,
+            type: 13,
+            location,
+            size,
+            isRequired,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              bgColor,
+              textColor,
+              classList: [],
+              isRequired,
+            },
+          });
+          return true;
+        });
+      }
+      console.log('pppppp', dragArr);
       this.topBannerClick();
       eJson.editor.components = dragArr;
       const ele = this;
@@ -630,7 +660,6 @@ export default {
       if (data) {
         this.gobalState = JSON.parse(data.state);
       }
-
       this.isPublish = Number(this.$route.query.public);
       let curState = this.isPublish ? this.gobalState.publish : this.gobalState.draft;
       curState = this.complateEditorJson(curState);
@@ -713,6 +742,9 @@ export default {
     },
   },
   async mounted() {
+    console.log('this.$store.state', this.$store.state);
+    this.dataInit = JSON.stringify(this.$store.state);
+    debugger;
     if (this.$route.query.page_id) {
       try {
         this.isFirst = false;

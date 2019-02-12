@@ -1,15 +1,17 @@
 <template>
   <div>
-    <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
+    <el-form-item v-if="!locationForm.notLocation"
+      label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
       <el-input-number :value="locationForm.location.x" @change="locationXchange"
       :min="location.xmin" :max="(page.phoneWidth-locationForm.size.w)" controls-position="right"
+      :disabled="locationForm.xDisabled ? true : false"
       class="num-input"></el-input-number>
       <el-input-number :value="locationForm.location.y" @change="locationYchange"
       :min="location.ymin" :max="(page.phoneHeight-locationForm.size.h)" controls-position="right"
-      class="num-input"></el-input-number>
+      :disabled="locationForm.yDisabled ? true : false" class="num-input"></el-input-number>
     </el-form-item>
     <div class="dec-label" style="padding-left: 90px"> <label>X</label> <label> Y</label></div>
-    <el-form-item label="尺寸：" size="mini" class="number-item">
+    <el-form-item v-if="!locationForm.notSize" label="尺寸：" size="mini" class="number-item">
       <el-input-number :value="locationForm.size.w" @change="sizeWchange"
       :min="locationForm.minW" :max="(page.phoneWidth-locationForm.location.x)"
       controls-position="right" class="num-input"></el-input-number>
@@ -18,7 +20,9 @@
       :disabled="locationForm.hDisabled" controls-position="right"
       class="num-input"></el-input-number>
     </el-form-item>
-    <div class="dec-label" style="padding-left: 90px"> <label>宽</label> <label>高</label></div>
+    <div v-if="!locationForm.notSize" class="dec-label" style="padding-left: 90px">
+      <label>宽</label> <label>高</label>
+    </div>
   </div>
 </template>
 

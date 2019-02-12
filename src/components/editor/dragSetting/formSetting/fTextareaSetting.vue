@@ -1,13 +1,13 @@
 <template>
   <div :class="['setting-content', $store.state.editor.isFTextareaSet ?
    'setting-show' : '', 'page-setting']" :style="{width: setForm.width+'px', }">
-    <form-setting :setForm="Object.assign(setForm, {place: '多行文本', dragName: 'dragFormTextareas',
-    dragActive: 'fTextareaActive',noReauired:0,})"
+    <form-setting :setForm="Object.assign(setForm, {place: '多行文本', dragName,
+    dragActive,noReauired:0,})"
     :dragForm="dragForm">
       <template slot="setting">
         <location-setting  :locationForm="{location: dragForm.location, size: dragForm.size,
-        dragName: 'dragFormTextareas', dragActive: 'fTextareaActive', hDisabled: false,
-        minW: 30, minH: 40,}"></location-setting>
+        dragName, dragActive, hDisabled: false,
+        minW: 30, minH: 40}"></location-setting>
       </template>
     </form-setting>
   </div>
@@ -29,6 +29,8 @@ export default {
   },
   data() {
     return {
+      dragName: 'dragFormTextareas',
+      dragActive: 'fTextareaActive',
     };
   },
   methods: {

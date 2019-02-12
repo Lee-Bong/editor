@@ -51,6 +51,7 @@ export default {
             { text: '多项选择', icon: 'ed-icon-duoxuan', type: 10 },
             { text: '手机短信', icon: 'ed-icon-shoujiduanxin', type: 11 },
             { text: '提交按钮', icon: 'ed-icon-tijiao1', type: 12 },
+            { text: '图片上传', icon: 'ed-icon-tupianshangchuan', type: 13 },
           ],
         },
       ],
@@ -497,6 +498,38 @@ export default {
           this.$store.commit('editor_update', { isSubmit: false });
           break;
         }
+        case 13:
+        {
+          let drag13 = this.$store.state.editor.dragFormUploads || [];
+          num = drag13.length;
+          layerName = `图片上传${!num ? '' : num + 1}`;
+          icon = 'ed-icon-tupianshangchuan';
+          drag13 = textActiveOff(drag13, { index: 0, isAll: true });
+          drag13.push(Object.assign({}, info, {
+            location: {
+              x: (375 - 300) / 2,
+              y: top1,
+            },
+            size: {
+              w: 300,
+              h: 95,
+            },
+            position: 'relative',
+            icon,
+            label: '上传图片',
+            bgColor: '#5AC7F9',
+            textColor: '#fff',
+            isRequired: false,
+          }));
+          newEditor = {
+            fUploadSet: true,
+            isFUploadSet: true,
+            dragFormUploads: drag13,
+            fUploadActive: num,
+            layoutKey: zIndex + 1,
+          };
+          break;
+        }
         default:
         {
           break;
@@ -529,11 +562,6 @@ export default {
       }
     },
     getId() {
-      // return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      //   const r = Math.random() * 16;
-      //   const v = (c === 'x') ? r : ((r && 0x3) || 0x8);
-      //   return v.toString(16);
-      // });
       return generate('abcdefghijklmnxyz', 10);
     },
   },

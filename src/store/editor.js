@@ -13,6 +13,7 @@ export default {
     dragFormCheckboxs: [], // 表单-多项选择
     dragFormSmscodes: [], // 表单-手机短信
     dragFormSubmits: [], // 表单-提交按钮
+    dragFormUploads: [], // 表单-文件上传
     textActive: 0, // 当前活跃组件
     linkActive: 0,
     imgActive: 0,
@@ -23,6 +24,7 @@ export default {
     fTextareaActive: 0,
     fRadioActive: 0,
     fCheckboxActive: 0,
+    fUploadActive: 0,
     fSmsActive: 0,
     fSubmitActive: 0,
     textSet: false, // 是否显示文本设置
@@ -49,8 +51,10 @@ export default {
     isFSmsSet: false,
     fSubmitSet: false,
     isFSubmitSet: false,
+    fUploadSet: false,
+    isFUploadSet: false,
     layerLists: [], // 图层管理,
-    layerActive: 0, // 值为-1表示当前没有任何激活图层
+    layerActive: -1, // 值为-1表示当前没有任何激活图层
     typeCat: {
       1: ['dragTexts', 'textSet', 'isTextSet', 'textActive'],
       2: ['dragImages', 'imgSet', 'isImgSet', 'imgActive'],
@@ -64,6 +68,7 @@ export default {
       10: ['dragFormCheckboxs', 'fCheckboxSet', 'isFCheckboxSet', 'fCheckboxActive'],
       11: ['dragFormSmscodes', 'fSmsSet', 'isFSmsSet', 'fSmsActive'],
       12: ['dragFormSubmits', 'fSubmitSet', 'isFSubmitSet', 'fSubmitActive'],
+      13: ['dragFormUploads', 'fUploadSet', 'isFUploadSet', 'fUploadActive'],
     },
     pageSet: true,
     mediaHeight: 300,
