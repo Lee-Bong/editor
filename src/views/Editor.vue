@@ -744,7 +744,7 @@ export default {
   async mounted() {
     console.log('this.$store.state', this.$store.state);
     this.dataInit = JSON.stringify(this.$store.state);
-    debugger;
+
     if (this.$route.query.page_id) {
       try {
         this.isFirst = false;
