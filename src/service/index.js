@@ -97,7 +97,7 @@ const smsVerify = params => smsApi('sms_verify', params);
 
 const fileUplaod = (data) => {
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://test-news.seeyouyima.com/v2/camera_h5', true);
+  xhr.open('POST', 'https://test-news.seeyouyima.com/v2/camera_h5', true);
   xhr.send(data);
 };
 export {
