@@ -111,7 +111,7 @@ export default {
       dialogVisible: false,
       dialogImageKey: 0,
       dialogImageList: [{ url: '' }],
-      maxH: 0,
+      maxH: '600px',
     };
   },
   mounted() {

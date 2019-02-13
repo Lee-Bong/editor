@@ -91,6 +91,15 @@ const smsApi = (path, params) => new Promise((resolve, reject) => {
 const smsCode = params => smsApi('sms', params);
 const smsVerify = params => smsApi('sms_verify', params);
 
+// 站外文件上传
+// const fileUplaod = data => axios.post('http://test-news.seeyouyima.com/v2/camera_h5', data)
+//   .then(property('data'));
+
+const fileUplaod = (data) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'http://test-news.seeyouyima.com/v2/camera_h5', true);
+  xhr.send(data);
+};
 export {
   axios,
   api,
@@ -113,4 +122,5 @@ export {
   formSummary,
   formExport,
   formStopCollect,
+  fileUplaod,
 };
