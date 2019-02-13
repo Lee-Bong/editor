@@ -71,6 +71,11 @@
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop" ref="fSubmitRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
+
+       <drag-form-upload v-for="(drag, index) in dragFormUploads" v-if="drag.isShow"
+       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
+       @dragStop="inputDragStop" ref="fUploadRef"
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />
     </div>
   </vue-drag-resize>
 </template>
@@ -87,6 +92,7 @@ import dragFormTextarea from '@/components/editor/dragItem/dragForm/dragFormText
 import dragFormRadio from '@/components/editor/dragItem/dragForm/dragFormRadio';
 import dragFormSmscode from '@/components/editor/dragItem/dragForm/dragFormSmscode';
 import dragFormSubmit from '@/components/editor/dragItem/dragForm/dragFormSubmit';
+import dragFormUpload from '@/components/editor/dragItem/dragForm/dragFormUpload';
 import { dragCom } from '@/util/dragMxi';
 import { mapState } from 'vuex';
 
@@ -105,6 +111,7 @@ export default {
     dragFormRadio,
     dragFormSmscode,
     dragFormSubmit,
+    dragFormUpload,
   },
   data() {
     return {
@@ -121,6 +128,7 @@ export default {
         ['dragFormCheckboxs', 'fCheckboxRef'],
         ['dragFormSmscodes', 'fSmsRef'],
         ['dragFormSubmits', 'fSubmitRef'],
+        ['dragFormUploads', 'fUploadRef'],
       ],
     };
   },
@@ -138,6 +146,7 @@ export default {
       dragFormCheckboxs: state => state.editor.dragFormCheckboxs,
       dragFormSmscodes: state => state.editor.dragFormSmscodes,
       dragFormSubmits: state => state.editor.dragFormSubmits,
+      dragFormUploads: state => state.editor.dragFormUploads,
       page: state => state.page,
     }),
   },

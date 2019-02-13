@@ -98,6 +98,12 @@
       :setForm="settingForm"
       @setting-fixed="settingFixed"
     />
+    <f-upload-setting
+      v-if="editor.isFUploadSet"
+      :dragForm="editor.dragFormUploads[editor.fUploadActive]"
+      :setForm="settingForm"
+      @setting-fixed="settingFixed"
+    />
 
 </div>
 </template>
@@ -115,6 +121,7 @@ import fTextareaSetting from '@/components/editor/dragSetting/formSetting/fTexta
 import fRadioSetting from '@/components/editor/dragSetting/formSetting/fRadioSetting';
 import fSmsSetting from '@/components/editor/dragSetting/formSetting/fSmsSetting';
 import fSubmitSetting from '@/components/editor/dragSetting/formSetting/fSubmitSetting';
+import fUploadSetting from '@/components/editor/dragSetting/formSetting/fUploadSetting';
 import { dragCom } from '@/util/dragMxi';
 
 export default {
@@ -133,6 +140,7 @@ export default {
     fSmsSetting,
     fRadioSetting,
     fSubmitSetting,
+    fUploadSetting,
   },
   data() {
     return {
