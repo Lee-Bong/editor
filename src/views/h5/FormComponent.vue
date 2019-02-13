@@ -71,9 +71,9 @@ export default {
         width: `${size.w}px`,
         height: `${size.h}px`,
       };
-      if (component.type !== 13) {
-        style['z-index'] = component.style['z-index'] || 0;
-      }
+      // if (component.type !== 13) {
+      //   style['z-index'] = component.style['z-index'] || 0;
+      // }
       if (this.isFixed) {
         style = { ...style, position: 'fixed' };
         if (positionInfo.position === 'fixedBottom') {

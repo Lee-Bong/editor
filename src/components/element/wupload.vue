@@ -2,7 +2,7 @@
   <div :class="['form-upload-wrap',
     attr.isRequired? 'from-required': '', 'iphone-input']">
     <div class="upload-label">{{attr.label}}</div>
-    <el-upload
+    <!-- <el-upload
       :class="[attr.disabled ? 'disabled-upload' : '']"
       :disabled="attr.disabled"
       action=""
@@ -16,14 +16,25 @@
       :before-upload="beforeUpload"
       :http-request="fileToUpload">
       <i class="el-icon-plus"></i>
-    </el-upload>
+    </el-upload> -->
+    <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url" @focus="imageFocus(i)"
+    :style="{background: '#ddd url('+ item.url + ') center center / cover no-repeat'}">
+      <div class="file-shadow shadow-bg">
+        <i class="el-icon-delete" @click="imageRemove(i)"></i>
+      </div>
+    </div>
+    <div class="file-upload-btn">
+      <input type="file" accept="image/*" id="upload" name="upload" class="file-upload-origin"
+      @change="fileCheckedChange">
+      <i class="el-icon-plus" style="z-index: 40;"></i>
+    </div>
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="" class="pre-img">
     </el-dialog>
   </div>
 </template>
 <script>
-import oss from '@/service/oss';
+import { fileUplaod } from '@/service';
 
 export default {
   name: 'wupload',
@@ -35,6 +46,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       cancleUpload: false, // 不符合要求，取消上传
+      activeImage: -1,
     };
   },
   props: {
@@ -45,42 +57,65 @@ export default {
     index: Number,
   },
   methods: {
+    fileCheckedChange(event) { // 选取文件
+      const file = event.target.files[0];
+      this.fileToUpload(file);
+      // eslint-disable-next-line no-param-reassign
+      event.target.value = '';
+    },
+    imageFocus(i) {
+      this.activeImage = i;
+    },
+    imageRemove(i) {
+      this.handleImageRemove(i);
+    },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
     async fileToUpload(file) {
-      if (file.file) {
+      if (file) {
         this.fileCount++;
-        const up = await oss(file.file);
-        if (up && up.url) {
-          this.fileList.push({
-            index: this.fileCount - 1,
-            name: up.url,
-            url: up.url,
-          });
-          let values = '';
-          this.fileList.map((item, i) => {
-            values += item.url;
-            if (i < this.fileList.length - 1) values += ', ';
-            return true;
-          });
-          this.$emit('valueEvent', values, this.index);
-          this.$emit('propsSetting', 'images', this.fileList, this.index);
-        }
+        // const up = await oss(file);
+        // reader.onload=function(e){
+        //     var result=document.getElementById("result");
+        //     //显示文件
+        //     result.innerHTML='<img src="' + this.result +'" alt="" />';
+        // }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (e) {
+          const formData = new FormData();
+          formData.append('base64', e.target.result);
+          fileUplaod(formData);
+        };
+
+        // if (up && up.url) {
+        //   this.fileList.push({
+        //     index: this.fileCount - 1,
+        //     name: up.url,
+        //     url: up.url,
+        //   });
+        //   let values = '';
+        //   this.fileList.map((item, i) => {
+        //     values += item.url;
+        //     if (i < this.fileList.length - 1) values += ', ';
+        //     return true;
+        //   });
+        //   this.$emit('valueEvent', values, this.index);
+        //   this.$emit('propsSetting', 'images', this.fileList, this.index);
+        // }
       }
     },
-    handleRemove(file) {
-      if (!this.cancleUpload) {
-        this.fileList.splice(file.index, 1);
-        this.fileList.map((item, i) => {
-          this.fileList[i].index = i;
-          return true;
-        });
-        this.fileCount--;
-        const files = this.fileList.length ? this.fileList : null;
-        this.$emit('valueEvent', files, this.index);
-      }
+    handleImageRemove(index) {
+      this.fileList.splice(index, 1);
+      this.fileList.map((item, i) => {
+        this.fileList[i].index = i;
+        return true;
+      });
+      this.fileCount--;
+      const files = this.fileList.length ? this.fileList : null;
+      this.$emit('valueEvent', files, this.index);
     },
     beforeUpload(file) {
       const isLt5M = file.size < (1024 * 1024 * 5);
@@ -160,7 +195,7 @@ export default {
   font-size: 14px;
   color: #606266;
   padding-left: 7px;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
 }
 .form-upload-wrap {
   overflow: hidden;
@@ -175,5 +210,56 @@ export default {
 }
 .disabled-upload .el-upload {
   cursor: default;
+}
+.file-upload-btn {
+  position: relative;
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  background-color: #fbfdff;
+  border: 1px dashed #c0ccda;
+  border-radius: 4px;
+  margin-top: 8px;
+  color: #8c939d;
+}
+.file-upload-btn:hover,
+.file-upload-btn:active {
+  border: 1px dashed #409EFF;
+}
+.file-upload-origin {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  height: 60px;
+  width: 60px;
+  z-index: 50;
+  cursor: pointer;
+}
+.file-list-item {
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  margin-right: 10px;
+  margin-top: 8px;
+  position: relative;
+}
+.shadow-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 20px;
+  text-align: center;
+  line-height: 60px;
+}
+.shadow-bg i {
+  cursor: pointer;
 }
 </style>
