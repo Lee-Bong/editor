@@ -46,7 +46,7 @@
           </div>
           <div v-if="typeof scope.row[item.id] === 'object' && scope.row[item.id].images">
             <div v-for="(ele, i) in scope.row[item.id].images" :key="i"
-            :style="{background: '#ddd url('+ ele.url +
+            :style="{background: 'url('+ ele.url +
             ') center center / cover no-repeat'}" class="form-img-pre"
             @click="imagesPreview(i, scope.row[item.id].images)" >
         </div>
@@ -494,6 +494,7 @@ export default {
   float: left;
   margin-right: 5px;
   cursor: pointer;
+  border: 1px solid #ddd;
 }
 .content-wrap .pre-img {
   max-width: 450px;
@@ -525,5 +526,6 @@ export default {
 .pre-img-wrap {
   max-height: 600px;
   overflow-y: auto;
+  border: 1px solid #ddd;
 }
 </style>

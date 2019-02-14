@@ -252,6 +252,7 @@ export default {
   margin-right: 10px;
   margin-top: 8px;
   position: relative;
+  border: 1px solid #ddd;
 }
 .shadow-bg {
   position: absolute;
