@@ -8,7 +8,8 @@
         :fid ="component.id"
         :id="component.id" @clickEvent="formSubmit" :index="index"
         @valueEvent="valueChange" @propsSetting="propsSetting"
-        @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent" @sendToast="sendToast" ></div>
+        @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent" @sendToast="sendToast">
+        </div>
       </div>
     </div>
     <w-warn :warn="this.warn" ref="fwarnRef"/>

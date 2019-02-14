@@ -2,30 +2,16 @@
   <div :class="['form-upload-wrap',
     attr.isRequired? 'from-required': '', 'iphone-input']">
     <div class="upload-label">{{attr.label}}</div>
-    <!-- <el-upload
-      :class="[attr.disabled ? 'disabled-upload' : '']"
-      :disabled="attr.disabled"
-      action=""
-      accept=".png, .jpg, .jpeg, .gif"
-      :limit="4"
-      :auto-upload="true"
-      :on-preview="handlePictureCardPreview"
-      list-type="picture-card"
-      :file-list="fileList"
-      :on-remove="handleRemove"
-      :before-upload="beforeUpload"
-      :http-request="fileToUpload">
-      <i class="el-icon-plus"></i>
-    </el-upload> -->
-    <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url" @focus="imageFocus(i)"
+    <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url"
     :style="{background: '#ddd url('+ item.url + ') center center / cover no-repeat'}">
-      <div class="file-shadow shadow-bg">
+      <input class="shadow-bg file-pre-cover" @focus="imageFocus(i)" @blur="imageBlur(i)"/>
+      <div class="file-shadow shadow-bg" v-show="activeImage === i">
         <i class="el-icon-delete" @click="imageRemove(i)"></i>
       </div>
     </div>
     <div class="file-upload-btn">
       <input type="file" accept="image/*" id="upload" name="upload" class="file-upload-origin"
-      @change="fileCheckedChange">
+       multiple="multiple" @change="fileCheckedChange">
       <i class="el-icon-plus" style="z-index: 40;"></i>
     </div>
     <el-dialog :visible.sync="dialogVisible">
@@ -58,13 +44,34 @@ export default {
   },
   methods: {
     fileCheckedChange(event) { // 选取文件
-      const file = event.target.files[0];
-      this.fileToUpload(file);
-      // eslint-disable-next-line no-param-reassign
-      event.target.value = '';
+      try {
+        const { files } = event.target;
+        if (files.length + this.fileCount > 4) { // todo 没有
+          this.$emit('sendToast', '最多只能选择4张图片，请重试!');
+          return false;
+        }
+        const ele = this;
+        Array.from(files).map((item) => {
+          const file = item;
+          if (ele.beforeUpload(file)) {
+            ele.fileToUpload(file);
+          }
+          return true;
+        });
+        // eslint-disable-next-line no-param-reassign
+        event.target.value = '';
+      } catch (err) {
+        this.$emit('sendToast', '上传文件失败，请重试!');
+      }
     },
     imageFocus(i) {
       this.activeImage = i;
+    },
+    imageBlur() {
+      const blurTimer = setTimeout(() => {
+        this.activeImage = -1;
+        clearTimeout(blurTimer);
+      }, 500);
     },
     imageRemove(i) {
       this.handleImageRemove(i);
@@ -73,38 +80,37 @@ export default {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    async fileToUpload(file) {
-      if (file) {
-        this.fileCount++;
-        // const up = await oss(file);
-        // reader.onload=function(e){
-        //     var result=document.getElementById("result");
-        //     //显示文件
-        //     result.innerHTML='<img src="' + this.result +'" alt="" />';
-        // }
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function (e) {
-          const formData = new FormData();
-          formData.append('base64', e.target.result);
-          fileUplaod(formData);
-        };
-
-        // if (up && up.url) {
-        //   this.fileList.push({
-        //     index: this.fileCount - 1,
-        //     name: up.url,
-        //     url: up.url,
-        //   });
-        //   let values = '';
-        //   this.fileList.map((item, i) => {
-        //     values += item.url;
-        //     if (i < this.fileList.length - 1) values += ', ';
-        //     return true;
-        //   });
-        //   this.$emit('valueEvent', values, this.index);
-        //   this.$emit('propsSetting', 'images', this.fileList, this.index);
-        // }
+    fileToUpload(file) {
+      this.fileCount++;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      const ele = this;
+      reader.onload = function cb(e) {
+        ele.fileToLoad(e);
+      };
+      reader.onerror = function cn() {
+        throw new Error();
+      };
+    },
+    async fileToLoad(e) {
+      const formData = new FormData();
+      formData.append('base64', e.target.result);
+      const up = await fileUplaod(formData);
+      if (up && up.code === 0 && up.data && up.data.url) {
+        const { url } = up.data;
+        this.fileList.push({
+          index: this.fileCount - 1,
+          name: url,
+          url,
+        });
+        let values = '';
+        this.fileList.map((item, i) => {
+          values += item.url;
+          if (i < this.fileList.length - 1) values += ', ';
+          return true;
+        });
+        this.$emit('valueEvent', values, this.index);
+        this.$emit('propsSetting', 'images', this.fileList, this.index);
       }
     },
     handleImageRemove(index) {
@@ -121,10 +127,8 @@ export default {
       const isLt5M = file.size < (1024 * 1024 * 5);
       if (!isLt5M) {
         this.$emit('sendToast', '上传文件大小不能超过5MB!');
-        this.cancleUpload = true;
         return false;
       }
-      this.cancleUpload = false;
       return true;
     },
   },
@@ -253,13 +257,18 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
+}
+.file-shadow {
   background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 20px;
   text-align: center;
   line-height: 60px;
 }
-.shadow-bg i {
+.file-shadow i {
   cursor: pointer;
+}
+.file-pre-cover {
+  opacity: 0;
 }
 </style>
