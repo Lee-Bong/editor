@@ -530,7 +530,6 @@ export default {
           return true;
         });
       }
-      console.log('pppppp', dragArr);
       this.topBannerClick();
       eJson.editor.components = dragArr;
       const ele = this;
@@ -742,7 +741,6 @@ export default {
     },
   },
   async mounted() {
-    console.log('this.$store.state', this.$store.state);
     this.dataInit = JSON.stringify(this.$store.state);
 
     if (this.$route.query.page_id) {

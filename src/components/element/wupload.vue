@@ -83,16 +83,21 @@ export default {
       this.dialogVisible = true;
     },
     fileToUpload(file) {
-      this.fileCount++;
       const reader = new FileReader();
-      reader.readAsDataURL(file);
       const ele = this;
+      const curIndex = this.fileCount;
+      this.fileList[curIndex] = 'loading';
       reader.onload = function cb(e) {
         ele.fileToLoad(e);
       };
       reader.onerror = function cn() {
+        ele.$emit('sendToast', '文件上传失败，请重试!');
+        if (this.fileList[curIndex] === 'loading') {
+          ele.handleImageRemove(curIndex);
+        }
         throw new Error();
       };
+      reader.readAsDataURL(file);
     },
     async fileToLoad(e) {
       const formData = new FormData();
@@ -100,11 +105,13 @@ export default {
       const up = await fileUplaod(formData);
       if (up && up.code === 0 && up.data && up.data.url) {
         const { url } = up.data;
-        this.fileList.push({
-          index: this.fileCount - 1,
+        this.fileList[this.fileCount] = {
+          index: this.fileCount,
           name: url,
           url,
-        });
+        };
+        this.fileList = Object.assign([], this.fileList);
+        this.fileCount++;
         let values = '';
         this.fileList.map((item, i) => {
           values += item.url;
@@ -121,6 +128,7 @@ export default {
         this.fileList[i].index = i;
         return true;
       });
+      this.fileList = Object.assign([], this.fileList);
       this.fileCount--;
       const files = this.fileList.length ? this.fileList : null;
       this.$emit('valueEvent', files, this.index);
