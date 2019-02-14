@@ -4,14 +4,16 @@
     <div class="upload-label">{{attr.label}}</div>
     <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url"
     :style="{background: '#ddd url('+ item.url + ') center center / cover no-repeat'}">
-      <input class="shadow-bg file-pre-cover" @focus="imageFocus(i)" @blur="imageBlur(i)"/>
+      <i class="el-icon-circle-close-outline file-remove-icon" @click="imageRemove(i)"></i>
+      <!-- <input class="shadow-bg file-pre-cover" @focus="imageFocus(i)" @blur="imageBlur(i)"/> -->
       <div class="file-shadow shadow-bg" v-show="activeImage === i">
-        <i class="el-icon-delete" @click="imageRemove(i)"></i>
+        <!-- <i class="el-icon-delete" @click  ="imageRemove(i)"></i> -->
       </div>
     </div>
     <div class="file-upload-btn">
-      <input type="file" accept="image/*" id="upload" name="upload" class="file-upload-origin"
-       multiple="multiple" @change="fileCheckedChange">
+      <input type="file" accept="image/*" id="upload" name="upload"
+      :class="['file-upload-origin', attr.disabled && 'file-upload-disabled']"
+      @change="fileCheckedChange" :disabled="attr.disabled">
       <i class="el-icon-plus" style="z-index: 40;"></i>
     </div>
     <el-dialog :visible.sync="dialogVisible">
@@ -270,5 +272,17 @@ export default {
 }
 .file-pre-cover {
   opacity: 0;
+}
+.file-remove-icon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ddd;
+  border-radius: 100%;
+  color: #999;
+  cursor: pointer;
+}
+.file-upload-disabled {
+  cursor: default;
 }
 </style>

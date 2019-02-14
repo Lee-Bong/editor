@@ -7,7 +7,7 @@
       :sticks="[]"
       >
       <template slot="content">
-        <formUpload :attr="{disabled: true, label:dragForm.label, bgColor:dragForm.bgColor,
+        <formUpload :attr="{disabled: 'disabled', label:dragForm.label, bgColor:dragForm.bgColor,
           textColor:dragForm.textColor,classList:['drag-upload'], isRequired:dragForm.isRequired}"/>
       </template>
     </drag-resize-form>
