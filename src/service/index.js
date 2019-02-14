@@ -6,6 +6,7 @@ const { host } = window.location;
 const isTest = process.env.NODE_ENV === 'development' || host.indexOf('test-') === 0;
 const api = isTest ? 'https://test-bfe.meiyou.com' : 'https://bfe.meiyou.com';
 const codeApi = isTest ? 'https://test-users.seeyouyima.com' : 'https://users.seeyouyima.com';
+const cameraApi = isTest ? 'https://test-news.seeyouyima.com' : 'https://news.seeyouyima.com';
 
 // 通过账号登录
 const loginByAccount = formData => axios.post(`${api}/api/we/login`, formData);
@@ -92,14 +93,21 @@ const smsCode = params => smsApi('sms', params);
 const smsVerify = params => smsApi('sms_verify', params);
 
 // 站外文件上传
-// const fileUplaod = data => axios.post('http://test-news.seeyouyima.com/v2/camera_h5', data)
-//   .then(property('data'));
-
-const fileUplaod = (data) => {
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://test-news.seeyouyima.com/v2/camera_h5', true);
-  xhr.send(data);
-};
+const fileUplaod = data =>
+  new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${cameraApi}/v2/camera_h5`, true);
+    xhr.send(data);
+    xhr.onload = function cb() {
+      if (this.status === 200 || this.status === 304) {
+        resolve(JSON.parse(this.responseText));
+      } else {
+        reject();
+      }
+    };
+    xhr.ontimeout = () => { reject(); };
+    xhr.onerror = () => { reject(); };
+  });
 export {
   axios,
   api,
