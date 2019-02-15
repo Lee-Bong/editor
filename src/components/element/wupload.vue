@@ -2,15 +2,13 @@
   <div :class="['form-upload-wrap',
     attr.isRequired? 'from-required': '', 'iphone-input']">
     <div class="upload-label">{{attr.label}}</div>
-    <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url"
-    :style="{background: '#ddd url('+ item.url + ') center center / cover no-repeat'}">
-    <!-- <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url"
-    :style="{background: '#ddd'}" v-if="item === 'loading'"> -->
+    <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url">
+      <div class="shadow-bg pre-img-item" v-if="item.loading"></div>
+      <div class="shadow-bg load-img-item" v-if="!item.loading"
+      @click="handlePictureCardPreview(item)"
+      :style="{background: '#ddd url('+ item.url + ') center center / cover no-repeat'}"></div>
+      <i class="el-icon-loading img-upload-loading" v-if="item.loading"></i>
       <i class="el-icon-circle-close-outline file-remove-icon" @click="imageRemove(i)"></i>
-      <!-- <input class="shadow-bg file-pre-cover" @focus="imageFocus(i)" @blur="imageBlur(i)"/> -->
-      <div class="file-shadow shadow-bg" v-show="activeImage === i">
-        <!-- <i class="el-icon-delete" @click  ="imageRemove(i)"></i> -->
-      </div>
     </div>
     <div class="file-upload-btn">
       <input type="file" accept="image/*" id="upload" name="upload"
@@ -18,12 +16,16 @@
       @change="fileCheckedChange" :disabled="attr.disabled">
       <i class="el-icon-plus" style="z-index: 40;"></i>
     </div>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="" class="pre-img">
+    <el-dialog :visible.sync="dialogVisible" :center="true" :width="itemW+'px'"
+    :close-on-click-modal="true" @close="dialogClose" :lock-scroll="true">
+      <div class="pre-img-box" :style="{maxHeight: maxH}">
+        <img width="100%" :src="dialogImageUrl" alt="" class="pre-img">
+      </div>
     </el-dialog>
   </div>
 </template>
 <script>
+import generate from 'nanoid/generate';
 import { fileUplaod } from '@/service';
 
 export default {
@@ -31,8 +33,8 @@ export default {
   data() {
     return {
       fileList: [],
-      itemW: window.innerWidth / 5,
-      fileCount: 0,
+      itemW: window.innerWidth * 0.8,
+      itemH: '600px',
       dialogImageUrl: '',
       dialogVisible: false,
       cancleUpload: false, // 不符合要求，取消上传
@@ -50,7 +52,7 @@ export default {
     fileCheckedChange(event) { // 选取文件
       try {
         const { files } = event.target;
-        if (files.length + this.fileCount > 4) { // todo 没有
+        if (files.length + this.fileList.length > 4) { // todo 没有
           this.$emit('sendToast', '最多只能选择4张图片，请重试!');
           return false;
         }
@@ -68,81 +70,111 @@ export default {
         this.$emit('sendToast', '上传文件失败，请重试!');
       }
     },
-    imageFocus(i) {
-      this.activeImage = i;
-    },
-    imageBlur() {
-      const blurTimer = setTimeout(() => {
-        this.activeImage = -1;
-        clearTimeout(blurTimer);
-      }, 500);
-    },
     imageRemove(i) {
-      this.handleImageRemove(i);
+      this.handleImageRemove(i, true);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
+      this.offsetY = Number(window.pageYOffset);
+      document.body.style.marginTop = `-${this.offsetY}px`;
       this.dialogVisible = true;
     },
+    dialogClose() {
+      this.dialogVisible = false;
+    },
     fileToUpload(file) {
-      const reader = new FileReader();
+      const curIndex = this.fileList.length;
+      const id = this.getId();
+      this.fileList[curIndex] = {
+        loading: true,
+        index: curIndex,
+        id,
+      };
+      this.fileList = Object.assign([], this.fileList);
       const ele = this;
-      const curIndex = this.fileCount;
-      this.fileList[curIndex] = 'loading';
+      const reader = new FileReader();
       reader.onload = function cb(e) {
-        ele.fileToLoad(e);
+        ele.fileToLoad(e, id);
       };
       reader.onerror = function cn() {
         ele.$emit('sendToast', '文件上传失败，请重试!');
-        if (this.fileList[curIndex] === 'loading') {
+        if (this.fileList[curIndex].loading) {
           ele.handleImageRemove(curIndex);
         }
         throw new Error();
       };
       reader.readAsDataURL(file);
     },
-    async fileToLoad(e) {
+    async fileToLoad(e, id) {
       const formData = new FormData();
       formData.append('base64', e.target.result);
       const up = await fileUplaod(formData);
+      const ele = this;
       if (up && up.code === 0 && up.data && up.data.url) {
         const { url } = up.data;
-        this.fileList[this.fileCount] = {
-          index: this.fileCount,
-          name: url,
-          url,
+        const oImg = new Image();
+        oImg.onload = () => {
+          for (let i = 0; i < ele.fileList.length; i++) {
+            if (ele.fileList[i] && ele.fileList[i].id === id) {
+              ele.fileList[i] = {
+                index: i,
+                name: url,
+                url,
+                loading: false,
+                id,
+              };
+              oImg.onload = null;
+              ele.fileList = Object.assign([], ele.fileList);
+              let values = '';
+              ele.fileList.map((item) => {
+                values += item.url;
+                if (i < ele.fileList.length - 1) values += ', ';
+                return true;
+              });
+              ele.$emit('valueEvent', values, ele.index);
+              ele.$emit('propsSetting', 'images', ele.fileList, ele.index);
+              return false;
+            }
+          }
         };
-        this.fileList = Object.assign([], this.fileList);
-        this.fileCount++;
-        let values = '';
-        this.fileList.map((item, i) => {
-          values += item.url;
-          if (i < this.fileList.length - 1) values += ', ';
-          return true;
-        });
-        this.$emit('valueEvent', values, this.index);
-        this.$emit('propsSetting', 'images', this.fileList, this.index);
+        oImg.error = () => {
+          ele.handleImageRemove(id);
+        };
+        oImg.src = url;
       }
     },
-    handleImageRemove(index) {
-      this.fileList.splice(index, 1);
-      this.fileList.map((item, i) => {
-        this.fileList[i].index = i;
-        return true;
-      });
+    handleImageRemove(id, isRemove) {
+      if (!isRemove) {
+        for (let i = 0; i < this.fileList.length; i++) {
+          if (this.fileList[i] && this.fileList[i].id === id) {
+            this.removeUpdate(i);
+            return false;
+          }
+        }
+      } else {
+        this.removeUpdate(id);
+      }
+    },
+    removeUpdate(i) {
+      this.fileList.splice(i, 1);
       this.fileList = Object.assign([], this.fileList);
-      this.fileCount--;
       const files = this.fileList.length ? this.fileList : null;
       this.$emit('valueEvent', files, this.index);
     },
     beforeUpload(file) {
-      const isLt5M = file.size < (1024 * 1024 * 5);
+      const isLt5M = file.size < (1024 * 1024 * 7);
       if (!isLt5M) {
-        this.$emit('sendToast', '上传文件大小不能超过5MB!');
+        this.$emit('sendToast', '上传文件大小不能超过7MB!');
         return false;
       }
       return true;
     },
+    getId() {
+      return generate('abcdefghijklmnxyz', 10);
+    },
+  },
+  mounted() {
+    this.maxH = `${window.innerHeight * 0.7}px`;
   },
 };
 </script>
@@ -256,6 +288,7 @@ export default {
   cursor: pointer;
 }
 .file-list-item {
+  position: relative;
   display: inline-block;
   height: 60px;
   width: 60px;
@@ -295,5 +328,21 @@ export default {
 }
 .file-upload-disabled {
   cursor: default;
+}
+.img-upload-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 24px;
+  color: #888;
+  margin-top: -12px;
+  margin-left: -12px;
+}
+.pre-img-item {
+  background-color: #ddd;
+}
+.pre-img-box {
+  max-height: 600px;
+  overflow-y: auto;
 }
 </style>
