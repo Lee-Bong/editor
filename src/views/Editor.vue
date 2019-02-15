@@ -44,6 +44,7 @@ import NavBar from '@/components/NavBar';
 import { postPageInfo, getPageInfo, patchPageInfo, publishPage } from '@/service';
 import { dragCom } from '@/util/dragMxi';
 import dragJson from '@/util/jsonDoc/drag.json';
+import stateJson from '@/util/jsonDoc/state.json';
 
 export default {
   mixins: [dragCom()],
@@ -80,7 +81,6 @@ export default {
       wrapHeight: 603, // 包括头部的高度x
       clientHeight: 603, // 编辑内容高度
       isFirst: true, // 空白编辑页
-      // dataInit: '{"editor":{"isSubmit": true,"isPhone": true,"layoutKey":1,"dragTexts":[],"dragImages":[],"dragLinks":[],"dragImgLists":[],"dragAudios":[],"dragVideos":[],"dragFormTexts":[],"dragFormTextareas":[],"dragFormRadios":[],"dragFormCheckboxs":[],"dragFormSmscodes":[],"dragFormSubmits":[],"textActive":0,"linkActive":0,"imgActive":0,"imgListActive":0,"audioActive":0,"videoActive":0,"fTextActive":0,"fTextareaActive":0,"fRadioActive":0,"fCheckboxActive":0,"fSmsActive":0,"fSubmitActive":0,"textSet":false,"isTextSet":false,"imgSet":false,"isImgSet":false,"imgListSet":false,"isImgListSet":false,"videoSet":false,"isVideoSet":false,"audioSet":false,"isAudioSet":false,"linkSet":false,"isLinkSet":false,"fTextSet":false,"isFTextSet":false,"fTextareaSet":false,"isFTextareaSet":false,"fRadioSet":false,"isFRadioSet":false,"fCheckboxSet":false,"isFCheckboxSet":false,"fSmsSet":false,"isFSmsSet":false,"fSubmitSet":false,"isFSubmitSet":false,"layerLists":[],"layerActive":-1,"typeCat":{"1":["dragTexts","textSet","isTextSet","textActive"],"2":["dragImages","imgSet","isImgSet","imgActive"],"3":["dragLinks","linkSet","isLinkSet","linkActive"],"4":["dragImgLists","imgListSet","isImgListSet","imgListActive"],"5":["dragVideos","videoSet","isVideoSet","videoActive"],"6":["dragAudios","audioSet","isAudioSet","audioActive"], "7": ["dragFormTexts", "fTextSet", "isFTextSet", "fTextActive"], "8": ["dragFormTextareas", "fTextareaSet", "isFTextareaSet", "fTextareaActive"], "9": ["dragFormRadios", "fRadioSet", "isFRadioSet", "fRadioActive"], "10": ["dragFormCheckboxs", "fCheckboxSet", "isFCheckboxSet", "fCheckboxActive"], "11": ["dragFormSmscodes", "fSmsSet", "isFSmsSet", "fSmsActive"], "12":["dragFormSubmits", "fSubmitSet", "isFSubmitSet", "fSubmitActive"]},"pageSet":true,"mediaHeight":300,"audioHeight":82},"page":{"pageSet":true,"title":"","name": "", "phoneWidth":375,"phoneHeight":603,"screenHeight":603,"clientHeight":667,"shareTitle":"","shareDec":"","shareImg":"","backgroundColor":"#fff","img":{},"code":"","componentIds":[]}}',
       dataInit: '',
       beforeState: null,
       gobalState: null,
@@ -741,8 +741,7 @@ export default {
     },
   },
   async mounted() {
-    this.dataInit = JSON.stringify(this.$store.state);
-
+    this.dataInit = JSON.stringify(stateJson);
     if (this.$route.query.page_id) {
       try {
         this.isFirst = false;
