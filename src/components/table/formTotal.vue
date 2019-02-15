@@ -358,7 +358,7 @@ export default {
     },
     nextImageView() {
       this.resetDialogScroll();
-      if (this.dialogImageKey === this.dialogImageList.length) return false;
+      if (this.dialogImageKey === this.dialogImageList.length - 1) return false;
       this.dialogImageKey++;
     },
     dialogClose() {
@@ -501,6 +501,7 @@ export default {
   height: auto;
   margin: 0 auto;
   display: block;
+  border: 1px solid #ddd;
 }
 .view-btn {
   position: absolute;
@@ -513,6 +514,7 @@ export default {
 }
 .view-btn.is-disabled {
   color: #ddd;
+  cursor: default;
 }
 .view-btn:hover {
   opacity: .9;
@@ -526,6 +528,5 @@ export default {
 .pre-img-wrap {
   max-height: 600px;
   overflow-y: auto;
-  border: 1px solid #ddd;
 }
 </style>

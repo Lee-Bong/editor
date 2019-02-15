@@ -4,6 +4,8 @@
     <div class="upload-label">{{attr.label}}</div>
     <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url"
     :style="{background: '#ddd url('+ item.url + ') center center / cover no-repeat'}">
+    <!-- <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url"
+    :style="{background: '#ddd'}" v-if="item === 'loading'"> -->
       <i class="el-icon-circle-close-outline file-remove-icon" @click="imageRemove(i)"></i>
       <!-- <input class="shadow-bg file-pre-cover" @focus="imageFocus(i)" @blur="imageBlur(i)"/> -->
       <div class="file-shadow shadow-bg" v-show="activeImage === i">
