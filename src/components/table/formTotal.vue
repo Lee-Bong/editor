@@ -39,7 +39,7 @@
         <el-table-column v-for="(item, index) in formShowItems" :key="index" class="table-col"
         :prop="item.id" :label="item.label" min-width="80" :width="setTWidth(item)">
         <template slot-scope="scope">
-          <div v-if="typeof scope.row[item.id] === 'string'">
+          <div v-if="typeof scope.row[item.id] === 'string' || 'number'">
             <div class="cell-show">{{scope.row[item.id]}}</div>
             <div class="cell-hide" >{{scope.row[item.id]}}</div>
             <div class="expend-all" @click="expendAll(scope.row[item.id])">查看全部 >></div>
@@ -205,6 +205,7 @@ export default {
                 return true;
               });
               this.formData = formData;
+              console.log('sss', formData);
               this.$nextTick(() => {
                 this.expendSet(true);
               });
