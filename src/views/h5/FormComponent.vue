@@ -8,12 +8,19 @@
         :fid ="component.id"
         :id="component.id" @clickEvent="formSubmit" :index="index"
         @valueEvent="valueChange" @propsSetting="propsSetting"
-        @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent" @sendToast="sendToast">
+        @codeEvent="codeChange" @sendCodeEvent="sendCodeEvent"
+        @sendToast="sendToast" @sendDialog="sendDialog">
         </div>
       </div>
     </div>
     <w-warn :warn="this.warn" ref="fwarnRef"/>
     <w-toast :text="sendTip" ref="toastRef"/>
+    <el-dialog :visible.sync="dialogVisible" :center="true" :width="itemW+'px'"
+    :close-on-click-modal="true" @close="dialogClose" :lock-scroll="true">
+      <div class="pre-img-box" :style="{maxHeight: maxH}">
+        <img width="100%" :src="dialogImageUrl" alt="" class="pre-img">
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -42,6 +49,10 @@ export default {
       phones: [], // 存放手机
       isStop: false, // 是否停止收集
       sendTip: '',
+      dialogVisible: false,
+      itemW: window.innerWidth * 0.8,
+      dialogImageUrl: '',
+      maxH: '600px',
     };
   },
   props: {
@@ -64,6 +75,7 @@ export default {
 
   mounted() {
     this.getFormModel();
+    this.maxH = `${window.innerHeight * 0.7}px`;
   },
   methods: {
     containerStyle(component) {
@@ -315,7 +327,15 @@ export default {
       this.sendTip = text;
       this.$refs.toastRef.show();
     },
-
+    dialogClose() {
+      this.dialogVisible = false;
+    },
+    sendDialog(url) {
+      this.dialogImageUrl = url;
+      this.offsetY = Number(window.pageYOffset);
+      document.body.style.marginTop = `-${this.offsetY}px`;
+      this.dialogVisible = true;
+    },
   },
 };
 </script>
