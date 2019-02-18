@@ -16,12 +16,6 @@
       @change="fileCheckedChange" :disabled="attr.disabled">
       <i class="el-icon-plus" style="z-index: 40;"></i>
     </div>
-    <el-dialog :visible.sync="dialogVisible" :center="true" :width="itemW+'px'"
-    :close-on-click-modal="true" @close="dialogClose" :lock-scroll="true">
-      <div class="pre-img-box" :style="{maxHeight: maxH}">
-        <img width="100%" :src="dialogImageUrl" alt="" class="pre-img">
-      </div>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -33,12 +27,9 @@ export default {
   data() {
     return {
       fileList: [],
-      itemW: window.innerWidth * 0.8,
       dialogImageUrl: '',
-      dialogVisible: false,
       cancleUpload: false, // 不符合要求，取消上传
       activeImage: -1,
-      maxH: '600px',
     };
   },
   props: {
@@ -74,13 +65,7 @@ export default {
       this.handleImageRemove(i, true);
     },
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.offsetY = Number(window.pageYOffset);
-      document.body.style.marginTop = `-${this.offsetY}px`;
-      this.dialogVisible = true;
-    },
-    dialogClose() {
-      this.dialogVisible = false;
+      this.$emit('sendDialog', file.url);
     },
     fileToUpload(file) {
       const curIndex = this.fileList.length;
@@ -172,9 +157,6 @@ export default {
     getId() {
       return generate('abcdefghijklmnxyz', 10);
     },
-  },
-  mounted() {
-    this.maxH = `${window.innerHeight * 0.7}px`;
   },
 };
 </script>
