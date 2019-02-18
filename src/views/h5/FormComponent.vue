@@ -73,6 +73,7 @@ export default {
       let style = {
         width: `${size.w}px`,
         height: `${size.h}px`,
+        'z-index': component.style['z-index'] || 0,
       };
       // if (component.type !== 13) {
       //   style['z-index'] = component.style['z-index'] || 0;
@@ -96,6 +97,7 @@ export default {
           left: `${location.x}px`,
         };
       }
+      console.log('return', style);
       return style;
     },
     formType(type) {

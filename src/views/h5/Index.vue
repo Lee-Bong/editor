@@ -103,6 +103,8 @@ export default {
         }
         return formComPonentsJson;
       });
+      console.log('customComponentsJson', customComponentsJson);
+      console.log('formComPonentsJson', formComPonentsJson);
       return { formComPonentsJson, customComponentsJson };
     },
     initShare() {
