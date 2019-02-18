@@ -97,7 +97,6 @@ export default {
           left: `${location.x}px`,
         };
       }
-      console.log('return', style);
       return style;
     },
     formType(type) {
