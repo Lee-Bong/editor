@@ -53,6 +53,7 @@ export default {
       itemW: window.innerWidth * 0.8,
       dialogImageUrl: '',
       maxH: '600px',
+      scrolltop: 0,
     };
   },
   props: {
@@ -75,7 +76,7 @@ export default {
 
   mounted() {
     this.getFormModel();
-    this.maxH = `${window.innerHeight * 0.7}px`;
+    this.maxH = `${(window.innerHeight * 0.7) - 80}px`;
   },
   methods: {
     containerStyle(component) {
@@ -329,11 +330,17 @@ export default {
     },
     dialogClose() {
       this.dialogVisible = false;
+      document.body.style.overflow = 'auto';
+      document.body.style.position = 'initial';
+      window.scrollTo(0, this.offsetY);
+      document.body.style.marginTop = '0';
     },
     sendDialog(url) {
       this.dialogImageUrl = url;
       this.offsetY = Number(window.pageYOffset);
       document.body.style.marginTop = `-${this.offsetY}px`;
+      document.body.style.width = '100%';
+      document.body.style.position = 'fixed';
       this.dialogVisible = true;
     },
   },
