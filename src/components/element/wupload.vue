@@ -34,11 +34,11 @@ export default {
     return {
       fileList: [],
       itemW: window.innerWidth * 0.8,
-      itemH: '600px',
       dialogImageUrl: '',
       dialogVisible: false,
       cancleUpload: false, // 不符合要求，取消上传
       activeImage: -1,
+      maxH: '600px',
     };
   },
   props: {
