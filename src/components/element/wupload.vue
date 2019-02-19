@@ -75,6 +75,7 @@ export default {
         index: curIndex,
         id,
       };
+      this.$emit('valueEvent', 'loading', this.index);
       this.fileList = Object.assign([], this.fileList);
       const ele = this;
       const reader = new FileReader();
@@ -110,14 +111,7 @@ export default {
               };
               oImg.onload = null;
               ele.fileList = Object.assign([], ele.fileList);
-              let values = '';
-              ele.fileList.map((item) => {
-                values += item.url;
-                if (i < ele.fileList.length - 1) values += ', ';
-                return true;
-              });
-              ele.$emit('valueEvent', values, ele.index);
-              ele.$emit('propsSetting', 'images', ele.fileList, ele.index);
+              ele.updateValues();
               return false;
             }
           }
@@ -127,6 +121,17 @@ export default {
         };
         oImg.src = url;
       }
+    },
+    updateValues() {
+      let values = '';
+      const ele = this;
+      ele.fileList.map((item, i) => {
+        values += item.url;
+        if (i < ele.fileList.length - 1) values += ', ';
+        return true;
+      });
+      ele.$emit('valueEvent', values, ele.index);
+      ele.$emit('propsSetting', 'images', ele.fileList, ele.index);
     },
     handleImageRemove(id, isRemove) {
       if (!isRemove) {
@@ -143,8 +148,7 @@ export default {
     removeUpdate(i) {
       this.fileList.splice(i, 1);
       this.fileList = Object.assign([], this.fileList);
-      const files = this.fileList.length ? this.fileList : null;
-      this.$emit('valueEvent', files, this.index);
+      this.updateValues();
     },
     beforeUpload(file) {
       const isLt5M = file.size < (1024 * 1024 * 7);

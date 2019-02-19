@@ -54,8 +54,9 @@ method: post
 不限制选项添加个数，当添加项目超出面板，需要用户自行拖动面板高度，代码不自动
 
 ## url参数说明
-h5: query is_formal=1网页已发布状态，预览的页面没有该参数
-
+h5: query 
+  is_formal=1网页已发布状态，预览的页面没有该参数
+  mywtb_name=h5_editor 采用静态模版化
 
 判断一个网页是否被删除：
 发布： public !== ''
@@ -66,4 +67,7 @@ h5判断页面状态
 
 发布过的页面： this.$route.is_formal && （!visible || !public） （visible: false只表示线上数据被下线）
 草稿： !this.$route.is_formal && !draft
+
+
+http://static.seeyouyima.com/bfe/we/view-23b0b741.9aa8e005.zip
 

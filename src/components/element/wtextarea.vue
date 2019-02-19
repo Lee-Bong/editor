@@ -4,7 +4,7 @@
     @input="valueChange"
     :placeholder="attr.label"
     :class="[...attr.classList, 'w-textarea']"
-    :style="{width: attr.size.w+'px', height: attr.size.h+'px', resize: 'none'}">
+    :style="{resize: 'none'}">
     </textarea>
   </div>
 </template>
@@ -37,6 +37,7 @@ export default {
   z-index: 5;
 }
 .w-textarea {
+  width: 100%;
   box-sizing: border-box;
   background-color: #fff;
   background-image: none;

@@ -494,6 +494,7 @@ export default {
   height: 60px;
   float: left;
   margin-right: 5px;
+  margin-top: 5px;
   cursor: pointer;
   border: 1px solid #ddd;
 }

@@ -253,8 +253,12 @@ export default {
           isOk = false;
           return false;
         }
+        if (this.formArr[k].value === 'loading') {
+          this.openWarning({ text: '请等待文件上传完再提交～' });
+          isOk = false;
+          return false;
+        }
       }
-
       isOk = await this.phoneVerify();
       return isOk;
     },
