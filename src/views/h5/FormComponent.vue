@@ -335,9 +335,9 @@ export default {
     dialogClose() {
       this.dialogVisible = false;
       document.body.style.overflow = 'auto';
-      document.body.style.position = 'initial';
-      window.scrollTo(0, this.offsetY);
+      document.body.style.position = 'static';
       document.body.style.marginTop = '0';
+      window.scrollTo(0, this.offsetY);
     },
     sendDialog(url) {
       this.dialogImageUrl = url;
