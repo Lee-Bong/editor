@@ -4,7 +4,7 @@ https://bfe.meiyou.com/we/view?page_id=c98d3d76-1070-4f18-b568-5aa818038455&publ
 ### 参数说明：
  is_share=1是否是站外地址
 avater：用户id
-name：用户名（记得解码）
+name：用户名（记得解码） 
 
 ### 自定义代码：
 > if (sdk.isMeetyouWebview) {
