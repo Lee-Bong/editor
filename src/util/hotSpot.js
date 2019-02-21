@@ -1,7 +1,13 @@
 // 初始化唤起链接
-import jssdk from 'meetyou.jssdk';
 import jsonp from 'jsonp';
-import { isiOS, isAndroid, isWechat, isMeetyouWebview } from 'meetyou.browser';
+import { browser } from '@/util/myUtil';
+
+const {
+  isiOS,
+  isAndroid,
+  isWechat,
+  isMeetyouWebview,
+} = browser;
 
 const getDownLoadUrl = (downloadUrls) => {
   let url = '';
@@ -131,21 +137,6 @@ const handleClick = ({
     } else if (download) {
       // 否则跳转下载
       goDownLoad(downloadUrls);
-    }
-  } else {
-    // app内唤起app
-    const download = getDownLoadUrl(downloadUrls);
-    if (awakeLink) {
-      jssdk.callNative('open', { url: awakeLink }, (path, data) => {
-        if (!data) {
-          // 打开失败，跳转下载应用
-          if (download) {
-            window.location.href = download;
-          }
-        }
-      });
-    } else if (download) {
-      window.location.href = download;
     }
   }
 };

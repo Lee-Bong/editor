@@ -5,7 +5,7 @@
    :dragForm="dragForm">
     <template slot="setting">
       <el-form-item label="选择模式：" size="mini">
-        <el-radio-group v-model="dragForm.type">
+        <el-radio-group v-model="dragForm.radioType">
           <el-radio :label="1" @change="typeChange">单选</el-radio>
           <el-radio :label="2" @change="typeChange">多选</el-radio>
         </el-radio-group>
@@ -48,18 +48,18 @@ export default {
   },
   computed: {
     isShow() {
-      return this.dragForm.dragType === 9 ? 'isFRadioSet' : 'isFCheckboxSet';
+      return this.dragForm.type === 9 ? 'isFRadioSet' : 'isFCheckboxSet';
     },
     dragName() {
-      return this.dragForm.dragType === 9 ? 'dragFormRadios' : 'dragFormCheckboxs';
+      return this.dragForm.type === 9 ? 'dragFormRadios' : 'dragFormCheckboxs';
     },
     dragActive() {
-      return this.dragForm.dragType === 9 ? 'fRadioActive' : 'fCheckboxActive';
+      return this.dragForm.type === 9 ? 'fRadioActive' : 'fCheckboxActive';
     },
   },
   methods: {
     typeChange(val) {
-      this.updateDrags(this.dragName, val, this.dragActive, 'type');
+      this.updateDrags(this.dragName, val, this.dragActive, 'radioType');
     },
   },
   created() {

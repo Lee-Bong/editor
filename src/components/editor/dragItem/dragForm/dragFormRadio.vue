@@ -1,7 +1,7 @@
 <template>
     <drag-resize-form
       :dragForm="dragForm"
-      :infoForm="{dragName, dragActive, type: dragForm.dragType, listIndex, minH: 40, minW: 50}"
+      :infoForm="{dragName, dragActive, type: dragForm.type, listIndex, minH: 40, minW: 50}"
       :classList="'drag-item'"
       ref="dragItem"
       :sticks="['ml','mr']"
@@ -12,7 +12,7 @@
            class="radio-shadow"></div>
           <div style="z-index: 3">
             <form-radio :attr="{label:dragForm.label,classList:['drag-form-item'],
-            list:dragForm.list,type:dragForm.type,bgColor:dragForm.bgColor,
+            list:dragForm.list,radioType:dragForm.radioType,bgColor:dragForm.bgColor,
             textColor:dragForm.textColor,isRequired:dragForm.isRequired}" />
           </div>
         </div>
@@ -39,10 +39,10 @@ export default {
   },
   computed: {
     dragName() {
-      return this.dragForm.dragType === 9 ? 'dragFormRadios' : 'dragFormCheckboxs';
+      return this.dragForm.type === 9 ? 'dragFormRadios' : 'dragFormCheckboxs';
     },
     dragActive() {
-      return this.dragForm.dragType === 9 ? 'fRadioActive' : 'fCheckboxActive';
+      return this.dragForm.type === 9 ? 'fRadioActive' : 'fCheckboxActive';
     },
   },
   methods: {

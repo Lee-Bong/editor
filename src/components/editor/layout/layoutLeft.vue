@@ -119,6 +119,7 @@ export default {
           layerName = `文本${!num ? '' : num + 1}`;
           drag = textActiveOff(drag, { index: 0, isAll: true });
           drag.push(Object.assign({}, info, {
+            type: 1,
             content: '',
             fontSize: '12px',
             lineHeight: 1.5,
@@ -151,6 +152,7 @@ export default {
           layerName = `图片${!num ? '' : num + 1}`;
           icon = 'ed-icon-tupian1';
           drag2.push(Object.assign({}, info, {
+            type: 2,
             img: {},
             imgList: [],
             location: mediaLocation,
@@ -176,6 +178,7 @@ export default {
           icon = 'ed-icon-requm';
           drag3 = textActiveOff(drag3, { index: 0, isAll: true });
           drag3.push(Object.assign({}, info, {
+            type: 3,
             appLink: '',
             outLink: '',
             location: {
@@ -210,6 +213,7 @@ export default {
           layerName = `多图拼接${!num ? '' : num + 1}`;
           icon = 'ed-icon-duotu';
           drag4.push(Object.assign({}, info, {
+            type: 4,
             isUplaod: false,
             location: {
               x: 0,
@@ -236,6 +240,7 @@ export default {
           icon = 'ed-icon-shipin';
           drag5 = textActiveOff(drag5, { index: 0, isAll: true });
           drag5.push(Object.assign({}, info, {
+            type: 5,
             sourceType: '1', // 1.本地视频 2.在线视频
             source: '',
             videoTitle: '',
@@ -272,6 +277,7 @@ export default {
           icon = 'ed-icon-tubiao-';
           drag6 = textActiveOff(drag6, { index: 0, isAll: true });
           drag6.push(Object.assign({}, info, {
+            type: 6,
             sourceType: '1', // 1.本地音频 2.在线音频
             source: '',
             audioTitle: '',
@@ -322,6 +328,7 @@ export default {
           icon = 'ed-icon-text3';
           drag7 = textActiveOff(drag7, { index: 0, isAll: true });
           drag7.push(Object.assign({}, info, {
+            type: 7,
             location: formLocation,
             size: {
               w: 325,
@@ -350,6 +357,7 @@ export default {
           icon = 'ed-icon-duohangwenben';
           drag8 = textActiveOff(drag8, { index: 0, isAll: true });
           drag8.push(Object.assign({}, info, {
+            type: 8,
             location: formLocation,
             size: {
               w: 325,
@@ -377,6 +385,7 @@ export default {
           icon = 'ed-icon-danxiangxuanze';
           drag9 = textActiveOff(drag9, { index: 0, isAll: true });
           drag9.push(Object.assign({}, info, {
+            type: 9,
             location: formLocation,
             size: {
               w: 325,
@@ -388,8 +397,7 @@ export default {
             label: '单项选择',
             bgColor: '#5AC7F9',
             textColor: '#fff',
-            type: 1, // '1'：单选，'2'：多选
-            dragType: 9,
+            radioType: 1, // '1'：单选，'2'：多选
             list: [{ text: '选项1', label: 1 }],
             optionIndex: 1,
           }));
@@ -410,6 +418,7 @@ export default {
           icon = 'ed-icon-duoxuan';
           drag10 = textActiveOff(drag10, { index: 0, isAll: true });
           drag10.push(Object.assign({}, info, {
+            type: 10,
             location: formLocation,
             size: {
               w: 325,
@@ -421,8 +430,7 @@ export default {
             label: '多项选择（可多选）',
             bgColor: '#5AC7F9',
             textColor: '#fff',
-            type: 2, // '1'：单选，'2'：多选
-            dragType: 10,
+            radioType: 2, // '1'：单选，'2'：多选
             list: [{ text: '选项1', label: 1 }],
             optionIndex: 1,
           }));
@@ -443,6 +451,7 @@ export default {
           icon = 'ed-icon-shoujiduanxin';
           drag11 = textActiveOff(drag11, { index: 0, isAll: true });
           drag11.push(Object.assign({}, info, {
+            type: 11,
             location: formLocation,
             size: {
               w: 325,
@@ -474,6 +483,7 @@ export default {
           icon = 'ed-icon-tijiao1';
           drag12 = textActiveOff(drag12, { index: 0, isAll: true });
           drag12.push(Object.assign({}, info, {
+            type: 12,
             location: {
               x: (375 - 136) / 2,
               y: top1,
@@ -506,6 +516,7 @@ export default {
           icon = 'ed-icon-tupianshangchuan';
           drag13 = textActiveOff(drag13, { index: 0, isAll: true });
           drag13.push(Object.assign({}, info, {
+            type: 13,
             location: {
               x: (375 - 300) / 2,
               y: top1,

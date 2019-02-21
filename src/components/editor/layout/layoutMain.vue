@@ -1,4 +1,3 @@
-/* eslint-disable no-empty */
 <template>
   <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
     :h="page.phoneHeight" :isActive="true" :isDraggable="false"
@@ -16,7 +15,12 @@
     <div class="drag-items" :style="{
       height: page.phoneHeight + 'px',
       background: page.backgroundColor === '#fff' ? 'rgba(0, 0, 0, 0)': page.backgroundColor}">
-      <drag-text v-for="(drag, index) in dragTexts" v-if="drag.isShow"
+      <div v-for="(dragList, index) in evtList" :key="index">
+        <div v-if="$store.state.editor[dragList] && $store.state.editor[dragList].length">
+          <drag-list :drag-list="$store.state.editor[dragList]" />
+        </div>
+      </div>
+      <!-- <drag-text v-for="(drag, index) in dragTextsList"
        :key="drag.id" :list-index="index" :dragForm="drag"
        @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" ref="textRef"/>
 
@@ -39,10 +43,10 @@
       <drag-audio v-for="(drag, index) in dragAudios" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop" ref="audioRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+       @dragDel="dragDel" @dragTextClick="dragTextClick" />-->
 
       <!-- 表单 -->
-      <drag-form-text v-for="(drag, index) in dragFormTexts" v-if="drag.isShow"
+      <!-- <drag-form-text v-for="(drag, index) in dragFormTexts" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop" ref="fTextRef"
        @dragDel="dragDel" @dragTextClick="dragTextClick" />
@@ -75,7 +79,7 @@
        <drag-form-upload v-for="(drag, index) in dragFormUploads" v-if="drag.isShow"
        :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
        @dragStop="inputDragStop" ref="fUploadRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
+       @dragDel="dragDel" @dragTextClick="dragTextClick" /> -->
     </div>
   </vue-drag-resize>
 </template>
@@ -93,6 +97,7 @@ import dragFormRadio from '@/components/editor/dragItem/dragForm/dragFormRadio';
 import dragFormSmscode from '@/components/editor/dragItem/dragForm/dragFormSmscode';
 import dragFormSubmit from '@/components/editor/dragItem/dragForm/dragFormSubmit';
 import dragFormUpload from '@/components/editor/dragItem/dragForm/dragFormUpload';
+import dragList from '@/components/editor/layout/dragList';
 import { dragCom } from '@/util/dragMxi';
 import { mapState } from 'vuex';
 
@@ -112,6 +117,7 @@ export default {
     dragFormSmscode,
     dragFormSubmit,
     dragFormUpload,
+    dragList,
   },
   data() {
     return {
@@ -130,6 +136,10 @@ export default {
         ['dragFormSubmits', 'fSubmitRef'],
         ['dragFormUploads', 'fUploadRef'],
       ],
+      evtList: ['dragTexts', 'dragImages', 'dragLinks',
+        'dragImgLists', 'dragVideos', 'dragAudios',
+        'dragFormTexts', 'dragFormTextareas', 'dragFormRadios',
+        'dragFormCheckboxs', 'dragFormSmscodes', 'dragFormSubmits', 'dragFormUploads'],
     };
   },
   computed: {
@@ -209,7 +219,12 @@ export default {
       }
       return true;
     });
+    // console.log('parent-updated');
   },
+  // beforeUpdate() {
+  //   console.log('parent-beforeUpdate');
+  // },
+
 };
 </script>
 
@@ -224,7 +239,7 @@ export default {
   left: 0;
   right: 0;
   width: 375px;
-  background: #fff url(../../../assets/images/phone.png) repeat;
+  background: #fff url(../../../assets/images/phone-content_bg.png) repeat;
   background-position-x: -3px;
   background-position-y: -9px;
 }

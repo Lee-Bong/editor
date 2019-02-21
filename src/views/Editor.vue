@@ -88,6 +88,7 @@ export default {
       curState: null,
       initState: null,
       windowH: window.innerHeight,
+      saving: false, // 当前是否是保存草稿操作
     };
   },
 
@@ -139,7 +140,7 @@ export default {
             this.isFirst = false;
           }
           return true;
-        } else if (isTrigger) this.optError('保存草稿');
+        } else if (isTrigger) { this.optError('保存草稿'); }
         return false;
       } catch (err) {
         this.optError('保存草稿');
@@ -149,10 +150,12 @@ export default {
       const ele = this;
       const isOk = await this.saveEditor(false);
       if (isOk) {
+        this.saving = true;
         ele.$router.push({
           path: '/preview',
           query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
         });
+        this.saving = false;
       }
     },
     async publishEditor() { // 发布
@@ -163,10 +166,12 @@ export default {
           const { data } = await publishPage(this.$route.query.page_id);
           if (data) {
             ele.optSucsess('发布页面');
+            this.saving = true;
             ele.$router.push({
               path: '/publish',
               query: merge(ele.$route.query, { page_id: this.$route.query.page_id }),
             });
+            this.saving = false;
           } else {
             ele.optError('发布页面');
           }
@@ -548,14 +553,14 @@ export default {
       const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
     },
-    getRadioSet(item, dragType) {
+    getRadioSet(item, type) {
       const {
-        location, size, label, bgColor, textColor, list, type, isRequired, id,
+        location, size, label, bgColor, textColor, list, radioType, isRequired, id,
       } = item;
       return {
         id,
         isForm: true,
-        type: dragType,
+        type,
         isRequired,
         location,
         size,
@@ -573,7 +578,7 @@ export default {
           bgColor,
           textColor,
           list,
-          type,
+          radioType,
           isRequired,
         },
       };
@@ -706,6 +711,7 @@ export default {
       return isContain;
     },
     goCheck() { // 离开页面，检测是否操作都保存
+      if (this.saving) return true;
       const { page, editor } = JSON.parse(this.beforeState);
       page.pageSet = this.$store.state.page.pageSet;
       const isOk = isEqual(page, this.$store.state.page);

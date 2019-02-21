@@ -37,7 +37,7 @@
         <textarea class="drag-text"
           v-model="dragForm.content"
           ref="inputCont"
-          :style="{width: dragForm.size.w+'px', height: dragForm.size.h+'px',
+          :style="{width: '100%', height: '100%',
             fontSize: dragForm.fontSize, lineHeight:dragForm.lineHeight,
             textAlign: dragForm.textAlign,
             color: dragForm.textColor}"
@@ -93,8 +93,6 @@ export default {
         return typeof (value) === 'string' || value instanceof Object;
       },
     },
-  },
-  beforeUpdate() {
   },
   computed: {
     parentH: {
@@ -155,8 +153,6 @@ export default {
         [form]: dragItems,
       });
     },
-  },
-  updated() {
   },
 };
 </script>

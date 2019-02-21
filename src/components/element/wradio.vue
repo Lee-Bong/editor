@@ -5,9 +5,9 @@
       <span v-if="attr.isRequired" class="radio-required">*</span>{{attr.label}}</div>
       <div v-for="(item, index) in attr.list"
       :key="index" class="radio-item">
-        <el-radio :value="checked" v-if="attr.type===1"
+        <el-radio :value="checked" v-if="attr.radioType===1"
         @change="redioChange(index)" :label="index">{{item.text}}</el-radio>
-        <el-checkbox v-if="attr.type===2" ref="checkRef" :label="index"
+        <el-checkbox v-if="attr.radioType===2" ref="checkRef" :label="index"
         @change="checkChange(index)">
         {{item.text}}</el-checkbox>
       </div>

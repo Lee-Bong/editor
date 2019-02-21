@@ -37,7 +37,7 @@ export default {
 <style lang="less" scoped>
 .top-banner {
   cursor: pointer;
-  background: url("../../../assets/images/page_banner1.png") no-repeat center
+  background: url("../../../assets/images/page_banner.png") no-repeat center
     center;
   background-size: 375px auto;
   z-index: 10;

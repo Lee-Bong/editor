@@ -1,10 +1,10 @@
 
 import jssdk from 'meetyou.jssdk';
-import { isMeetyouWebview } from 'meetyou.browser';
+import { browser } from '@/util/myUtil';
 import axios from '../service/request';
 
 const sdk = {
-  isMeetyouWebview,
+  isMeetyouWebview: browser.isMeetyouWebview,
   jssdk,
   query: null,
   scale: 1,

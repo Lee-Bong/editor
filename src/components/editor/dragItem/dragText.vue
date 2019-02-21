@@ -43,8 +43,15 @@ export default {
     forceUpdate() {
       this.$forceUpdate();
     },
-  },
-  updated() {
+    // updated() {
+    //   console.log('dragText');
+    // },
+    beforeDestroy() {
+      console.log('child-beforeDestroy');
+    },
+    destroyed() {
+      console.log('child-destroyed');
+    },
   },
 };
 </script>

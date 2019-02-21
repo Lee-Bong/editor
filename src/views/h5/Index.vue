@@ -6,21 +6,21 @@
     :style='{ height: `${scale * parseInt(pageJson.page.phoneHeight)}px`,
     backgroundColor: pageJson.page.backgroundColor || "#fff" }'
   >
+    <div v-if="customComponentsJson && customComponentsJson.length">
       <custom-component
-        v-if="customComponentsJson && customComponentsJson.length"
         v-for="(component, index) in customComponentsJson"
         :key="index"
         :component="component"
-        :scale="scale"
-      >
+        :scale="scale">
       </custom-component>
-      <form-component
-        v-if="formComPonentsJson && formComPonentsJson.length"
-        :form="formComPonentsJson"
-        :scale="scale"
-        :isStopCollect="isStopCollect"
-      >
-      </form-component>
+    </div>
+    <form-component
+      v-if="formComPonentsJson && formComPonentsJson.length"
+      :form="formComPonentsJson"
+      :scale="scale"
+      :isStopCollect="isStopCollect"
+    >
+    </form-component>
     </div>
     <error v-if="showError"></error>
   </div>
@@ -28,7 +28,6 @@
 <script>
 import sortBy from 'lodash/sortBy';
 import map from 'lodash/map';
-import jssdk from 'meetyou.jssdk';
 import { getPageInfo } from '@/service';
 import hotSpot from '@/util/hotSpot';
 import gaReport from '@/util/gaReport.js';
@@ -105,33 +104,6 @@ export default {
       });
       return { formComPonentsJson, customComponentsJson };
     },
-    initShare() {
-      const fromURL = `${window.location.protocol}//${window.location.host}/we/view?page_id=${
-        this.pageId
-      }&is_formal=${this.isFormal}`;
-      const {
-        shareDec, shareImg, shareTitle, title,
-      } = this.pageJson.page;
-      jssdk.registerTopbarRightButton(
-        {
-          image:
-            'http://static.seeyouyima.com/news-node.seeyouyima.com/right_bar_and-de8fcdd4a49b2f45b3fdfa238bf8b143.png',
-        },
-        () => {
-          jssdk.share({
-            title: shareTitle || title,
-            content: shareDec,
-            imageURL: shareImg,
-            fromURL,
-          }, () => {
-            gaReport({
-              type: 'share',
-              pageId: `weditor_${this.$route.query.page_id}`,
-            });
-          });
-        },
-      );
-    },
   },
   components: {
     CustomComponent,
@@ -161,14 +133,9 @@ export default {
       } = this.pageJson.page;
       this.code = code;
       document.title = title;
-      jssdk.callNative('topbar/title', { title });
-
 
       // 初始化app内分享
       this.$nextTick(() => {
-        if (this.pageJson.page.isShare === undefined || this.pageJson.page.isShare === true) {
-          this.initShare();
-        }
         hotSpot.wxShare({
           title: shareTitle || title,
           desc: shareDec,

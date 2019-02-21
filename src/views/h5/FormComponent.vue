@@ -26,8 +26,6 @@
 
 <script>
 import md5 from 'js-md5';
-import { isMeetyouWebview } from 'meetyou.browser';
-import jssdk from 'meetyou.jssdk';
 import AudioPlay from '@/components/editor/dragSetting/upload/audioPlay';
 import wText from '@/components/element/wtext';
 import wTextarea from '@/components/element/wtextarea';
@@ -171,12 +169,6 @@ export default {
       };
       if (this.$route.query.myuid) {
         reportUID(this.$route.query.myuid);
-      } else if (isMeetyouWebview) {
-        jssdk.callNative('userInfo/get', null, (path, data) => {
-          if (data && data.userid) {
-            reportUID(data.userid);
-          }
-        });
       }
     },
     valueChange(val, index) {

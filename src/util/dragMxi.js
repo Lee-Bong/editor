@@ -4,6 +4,7 @@ export function dragCom() {
   const drag = {
     methods: {
       dragClick(index, type) { // 点击组件  index=-1表示全部都取消，index=-2表示点击了网页标题
+        debugger;
         let newEditor;
         let layerActive;
         if (type !== undefined) {
@@ -25,17 +26,17 @@ export function dragCom() {
           const form = this.$store.state.editor.typeCat[item];
           const lists = this.$store.state.editor[form[0]];
           if (otherClick) {
-            updateEditor[form[0]] = this.textActiveOff(lists, { index: 0, isAll: true });
+            updateEditor[form[0]] = Object.assign([], this.textActiveOff(lists, { index: 0, isAll: true }));
             updateEditor[form[2]] = false;
           } else {
             const dragName = this.$store.state.editor.typeCat[type][0];
             if (lists.length) {
               if (dragName === form[0]) {
-                updateEditor[form[0]] = this.textActiveOff(lists, { index });
+                updateEditor[form[0]] = Object.assign([], this.textActiveOff(lists, { index }));
                 updateEditor[form[2]] = true;
                 updateEditor[form[3]] = index;
               } else {
-                updateEditor[form[0]] = this.textActiveOff(lists, { index: 0, isAll: true });
+                updateEditor[form[0]] = Object.assign([], this.textActiveOff(lists, { index: 0, isAll: true }));
                 updateEditor[form[2]] = false;
               }
             }
