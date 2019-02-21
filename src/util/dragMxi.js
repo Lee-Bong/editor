@@ -4,7 +4,6 @@ export function dragCom() {
   const drag = {
     methods: {
       dragClick(index, type) { // 点击组件  index=-1表示全部都取消，index=-2表示点击了网页标题
-        debugger;
         let newEditor;
         let layerActive;
         if (type !== undefined) {
