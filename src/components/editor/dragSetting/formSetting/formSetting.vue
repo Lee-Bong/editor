@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     pHeight() {
-      return this.form.postion
+      return this.form.postion;
     },
   },
   methods: {
