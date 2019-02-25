@@ -157,12 +157,13 @@ export default {
       this.$store.commit('editor_update', { isImgSet: false });
     },
     locationChange() { // 位置值发生改变
-      // this.$emit('input-locationChange', 'dragImages', this.dragForm.location, 'imgActive');
-      const lists = this.editor.dragImages;
+      // this.$emit('location-change', 'dragImages', this.dragForm.location, 'imgActive');
+      let lists = this.editor.dragImages;
       let drags = lists[this.editor.imgActive];
       const { location, size } = this.dragForm;
       drags = Object.assign({}, drags, { location, size, isUpload: false });
       lists[this.editor.imgActive] = drags;
+      lists = Object.assign([], lists);
       this.$store.commit('editor_update', { dragImages: lists });
       this.ratioSet(this, 'dragImages', 'imgActive');
     },
@@ -194,11 +195,12 @@ export default {
           h: newH,
         };
       }
-      const lists = this.editor.dragImages;
+      let lists = this.editor.dragImages;
       let drags = lists[this.editor.imgActive];
 
       drags = Object.assign({}, drags, { size, isUpload: false });
       lists[this.editor.imgActive] = drags;
+      lists = Object.assign([], lists);
       this.$store.commit('editor_update', { dragImages: lists });
       this.ratioSet(this, 'dragImages', 'imgActive');
     },
@@ -215,7 +217,7 @@ export default {
         if (isModify) {
           ele.$refs.imgReview.uplaodDone();
         }
-        const images = ele.editor.dragImages;
+        let images = ele.editor.dragImages;
         let drags = images[ele.editor.imgActive];
         let newH = dragImg.height;
         let newW = dragImg.width;
@@ -231,6 +233,8 @@ export default {
         }
         newDrag.isUpload = false;
         drags = Object.assign({}, drags, newDrag);
+        images[ele.editor.imgActive] = drags;
+        images = Object.assign([], images);
         ele.$store.commit('editor_update', { dragImages: images });
         const phoneH = drags.position === 'relative' ? ele.page.phoneHeight : ele.page.screenHeight;
         if (newH > phoneH - drags.location.y) {
@@ -341,7 +345,7 @@ export default {
           x: location.x,
           y: maxBottom,
         };
-        this.$emit('input-locationChange', 'dragImages', location, 'imgActive');
+        this.$emit('location-change', 'dragImages', location, 'imgActive');
       }
       this.ratioSet(this, 'dragImages', 'imgActive');
     },

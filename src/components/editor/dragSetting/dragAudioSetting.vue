@@ -233,7 +233,7 @@ export default {
           position: playObj.position,
         });
       }
-      this.$emit('audioSourceChange', type, 'dragAudios', 'audioActive');
+      this.$emit('source-change', type, 'dragAudios', 'audioActive');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isAudioSet: false });

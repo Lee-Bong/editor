@@ -48,6 +48,11 @@ export default {
       fileModify: false,
     };
   },
+  computed: {
+    pHeight() {
+      return this.form.postion
+    },
+  },
   methods: {
     requireEvent(val) {
       this.requireChange(this.setForm.dragName, val, this.setForm.dragActive);

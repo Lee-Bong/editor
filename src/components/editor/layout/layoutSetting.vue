@@ -1,110 +1,20 @@
 <template>
 <div class="setting-wrap">
-    <drag-text-setting
-      v-if="editor.dragTexts.length && editor.isTextSet"
-      :dragForm="editor.dragTexts[editor.textActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-img-setting
-      v-if="editor.isImgSet"
-      :dragForm="editor.dragImages[editor.imgActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-video-setting
-      v-if="editor.dragVideos.length && editor.isVideoSet"
-      :dragForm="editor.dragVideos[editor.videoActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @videoSourceChange="sourceChange"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-audio-setting
-      v-if="editor.dragAudios.length && editor.isAudioSet"
-      :dragForm="editor.dragAudios[editor.audioActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @audioSourceChange="sourceChange"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-    />
-
-    <drag-link-setting
-      v-if="editor.linkSet"
-      :dragForm="editor.dragLinks[editor.linkActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-      @linkSourceChange="sourceChange"
-    />
-    <drag-img-list-setting
-      v-if="editor.isImgListSet"
-      :dragForm="editor.dragImgLists[editor.imgListActive]"
-      :setForm="settingForm"
-      @input-locationChange="inputLocationChange"
-      @input-sizeChange="inputSizeChange"
-      @linkSourceChange="sourceChange"
-    />
     <page-setting
       v-if="page.pageSet"
       :dragForm="page"
       :setForm="settingForm"
       @setting-fixed="settingFixed"
     />
-
-    <f-text-setting
-      v-if="editor.isFTextSet"
-      :dragForm="editor.dragFormTexts[editor.fTextActive]"
-      :setForm="settingForm"
+  <div v-for="(set, key) in setActive" :key="key">
+    <div :is="dragType(Number(key))"
+      :dragForm="editor[set[0]][editor[set[3]]]" :setForm="settingForm"
       @setting-fixed="settingFixed"
-    />
-
-    <f-textarea-setting
-      v-if="editor.isFTextareaSet"
-      :dragForm="editor.dragFormTextareas[editor.fTextareaActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-    />
-    <f-radio-setting
-      v-if="editor.isFRadioSet"
-      :dragForm="editor.dragFormRadios[editor.fRadioActive]"
-      :setForm="settingForm"
-    />
-    <f-radio-setting
-      v-if="editor.isFCheckboxSet"
-      :dragForm="editor.dragFormCheckboxs[editor.fCheckboxActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-    />
-    <f-sms-setting
-      v-if="editor.isFSmsSet"
-      :dragForm="editor.dragFormSmscodes[editor.fSmsActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-    />
-    <f-submit-setting
-      v-if="editor.isFSubmitSet"
-      :dragForm="editor.dragFormSubmits[editor.fSubmitActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-    />
-    <f-upload-setting
-      v-if="editor.isFUploadSet"
-      :dragForm="editor.dragFormUploads[editor.fUploadActive]"
-      :setForm="settingForm"
-      @setting-fixed="settingFixed"
-    />
-
+      @location-change="locationChange"
+      @size-change="sizeChange"
+      @source-change="sourceChange">
+    </div>
+  </div>
 </div>
 </template>
 
@@ -123,6 +33,7 @@ import fSmsSetting from '@/components/editor/dragSetting/formSetting/fSmsSetting
 import fSubmitSetting from '@/components/editor/dragSetting/formSetting/fSubmitSetting';
 import fUploadSetting from '@/components/editor/dragSetting/formSetting/fUploadSetting';
 import { dragCom } from '@/util/dragMxi';
+import dragJson from '@/util/jsonDoc/drag.json';
 
 export default {
   name: 'layoutSetting',
@@ -154,8 +65,21 @@ export default {
       },
     };
   },
+  computed: {
+    setActive() {
+      const settingList = {};
+      const { typeCat } = dragJson;
+      for (const k in typeCat) {
+        if (this.editor[typeCat[k][0]] &&
+        this.editor[typeCat[k][0]].length && this.editor[typeCat[k][2]]) {
+          settingList[k] = typeCat[k];
+        }
+      }
+      return settingList;
+    },
+  },
   methods: {
-    sourceChange(type, form, active) {
+    sourceChange(type, form, active) { // 修改类型
       const dragItems = this.$store.state.editor[form];
       dragItems[this.$store.state.editor[active]].sourceType = type;
       this.$store.commit('editor_update', {
@@ -166,7 +90,7 @@ export default {
       this.settingForm.location.x = 600;
       this.settingForm.location.y = 66;
     },
-    inputLocationChange(form, val, active) { // 设置-文本组件位置变化
+    locationChange(form, val, active) { // 设置-文本组件位置变化
       let dragItems = this.$store.state.editor[form];
       dragItems[this.$store.state.editor[active]].location = val;
       dragItems[this.$store.state.editor[active]].size =
@@ -176,7 +100,7 @@ export default {
         [form]: dragItems,
       });
     },
-    inputSizeChange(form, val, active) {
+    sizeChange(form, val, active) {
       const dragItems = this.$store.state.editor[form];
       dragItems[this.$store.state.editor[active]].size = val;
       if (form === 'dragVideos') {
@@ -185,6 +109,56 @@ export default {
       this.$store.commit('editor_update', {
         [form]: dragItems,
       });
+    },
+    dragType(type) {
+      switch (type) {
+        case 1:
+        {
+          return 'dragTextSetting';
+        }
+        case 2:
+        {
+          return 'dragImgSetting';
+        }
+        case 3: {
+          return 'dragLinkSetting';
+        }
+        case 4:
+        {
+          return 'dragImgListSetting';
+        }
+        case 5:
+        {
+          return 'dragVideoSetting';
+        }
+        case 6: {
+          return 'dragAudioSetting';
+        }
+        case 7:
+        {
+          return 'fTextSetting';
+        }
+        case 8:
+        {
+          return 'fTextareaSetting';
+        }
+        case 9:
+        case 10: {
+          return 'fRadioSetting';
+        }
+        case 11: {
+          return 'fSmsSetting';
+        }
+        case 12: {
+          return 'fSubmitSetting';
+        }
+        case 13: {
+          return 'fUploadSetting';
+        }
+        default: {
+          break;
+        }
+      }
     },
   },
   updated() {

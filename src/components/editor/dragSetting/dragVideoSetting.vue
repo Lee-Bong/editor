@@ -224,7 +224,7 @@ export default {
           },
         });
       }
-      this.$emit('videoSourceChange', type, 'dragVideos', 'videoActive');
+      this.$emit('source-change', type, 'dragVideos', 'videoActive');
     },
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isVideoSet: false });

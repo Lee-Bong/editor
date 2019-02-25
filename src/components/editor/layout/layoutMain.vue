@@ -20,145 +20,27 @@
           <drag-list :drag-list="$store.state.editor[dragList]" />
         </div>
       </div>
-      <!-- <drag-text v-for="(drag, index) in dragTextsList"
-       :key="drag.id" :list-index="index" :dragForm="drag"
-       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" ref="textRef"/>
-
-      <drag-img v-for="(drag, index) in dragImages" :key="drag.id"
-       :list-index="index" :is-active="drag.isActive" v-if="drag.isShow" :dragForm="drag"
-       @dragStop="inputDragStop" @dragDel="dragDel" @dragTextClick="dragTextClick" ref="imgRef"/>
-
-      <drag-link v-for="(drag, index) in dragLinks" v-if="drag.isShow"
-       :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" ref="linkRef"/>
-
-      <drag-img-lists v-for="(drag, index) in dragImgLists" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag" @dragDel="dragDel"
-       @dragTextClick="dragTextClick" ref="imgListRef"/>
-
-      <drag-video v-for="(drag, index) in dragVideos" v-if="drag.isShow"
-       :key="drag.id" :list-index="index" :dragForm="drag" @dragStop="inputDragStop"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" ref="videoRef"/>
-
-      <drag-audio v-for="(drag, index) in dragAudios" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="audioRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />-->
-
-      <!-- 表单 -->
-      <!-- <drag-form-text v-for="(drag, index) in dragFormTexts" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
-
-      <drag-form-textarea v-for="(drag, index) in dragFormTextareas" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fTextareaRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
-
-       <drag-form-radio v-for="(drag, index) in dragFormRadios" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fRadioRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
-
-      <drag-form-radio v-for="(drag, index) in dragFormCheckboxs" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fCheckboxRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
-
-       <drag-form-smscode v-for="(drag, index) in dragFormSmscodes" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fSmsRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
-
-       <drag-form-submit v-for="(drag, index) in dragFormSubmits" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fSubmitRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" />
-
-       <drag-form-upload v-for="(drag, index) in dragFormUploads" v-if="drag.isShow"
-       :key="drag.id" :list-index="parseInt(index, 10)" :dragForm="drag"
-       @dragStop="inputDragStop" ref="fUploadRef"
-       @dragDel="dragDel" @dragTextClick="dragTextClick" /> -->
     </div>
   </vue-drag-resize>
 </template>
 
 <script>
-import dragText from '@/components/editor/dragItem/dragText';
-import dragImg from '@/components/editor/dragItem/dragImg';
-import dragLink from '@/components/editor/dragItem/dragLink';
-import dragImgLists from '@/components/editor/dragItem/dragImgLists';
-import dragVideo from '@/components/editor/dragItem/dragVideo';
-import dragAudio from '@/components/editor/dragItem/dragAudio';
-import dragFormText from '@/components/editor/dragItem/dragForm/dragFormText';
-import dragFormTextarea from '@/components/editor/dragItem/dragForm/dragFormTextarea';
-import dragFormRadio from '@/components/editor/dragItem/dragForm/dragFormRadio';
-import dragFormSmscode from '@/components/editor/dragItem/dragForm/dragFormSmscode';
-import dragFormSubmit from '@/components/editor/dragItem/dragForm/dragFormSubmit';
-import dragFormUpload from '@/components/editor/dragItem/dragForm/dragFormUpload';
 import dragList from '@/components/editor/layout/dragList';
 import { dragCom } from '@/util/dragMxi';
-import { mapState } from 'vuex';
 
 export default {
   mixins: [dragCom()],
   name: 'layoutMain',
   components: {
-    dragText,
-    dragImg,
-    dragLink,
-    dragImgLists,
-    dragVideo,
-    dragAudio,
-    dragFormText,
-    dragFormTextarea,
-    dragFormRadio,
-    dragFormSmscode,
-    dragFormSubmit,
-    dragFormUpload,
     dragList,
   },
   data() {
     return {
-      evt: [
-        ['dragTexts', 'textRef'],
-        ['dragImages', 'imgRef'],
-        ['dragLinks', 'linkRef'],
-        ['dragImgLists', 'imgListRef'],
-        ['dragVideos', 'videoRef'],
-        ['dragAudios', 'audioRef'],
-        ['dragFormTexts', 'fTextRef'],
-        ['dragFormTextareas', 'fTextareaRef'],
-        ['dragFormRadios', 'fRadioRef'],
-        ['dragFormCheckboxs', 'fCheckboxRef'],
-        ['dragFormSmscodes', 'fSmsRef'],
-        ['dragFormSubmits', 'fSubmitRef'],
-        ['dragFormUploads', 'fUploadRef'],
-      ],
       evtList: ['dragTexts', 'dragImages', 'dragLinks',
         'dragImgLists', 'dragVideos', 'dragAudios',
         'dragFormTexts', 'dragFormTextareas', 'dragFormRadios',
         'dragFormCheckboxs', 'dragFormSmscodes', 'dragFormSubmits', 'dragFormUploads'],
     };
-  },
-  computed: {
-    ...mapState({
-      dragAudios: state => state.editor.dragAudios,
-      dragVideos: state => state.editor.dragVideos,
-      dragImgLists: state => state.editor.dragImgLists,
-      dragLinks: state => state.editor.dragLinks,
-      dragImages: state => state.editor.dragImages,
-      dragTexts: state => state.editor.dragTexts,
-      dragFormTexts: state => state.editor.dragFormTexts,
-      dragFormTextareas: state => state.editor.dragFormTextareas,
-      dragFormRadios: state => state.editor.dragFormRadios,
-      dragFormCheckboxs: state => state.editor.dragFormCheckboxs,
-      dragFormSmscodes: state => state.editor.dragFormSmscodes,
-      dragFormSubmits: state => state.editor.dragFormSubmits,
-      dragFormUploads: state => state.editor.dragFormUploads,
-      page: state => state.page,
-    }),
   },
   methods: {
     inputDragStop(form, ev, index) { // 拖动组件同步设置
@@ -206,25 +88,59 @@ export default {
       });
       return k;
     },
+    dragType(type) {
+      switch (type) {
+        case 1:
+        {
+          return 'dragTextSetting';
+        }
+        case 2:
+        {
+          return 'dragImgSetting';
+        }
+        case 3: {
+          return 'dragLinkSetting';
+        }
+        case 4:
+        {
+          return 'dragImgListSetting';
+        }
+        case 5:
+        {
+          return 'dragVideoSetting';
+        }
+        case 6: {
+          return 'dragAudioSetting';
+        }
+        case 7:
+        {
+          return 'fTextSetting';
+        }
+        case 8:
+        {
+          return 'fTextareaSetting';
+        }
+        case 9:
+        case 10: {
+          return 'fRadioSetting';
+        }
+        case 11: {
+          return 'fSmsSetting';
+        }
+        case 12: {
+          return 'fSubmitSetting';
+        }
+        case 13: {
+          return 'fUploadSetting';
+        }
+        default: {
+          break;
+        }
+      }
+    },
   },
   updated() {
-    this.evt.map((item) => {
-      const list = this.$store.state.editor[item[0]];
-      const re = this.$refs[item[1]];
-      if (list && list.length && re) {
-        re.map((ele) => {
-          ele.forceUpdate();
-          return true;
-        });
-      }
-      return true;
-    });
-    // console.log('parent-updated');
   },
-  // beforeUpdate() {
-  //   console.log('parent-beforeUpdate');
-  // },
-
 };
 </script>
 

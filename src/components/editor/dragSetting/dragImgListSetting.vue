@@ -82,7 +82,7 @@ export default {
       this.$store.commit('editor_update', { isImgListSet: false });
     },
     locationChange() { // 位置值发生改变
-      this.$emit('input-locationChange', 'dragImgLists', this.dragForm.location, 'imgListActive');
+      this.$emit('location-change', 'dragImgLists', this.dragForm.location, 'imgListActive');
     },
     onFileChecked(params) {
       const addItem = {
@@ -186,12 +186,13 @@ export default {
     },
     fileDone(key, updateImg) {
       const { dragImgLists, imgListActive } = this.editor;
-      const imgLists = dragImgLists;
+      let imgLists = dragImgLists;
       this.imgList[key] = updateImg;
       const drag = imgLists[imgListActive];
       drag.imgList = this.imgList;
       const newDrag = Object.assign({}, drag);
       imgLists[imgListActive] = newDrag;
+      imgLists = Object.assign([], imgLists);
       this.$store.commit('editor_update', {
         dragImgLists: imgLists,
       });
@@ -223,7 +224,8 @@ export default {
       this.updateImgList();
     },
     updateImgList(isRemove, index) {
-      const { dragImgLists, imgListActive } = this.editor;
+      const { imgListActive } = this.editor;
+      let { dragImgLists } = this.editor;
       const drag = dragImgLists[imgListActive];
       if (isRemove) {
         this.imgList = drag.imgList.filter((item, key) => key !== index);
@@ -231,6 +233,7 @@ export default {
       drag.imgList = this.imgList;
       const newDrag = Object.assign({}, drag);
       dragImgLists[imgListActive] = newDrag;
+      dragImgLists = Object.assign([], dragImgLists);
       this.$store.commit('editor_update', {
         dragImgLists,
       });

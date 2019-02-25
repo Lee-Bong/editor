@@ -46,5 +46,7 @@ export default {
   cursor: move !important;
   outline: none;
 }
-
+.drag-upload .file-upload-origin {
+  z-index: -1;
+}
 </style>

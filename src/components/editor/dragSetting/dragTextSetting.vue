@@ -53,7 +53,7 @@
            @change="textColorChange"></el-color-picker>
           <el-button type="text" class="bg-reset" @click="textColorReset">重置</el-button>
         </el-form-item>
-        <el-form-item label="位置：" size="mini" class="number-item">
+        <!-- <el-form-item label="位置：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.location.x" @change="locationChange"
             :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
             controls-position="right" class="num-input"></el-input-number>
@@ -61,8 +61,10 @@
             :min="location.ymin" :max="yMax"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
-        <div class="dec-label"> <label>X</label> <label> Y</label></div>
-        <el-form-item label="尺寸：" size="mini" class="number-item">
+        <div class="dec-label"> <label>X</label> <label> Y</label></div> -->
+        <size-location-pro :form="{dragName, dragActive, size: dragForm.size, location: dragForm.location,
+        minW: 15, minH: 15, pH:formWrapH}"/>
+        <!-- <el-form-item label="尺寸：" size="mini" class="number-item">
           <el-input-number v-model="dragForm.size.w" @change="sizeChange"
             :min="size.wmin" :max="page.phoneWidth-dragForm.location.x"
             controls-position="right" class="num-input"></el-input-number>
@@ -70,7 +72,7 @@
             :min="size.hmin" :max="page.phoneHeight-dragForm.location.y"
             controls-position="right" class="num-input"></el-input-number>
         </el-form-item>
-        <div class="dec-label"> <label>宽</label> <label>高</label></div>
+        <div class="dec-label"> <label>宽</label> <label>高</label></div> -->
         <el-form-item label="固定位置：" size="mini" class="posotion-item">
           <el-radio v-model="dragForm.position" label="relative"
             @change="positionChange('relative')">不固定</el-radio>
@@ -103,6 +105,7 @@
 
 <script>
 import { dragCom } from '@/util/dragMxi';
+import sizeLocationPro from './proSetting/sizelocationPro';
 
 export default {
   mixins: [dragCom()],
@@ -111,8 +114,13 @@ export default {
     dragForm: Object,
     setForm: Object,
   },
+  components: {
+    sizeLocationPro,
+  },
   data() {
     return {
+      dragName: 'dragTexts',
+      dragActive: 'textActive',
       sizeList: [],
       location: {
         xmin: 0,
@@ -127,15 +135,27 @@ export default {
       },
     };
   },
+  computed: {
+    formWrapH() {
+      return this.dragForm.position === 'relative' ? this.page.phoneHeight : this.page.screenHeight;
+    },
+    maxH() {
+      return this.page.phoneWidth - this.dragForm.location.x;
+    },
+    maxW() {
+      return this.page.phoneWidth - this.dragForm.location.x;
+    },
+  },
+
   methods: {
     settingClose() { // 关闭设置
       this.$store.commit('editor_update', { isTextSet: false });
     },
     locationChange() { // 位置值发生改变
-      this.$emit('input-locationChange', 'dragTexts', this.dragForm.location, 'textActive');
+      this.$emit('location-change', 'dragTexts', this.dragForm.location, 'textActive');
     },
     sizeChange() { // 大小值发生改变
-      this.$emit('input-sizeChange', 'dragTexts', this.dragForm.size, 'textActive');
+      this.$emit('size-change', 'dragTexts', this.dragForm.size, 'textActive');
     },
     settingClick() {
       this.$store.commit('editor_update', {
@@ -143,26 +163,24 @@ export default {
       });
     },
     fontSizeChange(val) {
-      this.updateTextSetting('fontSize', val);
+      this.updatePropSetting('fontSize', val);
     },
     textColorChange(val) {
-      this.updateTextSetting('textColor', val);
+      this.updatePropSetting('textColor', val);
     },
     remoteMethod() { // 字体输入监听
     },
-    updateTextSetting(label, val) {
-      const { dragTexts, textActive } = this.editor;
+    updatePropSetting(label, val) {
+      const { textActive } = this.editor;
+      let { dragTexts } = this.editor;
       dragTexts[textActive][label] = val;
+      dragTexts = Object.assign([], dragTexts);
       this.$store.commit('editor_update', {
         dragTexts,
       });
     },
     textColorReset() { // 字体颜色重置
-      const { dragTexts, textActive } = this.editor;
-      dragTexts[textActive].textColor = '#000';
-      this.$store.commit('editor_update', {
-        dragTexts,
-      });
+      this.updatePropSetting('textColor', '#000');
     },
     lineNumChange(num) {
       this.lineNum = (num / 3) * 100;
@@ -171,11 +189,7 @@ export default {
       this.updateLineHieght(((pre * 3) / 100).toFixed(1));
     },
     updateLineHieght(num) {
-      const { dragTexts, textActive } = this.editor;
-      dragTexts[textActive].lineHeight = num;
-      this.$store.commit('editor_update', {
-        dragTexts,
-      });
+      this.updatePropSetting('lineHeight', num);
     },
     positionChange(val) {
       if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
@@ -184,27 +198,16 @@ export default {
           type: 'error',
           duration: 2000,
         });
-        const { textActive } = this.editor;
-        let { dragTexts } = this.editor;
-        dragTexts[textActive].position = 'relative';
-        dragTexts = Object.assign([], dragTexts);
-        this.$store.commit('editor_update', {
-          dragTexts,
-        });
+        this.updatePropSetting('position', 'relative');
         return false;
       }
-      const { textActive } = this.editor;
-      let { dragTexts } = this.editor;
-      dragTexts[textActive].position = val;
-      dragTexts = Object.assign([], dragTexts);
-      this.$store.commit('editor_update', {
-        dragTexts,
-      });
+
+      this.updatePropSetting('position', val);
       const maxBottom = this.page.screenHeight - this.dragForm.size.h;
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
         location.y = maxBottom;
-        this.$emit('input-locationChange', 'dragTexts', location, 'textActive');
+        this.$emit('location-change', 'dragTexts', location, 'textActive');
       }
     },
   },
@@ -217,8 +220,6 @@ export default {
     }
     this.sizeList = list;
     this.lineNum = (this.dragForm.lineHeight / 3) * 100;
-  },
-  updated() {
   },
 };
 </script>

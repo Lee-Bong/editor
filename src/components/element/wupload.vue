@@ -1,6 +1,6 @@
 <template>
   <div :class="['form-upload-wrap',
-    attr.isRequired? 'from-required': '', 'iphone-input']">
+    attr.isRequired? 'from-required': '', 'iphone-input', ...attr.classList]">
     <div class="upload-label">{{attr.label}}</div>
     <div class="file-list-item" v-for="(item, i) in fileList" :key="item.url">
       <div class="shadow-bg pre-img-item" v-if="item.loading"></div>

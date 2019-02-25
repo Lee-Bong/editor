@@ -117,13 +117,13 @@ export default {
       this.$store.commit('editor_update', { isLinkSet: false });
     },
     locationChange() { // 位置值发生改变
-      this.$emit('input-locationChange', 'dragLinks', this.dragForm.location, 'linkActive');
+      this.$emit('location-change', 'dragLinks', this.dragForm.location, 'linkActive');
     },
     sizeChange() { // 大小值发生改变
-      this.$emit('input-sizeChange', 'dragLinks', this.dragForm.size, 'linkActive');
+      this.$emit('size-change', 'dragLinks', this.dragForm.size, 'linkActive');
     },
     sourceChange(type) {
-      this.$emit('linkSourceChange', type, 'dragLinks', 'linkActive');
+      this.$emit('source-change', type, 'dragLinks', 'linkActive');
     },
     positionChange(val) {
       if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
@@ -132,15 +132,19 @@ export default {
           type: 'error',
           duration: 2000,
         });
-        const { dragLinks, imgActive } = this.editor;
+        const { imgActive } = this.editor;
+        let { dragLinks } = this.editor;
         dragLinks[imgActive].position = 'relative';
+        dragLinks = Object.assign([], dragLinks);
         this.$store.commit('editor_update', {
           dragLinks,
         });
         return false;
       }
-      const { dragLinks, imgActive } = this.editor;
+      const { imgActive } = this.editor;
+      let { dragLinks } = this.editor;
       dragLinks[imgActive].position = val;
+      dragLinks = Object.assign([], dragLinks);
       this.$store.commit('editor_update', {
         dragLinks,
       });
@@ -148,7 +152,7 @@ export default {
       if (this.dragForm.location.y > maxBottom) {
         const { location } = this.dragForm;
         location.y = maxBottom;
-        this.$emit('input-locationChange', 'dragLinks', location, 'linkActive');
+        this.$emit('location-change', 'dragLinks', location, 'linkActive');
       }
     },
   },
