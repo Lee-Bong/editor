@@ -1,7 +1,7 @@
 <template>
-    <div class="wrap">
-      <span class="username" v-if="user">{{user.name}}</span>
-      <span class="logout" @click="logout">退出</span>
+    <div class="wrap ew-user-wrap">
+      <span class="ew-user_name" v-if="user">{{user.name}}</span>
+      <span class="ew-user_logout" @click="logout">退出</span>
     </div>
 </template>
 
@@ -54,15 +54,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.wrap {
+.ew-user-wrap {
   margin: 0 10px;
   font-size: 14px;
-  .username {
+  .ew-user_name {
     margin: 10px;
   }
-  .logout {
-    cursor: pointer;
+  .ew-user_logout {
     color: #409eff;
+    cursor: pointer;
   }
 }
 </style>

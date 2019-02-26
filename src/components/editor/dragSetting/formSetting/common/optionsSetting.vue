@@ -2,7 +2,7 @@
   <el-form-item size="mini" :inline="true">
     <div class="options-label">选项设置：</div>
     <div class="options-manage">
-      <draggable class="layer-drag"
+      <draggable class="ew-layer-drag"
         :list="list"
         @update="datadragEnd"
         :options="{animation: 300,handle:'.moving'}">

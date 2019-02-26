@@ -3,10 +3,10 @@
     <div v-if="!form.notSize">
     <el-form-item label="尺寸：" size="mini" class="number-item">
       <el-input-number :value="form.size.w" @change="sizeWchange"
-      :min="form.minW" :max="maxW"
+      :min="form.minW" :max="form.maxW ? form.maxW : maxW"
       controls-position="right" class="num-input"></el-input-number>
       <el-input-number :value="form.size.h" @change="sizeHchange"
-      :min="form.minH || 0" :max="maxH"
+      :min="form.minH || 0" :max="form.maxH ? form.maxH : maxH"
       :disabled="form.hDisabled" controls-position="right"
       class="num-input"></el-input-number>
     </el-form-item>
@@ -17,11 +17,11 @@
     <div v-if="!form.notLocation">
       <el-form-item label="位置：" size="mini" class="number-item" style="margin-top: 10px;">
         <el-input-number :value="form.location.x" @change="locationXchange"
-          :min="location.xmin" :max="maxX" controls-position="right"
+          :min="location.xmin" :max="form.maxX ? form.maxX : maxX" controls-position="right"
           :disabled="form.xDisabled ? true : false" class="num-input">
         </el-input-number>
         <el-input-number :value="form.location.y" @change="locationYchange"
-          :min="location.ymin" :max="maxY" controls-position="right"
+          :min="location.ymin" :max="form.maxY ? form.maxY : maxY" controls-position="right"
           :disabled="form.yDisabled ? true : false" class="num-input">
         </el-input-number>
       </el-form-item>
@@ -99,7 +99,6 @@ export default {
     },
   },
   updated() {
-    // alert(this.locationForm.dragName);
   },
 };
 </script>

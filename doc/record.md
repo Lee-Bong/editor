@@ -68,7 +68,6 @@ h5判断页面状态
 发布过的页面： this.$route.is_formal && （!visible || !public） （visible: false只表示线上数据被下线）
 草稿： !this.$route.is_formal && !draft
 
-
 http://static.seeyouyima.com/bfe/we/view-23b0b741.9aa8e005.zip
 
 ## 命名规范

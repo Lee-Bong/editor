@@ -43,15 +43,6 @@ export default {
     forceUpdate() {
       this.$forceUpdate();
     },
-    // updated() {
-    //   console.log('dragText');
-    // },
-    beforeDestroy() {
-      console.log('child-beforeDestroy');
-    },
-    destroyed() {
-      console.log('child-destroyed');
-    },
   },
 };
 </script>
@@ -74,36 +65,13 @@ export default {
   word-break: break-all;
   word-wrap: break-word;
 }
-.input-record {
-  font-size: 14px;
-  font: 400 11px system-ui;
-  padding: 2px;
-  z-index: -1;
-  visibility: hidden;
-}
-.input-record textarea {
-  padding: 5px;
-  height: 33px;
-  background: none;
-  padding: 5px;
-  border: 0;
-  outline: none;
-  line-height: 1.5;
-  min-height: 30px !important;
-  white-space: normal;
-  word-break: break-all;
-  word-wrap: break-word;
-}
-
 .vdr-stick {
   background-color: #fff;
   border: 1px solid #59c7f9;
 }
-
 .vdr.active:before {
   outline: 1px dashed #59c7f9;
 }
-
 .drag-del {
   position: absolute;
   width: 20px;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="(drag, index) in dragList" :key="drag.id" class="drag-outside">
+    <div v-for="(drag, index) in dragList" :key="drag.id" class="ew-drag-outside">
       <div :is="dragType(drag.type)" :list-index="index" :dragForm="drag"
       @dragTextClick="dragClick" @dragStop="inputDragStop" @dragDel="dragDel" ></div>
     </div>
@@ -130,21 +130,5 @@ export default {
       return this.dragList.filter(item => item.isShow);
     },
   },
-  // updated() {
-  //   console.log('child-updated');
-  // },
-  // beforeUpdate() {
-  //   console.log('child-beforeUpdate');
-  // },
-  beforeDestroy() {
-    console.log('parent-beforeDestroy');
-  },
-  destroyed() {
-    console.log('parent-destroyed');
-  },
-
 };
 </script>
-
-<style>
-</style>

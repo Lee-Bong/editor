@@ -4,7 +4,7 @@
       <nav-bar pageName="预览微页面">
         <template slot="btnGroup">
             <el-button @click="goEditor">继续编辑</el-button>
-            <el-button @click="publish" type="primary" class="publish-btn">发布</el-button>
+            <el-button @click="publish" type="primary" class="ew-publish-btn">发布</el-button>
         </template>
       </nav-bar>
       <el-main>

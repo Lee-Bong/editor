@@ -37,8 +37,6 @@ export default {
       this.$forceUpdate();
     },
   },
-  updated() {
-  },
 };
 </script>
 

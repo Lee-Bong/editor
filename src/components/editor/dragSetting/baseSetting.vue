@@ -1,4 +1,7 @@
 <template>
+  <div :class="['setting-content', $store.state.editor[setForm.isShow] ?
+      'setting-show' : '']" :style="{width: setForm.width+'px',
+    }">
     <div class="setting-box">
       <div class="setting-title">
         <span>组件设置</span>
@@ -10,32 +13,18 @@
         <slot name="form"></slot>
       </div>
     </div>
+    </div>
 </template>
 
 <script>
-
 export default {
   name: 'baseSetting',
   props: {
-    dragForm: Object,
     setForm: Object,
-  },
-  data() {
-    return {
-      location: {
-        xmin: 0,
-        ymin: 0,
-      },
-      size: {
-        wmin: 0,
-        hmin: 0,
-      },
-      fileModify: false,
-    };
   },
   methods: {
     settingClose() { // 关闭设置
-      this.$store.commit('page_update', { pageSet: false });
+      this.$store.commit('editor_update', { [this.setForm.isShow]: false });
     },
   },
 };

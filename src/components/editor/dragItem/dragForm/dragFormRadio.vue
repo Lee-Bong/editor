@@ -9,7 +9,7 @@
       <template slot="content">
         <div>
           <div :style="{width: dragForm.size.w+'px',height: dragForm.size.h+'px',}"
-           class="radio-shadow"></div>
+           class="ew-radio-shadow"></div>
           <div style="z-index: 3">
             <form-radio :attr="{label:dragForm.label,classList:['drag-form-item'],
             list:dragForm.list,radioType:dragForm.radioType,bgColor:dragForm.bgColor,
@@ -67,7 +67,7 @@ export default {
   line-height: 20px;
   text-align: left;
 }
-.radio-shadow {
+.ew-radio-shadow {
   position: absolute;
   background-color: rgba(0, 0, 0, 0);
   cursor: move;

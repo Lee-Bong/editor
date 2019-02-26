@@ -1,5 +1,5 @@
 <template>
-  <vue-drag-resize class="phone-content" ref="phoneContent" :sticks="['bm']"
+  <vue-drag-resize class="ew-phone-content" ref="phoneContent" :sticks="['bm']"
     :h="page.phoneHeight" :isActive="true" :isDraggable="false"
     :isResizable="true" :parentLimitation="false" :preventActiveBehavior="true"
     :y="64" axis="y" @resizestop="resizestop"
@@ -7,12 +7,12 @@
     :style="{
     width: page.phoneWidth+'px',
   }">
-    <div class="phone-resize">
-      <i class="el-icon-back resize-icon resize-up"></i>
+    <div class="ew-phone-resize">
+      <i class="el-icon-back ew-resize_icon ew-resize_icon--up"></i>
       拖动调节页面高度
-      <i class="el-icon-back resize-icon resize-down"></i>
+      <i class="el-icon-back ew-resize_icon ew-resize_icon--down"></i>
     </div>
-    <div class="drag-items" :style="{
+    <div class="ew-drag-items" :style="{
       height: page.phoneHeight + 'px',
       background: page.backgroundColor === '#fff' ? 'rgba(0, 0, 0, 0)': page.backgroundColor}">
       <div v-for="(dragList, index) in evtList" :key="index">
@@ -149,7 +149,7 @@ export default {
   position: absolute;
   cursor: move;
 }
-.phone-content {
+.ew-phone-content {
   position: absolute;
   top: 64px;
   left: 0;
@@ -159,23 +159,23 @@ export default {
   background-position-x: -3px;
   background-position-y: -9px;
 }
-.phone-content > .vdr-stick.vdr-stick-bm {
-  height: 35px !important;
-  width: 375px !important;
-  z-index: 2001 !important;
+.ew-phone-content > .vdr-stick.vdr-stick-bm {
   bottom: -36px !important;
   left: 0;
+  height: 35px !important;
+  width: 375px !important;
   margin-left: 0 !important;
+  z-index: 2001 !important;
   background-color: rgba(0, 0, 0, 0);
   border: 0;
   box-shadow: none;
 }
-.phone-resize {
-  height: 35px;
-  width: 375px;
+.ew-phone-resize {
   position: absolute;
   bottom: -36px;
   left: -1px;
+  height: 35px;
+  width: 375px;
   background-color: #fff;
   border: 1px solid #e4e4e4;
   font-size: 16px;
@@ -185,19 +185,19 @@ export default {
   z-index: 1005;
   text-align: center;
 }
-.resize-icon {
+.ew-resize_icon {
   color: #eb5648;
 }
-.resize-up {
+.ew-resize_icon--up {
   transform: rotate(90deg);
 }
-.resize-down {
+.ew-resize_icon--down {
   transform: rotate(-90deg);
 }
-.phone-content.vdr.active:before {
+.ew-phone-content.vdr.active:before {
   outline: none;
 }
-.drag-items {
+.ew-drag-items {
   overflow: hidden;
 }
 </style>

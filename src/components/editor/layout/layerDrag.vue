@@ -1,5 +1,5 @@
 <template>
-<draggable class="layer-drag"
+<draggable class="ew-layer-drag"
   :list="$store.state.editor.layerLists"
   @update="updateLayerList"
   :options="{animation: 300,handle:'.dargDiv'}">
@@ -13,12 +13,12 @@
         @dblclick="layerDbclick(index)"
         @click="layerclick(layer, index)">
         <i :class="['iconfont', layer.icon]"></i>
-        <span v-show="!layer.editing" class="layout-name" >{{layer.name}}</span>
+        <span v-show="!layer.editing" class="ew-layout_name" >{{layer.name}}</span>
         <input v-show="layer.editing" v-model="layer.name"
         ref='nameEditor'
         :key="index"
         :autofocus="layer.editing"
-        class="layout-name name-editor"
+        class="ew-layout_name ew-layout_name--editing"
         @blur="layoutNameBlur(index)"/>
       </div>
     </transition-group>
@@ -133,7 +133,7 @@ export default {
 </script>
 
 <style>
-.layer-drag {
+.ew-layer-drag {
   z-index: 99999;
 }
 .setting-title {
@@ -150,19 +150,19 @@ export default {
   float: right;
 }
 .header-btn i {
-  cursor: pointer;
   margin-left: 5px;
+  cursor: pointer;
 }
 .header-btn i:hover {
   color: #323232;
 }
 .setting {
   padding: 5px;
+  padding-bottom: 15px;
   background-color: #fff;
   text-align: left;
   overflow-y: auto;
   box-sizing: border-box;
-  padding-bottom: 15px;
 }
 .el-form-item__label {
   padding-right: 0;
@@ -191,26 +191,22 @@ export default {
 .dargDiv {
   background: #fff;
 }
-
 .layer-item {
   position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   width: 260px;
-  background: #fff;
-  font-size: 12px;
-  color: #000;
-  color: #323232;
   height: 40px;
-  line-height: 40px;
-  padding: 0 10px;
-  border-bottom: 1px solid #ccd5db;
   box-sizing: border-box;
+  padding: 0 10px;
+  font-size: 12px;
+  color: #323232;
+  line-height: 40px;
+  border-bottom: 1px solid #ccd5db;
+  background: #fff;
   cursor: move;
 }
-
-
 .layer-item:active,
 .layer-item.active {
   background: #1593ffc9;
@@ -225,22 +221,22 @@ export default {
 .layer-item .fa-icon {
   margin-right: 10px;
 }
-.layout-name{
+.ew-layout_name{
   height: 24px;
+  width: 220px;
   padding: 5px;
   line-height: 24px;
-  width: 220px;
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.name-editor{
+.ew-layout_name--editing{
   width: 230px;
-  transition: border .2s linear,box-shadow .2s linear;
   border-radius: 3px;
-  color: #1593ff;
   border: 1px solid #1593ff;
+  transition: border .2s linear,box-shadow .2s linear;
+  color: #1593ff;
 }
 
 </style>

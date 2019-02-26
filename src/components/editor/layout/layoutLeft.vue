@@ -1,15 +1,15 @@
 <template>
-  <el-aside width="200px" class="left-btns">
-    <el-card v-for="(com, index) in edComponets" :key="index" class="left-btns-card">
+  <el-aside width="200px" class="ew-left-btns">
+    <el-card v-for="(com, index) in edComponets" :key="index" class="ew-left-btns_card">
       <div slot="header">
         {{com.kind}}
       </div>
       <el-button v-for="(list, i) in com.list" :key="i"
-      class="ed-com" @click="dragItemClick(list.type)"
+      class="ew-component--btn" @click="dragItemClick(list.type)"
       :disabled="(list.type === 11 && !$store.state.editor.isPhone) ||
       (list.type === 12 && !$store.state.editor.isSubmit)">
-        <i :class="['iconfont', list.icon]"></i>
-        <span class="el-com-text">{{list.text}}</span>
+        <i :class="['iconfont', 'ew-component--icon',list.icon]"></i>
+        <span>{{list.text}}</span>
       </el-button>
       </el-card>
   </el-aside>
@@ -580,36 +580,39 @@ export default {
 </script>
 
 <style>
-.ed-com.el-button.el-button--text {
+.ew-component--btn.el-button.el-button--text {
   margin-left: 10px;
 }
-.left-btns-card .el-card__body {
+.ew-left-btns_card .el-card__body {
   padding-bottom: 10px !important;
 }
-.left-btns-card .ed-icon-images {
+.ew-left-btns_card .ed-icon-images {
   font-size: 26px;
 }
-.left-btns .el-button {
+.ew-left-btns .el-button {
   width: 80px;
   height: 60px;
-  padding: 0;
   margin-top: 10px;
-  border: 1px solid rgba(0, 0, 0, 0);
   margin-left: 10px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0);
   background: none;
 }
-
-.left-btns .el-button:hover {
+.ew-left-btns .el-button:hover {
   border: 1px solid #409eff;
 }
-.left-btns .el-button:active {
+.ew-left-btns .el-button:active {
   background-color: #1593ff;
   color: #fff;
 }
-
-.left-btns .el-button.is-disabled:hover, .left-btns .el-button.is-disabled:active {
+.ew-left-btns .el-button.is-disabled:hover, .ew-left-btns .el-button.is-disabled:active {
   border: 1px solid rgba(0, 0, 0, 0);
   background-color: #fff;
   color: #c0c4cc;
+}
+.ew-component--icon {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 22px;
 }
 </style>

@@ -98,9 +98,6 @@ export default {
     parentH: {
       get() {
         const height = this.dragForm.position === 'relative' ? this.$store.state.page.phoneHeight : this.$store.state.page.screenHeight;
-        // if (this.dragForm.position === 'relative') {
-        //   return this.$store.state.page.phoneHeight;
-        // }
         return height;
       },
       set() {
@@ -142,13 +139,14 @@ export default {
     dragResize(ev) {
       const form = this.infoForm.dragName;
       const index = this.infoForm.listIndex;
-      const dragItems = this.$store.state.editor[form];
+      let dragItems = this.$store.state.editor[form];
       let dragItem = dragItems[index];
       dragItem = Object.assign({}, dragItem, {
         size: { w: ev.width, h: ev.height },
         location: { x: ev.left, y: ev.top },
       });
       dragItems[index] = dragItem;
+      dragItems = Object.assign([], dragItems);
       this.$store.commit('editor_update', {
         [form]: dragItems,
       });

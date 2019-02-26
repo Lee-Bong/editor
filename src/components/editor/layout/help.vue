@@ -1,5 +1,5 @@
 <template>
-    <el-button type="text" icon="el-icon-question" class="help-icon"
+    <el-button type="text" icon="el-icon-question" class="ew-help-icon"
     @click="goHelpWeb">使用帮助</el-button>
 </template>
 
@@ -12,4 +12,3 @@ export default {
   },
 };
 </script>
-

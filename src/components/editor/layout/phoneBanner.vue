@@ -1,7 +1,7 @@
 <template>
-  <div class="top-banner" @click="topBannerClick">
-    <div class="now-show">{{this.now}}</div>
-    <div class="web-title">{{title}}</div>
+  <div class="ew-header" @click="topBannerClick">
+    <div class="ew-header_time">{{this.now}}</div>
+    <div class="ew-header_title">{{title}}</div>
   </div>
 </template>
 
@@ -35,16 +35,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.top-banner {
+.ew-header {
+  position: absolute;
+  width: 375px;
+  height: 64px;
   cursor: pointer;
   background: url("../../../assets/images/page_banner.png") no-repeat center
     center;
   background-size: 375px auto;
   z-index: 10;
-  position: absolute;
-  width: 375px;
-  height: 64px;
-  .now-show {
+  .ew-header_time {
     position: absolute;
     width: 100%;
     text-align: center;
@@ -53,18 +53,18 @@ export default {
     line-height: 22px;
     font-family: "Arial";
   }
-  .web-title {
+  .ew-header_title {
     height: 42px;
-    color: #fff;
-    font-size: 16px;
-    margin-top: 23px;
-    line-height: 42px;
     padding-left: 60px;
     padding-right: 40px;
+    margin-top: 23px;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    line-height: 42px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    text-align: center;
   }
 }
 </style>

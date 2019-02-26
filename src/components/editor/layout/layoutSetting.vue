@@ -1,5 +1,5 @@
 <template>
-<div class="setting-wrap">
+<div class="ew-setting-wrap">
     <page-setting
       v-if="page.pageSet"
       :dragForm="page"
@@ -8,7 +8,8 @@
     />
   <div v-for="(set, key) in setActive" :key="key">
     <div :is="dragType(Number(key))"
-      :dragForm="editor[set[0]][editor[set[3]]]" :setForm="settingForm"
+      :dragForm="editor[set[0]][editor[set[3]]]"
+      :setForm="Object.assign({}, settingForm, {isShow: set[2]})"
       @setting-fixed="settingFixed"
       @location-change="locationChange"
       @size-change="sizeChange"
@@ -161,13 +162,11 @@ export default {
       }
     },
   },
-  updated() {
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.setting-wrap {
+.ew-setting-wrap {
   position: relative;
   width: 380px;
   margin-top: 20px;
@@ -176,18 +175,17 @@ export default {
   z-index: 80;
 }
 .setting-content {
+  position: fixed;
+  top: 75px;
   width: 260px;
   background-color: #fff;
   border-radius: 5px;
   overflow: hidden;
   box-shadow: 0 -2px 20px 0 rgba(39, 54, 78, 0.11);
   visibility: hidden;
-  position: fixed;
-  top: 75px;
 }
 .setting-show{
   visibility: visible;
-  // max-height: maxHeight;
 }
 .setting-title {
   height: 31px;

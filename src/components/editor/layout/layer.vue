@@ -1,15 +1,13 @@
 
 <template>
-
   <el-card>
-    <div slot="header" class="layer-header">
+    <div slot="header" class="ew-layer-header">
       图层管理
     </div>
-    <div class="layer-list">
+    <div class="ew-layer-list">
       <drag />
     </div>
   </el-card>
-
 </template>
 
 <script>
@@ -17,92 +15,23 @@ import drag from './layerDrag';
 
 export default {
   name: 'layer',
-  props: {
-  },
   components: {
     drag,
-  },
-  data() {
-    return {
-      layerActive: 0,
-      layerLists: [ // 图层管理
-        {
-          display: true, // 是否显示
-          lock: true, // 是否可以编辑
-          name: '图层1', // 图层名
-        },
-        {
-          display: true,
-          lock: true,
-          name: '图层2',
-        },
-        {
-          display: true,
-          lock: false,
-          name: '图层3',
-        },
-        {
-          display: true,
-          lock: false,
-          name: '图层4',
-        },
-      ],
-    };
-  },
-  methods: {
-    layerItemClick(index) {
-      this.layerActive = index;
-    },
   },
 };
 </script>
 
-<style>
-.el-card__body {
-  padding: 0 !important;
-}
-.el-card {
-  border-top: 0;
-}
-.el-card.is-always-shadow {
-  box-shadow: none;
-  border-radius: 0;
-  margin-top: 10px;
-  border-right: 0;
-}
-.el-card__body {
-  padding: 10px 0;
-}
-.el-card__header {
-  text-align: center;
-  padding: 5px 10px;
-  line-height: 34px;
-}
-.fixed-right .el-card__header {
-  padding: 0;
-}
-.layer-header {
+<style lang="less" scoped>
+.ew-layer-header {
   height: 50px;
   line-height: 50px;
-}
-
-.flxed-main {
-  background-color: #eee;
-  position: absolute;
-  top: 56px;
-  height: auto;
-  padding-bottom: 40px;
-  left: 200px;
-  right: 260px;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-}
-.layer-list {
-  overflow: auto;
-  position: absolute;
-  bottom: 20px;
-  top: 55px;
+  text-align: center;
+  .ew-layer-list {
+    position: absolute;
+    bottom: 20px;
+    top: 55px;
+    overflow: auto;
+  }
 }
 
 </style>

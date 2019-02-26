@@ -174,6 +174,18 @@ export function dragCom() {
           this.$store.commit('page_update', { componentIds });
         }
       },
+      updatePropsSetting(drags, active, valsArr) {
+        const dragActive = this.editor[active];
+        let dragList = this.editor[drags];
+        valsArr.map((item) => {
+          dragList[dragActive][item.label] = item.val;
+          return true;
+        });
+        dragList = Object.assign([], dragList);
+        this.$store.commit('editor_update', {
+          [drags]: dragList,
+        });
+      },
     },
     computed: {
       fixedBottom: {

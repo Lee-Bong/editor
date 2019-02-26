@@ -9,9 +9,10 @@
       <div class="drag-img" v-if="!dragForm.imgList || !dragForm.imgList.length">
         <i class="iconfont ed-icon-duotu1" style="font-size: 60px"></i>
       </div>
-        <img v-for="(item, index) in dragForm.imgList" :key="item.url+index"
-          v-if="!!item.size && item.size.w" :src="item.url" :width="item.size.w"
-          class="review-list-item"/>
+      <div v-for="(item, index) in dragForm.imgList" :key="item.url+index">
+        <img class="ew-review-list"
+        v-if="!!item.size && item.size.w" :src="item.url" :width="item.size.w" />
+      </div>
     </div>
     <i class="el-icon-circle-close-outline drag-del" v-if="dragForm.isActive"
       @click="dragDel(listIndex)" :style="{top: dragForm.location.y-10+ 'px'}">
@@ -65,7 +66,7 @@ export default {
 .drag-img-list.init {
   height: 300px;
 }
-.review-list-item {
+.ew-review-list {
   display: block;
 }
 </style>

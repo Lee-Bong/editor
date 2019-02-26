@@ -95,6 +95,7 @@ import oss from '@/service/oss';
 import imgUplaod from '@/components/editor/dragSetting/upload/imgUpload';
 import mediaUpload from '@/components/editor/dragSetting/upload/mediaUpload';
 import { dragCom } from '@/util/dragMxi';
+import sizeLocationPro from './proSetting/sizelocationPro';
 
 export default {
   mixins: [dragCom()],
@@ -185,6 +186,7 @@ export default {
   components: {
     imgUplaod,
     mediaUpload,
+    sizeLocationPro,
   },
   data() {
     return {

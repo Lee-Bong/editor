@@ -1,94 +1,44 @@
 <template>
-  <div :class="['setting-content', editor.isImgSet ?
-    'setting-show' : '']" :style="{width: setForm.width+'px',
-  }">
-    <div class="setting-box">
-      <div class="setting-title">
-        <span>组件设置</span>
-        <span class="header-btn">
-          <i class="el-icon-close" @click="settingClose"></i>
-        </span>
-      </div>
-      <div class="setting" :style="{ maxHeight: setForm.maxHeight + 'px'}">
-        <el-form ref="form" label-width="80px">
-          <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']"
-            v-if="!dragForm.notModify">
-            <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imgList"
-              list-type="picture" :limit="limit"
-              :http-request="fileToUpload"
-              :before-upload="beforeAvatarUpload"
-              :auto-upload="true" action="string" accept=".png,.gif,.jpeg, .jpg">
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">
-                <em>+ 点击上传图片</em> ,或把图片拖到此处</div>
-              <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
-            </el-upload>
-            <img-review-item v-if="imgList && imgList.length" :imgObj='imgList[0]'
-              @file-change="fileModify" ref="imgReview" :index="0" :isDel="false"/>
-          </div>
-          <div class="file-info" v-if="!!dragForm.notModify">
-            <img-review-item :imgObj='dragForm.img' @file-change="fileModify"
-              ref="imgReview"/>
-            <el-form-item label="位置：" size="mini" class="number-item">
-              <el-input-number v-model="dragForm.location.x" @change="locationChange"
-                :min="location.xmin" :max="(page.phoneWidth-dragForm.size.w)"
-                controls-position="right" class="num-input"></el-input-number>
-              <el-input-number v-model="dragForm.location.y" @change="locationChange"
-                :min="location.ymin" :max="yMax"
-                controls-position="right" class="num-input"></el-input-number>
-            </el-form-item>
-            <div class="dec-label">
-              <label>X</label>
-              <label> Y</label>
-            </div>
-            <el-form-item label="尺寸：" size="mini" class="number-item">
-              <el-input-number v-model="dragForm.size.w" @change="sizeChange(1)"
-                :min="size.wmin" :max="maxW"
-                controls-position="right" class="num-input"></el-input-number>
-              <el-input-number v-model="dragForm.size.h" @change="sizeChange(2)"
-                :min="hmin" :max="maxH"
-                controls-position="right" class="num-input"></el-input-number>
-            </el-form-item>
-            <div class="dec-label">
-              <label>宽</label>
-              <label>高</label>
-            </div>
-          </div>
-          <div v-if="!!dragForm.notModify">
-            <el-form-item label="固定位置：" size="mini" class="posotion-item">
-              <el-radio v-model="dragForm.position" label="relative"
-                @change="positionChange('relative')">不固定</el-radio>
-              <el-radio v-model="dragForm.position" label="fixedTop"
-                @change="positionChange('fixedTop')"
-                >相对顶部固定</el-radio>
-              <el-radio v-model="dragForm.position" label="fixedBottom"
-                @change="positionChange('fixedBottom')"
-                >相对底部固定</el-radio>
-            </el-form-item>
-            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedTop'">
-              <el-input-number
-                v-model="fixedTop" @change="fixedTopChange"
-                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
-                controls-position="right" class="num-input"></el-input-number>
-            </el-form-item>
-            <el-form-item label="距离：" size="mini" v-if="dragForm.position === 'fixedBottom'"
-              class="number-item">
-              <el-input-number
-                v-model="fixedBottom" @change="fixedBottomChange"
-                :min="location.ymin" :max="(page.screenHeight-dragForm.size.h)"
-                controls-position="right" class="num-input"></el-input-number>
-            </el-form-item>
-          </div>
-        </el-form>
-      </div>
-    </div>
-  </div>
+  <base-setting :setForm="setForm">
+   <template slot="form">
+      <el-form ref="form" label-width="80px">
+        <div class="upload-wrap" :class="[fileAble?'upload-disabled': '']"
+          v-if="!dragForm.notModify">
+          <el-upload :disabled="fileAble" class="upload-demo" drag :file-list="imgList"
+            list-type="picture" :limit="limit"
+            :http-request="fileToUpload"
+            :before-upload="beforeAvatarUpload"
+            :auto-upload="true" action="string" accept=".png,.gif,.jpeg, .jpg">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              <em>+ 点击上传图片</em> ,或把图片拖到此处</div>
+            <div class="el-upload__tip" slot="tip">建议宽度750像素</div>
+          </el-upload>
+          <img-review-item v-if="imgList && imgList.length" :imgObj='imgList[0]'
+            @file-change="fileModify" ref="imgReview" :index="0" :isDel="false"/>
+        </div>
+        <div class="file-info" v-if="!!dragForm.notModify">
+          <img-review-item :imgObj='dragForm.img' @file-change="fileModify"
+            ref="imgReview"/>
+          <size-location-pro :form="{dragName, dragActive, size: dragForm.size,
+            location: dragForm.location, minW: 15, minH: hmin, pH:formWrapH, maxW, maxH,}"/>
+        </div>
+        <div v-if="!!dragForm.notModify">
+          <position-pro :dragForm="{dragName, dragActive,position: dragForm.position,
+          size: dragForm.size,location: dragForm.location, type: dragForm.type}"/>
+        </div>
+      </el-form>
+   </template>
+   </base-setting>
 </template>
 
 <script>
 import imgReviewItem from '@/components/editor/dragSetting/upload/imgReviewItem';
 import oss from '@/service/oss';
 import { dragCom } from '@/util/dragMxi';
+import baseSetting from '@/components/editor/dragSetting/baseSetting';
+import sizeLocationPro from '@/components/editor/dragSetting/proSetting/sizelocationPro';
+import positionPro from '@/components/editor/dragSetting/proSetting/positionPro';
 
 export default {
   mixins: [dragCom()],
@@ -99,9 +49,14 @@ export default {
   },
   components: {
     imgReviewItem,
+    baseSetting,
+    sizeLocationPro,
+    positionPro,
   },
   data() {
     return {
+      dragName: 'dragImages',
+      dragActive: 'imgActive',
       imgPrecent: 1,
       fileAble: false,
       isFirst: false, // 是否是更换图片
@@ -151,59 +106,11 @@ export default {
         return JSON.stringify(this.dragForm.img) !== '{}' && this.dragForm.img.h ? (this.dragForm.img.h * 15) / this.dragForm.img.w : 15;
       },
     },
+    formWrapH() {
+      return this.dragForm.position === 'relative' ? this.page.phoneHeight : this.page.screenHeight;
+    },
   },
   methods: {
-    settingClose() { // 关闭设置
-      this.$store.commit('editor_update', { isImgSet: false });
-    },
-    locationChange() { // 位置值发生改变
-      // this.$emit('location-change', 'dragImages', this.dragForm.location, 'imgActive');
-      let lists = this.editor.dragImages;
-      let drags = lists[this.editor.imgActive];
-      const { location, size } = this.dragForm;
-      drags = Object.assign({}, drags, { location, size, isUpload: false });
-      lists[this.editor.imgActive] = drags;
-      lists = Object.assign([], lists);
-      this.$store.commit('editor_update', { dragImages: lists });
-      this.ratioSet(this, 'dragImages', 'imgActive');
-    },
-    sizeChange(type) { // 大小值发生改变
-      let { size } = this.dragForm;
-      const { img } = this.dragForm;
-      if (type === 1) {
-        let newW = size.w;
-        let newH = (img.h * size.w) / img.w;
-        const maxH = this.page.phoneHeight - this.dragForm.location.y;
-        if (newH > maxH) {
-          newH = maxH;
-          newW = (img.w * newH) / img.h;
-        }
-        size = {
-          w: newW,
-          h: newH,
-        };
-      } else {
-        let newW = (img.w * size.h) / img.h;
-        let newH = size.h;
-        const maxW = this.page.phoneWidth - this.dragForm.location.x;
-        if (newW > maxW) {
-          newW = maxW;
-          newH = (img.h * newW) / img.w;
-        }
-        size = {
-          w: newW,
-          h: newH,
-        };
-      }
-      let lists = this.editor.dragImages;
-      let drags = lists[this.editor.imgActive];
-
-      drags = Object.assign({}, drags, { size, isUpload: false });
-      lists[this.editor.imgActive] = drags;
-      lists = Object.assign([], lists);
-      this.$store.commit('editor_update', { dragImages: lists });
-      this.ratioSet(this, 'dragImages', 'imgActive');
-    },
     onFileSuccess(file, isModify) {
       const dragImg = new Image();
       dragImg.src = file.url;
@@ -318,36 +225,6 @@ export default {
     fileModify(params) { // 更换图片
       this.isFirst = true;
       this.onFileChange(params, [], true);
-    },
-    positionChange(val) {
-      const { dragImages, imgActive } = this.editor;
-      if (val !== 'relative' && this.dragForm.size.h > this.page.screenHeight) {
-        this.$message({
-          message: '组件高度大于一屏，无法设置固定位置～',
-          type: 'error',
-          duration: 2000,
-        });
-        dragImages[imgActive].position = 'relative';
-        this.$store.commit('editor_update', {
-          dragImages,
-        });
-        return false;
-      }
-      dragImages[imgActive].position = val;
-      dragImages[imgActive].isUpload = false;
-      this.$store.commit('editor_update', {
-        dragImages,
-      });
-      const maxBottom = this.page.screenHeight - this.dragForm.size.h;
-      if (this.dragForm.location.y > maxBottom) {
-        let { location } = this.dragForm;
-        location = {
-          x: location.x,
-          y: maxBottom,
-        };
-        this.$emit('location-change', 'dragImages', location, 'imgActive');
-      }
-      this.ratioSet(this, 'dragImages', 'imgActive');
     },
     beforeAvatarUpload(file) { // 图片上传大小限制
       const isLt5M = file.size / 1024 / 1024 < 5;

@@ -1,37 +1,38 @@
 <template>
-  <div class="editor-box">
+  <div class="ew-editor">
     <el-container>
       <nav-bar pageName="编辑微页面">
         <template slot="btnGroup">
-            <el-button @click="saveEditor">保存草稿</el-button>
-            <el-button @click="reviewEditor">预览</el-button>
-            <el-button type="primary" class="publish-btn" @click="publishEditor">发布</el-button>
+          <el-button @click="saveEditor">保存草稿</el-button>
+          <el-button @click="reviewEditor">预览</el-button>
+          <el-button type="primary" class="ew-publish-btn" @click="publishEditor">发布</el-button>
         </template>
       </nav-bar>
       <layout-left />
       <el-main >
-        <div class="main-bg"></div>
-        <div class="flxed-main" :style="{height: (page.phoneHeight + 50+37)+'px'}">
-          <div class="phone-wrap" :style="{height: (page.phoneHeight)+'px'}">
+      <div class="ew-editor_bg"></div>
+        <div class="ew-editor-main" :style="{height: (page.phoneHeight + 50+37)+'px'}">
+          <div class="ew-editor-main_phone" :style="{height: (page.phoneHeight)+'px'}">
             <div class="phone-container" ref="phoneContainer" :style="{width: page.phoneWidth+'px',
-                height: (page.phoneHeight)+'px'}">
+            height: (page.phoneHeight)+'px'}">
               <phone-banner :title="page.title" :topBannerClick="topBannerClick"/>
               <div class="screen-line" v-show="page.phoneHeight > 603"></div>
               <layout-main />
             </div>
             <div class="phone-hidden" :style="{width: page.phoneWidth + 20 +'px',
-                top: (page.phoneHeight + 64)+'px',
-                height: page.clientHeight - page.phoneHeight + 'px'}"></div>
+            top: (page.phoneHeight + 64)+'px',
+            height: page.clientHeight - page.phoneHeight + 'px'}"></div>
           </div>
           <layout-setting />
         </div>
-        <div class="fixed-right">
+        <div class="ew-editor-main_right">
           <layer />
         </div>
       </el-main>
     </el-container>
   </div>
 </template>
+
 <script>
 import merge from 'webpack-merge';
 import { isEqual } from 'lodash';
@@ -59,35 +60,13 @@ export default {
   },
   data() {
     return {
-      phoneHeight: 603 + 65,
-      dragText: {
-        width: 375,
-        height: 90,
-      },
-      dragImg: {
-        width: 375,
-        height: 300,
-      },
-      dragLink: {
-        width: 100,
-        height: 30,
-      },
-      drag: {
-        width: 0,
-        height: 0,
-        top: 0,
-        left: 0,
-      },
-      wrapHeight: 603, // 包括头部的高度x
-      clientHeight: 603, // 编辑内容高度
       isFirst: true, // 空白编辑页
       dataInit: '',
-      beforeState: null,
-      gobalState: null,
-      isPublish: false,
-      curState: null,
-      initState: null,
-      windowH: window.innerHeight,
+      beforeState: null, // 上一次操作的state值，用来对比是否发生了修改
+      gobalState: null, // 存储当前网页的发布数据与草稿数据
+      isPublish: false, // 是否发布页面
+      curState: null, // 当前state
+      initState: null, // 操作前的初始state
       saving: false, // 当前是否是保存草稿操作
     };
   },
@@ -239,302 +218,25 @@ export default {
       };
       eJson.editor.page.shareImg = page.img.url || 'http://static.seeyouyima.com/nodejs-common/meiyou-bf23e296a9058a8dd5581eda3ea59674.png';
       const dragArr = [];
-      const {
-        dragTexts, dragImages, dragLinks, dragVideos, dragAudios, dragFormTexts, dragFormTextareas,
-        dragFormRadios, dragFormCheckboxs, dragFormSmscodes, dragFormSubmits, dragFormUploads,
-        dragImgLists, layerLists,
-      } = editor;
-      if (dragTexts.length) {
-        dragTexts.map((item) => {
-          const {
-            size, location, content, position, id,
-          } = item;
-          const positionInfo = this.getPositionInfo({ position, location, size });
-          dragArr.push({
-            id,
-            type: 1,
-            size,
-            location,
-            positionInfo,
-            content,
-            style: {
-              'font-size': item.fontSize,
-              'text-align': item.textAlign,
-              'line-height': item.lineHeight,
-              color: item.textColor,
-              'z-index': item.dragIndex,
-            },
+      const { typeCat } = dragJson;
+      for (const k in typeCat) {
+        if (editor[typeCat[k][0]].length) {
+          const items = editor[typeCat[k][0]];
+          items.map((item, key) => {
+            const {
+              id, type, size, location, position,
+            } = item;
+            const positionInfo = this.getPositionInfo({ position, location, size });
+            let saveItem = {
+              id, type, size, location, positionInfo,
+            };
+            // eslint-disable-next-line no-param-reassign
+            item.key = key;
+            saveItem = this.completeSaveItem(item, saveItem);
+            dragArr.push(saveItem);
+            return true;
           });
-          return true;
-        });
-      }
-      if (dragImages.length) {
-        dragImages.map((item) => {
-          const {
-            size, location, img, dragIndex, position, id,
-          } = item;
-          const positionInfo = this.getPositionInfo({ position, location, size });
-          dragArr.push({
-            id,
-            type: 2,
-            size,
-            location,
-            positionInfo,
-            url: img.url,
-            style: {
-              'z-index': dragIndex,
-            },
-          });
-          return true;
-        });
-      }
-      if (dragLinks.length) {
-        dragLinks.map((item, key) => {
-          const {
-            size, location, position, appLink, outLink,
-            sourceType, awakeLink, iosLink, andLink, yybLink, id,
-          } = item;
-          const positionInfo = this.getPositionInfo({ position, location, size });
-          dragArr.push({
-            id,
-            type: 3,
-            key,
-            size,
-            location,
-            positionInfo,
-            name: this.getLinkName(3, key, layerLists),
-            appLink,
-            outLink,
-            sourceType, // 1.普通跳转 2. 唤起下载app
-            awakeLink,
-            iosLink,
-            andLink,
-            yybLink,
-            style: {
-              'z-index': item.dragIndex,
-            },
-          });
-          return true;
-        });
-      }
-      if (dragImgLists.length) {
-        dragImgLists.map((item) => {
-          const {
-            size, location, imgList, dragIndex, id,
-          } = item;
-          dragArr.push({
-            id,
-            type: 4,
-            location,
-            size,
-            style: {
-              'z-index': dragIndex,
-            },
-            positionInfo: {
-              position: 'relative',
-            },
-            imgList,
-          });
-          return true;
-        });
-      }
-      if (dragVideos.length) {
-        dragVideos.map((item) => {
-          const curVideo = item.sourceType === '1' ? item.video : item.lineVideo;
-          const {
-            loop, poster, location, size, position,
-          } = curVideo;
-          const positionInfo = this.getPositionInfo({ position, location, size });
-          dragArr.push({
-            id: item.id,
-            type: 5,
-            source: curVideo.url,
-            title: curVideo.title,
-            loop,
-            poster,
-            location,
-            size,
-            style: {
-              'z-index': item.dragIndex,
-            },
-            positionInfo,
-          });
-          return true;
-        });
-      }
-      if (dragAudios.length) {
-        dragAudios.map((item) => {
-          const curPlay = item.sourceType === '1' ? item.play : item.linePlay;
-          const { position, location, size } = curPlay;
-          const positionInfo = this.getPositionInfo({ position, location, size });
-          dragArr.push({
-            isBorder: item.isBorder,
-            id: item.id,
-            type: 6,
-            positionInfo,
-            play: curPlay,
-            location,
-            size,
-            style: {
-              'z-index': item.dragIndex,
-            },
-          });
-          return true;
-        });
-      }
-      if (dragFormTexts.length) {
-        dragFormTexts.map((item) => {
-          const {
-            location, size, label, isRequired, id,
-          } = item;
-          dragArr.push({
-            id,
-            isForm: true,
-            type: 7,
-            isRequired,
-            location,
-            size,
-            positionInfo: {
-              position: 'relative',
-            },
-            style: {
-              'z-index': item.dragIndex,
-            },
-            attr: {
-              label,
-              isRequired,
-              classList: [],
-            },
-          });
-          return true;
-        });
-      }
-      if (dragFormTextareas.length) {
-        dragFormTextareas.map((item) => {
-          const {
-            location, size, label, isRequired, id,
-          } = item;
-          dragArr.push({
-            id,
-            isForm: true,
-            type: 8,
-            isRequired,
-            location,
-            size,
-            label,
-            positionInfo: {
-              position: 'relative',
-            },
-            style: {
-              'z-index': item.dragIndex,
-            },
-            attr: {
-              label,
-              size,
-              classList: [],
-              isRequired,
-            },
-          });
-          return true;
-        });
-      }
-      if (dragFormRadios.length) {
-        dragFormRadios.map((item) => {
-          dragArr.push(this.getRadioSet(item, 9));
-          return true;
-        });
-      }
-      if (dragFormCheckboxs.length) {
-        dragFormCheckboxs.map((item) => {
-          dragArr.push(this.getRadioSet(item, 9));
-          return true;
-        });
-      }
-      if (dragFormSmscodes.length) {
-        dragFormSmscodes.map((item) => {
-          const {
-            location, size, label, isRequired, id, bgColor, textColor, verify,
-          } = item;
-          dragArr.push({
-            id,
-            isForm: true,
-            type: 11,
-            isRequired,
-            location,
-            size,
-            positionInfo: {
-              position: 'relative',
-            },
-            style: {
-              'z-index': item.dragIndex,
-            },
-            attr: {
-              label,
-              isRequired,
-              classList: [],
-              bgColor,
-              textColor,
-              verify,
-            },
-          });
-          return true;
-        });
-      }
-      if (dragFormSubmits.length) {
-        dragFormSubmits.map((item) => {
-          const {
-            location, size, label, bgColor, textColor, id,
-          } = item;
-          dragArr.push({
-            id,
-            isForm: true,
-            type: 12,
-            location,
-            size,
-            positionInfo: {
-              position: 'relative',
-            },
-            style: {
-              'z-index': item.dragIndex,
-            },
-            attr: {
-              label,
-              bgColor,
-              textColor,
-              classList: [],
-            },
-          });
-          return true;
-        });
-      }
-      if (dragFormUploads.length) {
-        dragFormUploads.map((item) => {
-          const {
-            location, size, label, bgColor, textColor, id, isRequired,
-          } = item;
-          dragArr.push({
-            id,
-            isForm: true,
-            type: 13,
-            location,
-            size,
-            isRequired,
-            positionInfo: {
-              position: 'relative',
-            },
-            style: {
-              'z-index': item.dragIndex,
-            },
-            attr: {
-              label,
-              bgColor,
-              textColor,
-              classList: [],
-              isRequired,
-            },
-          });
-          return true;
-        });
+        }
       }
       this.topBannerClick();
       eJson.editor.components = dragArr;
@@ -553,7 +255,7 @@ export default {
       const saveState = this.gobalState;
       return { state: saveState, draft: eJson.editor };
     },
-    getRadioSet(item, type) {
+    getRadioSet(item, type) { // radio组件设置信息
       const {
         location, size, label, bgColor, textColor, list, radioType, isRequired, id,
       } = item;
@@ -583,7 +285,158 @@ export default {
         },
       };
     },
-    getLinkName(type, num, layerLists) {
+    completeSaveItem(item, arr) {
+      const arrAfter = arr;
+      switch (item.type) {
+        case 1:
+        {
+          return Object.assign(arrAfter, {
+            content: item.content,
+            style: {
+              'font-size': item.fontSize,
+              'text-align': item.textAlign,
+              'line-height': item.lineHeight,
+              color: item.textColor,
+              'z-index': item.dragIndex,
+            },
+          });
+        }
+        case 2:
+        {
+          return Object.assign(arrAfter, {
+            url: item.img.url,
+            style: {
+              'z-index': item.dragIndex,
+            },
+          });
+        }
+        case 3:
+        {
+          const {
+            appLink, outLink, dragIndex, key,
+            sourceType, awakeLink, iosLink, andLink, yybLink,
+          } = item;
+          return Object.assign(arrAfter, {
+            key,
+            appLink,
+            outLink,
+            sourceType,
+            awakeLink,
+            iosLink,
+            andLink,
+            yybLink,
+            name: this.getLinkName(3, key, this.$store.state.editor.layerLists),
+            style: {
+              'z-index': dragIndex,
+            },
+          });
+        }
+        case 4:
+        {
+          return Object.assign(arrAfter, {
+            style: {
+              'z-index': item.dragIndex,
+            },
+            positionInfo: {
+              position: 'relative',
+            },
+            imgList: item.imgList,
+          });
+        }
+        case 5:
+        {
+          const curVideo = item.sourceType === '1' ? item.video : item.lineVideo;
+          const {
+            loop, poster, location, size, position,
+          } = curVideo;
+          const positionInfo = this.getPositionInfo({ position, location, size });
+          return Object.assign(arrAfter, {
+            source: curVideo.url,
+            title: curVideo.title,
+            loop,
+            poster,
+            location,
+            size,
+            positionInfo,
+            style: {
+              'z-index': item.dragIndex,
+            },
+          });
+        }
+        case 6: {
+          const curPlay = item.sourceType === '1' ? item.play : item.linePlay;
+          const { position, location, size } = curPlay;
+          const positionInfo = this.getPositionInfo({ position, location, size });
+          return Object.assign(arrAfter, {
+            isBorder: item.isBorder,
+            play: curPlay,
+            location,
+            size,
+            positionInfo,
+            style: {
+              'z-index': item.dragIndex,
+            },
+          });
+        }
+        case 7:
+        case 8:
+        case 11:
+        case 12:
+        case 13: {
+          // eslint-disable-next-line object-curly-newline
+          const { isRequired, label, dragIndex, size } = item;
+          const add = {
+            isForm: true,
+            isRequired,
+            label,
+            dragIndex,
+            positionInfo: {
+              position: 'relative',
+            },
+            style: {
+              'z-index': item.dragIndex,
+            },
+            attr: {
+              label,
+              isRequired,
+              classList: [],
+              size,
+            },
+          };
+          const attr = {
+            label,
+            isRequired,
+            classList: [],
+            size,
+          };
+          if (item.type === 11) {
+            const { bgColor, textColor, verify } = item;
+            Object.assign(attr, {
+              bgColor,
+              textColor,
+              verify,
+            });
+          }
+          if (item.type === 12 || item.type === 13) {
+            Object.assign(attr, {
+              bgColor: item.bgColor,
+              textColor: item.textColor,
+            });
+          }
+          return Object.assign(arrAfter, add, { attr });
+        }
+        case 9: {
+          return this.getRadioSet(item, 9);
+        }
+        case 10: {
+          return this.getRadioSet(item, 9);
+        }
+        default: {
+          break;
+        }
+      }
+    },
+    getLinkName(type, num, layerLists) { // 热区名列表，主要是用在统计中
       let linkName = '热区';
       for (let i = 0; i < layerLists.length; i++) {
         if (layerLists[i].type === type && layerLists[i].num === num && layerLists[i].name) {
@@ -657,7 +510,7 @@ export default {
       });
       return isOk;
     },
-    editorInit(data) {
+    editorInit(data) { // state初始化，vuex不会自动恢复初始值，需要手动赋值
       this.gobalState = {
         draft: JSON.parse(this.dataInit),
         publish: JSON.parse(this.dataInit),
@@ -758,12 +611,9 @@ export default {
         this.optError('获取编辑器数据');
         this.editorInit();
       }
-      this.wrapHeight = this.page.phoneHeight + 64 + 37;
     } else {
       this.editorInit();
     }
-  },
-  updated() {
   },
   created() {
     const ele = this;
@@ -823,29 +673,20 @@ input,button,select,textarea{outline:none;}
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   z-index: 98;
 }
-
-.help-icon {
+.ew-help-icon {
   color: #323232;
 }
-
 .ed-com i,
 .ed-com span {
   display: block;
-
   font-size: 16px;
 }
-
 .ed-com i {
   font-size: 22px;
-}
-
-.el-com-text {
-  margin-top: 8px;
 }
 .el-card__body {
   padding: 0 !important;
 }
-
 .el-card {
   border-top: 0;
 }
@@ -855,12 +696,10 @@ input,button,select,textarea{outline:none;}
   margin-top: 10px;
   border-right: 0;
 }
-
 .el-card__body {
   padding: 10px 0;
 }
-
-.fixed-right {
+.ew-editor-main_right {
   position: fixed;
   float: right;
   right: 20px;
@@ -879,14 +718,10 @@ input,button,select,textarea{outline:none;}
   line-height: 34px;
   margin-top: 3px;
 }
-.fixed-right .el-card__header {
+.ew-editor-main_right .el-card__header {
   padding: 0;
 }
-.layer-header {
-  height: 50px;
-  line-height: 50px;
-}
-.flxed-main {
+.ew-editor-main {
   position: absolute;
   top: 56px;
   height: auto;
@@ -898,7 +733,7 @@ input,button,select,textarea{outline:none;}
   justify-content: center;
   overflow: hidden;
 }
-.main-bg {
+.ew-editor_bg {
  background-color: #eee;
  position: absolute;
  top: 0;
@@ -917,12 +752,12 @@ input,button,select,textarea{outline:none;}
   border: 1px solid #59c7f9;
 }
 
-.editor-box .el-button.el-button--text {
+.ew-editor .el-button.el-button--text {
   color: #606266;
   padding: 5px;
 }
 
-.publish-btn {
+.ew-publish-btn {
   margin-left: 10px !important;
 }
 body {
@@ -969,7 +804,7 @@ body {
 .el-card.is-always-shadow {
   margin-top: 0;
 }
-.phone-wrap {
+.ew-editor-main_phone {
   position: relative;
   margin-top: 20px;
   margin-bottom: 30px;
