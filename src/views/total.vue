@@ -12,7 +12,7 @@
     </el-tabs>
     <transition name="fade" mode="out-in" >
       <keep-alive>
-        <web-total v-if="activeTab === 'webTotal' && isData" :webInfo="webInfo"/>
+        <web-total v-if="activeTab === 'webTotal' && isData" :webInfo="webInfo" @getCdata="getCdata" aaa='sssss'/>
         <form-total v-if="activeTab === 'formTotal' && isData" :formInfo="formInfo"
         @isStopChange="isStopChange"/>
       </keep-alive>
@@ -52,6 +52,9 @@ export default {
     isStopChange(isStop) {
       this.formInfo.isStop = isStop;
     },
+    getCdata(data) {
+      console.log('来自navbar的数据', data);
+    },
   },
   data() {
     return {
@@ -60,9 +63,11 @@ export default {
       webInfo: {},
       formInfo: {},
       isData: false, // page接口返回才可以加载表格
+      message: '我是mmmsss'
     };
   },
   async mounted() {
+    this.$toast('我是我是');
     try {
       const { data } = await getPageInfo(this.$route.query.page_id);
       this.title = data.public_title ? data.public_title : '';

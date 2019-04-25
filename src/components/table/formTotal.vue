@@ -205,7 +205,6 @@ export default {
                 return true;
               });
               this.formData = formData;
-              console.log('sss', formData);
               this.$nextTick(() => {
                 this.expendSet(true);
               });

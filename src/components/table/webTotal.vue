@@ -140,6 +140,7 @@
         </el-pagination>
       </div>
     </div>
+      <NavBar v-bind="this.$attrs" v-on="$listeners"/>
   </div>
 </template>
 
@@ -200,7 +201,7 @@ export default {
     this.timeArr = [
       timeForMat(-1),
       timeForMat(0),
-      timeForMat(1),
+      timeForMat(1),   
       timeForMat(-29),
     ];
     this.clickArr = this.webInfo.clickArr || [];
