@@ -43,8 +43,8 @@
 </template>
 
 <script>
-import tableList from '@/components/table/table';
-import tableDraft from '@/components/table/tableDraft';
+import tableList from '@/components/table/Table';
+import tableDraft from '@/components/table/TableDraft';
 import help from '@/components/editor/layout/help';
 import Account from '@/components/editor/layout/Account';
 

@@ -7,12 +7,9 @@ import '../../assets/icons/iconfont.css';
 import App from './App.vue';
 import router from './router';
 import store from '../../store';
-import Toast from '../../components/table/toeast.js';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
-Vue.use(Toast);
-console.log('Toast', Toast);
 
 Vue.component('vue-drag-resize', VueDragResize);
 new Vue({

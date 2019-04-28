@@ -22,9 +22,9 @@
 
 <script>
 import merge from 'webpack-merge';
-import webTotal from '@/components/table/webTotal';
+import webTotal from '@/components/table/WebTotal';
 import NavBar from '@/components/NavBar';
-import formTotal from '@/components/table/formTotal';
+import formTotal from '@/components/table/FormTotal';
 import { getPageInfo } from '@/service';
 
 export default {
@@ -63,11 +63,10 @@ export default {
       webInfo: {},
       formInfo: {},
       isData: false, // page接口返回才可以加载表格
-      message: '我是mmmsss'
+      message: '我是mmmsss',
     };
   },
   async mounted() {
-    this.$toast('我是我是');
     try {
       const { data } = await getPageInfo(this.$route.query.page_id);
       this.title = data.public_title ? data.public_title : '';

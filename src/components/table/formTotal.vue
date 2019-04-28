@@ -82,7 +82,7 @@ import { formSummary, formExport, formStopCollect } from '@/service';
 import { formatDate } from '@/util/tools';
 
 export default {
-  name: 'formTotal',
+  name: 'FormTotal',
   props: {
     formInfo: Object,
   },
